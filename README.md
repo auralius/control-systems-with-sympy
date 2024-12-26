@@ -5,7 +5,7 @@ Topics covered so far:
 
 - [Root locus plotting](https://github.com/auralius/control-systems-with-sympy/blob/main/root-locus.ipynb)
 
-The root-locus plot is animated. Here, we can see the movements of the closed loop poles.
+The root-locus plot is animated. Here, we can see the movements of the closed-loop poles.
 
 <img src="https://github.com/auralius/control-systems-with-sympy/blob/main/images/4.gif" alt="Alt Text" style="width:70%; height:auto;">
 
@@ -15,11 +15,11 @@ Addiitionally, $j\omega$-crossings and break-away / entry points are also calcul
 
 - [Block diagram simplifications](https://github.com/auralius/control-systems-with-sympy/blob/main/block-diagram.ipynb)
 
-Exisiting simplification functions only take a transfer function as their input. Here, we allow general variables / functions to be used as inputs to our simplification functions. 
+Exisiting simplification functions only take transfer function as their input. Here, we allow function of any variable to be used as inputs to our simplification functions. 
 
 - [Routh-Hurwitz criterion](https://github.com/auralius/control-systems-with-sympy/blob/main/routh-hurwitz.ipynb)
 
-Here, we can generate the RH-table, including for the two special cases: only the first element in any one row is zero and all elements in any one row are zero. The numbers in each row of the generated table are already simmplified by dividing them with their greatest common divisor (GCD). Finally, the signs of each row of the first columns are also presented.
+Here, we can generate the RH-table, including for the two special cases: only the first element in any one row is zero and all elements in any one row are zero. The numbers in each row of the generated table are already simplified by dividing them with their greatest common divisor (GCD). Finally, the signs of each row of the first column are also presented.
 
 <img src="https://github.com/auralius/control-systems-with-sympy/blob/main/images/demo-rh-table.png" alt="Alt Text" style="width:60%; height:auto;">
 
