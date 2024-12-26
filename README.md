@@ -21,5 +21,5 @@ Exisiting simplification functions only take a transfer function as their input.
 
 Here, we can generate the RH-table, including for the two special cases: only the first element in any one row is zero and all elements in any one row are zero. The numbers in each row of the generated table are already simmplified by dividing them with their greatest common divisor (GCD). Finally, the signs of each row of the first columns are also presented.
 
-<img src="https://github.com/auralius/control-systems-with-sympy/blob/main/images/demo-rh-table.png" alt="Alt Text" style="width:50%; height:auto;">
+<img src="https://github.com/auralius/control-systems-with-sympy/blob/main/images/demo-rh-table.png" alt="Alt Text" style="width:60%; height:auto;">
 
