@@ -23,3 +23,6 @@ Here, we can generate the RH-table, including for the two special cases: only th
 
 <img src="https://github.com/auralius/control-systems-with-sympy/blob/main/images/demo-rh-table.png" alt="Alt Text" style="width:60%; height:auto;">
 
+- [Rectilinear system](https://github.com/auralius/control-systems-with-sympy/blob/main/rectilinear.ipynb)
+
+This is to perform modeling for a general mass-spring-damper system in one dimensional space (rectilinear system). To build the model, we must first define two adjacency matrices, one for the springs and another one for the dampers. Principally, we use a parallel unidirectional graph to model the mass-spring-damper system. 
