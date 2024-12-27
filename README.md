@@ -5,17 +5,17 @@ Topics covered so far:
 
 - [Root locus plotting](https://github.com/auralius/control-systems-with-sympy/blob/main/root-locus.ipynb)
 
-The root-locus plot is animated. Here, we can see the movements of the closed-loop poles.
+The root-locus plot is animated. The animation shows the movements of the closed-loop poles with respect to $K$.
 
 <img src="https://github.com/auralius/control-systems-with-sympy/blob/main/images/4.gif" alt="Alt Text" style="width:70%; height:auto;">
 
-Addiitionally, $j\omega$-crossings and break-away / entry points are also calculated analytically. The provided function is also capable of defining whether the points act as break-away point or entry point.
+Addiitionally, $j\omega$-crossings and break-away / entry points are also calculated analytically. The provided function is also capable of defining whether they act as break-away points or entry points.
 
 <img src="https://github.com/auralius/control-systems-with-sympy/blob/main/images/demo-rlocus.png" alt="Alt Text" style="width:50%; height:auto;">
 
 - [Block diagram simplifications](https://github.com/auralius/control-systems-with-sympy/blob/main/block-diagram.ipynb)
 
-Exisiting simplification functions only take transfer function as their input. Here, we allow function of any variable to be used as inputs to our simplification functions. 
+Exisiting block-diagram simplification functions only take transfer functions as the inputs. Here, we allow functions of any variable to be used as the inputs to our block-diagram simplification functions. 
 
 - [Routh-Hurwitz criterion](https://github.com/auralius/control-systems-with-sympy/blob/main/routh-hurwitz.ipynb)
 
