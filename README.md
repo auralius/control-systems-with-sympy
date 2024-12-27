@@ -9,7 +9,7 @@ The root-locus plot is animated. The animation shows the movements of the closed
 
 <img src="https://github.com/auralius/control-systems-with-sympy/blob/main/images/4.gif" alt="Alt Text" style="width:70%; height:auto;">
 
-Addiitionally, $j\omega$-crossings and break-away / entry points are also calculated analytically. The provided function is also capable of defining whether they act as break-away points or entry points.
+Addiitionally, $j\omega$-crossings and break-away / entry points are also calculated analytically. The provided function is also capable of defining whether the calculated points act as break-away points or entry points.
 
 <img src="https://github.com/auralius/control-systems-with-sympy/blob/main/images/demo-rlocus.png" alt="Alt Text" style="width:50%; height:auto;">
 
