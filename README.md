@@ -1,6 +1,8 @@
 # control-systems-with-sympy
 Learning control systems with symbolic mathematics, specifically with SymPy
 
+GitHub page: https://auralius.github.io/control-systems-with-sympy
+
 Topics covered so far:
 
 - [Root locus plotting](https://github.com/auralius/control-systems-with-sympy/blob/main/root-locus.ipynb)
