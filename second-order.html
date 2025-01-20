@@ -384,6 +384,7 @@
 </ul>
 </li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#rise-time">Rise time</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#the-effect-of-damping-ratio">The effect of damping ratio</a></li>
 </ul>
             </nav>
         </div>
@@ -532,17 +533,34 @@ We also need to define specific prpoperties of the variables.</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">c</span> <span class="o">=</span> <span class="n">ratsimp</span><span class="p">(</span><span class="n">ilaplace</span><span class="p">(</span><span class="n">C</span><span class="p">))</span>
-<span class="n">mprint</span><span class="p">(</span><span class="s1">&#39;c(t)=&#39;</span><span class="p">,</span> <span class="n">latex</span><span class="p">(</span><span class="n">c</span><span class="p">))</span>
+<span class="n">mprintb</span><span class="p">(</span><span class="s1">&#39;c(t)=&#39;</span><span class="p">,</span> <span class="n">latex</span><span class="p">(</span><span class="n">c</span><span class="p">))</span>
 </pre></div>
 </div>
 </div>
 <div class="cell_output docutils container">
 <div class="output text_latex math notranslate nohighlight">
-\[\displaystyle c(t)=1 + \frac{\left(- \zeta \sin{\left(\omega_{n} t \sqrt{1 - \zeta^{2}} \right)} - \sqrt{1 - \zeta^{2}} \cos{\left(\omega_{n} t \sqrt{1 - \zeta} \sqrt{\zeta + 1} \right)}\right) e^{- \omega_{n} t \zeta}}{\sqrt{1 - \zeta^{2}}}\]</div>
+\[\displaystyle \boxed{c(t)=1 + \frac{\left(- \zeta \sin{\left(\omega_{n} t \sqrt{1 - \zeta^{2}} \right)} - \sqrt{1 - \zeta^{2}} \cos{\left(\omega_{n} t \sqrt{1 - \zeta} \sqrt{\zeta + 1} \right)}\right) e^{- \omega_{n} t \zeta}}{\sqrt{1 - \zeta^{2}}}}\]</div>
+</div>
+</div>
+<p>As <span class="math notranslate nohighlight">\( \zeta = 1 \)</span>, <span class="math notranslate nohighlight">\( c(t) \)</span> becomes undfined. Hence, we must use limit operation when <span class="math notranslate nohighlight">\(\zeta = 1\)</span>.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">cz1</span> <span class="o">=</span> <span class="n">limit</span><span class="p">(</span><span class="n">c</span><span class="p">,</span> <span class="n">zeta</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+<span class="n">mprintb</span><span class="p">(</span><span class="s1">&#39;c_{</span><span class="se">\\</span><span class="s1">zeta=1}(t)=&#39;</span><span class="p">,</span> <span class="n">latex</span><span class="p">(</span><span class="n">cz1</span><span class="p">))</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_latex math notranslate nohighlight">
+\[\displaystyle \boxed{c_{\zeta=1}(t)=\left(- \omega_{n} t + e^{\omega_{n} t} - 1\right) e^{- \omega_{n} t}}\]</div>
 </div>
 </div>
 <p>Let us rewrite the response equation:
-$<span class="math notranslate nohighlight">\(c(t) = 1 + \frac{\left(- \zeta \sin{\left(\omega_{n} t \sqrt{1 - \zeta^{2}} \right)} \theta\left(t\right) - \sqrt{1 - \zeta^{2}} \cos{\left(\omega_{n} t \sqrt{1 - \zeta^{2}} \right)} \theta\left(t\right)\right) e^{- \omega_{n} t \zeta}}{\sqrt{1 - \zeta^{2}}}\)</span>$</p>
+$<span class="math notranslate nohighlight">\(c(t) = 1 + \frac{\left(- \zeta \sin{\left(\omega_{n} t \sqrt{1 - \zeta^{2}} \right)} \theta\left(t\right) - \sqrt{1 - \zeta^{2}} \cos{\left(\omega_{n} t \sqrt{1 - \zeta^{2}} \right)} \theta\left(t\right)\right) e^{- \omega_{n} t \zeta}}{\sqrt{1 - \zeta^{2}}}, \zeta \neq 1 \)</span>$</p>
+<div class="math notranslate nohighlight">
+\[ c(t) = \left(- \omega_{n} t + e^{ \omega_{n} t} - 1 \right) e^{- \omega_{n} t}, \zeta = 1 \]</div>
+<div class="math notranslate nohighlight">
+\[ \zeta \geq 0 \]</div>
 <p>System response is composed by 2 main components:</p>
 <ul class="simple">
 <li><p>Forced response:</p>
@@ -794,6 +812,53 @@ $<span class="math notranslate nohighlight">\(c(t) = 1 + \frac{\left(- \zeta \si
 </div>
 </div>
 </section>
+<section id="the-effect-of-damping-ratio">
+<h2>The effect of damping ratio<a class="headerlink" href="#the-effect-of-damping-ratio" title="Link to this heading">#</a></h2>
+<p>Cosidering the system’s natural response:</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">c2</span><span class="o">*</span><span class="n">c3</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_latex math notranslate nohighlight">
+\[\displaystyle \frac{\left(- \zeta \sin{\left(\omega_{n} t \sqrt{1 - \zeta^{2}} \right)} - \sqrt{1 - \zeta^{2}} \cos{\left(\omega_{n} t \sqrt{1 - \zeta} \sqrt{\zeta + 1} \right)}\right) e^{- \omega_{n} t \zeta}}{\sqrt{1 - \zeta^{2}}}\]</div>
+</div>
+</div>
+<p>We can easily conclude that damping ratio:</p>
+<ul class="simple">
+<li><p>changes system’s natural frequency</p></li>
+<li><p>changes system’s transient behaviour</p></li>
+</ul>
+<p>The first point is quite straight forward. Thus, we will explore more on the second point.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">tspan</span> <span class="o">=</span> <span class="p">(</span><span class="n">t</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">20</span><span class="p">)</span>
+<span class="n">zetas</span> <span class="o">=</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mf">0.1</span><span class="p">,</span> <span class="mf">0.2</span><span class="p">,</span> <span class="mf">0.4</span><span class="p">,</span> <span class="mf">0.7</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">]</span>
+
+<span class="n">p1</span> <span class="o">=</span> <span class="n">plot</span><span class="p">(</span><span class="n">c</span><span class="o">.</span><span class="n">subs</span><span class="p">(([</span><span class="n">omega_n</span><span class="p">,</span> <span class="n">omega_n_</span><span class="p">],[</span><span class="n">zeta</span><span class="p">,</span> <span class="n">zetas</span><span class="p">[</span><span class="mi">0</span><span class="p">]])),</span> <span class="n">tspan</span><span class="p">,</span> <span class="n">size</span><span class="o">=</span><span class="p">(</span><span class="mi">6</span><span class="p">,</span> <span class="mi">4</span><span class="p">),</span> <span class="n">ylabel</span><span class="o">=</span><span class="s1">&#39;$c(t)$&#39;</span><span class="p">,</span> <span class="n">show</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">legend</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="n">p1</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">label</span> <span class="o">=</span> <span class="s2">&quot;$</span><span class="se">\\</span><span class="s2">zeta = &quot;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">zetas</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span> <span class="o">+</span> <span class="s2">&quot;$&quot;</span>
+
+<span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">zetas</span><span class="p">)):</span>
+    <span class="k">if</span> <span class="n">zetas</span><span class="p">[</span><span class="n">k</span><span class="p">]</span> <span class="o">!=</span> <span class="mi">1</span><span class="p">:</span>
+        <span class="n">p2</span> <span class="o">=</span> <span class="n">plot</span><span class="p">(</span><span class="n">c</span><span class="o">.</span><span class="n">subs</span><span class="p">(([</span><span class="n">omega_n</span><span class="p">,</span> <span class="n">omega_n_</span><span class="p">],[</span><span class="n">zeta</span><span class="p">,</span> <span class="n">zetas</span><span class="p">[</span><span class="n">k</span><span class="p">]])),</span> <span class="n">tspan</span><span class="p">,</span> <span class="n">show</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">legend</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>    
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">p2</span> <span class="o">=</span> <span class="n">plot</span><span class="p">(</span><span class="n">cz1</span><span class="o">.</span><span class="n">subs</span><span class="p">(</span><span class="n">omega_n</span><span class="p">,</span> <span class="n">omega_n_</span><span class="p">),</span> <span class="n">tspan</span><span class="p">,</span> <span class="n">show</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">legend</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>    
+
+    <span class="n">p1</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">p2</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+    <span class="n">p2</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">label</span> <span class="o">=</span> <span class="s2">&quot;$</span><span class="se">\\</span><span class="s2">zeta = &quot;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">zetas</span><span class="p">[</span><span class="n">k</span><span class="p">])</span> <span class="o">+</span> <span class="s2">&quot;$&quot;</span>
+
+
+<span class="n">p1</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<img alt="_images/803f7cd0751cf2bc74a4daf71c49c00fff4468cbdef6db98e272c406ddaa8ab8.png" src="_images/803f7cd0751cf2bc74a4daf71c49c00fff4468cbdef6db98e272c406ddaa8ab8.png" />
+</div>
+</div>
+</section>
 </section>
 
     <script type="text/x-thebe-config">
@@ -875,6 +940,7 @@ $<span class="math notranslate nohighlight">\(c(t) = 1 + \frac{\left(- \zeta \si
 </ul>
 </li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#rise-time">Rise time</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#the-effect-of-damping-ratio">The effect of damping ratio</a></li>
 </ul>
   </nav></div>
 
