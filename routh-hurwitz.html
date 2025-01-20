@@ -8,7 +8,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>Routh-Hurwitz Stability Criterion &#8212; My sample book</title>
+    <title>Routh-Hurwitz Stability Criterion &#8212; control-systems-wit-sympy</title>
   
   
   
@@ -148,8 +148,8 @@
       
     
     
-    <img src="_static/logo.png" class="logo__image only-light" alt="My sample book - Home"/>
-    <img src="_static/logo.png" class="logo__image only-dark pst-js-only" alt="My sample book - Home"/>
+    <img src="_static/logo.png" class="logo__image only-light" alt="control-systems-wit-sympy - Home"/>
+    <img src="_static/logo.png" class="logo__image only-dark pst-js-only" alt="control-systems-wit-sympy - Home"/>
   
   
 </a></div>
@@ -371,7 +371,8 @@
             <nav aria-label="Page">
                 <ul class="visible nav section-nav flex-column">
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#required-imports">Required imports</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#the-rh-table">The RH-table</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#motivation">Motivation</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#the-routh-table">The Routh table</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#implementations">Implementations</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#examples">Examples</a><ul class="nav section-nav flex-column">
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#example-1">Example 1</a></li>
@@ -406,9 +407,17 @@
 </div>
 </div>
 </section>
-<section id="the-rh-table">
-<h2>The RH-table<a class="headerlink" href="#the-rh-table" title="Link to this heading">#</a></h2>
-<p>Given the following <strong>open-loop</strong> system:</p>
+<section id="motivation">
+<h2>Motivation<a class="headerlink" href="#motivation" title="Link to this heading">#</a></h2>
+<p>Given the following transfer function:</p>
+<div class="math notranslate nohighlight">
+\[ G(S) = \frac{ N(s) }{D(s)}\]</div>
+<p>where <span class="math notranslate nohighlight">\(N(s)\)</span> is the numerator and <span class="math notranslate nohighlight">\(D(s)\)</span> is the denominator. Both are polynomials. The roots of the numerator defines the system stabilty.</p>
+<p><strong>Routh-Hurwitz method allows us to conclude the system’s stability without actually calculating the polynomial roots of the denominator.</strong></p>
+</section>
+<section id="the-routh-table">
+<h2>The Routh table<a class="headerlink" href="#the-routh-table" title="Link to this heading">#</a></h2>
+<p>Given the following system:</p>
 <p><span class="math notranslate nohighlight">\(\boxed{G(s) = \frac{ \text{num}(s)}{a_ns^n + a_{n-1}s^{n-1} + \dots + a_1s + a_0}}\)</span></p>
 <p>As an example, let us take <span class="math notranslate nohighlight">\(n=4\)</span>. The RH-table is as follows:</p>
 <div class="pst-scrollable-table-container"><table class="table">
@@ -450,7 +459,7 @@
 <p>The implementation involves four functions:</p>
 <ul class="simple">
 <li><p><code class="docutils literal notranslate"><span class="pre">simplify_line</span></code></p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">generate_rh_table</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">make_routh_table</span></code></p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">evaluate_table</span></code></p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">print_table</span></code></p></li>
 </ul>
@@ -477,7 +486,7 @@
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">This is the core function that generates the RH-table.</span>
 <span class="sd">&#39;&#39;&#39;</span>
-<span class="k">def</span> <span class="nf">generate_rh_table</span><span class="p">(</span><span class="n">sys</span><span class="p">):</span>
+<span class="k">def</span> <span class="nf">make_routh_table</span><span class="p">(</span><span class="n">sys</span><span class="p">):</span>
     <span class="n">table</span> <span class="o">=</span> <span class="p">[]</span>
 
     <span class="c1"># convert into fraction, </span>
@@ -527,8 +536,8 @@
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="sd">&#39;&#39;&#39;</span>
-<span class="sd">This function does not conclude the stability based on the generated RH-table. </span>
-<span class="sd">It simply generates and print the fisrst-column signs which we can use to draw the conclusion.</span>
+<span class="sd">This function does not conclude the stability based on the generated Routh table. </span>
+<span class="sd">It simply generates and print the first-column signs which we can use to draw the conclusion.</span>
 <span class="sd">&#39;&#39;&#39;</span>
 <span class="k">def</span> <span class="nf">evaluate_table</span><span class="p">(</span><span class="n">table</span><span class="p">):</span>
     <span class="n">signs</span> <span class="o">=</span> <span class="p">[]</span>
@@ -556,7 +565,7 @@
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="sd">&#39;&#39;&#39;</span>
-<span class="sd">This prints the RH-table</span>
+<span class="sd">This prints the Routh table</span>
 <span class="sd">&#39;&#39;&#39;</span>
 <span class="k">def</span> <span class="nf">print_table</span><span class="p">(</span><span class="n">table</span><span class="p">):</span>
     <span class="n">mprint</span><span class="p">(</span><span class="n">latex</span><span class="p">(</span><span class="n">Matrix</span><span class="p">(</span><span class="n">table</span><span class="p">)))</span>
@@ -573,7 +582,7 @@
 \[ \frac{1000}{s^3 + 10s^2 + 31s + 1030}\]</div>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">table</span> <span class="o">=</span> <span class="n">generate_rh_table</span><span class="p">(</span><span class="mi">1000</span> <span class="o">/</span> <span class="p">(</span><span class="n">s</span><span class="o">**</span><span class="mi">3</span> <span class="o">+</span> <span class="mi">10</span><span class="o">*</span><span class="n">s</span><span class="o">**</span><span class="mi">2</span> <span class="o">+</span> <span class="mi">31</span><span class="o">*</span><span class="n">s</span> <span class="o">+</span> <span class="mi">1030</span><span class="p">))</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">table</span> <span class="o">=</span> <span class="n">make_routh_table</span><span class="p">(</span><span class="mi">1000</span> <span class="o">/</span> <span class="p">(</span><span class="n">s</span><span class="o">**</span><span class="mi">3</span> <span class="o">+</span> <span class="mi">10</span><span class="o">*</span><span class="n">s</span><span class="o">**</span><span class="mi">2</span> <span class="o">+</span> <span class="mi">31</span><span class="o">*</span><span class="n">s</span> <span class="o">+</span> <span class="mi">1030</span><span class="p">))</span>
 <span class="n">print_table</span><span class="p">(</span><span class="n">table</span><span class="p">)</span>
 <span class="n">evaluate_table</span><span class="p">(</span><span class="n">table</span><span class="p">)</span>
 </pre></div>
@@ -597,7 +606,7 @@
 \[G(s)= \frac{10}{s^5+2s^4+3s^3+6s^2+5s+3}\]</div>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">table</span> <span class="o">=</span> <span class="n">generate_rh_table</span><span class="p">(</span><span class="mi">10</span> <span class="o">/</span> <span class="p">(</span><span class="n">s</span><span class="o">**</span><span class="mi">5</span> <span class="o">+</span> <span class="mi">2</span><span class="o">*</span><span class="n">s</span><span class="o">**</span><span class="mi">4</span> <span class="o">+</span> <span class="mi">3</span><span class="o">*</span><span class="n">s</span><span class="o">**</span><span class="mi">3</span> <span class="o">+</span> <span class="mi">6</span><span class="o">*</span><span class="n">s</span><span class="o">**</span><span class="mi">2</span> <span class="o">+</span> <span class="mi">5</span><span class="o">*</span><span class="n">s</span> <span class="o">+</span> <span class="mi">3</span><span class="p">))</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">table</span> <span class="o">=</span> <span class="n">make_routh_table</span><span class="p">(</span><span class="mi">10</span> <span class="o">/</span> <span class="p">(</span><span class="n">s</span><span class="o">**</span><span class="mi">5</span> <span class="o">+</span> <span class="mi">2</span><span class="o">*</span><span class="n">s</span><span class="o">**</span><span class="mi">4</span> <span class="o">+</span> <span class="mi">3</span><span class="o">*</span><span class="n">s</span><span class="o">**</span><span class="mi">3</span> <span class="o">+</span> <span class="mi">6</span><span class="o">*</span><span class="n">s</span><span class="o">**</span><span class="mi">2</span> <span class="o">+</span> <span class="mi">5</span><span class="o">*</span><span class="n">s</span> <span class="o">+</span> <span class="mi">3</span><span class="p">))</span>
 <span class="n">print_table</span><span class="p">(</span><span class="n">table</span><span class="p">)</span>
 <span class="n">evaluate_table</span><span class="p">(</span><span class="n">table</span><span class="p">)</span>
 </pre></div>
@@ -621,7 +630,7 @@
 \[ \frac{128}{s^8 + 3s^7 + 10s^6 + 24s^5 + 48s^4 + 96s^3 + 128s^2 + 192s + 128}\]</div>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">table</span> <span class="o">=</span> <span class="n">generate_rh_table</span><span class="p">(</span><span class="mi">128</span> <span class="o">/</span> <span class="p">(</span><span class="n">s</span><span class="o">**</span><span class="mi">8</span> <span class="o">+</span> <span class="mi">3</span><span class="o">*</span><span class="n">s</span><span class="o">**</span><span class="mi">7</span> <span class="o">+</span> <span class="mi">10</span><span class="o">*</span><span class="n">s</span><span class="o">**</span><span class="mi">6</span> <span class="o">+</span> <span class="mi">24</span><span class="o">*</span><span class="n">s</span><span class="o">**</span><span class="mi">5</span> <span class="o">+</span> <span class="mi">48</span><span class="o">*</span><span class="n">s</span><span class="o">**</span><span class="mi">4</span> <span class="o">+</span> <span class="mi">96</span><span class="o">*</span><span class="n">s</span><span class="o">**</span><span class="mi">3</span> <span class="o">+</span> <span class="mi">128</span><span class="o">*</span><span class="n">s</span><span class="o">**</span><span class="mi">2</span> <span class="o">+</span> <span class="mi">192</span><span class="o">*</span><span class="n">s</span> <span class="o">+</span> <span class="mi">128</span><span class="p">))</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">table</span> <span class="o">=</span> <span class="n">make_routh_table</span><span class="p">(</span><span class="mi">128</span> <span class="o">/</span> <span class="p">(</span><span class="n">s</span><span class="o">**</span><span class="mi">8</span> <span class="o">+</span> <span class="mi">3</span><span class="o">*</span><span class="n">s</span><span class="o">**</span><span class="mi">7</span> <span class="o">+</span> <span class="mi">10</span><span class="o">*</span><span class="n">s</span><span class="o">**</span><span class="mi">6</span> <span class="o">+</span> <span class="mi">24</span><span class="o">*</span><span class="n">s</span><span class="o">**</span><span class="mi">5</span> <span class="o">+</span> <span class="mi">48</span><span class="o">*</span><span class="n">s</span><span class="o">**</span><span class="mi">4</span> <span class="o">+</span> <span class="mi">96</span><span class="o">*</span><span class="n">s</span><span class="o">**</span><span class="mi">3</span> <span class="o">+</span> <span class="mi">128</span><span class="o">*</span><span class="n">s</span><span class="o">**</span><span class="mi">2</span> <span class="o">+</span> <span class="mi">192</span><span class="o">*</span><span class="n">s</span> <span class="o">+</span> <span class="mi">128</span><span class="p">))</span>
 <span class="n">print_table</span><span class="p">(</span><span class="n">table</span><span class="p">)</span>
 <span class="n">evaluate_table</span><span class="p">(</span><span class="n">table</span><span class="p">)</span>
 </pre></div>
@@ -646,7 +655,7 @@
 <p>Find the largest <span class="math notranslate nohighlight">\(k\)</span> that does not cause the closed-loop system unstable.</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">table</span> <span class="o">=</span> <span class="n">generate_rh_table</span><span class="p">(</span><span class="n">k</span> <span class="o">/</span> <span class="p">(</span><span class="n">s</span><span class="o">**</span><span class="mi">3</span> <span class="o">+</span> <span class="mi">10</span><span class="o">*</span><span class="n">s</span><span class="o">**</span><span class="mi">2</span> <span class="o">+</span> <span class="mi">31</span><span class="o">*</span><span class="n">s</span> <span class="o">+</span> <span class="mi">30</span><span class="o">+</span><span class="n">k</span><span class="p">))</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">table</span> <span class="o">=</span> <span class="n">make_routh_table</span><span class="p">(</span><span class="n">k</span> <span class="o">/</span> <span class="p">(</span><span class="n">s</span><span class="o">**</span><span class="mi">3</span> <span class="o">+</span> <span class="mi">10</span><span class="o">*</span><span class="n">s</span><span class="o">**</span><span class="mi">2</span> <span class="o">+</span> <span class="mi">31</span><span class="o">*</span><span class="n">s</span> <span class="o">+</span> <span class="mi">30</span><span class="o">+</span><span class="n">k</span><span class="p">))</span>
 <span class="n">print_table</span><span class="p">(</span><span class="n">table</span><span class="p">)</span>
 </pre></div>
 </div>
@@ -750,7 +759,8 @@
   <nav class="bd-toc-nav page-toc">
     <ul class="visible nav section-nav flex-column">
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#required-imports">Required imports</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#the-rh-table">The RH-table</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#motivation">Motivation</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#the-routh-table">The Routh table</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#implementations">Implementations</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#examples">Examples</a><ul class="nav section-nav flex-column">
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#example-1">Example 1</a></li>
@@ -773,7 +783,7 @@
   <div class="footer-item">
     
 <p class="component-author">
-By The Jupyter Book Community
+By Auralius Manurung
 </p>
 
   </div>

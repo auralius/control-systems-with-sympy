@@ -8,7 +8,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>Rectilinear System Modeling &#8212; My sample book</title>
+    <title>Rectilinear System Modeling &#8212; control-systems-wit-sympy</title>
   
   
   
@@ -148,8 +148,8 @@
       
     
     
-    <img src="_static/logo.png" class="logo__image only-light" alt="My sample book - Home"/>
-    <img src="_static/logo.png" class="logo__image only-dark pst-js-only" alt="My sample book - Home"/>
+    <img src="_static/logo.png" class="logo__image only-light" alt="control-systems-wit-sympy - Home"/>
+    <img src="_static/logo.png" class="logo__image only-dark pst-js-only" alt="control-systems-wit-sympy - Home"/>
   
   
 </a></div>
@@ -370,7 +370,7 @@
             </div>
             <nav aria-label="Page">
                 <ul class="visible nav section-nav flex-column">
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#preparation">Preparation</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#preparations">Preparations</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#lagrange-s-equations-of-a-rectilinear-system">Lagrange’s equations of a rectilinear system</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#solved-problem-sets">Solved problem sets</a><ul class="nav section-nav flex-column">
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#problem-1">Problem 1</a></li>
@@ -394,11 +394,10 @@
                   
   <section class="tex2jax_ignore mathjax_ignore" id="rectilinear-system-modeling">
 <h1>Rectilinear System Modeling<a class="headerlink" href="#rectilinear-system-modeling" title="Link to this heading">#</a></h1>
-<p>In this Python notebook, we are going to make a general method for rectilinear system modeling. Our method uses unidirected graph where vertex represents mass and edge represents spring or damper. From the graph, we can then generate two adjacency matrices. These matrices are then used by the Lagrange-Euler method to generate the system equations.</p>
-<p>HOW TO USE:</p>
-<p>https://github.com/auralius/advanced-engineering-math-with-maple/blob/master/general-mass-spring-damper/how-to-use.pdf</p>
-<section id="preparation">
-<h2>Preparation<a class="headerlink" href="#preparation" title="Link to this heading">#</a></h2>
+<p>In this Python notebook, we are going to make a general method for rectilinear system modeling. Our method uses directed graph where vertex represents mass and edge represents spring or damper. From the graph, we can then generate two adjacency matrices:  for the springs and for the dampers. These matrices are then used by the Lagrange-Euler method to generate the system equations.</p>
+<p><img alt="" src="_images/adjency.png" /></p>
+<section id="preparations">
+<h2>Preparations<a class="headerlink" href="#preparations" title="Link to this heading">#</a></h2>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">IPython.display</span> <span class="kn">import</span> <span class="n">display</span><span class="p">,</span> <span class="n">Markdown</span>
@@ -870,7 +869,7 @@
   </div>
   <nav class="bd-toc-nav page-toc">
     <ul class="visible nav section-nav flex-column">
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#preparation">Preparation</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#preparations">Preparations</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#lagrange-s-equations-of-a-rectilinear-system">Lagrange’s equations of a rectilinear system</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#solved-problem-sets">Solved problem sets</a><ul class="nav section-nav flex-column">
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#problem-1">Problem 1</a></li>
@@ -895,7 +894,7 @@
   <div class="footer-item">
     
 <p class="component-author">
-By The Jupyter Book Community
+By Auralius Manurung
 </p>
 
   </div>

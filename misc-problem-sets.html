@@ -8,7 +8,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>Solved Various Problem Sets &#8212; My sample book</title>
+    <title>Solved Various Problem Sets &#8212; control-systems-wit-sympy</title>
   
   
   
@@ -147,8 +147,8 @@
       
     
     
-    <img src="_static/logo.png" class="logo__image only-light" alt="My sample book - Home"/>
-    <img src="_static/logo.png" class="logo__image only-dark pst-js-only" alt="My sample book - Home"/>
+    <img src="_static/logo.png" class="logo__image only-light" alt="control-systems-wit-sympy - Home"/>
+    <img src="_static/logo.png" class="logo__image only-dark pst-js-only" alt="control-systems-wit-sympy - Home"/>
   
   
 </a></div>
@@ -369,8 +369,15 @@
             </div>
             <nav aria-label="Page">
                 <ul class="visible nav section-nav flex-column">
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#problem-1">Problem 1</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#problem-2">Problem 2</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#problem-1">Problem 1</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#solution">Solution</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#problem-2">Problem 2</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id1">Solution</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#comparison-to-python-control-library">Comparison to Python Control Library</a></li>
+</ul>
+</li>
 </ul>
             </nav>
         </div>
@@ -401,7 +408,8 @@
 <h2>Problem 1<a class="headerlink" href="#problem-1" title="Link to this heading">#</a></h2>
 <p><img alt="" src="_images/p7.png" /></p>
 <p>Determine the values of <span class="math notranslate nohighlight">\(K\)</span> and <span class="math notranslate nohighlight">\(k\)</span> such that the system has a damping ratio <span class="math notranslate nohighlight">\(\zeta\)</span> of 0.7 and an undamped natural frequency <span class="math notranslate nohighlight">\(\omega_n\)</span> of <span class="math notranslate nohighlight">\(4 \mathrm{rad} / \mathrm{sec}\)</span>.</p>
-<p><strong>Solution:</strong></p>
+<section id="solution">
+<h3>Solution<a class="headerlink" href="#solution" title="Link to this heading">#</a></h3>
 <p>First, simplify the blockdiagram:</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
@@ -453,11 +461,13 @@
 </div>
 <p>So, the final answer is <span class="math notranslate nohighlight">\(k=0.225\)</span>.</p>
 </section>
+</section>
 <section id="problem-2">
 <h2>Problem 2<a class="headerlink" href="#problem-2" title="Link to this heading">#</a></h2>
 <p><img alt="" src="_images/p8.png" /></p>
 <p>Determine the value of <span class="math notranslate nohighlight">\(k\)</span> such that the damping ratio <span class="math notranslate nohighlight">\(\zeta\)</span> is 0.5 . Then obtain the rise time <span class="math notranslate nohighlight">\(t_r\)</span>, peak time <span class="math notranslate nohighlight">\(t_p\)</span>, maximum overshoot <span class="math notranslate nohighlight">\(M_p\)</span>, and settling time <span class="math notranslate nohighlight">\(t_s\)</span> in the unit-step response.</p>
-<p><strong>Solution:</strong></p>
+<section id="id1">
+<h3>Solution<a class="headerlink" href="#id1" title="Link to this heading">#</a></h3>
 <p>First, simplify the blockdiagram:</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
@@ -555,6 +565,9 @@ maximum overshoot = 0.163033534821580
 </div>
 </div>
 </div>
+</section>
+<section id="comparison-to-python-control-library">
+<h3>Comparison to Python Control Library<a class="headerlink" href="#comparison-to-python-control-library" title="Link to this heading">#</a></h3>
 <p>The results are slightly different from the Python Control Library. This is beacase Python Control Library does the calculations numerically.</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
@@ -580,6 +593,7 @@ maximum overshoot = 0.163033534821580
 </div>
 </div>
 </div>
+</section>
 </section>
 </section>
 
@@ -639,8 +653,15 @@ maximum overshoot = 0.163033534821580
   </div>
   <nav class="bd-toc-nav page-toc">
     <ul class="visible nav section-nav flex-column">
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#problem-1">Problem 1</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#problem-2">Problem 2</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#problem-1">Problem 1</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#solution">Solution</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#problem-2">Problem 2</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id1">Solution</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#comparison-to-python-control-library">Comparison to Python Control Library</a></li>
+</ul>
+</li>
 </ul>
   </nav></div>
 
@@ -655,7 +676,7 @@ maximum overshoot = 0.163033534821580
   <div class="footer-item">
     
 <p class="component-author">
-By The Jupyter Book Community
+By Auralius Manurung
 </p>
 
   </div>
