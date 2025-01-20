@@ -545,20 +545,33 @@ We also need to define specific prpoperties of the variables.</p>
 <p>As <span class="math notranslate nohighlight">\( \zeta = 1 \)</span>, <span class="math notranslate nohighlight">\( c(t) \)</span> becomes undfined. Hence, we must use limit operation when <span class="math notranslate nohighlight">\(\zeta = 1\)</span>.</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">cz1</span> <span class="o">=</span> <span class="n">limit</span><span class="p">(</span><span class="n">c</span><span class="p">,</span> <span class="n">zeta</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">cz1</span> <span class="o">=</span> <span class="n">ratsimp</span><span class="p">(</span><span class="n">limit</span><span class="p">(</span><span class="n">c</span><span class="p">,</span> <span class="n">zeta</span><span class="p">,</span> <span class="mi">1</span><span class="p">))</span>
 <span class="n">mprintb</span><span class="p">(</span><span class="s1">&#39;c_{</span><span class="se">\\</span><span class="s1">zeta=1}(t)=&#39;</span><span class="p">,</span> <span class="n">latex</span><span class="p">(</span><span class="n">cz1</span><span class="p">))</span>
 </pre></div>
 </div>
 </div>
 <div class="cell_output docutils container">
 <div class="output text_latex math notranslate nohighlight">
-\[\displaystyle \boxed{c_{\zeta=1}(t)=\left(- \omega_{n} t + e^{\omega_{n} t} - 1\right) e^{- \omega_{n} t}}\]</div>
+\[\displaystyle \boxed{c_{\zeta=1}(t)=\left(- \omega_{n} t - 1\right) e^{- \omega_{n} t} + 1}\]</div>
 </div>
 </div>
-<p>Let us rewrite the response equation:
-$<span class="math notranslate nohighlight">\(c(t) = 1 + \frac{\left(- \zeta \sin{\left(\omega_{n} t \sqrt{1 - \zeta^{2}} \right)} \theta\left(t\right) - \sqrt{1 - \zeta^{2}} \cos{\left(\omega_{n} t \sqrt{1 - \zeta^{2}} \right)} \theta\left(t\right)\right) e^{- \omega_{n} t \zeta}}{\sqrt{1 - \zeta^{2}}}, \zeta \neq 1 \)</span>$</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">latex</span><span class="p">(</span><span class="n">cz1</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>&#39;\\left(- \\omega_{n} t - 1\\right) e^{- \\omega_{n} t} + 1&#39;
+</pre></div>
+</div>
+</div>
+</div>
+<p>Let us rewrite the response equation:</p>
 <div class="math notranslate nohighlight">
-\[ c(t) = \left(- \omega_{n} t + e^{ \omega_{n} t} - 1 \right) e^{- \omega_{n} t}, \zeta = 1 \]</div>
+\[ c(t) = 1 + \frac{ \left(- \zeta \sin{\left(\omega_{n} t \sqrt{1 - \zeta^{2}} \right)} \theta\left(t\right) - \sqrt{1 - \zeta^{2}} \cos{\left(\omega_{n} t \sqrt{1 - \zeta^{2}} \right)} \theta\left(t\right)\right) e^{- \omega_{n} t \zeta}}{\sqrt{1 - \zeta^{2}}}, \zeta \neq 1 \]</div>
+<div class="math notranslate nohighlight">
+\[ c(t) = \left(- \omega_{n} t - 1 \right) e^{- \omega_{n} t} + 1, \zeta = 1 \]</div>
 <div class="math notranslate nohighlight">
 \[ \zeta \geq 0 \]</div>
 <p>System response is composed by 2 main components:</p>
