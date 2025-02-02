@@ -333,15 +333,22 @@ We also need to define specific prpoperties of the variables.</p>
 <h3>The magnitude equation:<a class="headerlink" href="#the-magnitude-equation" title="Link to this heading">¶</a></h3>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">M</span> <span class="o">=</span> <span class="mi">20</span><span class="o">*</span><span class="n">log</span><span class="p">(</span><span class="n">Abs</span><span class="p">(</span><span class="n">Gjw</span><span class="p">),</span><span class="mi">10</span><span class="p">)</span>
-<span class="n">mprint</span><span class="p">(</span><span class="s2">&quot;M(j </span><span class="se">\\</span><span class="s2">omega ) = &quot;</span><span class="p">,</span> <span class="n">latex</span><span class="p">(</span><span class="n">M</span><span class="p">))</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">M</span> <span class="o">=</span> <span class="n">Abs</span><span class="p">(</span><span class="n">Gjw</span><span class="p">)</span>
+<span class="n">mprint</span><span class="p">(</span><span class="s2">&quot;M=&quot;</span><span class="p">,</span> <span class="n">latex</span><span class="p">(</span><span class="n">M</span><span class="p">))</span>
+
+<span class="n">Mdb</span> <span class="o">=</span> <span class="mi">20</span><span class="o">*</span><span class="n">log</span><span class="p">(</span><span class="n">M</span><span class="p">,</span><span class="mi">10</span><span class="p">)</span>
+<span class="n">mprint</span><span class="p">(</span><span class="s2">&quot;M_</span><span class="si">{dB}</span><span class="s2"> = &quot;</span><span class="p">,</span> <span class="n">latex</span><span class="p">(</span><span class="n">Mdb</span><span class="p">))</span>
 </pre></div>
 </div>
 </div>
 <div class="cell_output docutils container">
 <div class="math-wrapper output text_latex docutils container">
 <div class="output text_latex math notranslate nohighlight">
-\[\displaystyle M(j \omega ) = \frac{20 \log{\left(\frac{0.8125 \sqrt{0.14792899408284 \omega^{2} + 1}}{\sqrt{0.390625 \omega^{6} - 0.6875 \omega^{4} + \omega^{2}}} \right)}}{\log{\left(10 \right)}}\]</div>
+\[\displaystyle M=\frac{0.8125 \sqrt{0.14792899408284 \omega^{2} + 1}}{\sqrt{0.390625 \omega^{6} - 0.6875 \omega^{4} + \omega^{2}}}\]</div>
+</div>
+<div class="math-wrapper output text_latex docutils container">
+<div class="output text_latex math notranslate nohighlight">
+\[\displaystyle M_{dB} = \frac{20 \log{\left(\frac{0.8125 \sqrt{0.14792899408284 \omega^{2} + 1}}{\sqrt{0.390625 \omega^{6} - 0.6875 \omega^{4} + \omega^{2}}} \right)}}{\log{\left(10 \right)}}\]</div>
 </div>
 </div>
 </div>
@@ -351,60 +358,81 @@ We also need to define specific prpoperties of the variables.</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">Phi</span> <span class="o">=</span> <span class="n">simplify</span><span class="p">(</span><span class="n">atan</span><span class="p">(</span><span class="n">im</span><span class="p">(</span><span class="n">Gjw</span><span class="p">)</span><span class="o">/</span><span class="n">re</span><span class="p">(</span><span class="n">Gjw</span><span class="p">)))</span>
-<span class="n">mprint</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\\</span><span class="s2">phi(j </span><span class="se">\\</span><span class="s2">omega ) = &quot;</span><span class="p">,</span> <span class="n">latex</span><span class="p">(</span><span class="n">Phi</span><span class="p">))</span>
+<span class="n">mprint</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\\</span><span class="s2">phi = &quot;</span><span class="p">,</span> <span class="n">latex</span><span class="p">(</span><span class="n">Phi</span><span class="p">))</span>
 </pre></div>
 </div>
 </div>
 <div class="cell_output docutils container">
 <div class="math-wrapper output text_latex docutils container">
 <div class="output text_latex math notranslate nohighlight">
-\[\displaystyle \phi(j \omega ) = \operatorname{atan}{\left(\frac{2.08 - 0.7 \omega^{2}}{\omega \left(0.5 \omega^{2} + 0.76\right)} \right)}\]</div>
+\[\displaystyle \phi = \operatorname{atan}{\left(\frac{2.08 - 0.7 \omega^{2}}{\omega \left(0.5 \omega^{2} + 0.76\right)} \right)}\]</div>
 </div>
 </div>
 </div>
 </section>
 <section id="cross-over-frequencies">
 <h3>Cross-over frequencies<a class="headerlink" href="#cross-over-frequencies" title="Link to this heading">¶</a></h3>
-<section id="gain-cross-over-frequency">
-<h4>Gain cross-over frequency<a class="headerlink" href="#gain-cross-over-frequency" title="Link to this heading">¶</a></h4>
-<p>Find <span class="math notranslate nohighlight">\(\omega\)</span> where the magnitude is zero. <strong>Take the positive value</strong>.</p>
+</section>
+<section id="bode-plot">
+<h3>Bode plot<a class="headerlink" href="#bode-plot" title="Link to this heading">¶</a></h3>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">w_gain</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">solveset</span><span class="p">(</span><span class="n">Eq</span><span class="p">(</span><span class="n">M</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span> <span class="n">omega</span><span class="p">,</span> <span class="n">domain</span><span class="o">=</span><span class="n">S</span><span class="o">.</span><span class="n">Reals</span><span class="p">))</span>
-<span class="n">w_gain</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">mag</span> <span class="o">=</span> <span class="n">plot</span><span class="p">(</span><span class="n">Mdb</span><span class="p">,</span> <span class="p">(</span><span class="n">omega</span><span class="p">,</span> <span class="mf">0.1</span> <span class="p">,</span> <span class="mi">100</span><span class="p">),</span> <span class="n">size</span><span class="o">=</span><span class="p">(</span><span class="mi">8</span><span class="p">,</span> <span class="mi">3</span><span class="p">),</span> <span class="n">show</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">title</span><span class="o">=</span><span class="s1">&#39;$ M_</span><span class="si">{dB}</span><span class="s1"> $&#39;</span><span class="p">,</span> <span class="n">xscale</span><span class="o">=</span><span class="s1">&#39;log&#39;</span><span class="p">)</span>
+<span class="n">mag</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+
+<span class="n">pha</span> <span class="o">=</span> <span class="n">plot</span><span class="p">(</span><span class="n">Phi</span><span class="p">,</span> <span class="p">(</span><span class="n">omega</span><span class="p">,</span> <span class="mf">0.1</span> <span class="p">,</span> <span class="mi">100</span><span class="p">),</span> <span class="n">size</span><span class="o">=</span><span class="p">(</span><span class="mi">8</span><span class="p">,</span> <span class="mi">3</span><span class="p">),</span> <span class="n">title</span><span class="o">=</span><span class="s1">&#39;$ </span><span class="se">\\</span><span class="s1">phi $&#39;</span><span class="p">,</span> <span class="n">show</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>  <span class="n">xscale</span><span class="o">=</span><span class="s1">&#39;log&#39;</span><span class="p">)</span>
+<span class="n">pha</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
 </pre></div>
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>[-1.03642323216522, 1.03642323216522]
+<img alt="_images/d6f83b69363a1940284b93796fbf9378f4d2494eb34c44a92b88dcfea554a146.png" src="_images/d6f83b69363a1940284b93796fbf9378f4d2494eb34c44a92b88dcfea554a146.png" />
+<img alt="_images/2aac968c277d7dd286f4b628ec9215c678c1fb212302c0b702cc064323d68a71.png" src="_images/2aac968c277d7dd286f4b628ec9215c678c1fb212302c0b702cc064323d68a71.png" />
+</div>
+</div>
+</section>
+<section id="gain-cross-over-frequency">
+<h3>Gain cross-over frequency<a class="headerlink" href="#gain-cross-over-frequency" title="Link to this heading">¶</a></h3>
+<p>Find <span class="math notranslate nohighlight">\(\omega\)</span> where the magnitude is zero dB. <strong>Take the positive value</strong>.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">w_gain</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">solveset</span><span class="p">(</span><span class="n">Eq</span><span class="p">(</span><span class="n">Mdb</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span> <span class="n">omega</span><span class="p">,</span> <span class="n">domain</span><span class="o">=</span><span class="n">S</span><span class="o">.</span><span class="n">Reals</span><span class="p">))</span>
+<span class="n">mprint</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\\</span><span class="s2">omega_</span><span class="si">{gain}</span><span class="s2">=&quot;</span><span class="p">,</span> <span class="n">latex</span><span class="p">(</span><span class="n">w_gain</span><span class="p">))</span>
 </pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="math-wrapper output text_latex docutils container">
+<div class="output text_latex math notranslate nohighlight">
+\[\displaystyle \omega_{gain}=\left[ -1.03642323216522, \  1.03642323216522\right]\]</div>
 </div>
 </div>
 </div>
 </section>
 <section id="phase-cross-over-frequency">
-<h4>Phase cross-over frequency<a class="headerlink" href="#phase-cross-over-frequency" title="Link to this heading">¶</a></h4>
-<p>Find <span class="math notranslate nohighlight">\(\omega\)</span> where the phase is <span class="math notranslate nohighlight">\(n\pi\)</span>, where <span class="math notranslate nohighlight">\(n\)</span> is integer numbers (negative, zero, and positive). From the plot, we now we must check 0. <strong>Take the positive value</strong>.</p>
+<h3>Phase cross-over frequency<a class="headerlink" href="#phase-cross-over-frequency" title="Link to this heading">¶</a></h3>
+<p>Find <span class="math notranslate nohighlight">\(\omega\)</span> where the phase is <span class="math notranslate nohighlight">\(n\pi\)</span>, where <span class="math notranslate nohighlight">\(n\)</span> is integer numbers (negative, zero, and positive). From the plot, we know we must check 0. <strong>Take the positive value</strong>.</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">w_phase</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">solveset</span><span class="p">(</span><span class="n">Eq</span><span class="p">(</span><span class="n">Phi</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span> <span class="n">omega</span><span class="p">,</span> <span class="n">domain</span><span class="o">=</span><span class="n">S</span><span class="o">.</span><span class="n">Reals</span><span class="p">))</span>
-<span class="n">w_phase</span>
+<span class="n">mprint</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\\</span><span class="s2">omega_</span><span class="si">{phase}</span><span class="s2">=&quot;</span><span class="p">,</span> <span class="n">latex</span><span class="p">(</span><span class="n">w_phase</span><span class="p">))</span>
 </pre></div>
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>[-1.72378321474267, 1.72378321474267]
-</pre></div>
+<div class="math-wrapper output text_latex docutils container">
+<div class="output text_latex math notranslate nohighlight">
+\[\displaystyle \omega_{phase}=\left[ -1.72378321474267, \  1.72378321474267\right]\]</div>
 </div>
 </div>
 </div>
-</section>
 </section>
 <section id="gain-margin">
 <h3>Gain margin<a class="headerlink" href="#gain-margin" title="Link to this heading">¶</a></h3>
+<p><span class="math notranslate nohighlight">\(M_{dB}\)</span> when <span class="math notranslate nohighlight">\(\omega = \omega_{phase}\)</span></p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">GM</span> <span class="o">=</span> <span class="nb">abs</span><span class="p">(</span><span class="n">M</span><span class="o">.</span><span class="n">subs</span><span class="p">(</span><span class="n">omega</span><span class="p">,</span> <span class="n">w_phase</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span><span class="o">.</span><span class="n">evalf</span><span class="p">())</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">GM</span> <span class="o">=</span> <span class="nb">abs</span><span class="p">(</span><span class="n">Mdb</span><span class="o">.</span><span class="n">subs</span><span class="p">(</span><span class="n">omega</span><span class="p">,</span> <span class="n">w_phase</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span><span class="o">.</span><span class="n">evalf</span><span class="p">())</span>
 <span class="n">GM</span>
 </pre></div>
 </div>
@@ -416,22 +444,10 @@ We also need to define specific prpoperties of the variables.</p>
 </div>
 </div>
 </div>
-<div class="cell docutils container">
-<div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">mag</span> <span class="o">=</span> <span class="n">plot</span><span class="p">(</span><span class="n">M</span><span class="p">,</span>                              <span class="p">(</span><span class="n">omega</span><span class="p">,</span> <span class="mf">0.1</span> <span class="p">,</span> <span class="mi">100</span><span class="p">),</span> <span class="n">size</span><span class="o">=</span><span class="p">(</span><span class="mi">4</span><span class="p">,</span> <span class="mi">2</span><span class="p">),</span> <span class="n">show</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">ylabel</span><span class="o">=</span><span class="s1">&#39;$M ( </span><span class="se">\\</span><span class="s1">omega )$&#39;</span><span class="p">,</span> <span class="n">xscale</span><span class="o">=</span><span class="s1">&#39;log&#39;</span><span class="p">)</span>
-<span class="n">gm</span>  <span class="o">=</span> <span class="n">plot_implicit</span><span class="p">(</span><span class="n">Eq</span><span class="p">(</span><span class="n">omega</span><span class="p">,</span> <span class="n">w_phase</span><span class="p">[</span><span class="mi">1</span><span class="p">]),</span> <span class="p">(</span><span class="n">omega</span><span class="p">,</span> <span class="mf">0.1</span> <span class="p">,</span> <span class="mi">100</span><span class="p">),</span> <span class="n">line_color</span><span class="o">=</span><span class="s1">&#39;r&#39;</span><span class="p">,</span> <span class="n">show</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
-<span class="n">mag</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">gm</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
-<span class="n">mag</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
-</pre></div>
-</div>
-</div>
-<div class="cell_output docutils container">
-<img alt="_images/c4c113fd56a114c09bb483833c0b52c14e9a1f1afb05e389ad207289923d5e7d.png" src="_images/c4c113fd56a114c09bb483833c0b52c14e9a1f1afb05e389ad207289923d5e7d.png" />
-</div>
-</div>
 </section>
 <section id="phase-margin">
 <h3>Phase margin<a class="headerlink" href="#phase-margin" title="Link to this heading">¶</a></h3>
+<p><span class="math notranslate nohighlight">\(\phi\)</span> when <span class="math notranslate nohighlight">\(\omega = \omega_{gain}\)</span></p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">PM</span> <span class="o">=</span> <span class="nb">abs</span><span class="p">(</span><span class="n">mp</span><span class="o">.</span><span class="n">degrees</span><span class="p">(</span><span class="n">Phi</span><span class="o">.</span><span class="n">subs</span><span class="p">(</span><span class="n">omega</span><span class="p">,</span> <span class="n">w_gain</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span><span class="o">.</span><span class="n">evalf</span><span class="p">()))</span> <span class="c1"># in  degrees</span>
@@ -444,19 +460,6 @@ We also need to define specific prpoperties of the variables.</p>
 <div class="output text_latex math notranslate nohighlight">
 \[\displaystyle 44.651569314662\]</div>
 </div>
-</div>
-</div>
-<div class="cell docutils container">
-<div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">pha</span> <span class="o">=</span> <span class="n">plot</span><span class="p">(</span><span class="n">Phi</span><span class="p">,</span>                         <span class="p">(</span><span class="n">omega</span><span class="p">,</span> <span class="mf">0.1</span> <span class="p">,</span> <span class="mi">100</span><span class="p">),</span> <span class="n">size</span><span class="o">=</span><span class="p">(</span><span class="mi">4</span><span class="p">,</span> <span class="mi">2</span><span class="p">),</span> <span class="n">ylabel</span><span class="o">=</span><span class="s1">&#39;$</span><span class="se">\\</span><span class="s1">phi ( </span><span class="se">\\</span><span class="s1">omega )$&#39;</span><span class="p">,</span> <span class="n">show</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>  <span class="n">xscale</span><span class="o">=</span><span class="s1">&#39;log&#39;</span><span class="p">)</span>
-<span class="n">pm</span>  <span class="o">=</span> <span class="n">plot_implicit</span><span class="p">(</span><span class="n">Eq</span><span class="p">(</span><span class="n">omega</span><span class="p">,</span> <span class="n">w_gain</span><span class="p">[</span><span class="mi">1</span><span class="p">]),</span> <span class="p">(</span><span class="n">omega</span><span class="p">,</span> <span class="mf">0.1</span> <span class="p">,</span> <span class="mi">100</span><span class="p">),</span> <span class="n">line_color</span><span class="o">=</span><span class="s1">&#39;r&#39;</span><span class="p">,</span> <span class="n">show</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
-<span class="n">pha</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">pm</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
-<span class="n">pha</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
-</pre></div>
-</div>
-</div>
-<div class="cell_output docutils container">
-<img alt="_images/476a7611284c642acfaae08d837ac5a7d63729a7c68ee9cdd1376fb711169133.png" src="_images/476a7611284c642acfaae08d837ac5a7d63729a7c68ee9cdd1376fb711169133.png" />
 </div>
 </div>
 </section>
@@ -622,11 +625,10 @@ We also need to define specific prpoperties of the variables.</p>
 <li><a class="reference internal" href="#example-1">Example 1</a><ul>
 <li><a class="reference internal" href="#the-magnitude-equation">The magnitude equation:</a></li>
 <li><a class="reference internal" href="#the-phase-equation">The phase equation:</a></li>
-<li><a class="reference internal" href="#cross-over-frequencies">Cross-over frequencies</a><ul>
+<li><a class="reference internal" href="#cross-over-frequencies">Cross-over frequencies</a></li>
+<li><a class="reference internal" href="#bode-plot">Bode plot</a></li>
 <li><a class="reference internal" href="#gain-cross-over-frequency">Gain cross-over frequency</a></li>
 <li><a class="reference internal" href="#phase-cross-over-frequency">Phase cross-over frequency</a></li>
-</ul>
-</li>
 <li><a class="reference internal" href="#gain-margin">Gain margin</a></li>
 <li><a class="reference internal" href="#phase-margin">Phase margin</a></li>
 <li><a class="reference internal" href="#comparison-with-the-routh-method">Comparison with the Routh method</a></li>
