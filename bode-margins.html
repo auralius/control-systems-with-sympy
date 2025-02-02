@@ -299,6 +299,7 @@ We also need to define specific prpoperties of the variables.</p>
 <section id="example-1">
 <h2>Example 1<a class="headerlink" href="#example-1" title="Link to this heading">¶</a></h2>
 <p>Let us take an example that can be found in this <a class="reference external" href="https://www.mathworks.com/help/control/ug/assessing-gain-and-phase-margins.html">MATLAB help page</a>.</p>
+<p><img alt="" src="_images/p11.png" /></p>
 <p>Given the system <span class="math notranslate nohighlight">\(G(s)\)</span>. We are going to apply a constant gain feedback control to <span class="math notranslate nohighlight">\(G(s)\)</span>.</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
@@ -332,7 +333,7 @@ We also need to define specific prpoperties of the variables.</p>
 <h3>The magnitude equation:<a class="headerlink" href="#the-magnitude-equation" title="Link to this heading">¶</a></h3>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">M</span> <span class="o">=</span> <span class="n">logcombine</span><span class="p">(</span><span class="mi">20</span><span class="o">*</span><span class="n">log</span><span class="p">(</span><span class="n">Abs</span><span class="p">(</span><span class="n">Gjw</span><span class="p">),</span><span class="mi">10</span><span class="p">))</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">M</span> <span class="o">=</span> <span class="mi">20</span><span class="o">*</span><span class="n">log</span><span class="p">(</span><span class="n">Abs</span><span class="p">(</span><span class="n">Gjw</span><span class="p">),</span><span class="mi">10</span><span class="p">)</span>
 <span class="n">mprint</span><span class="p">(</span><span class="s2">&quot;M(j </span><span class="se">\\</span><span class="s2">omega ) = &quot;</span><span class="p">,</span> <span class="n">latex</span><span class="p">(</span><span class="n">M</span><span class="p">))</span>
 </pre></div>
 </div>
@@ -455,7 +456,7 @@ We also need to define specific prpoperties of the variables.</p>
 </div>
 </div>
 <div class="cell_output docutils container">
-<img alt="_images/fab8abcbc38b6fb9bcfe16dc1d9d2596f9cf4a4a7ee7f9ebcae30b9c7ea9cec9.png" src="_images/fab8abcbc38b6fb9bcfe16dc1d9d2596f9cf4a4a7ee7f9ebcae30b9c7ea9cec9.png" />
+<img alt="_images/476a7611284c642acfaae08d837ac5a7d63729a7c68ee9cdd1376fb711169133.png" src="_images/476a7611284c642acfaae08d837ac5a7d63729a7c68ee9cdd1376fb711169133.png" />
 </div>
 </div>
 </section>
