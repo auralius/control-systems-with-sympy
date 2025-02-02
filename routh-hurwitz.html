@@ -379,8 +379,10 @@
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#example-2">Example 2</a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#example-3">Example 3</a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#example-4">Example 4</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#example-5">Example 5</a></li>
 </ul>
 </li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#good-readings">Good readings</a></li>
 </ul>
             </nav>
         </div>
@@ -452,8 +454,16 @@
 </tbody>
 </table>
 </div>
+<div class="math notranslate nohighlight">
+\[
+\boxed{ 
+\text{ 
+The denominator polynomial is stable iff all elements of the first column of the Routh table are nonzero and have the same sign.
+} 
+} 
+\]</div>
+<p>As we can see, the procedures to build a Routh table is repetitive. Thus, we will use Python SymPy to automate the the procedure.</p>
 </section>
-<hr class="docutils" />
 <section id="implementations">
 <h2>Implementations<a class="headerlink" href="#implementations" title="Link to this heading">#</a></h2>
 <p>The implementation involves four functions:</p>
@@ -579,6 +589,36 @@
 <section id="example-1">
 <h3>Example 1<a class="headerlink" href="#example-1" title="Link to this heading">#</a></h3>
 <div class="math notranslate nohighlight">
+\[ \frac{1}{a_0s^3 + a_1s^2 + a_2s + a_3}\]</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">a0</span><span class="p">,</span> <span class="n">a1</span><span class="p">,</span> <span class="n">a2</span><span class="p">,</span> <span class="n">a3</span> <span class="o">=</span> <span class="n">symbols</span><span class="p">(</span><span class="s2">&quot;a0 a1 a2 a3&quot;</span><span class="p">)</span>
+<span class="n">table</span> <span class="o">=</span> <span class="n">make_routh_table</span><span class="p">(</span><span class="mi">1</span> <span class="o">/</span> <span class="p">(</span><span class="n">a0</span><span class="o">*</span><span class="n">s</span><span class="o">**</span><span class="mi">3</span> <span class="o">+</span> <span class="n">a1</span><span class="o">*</span><span class="n">s</span><span class="o">**</span><span class="mi">2</span> <span class="o">+</span> <span class="n">a2</span><span class="o">*</span><span class="n">s</span> <span class="o">+</span> <span class="n">a3</span><span class="p">))</span>
+<span class="n">print_table</span><span class="p">(</span><span class="n">table</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_latex math notranslate nohighlight">
+\[\begin{split}\displaystyle \left[\begin{matrix}a_{0} &amp; a_{2} &amp; 0\\a_{1} &amp; a_{3} &amp; 0\\- \frac{a_{0} a_{3}}{a_{1}} + a_{2} &amp; 0 &amp; 0\\a_{3} &amp; 0 &amp; 0\end{matrix}\right]\end{split}\]</div>
+</div>
+</div>
+<p>Therefore, to guarantee stabilty:</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">table</span><span class="p">[</span><span class="mi">2</span><span class="p">,</span><span class="mi">0</span><span class="p">]</span><span class="o">&gt;</span><span class="mi">0</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_latex math notranslate nohighlight">
+\[\displaystyle - \frac{a_{0} a_{3}}{a_{1}} + a_{2} &gt; 0\]</div>
+</div>
+</div>
+</section>
+<section id="example-2">
+<h3>Example 2<a class="headerlink" href="#example-2" title="Link to this heading">#</a></h3>
+<div class="math notranslate nohighlight">
 \[ \frac{1000}{s^3 + 10s^2 + 31s + 1030}\]</div>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
@@ -600,8 +640,8 @@
 </div>
 </div>
 </section>
-<section id="example-2">
-<h3>Example 2<a class="headerlink" href="#example-2" title="Link to this heading">#</a></h3>
+<section id="example-3">
+<h3>Example 3<a class="headerlink" href="#example-3" title="Link to this heading">#</a></h3>
 <div class="math notranslate nohighlight">
 \[G(s)= \frac{10}{s^5+2s^4+3s^3+6s^2+5s+3}\]</div>
 <div class="cell docutils container">
@@ -624,8 +664,8 @@
 </div>
 </div>
 </section>
-<section id="example-3">
-<h3>Example 3<a class="headerlink" href="#example-3" title="Link to this heading">#</a></h3>
+<section id="example-4">
+<h3>Example 4<a class="headerlink" href="#example-4" title="Link to this heading">#</a></h3>
 <div class="math notranslate nohighlight">
 \[ \frac{128}{s^8 + 3s^7 + 10s^6 + 24s^5 + 48s^4 + 96s^3 + 128s^2 + 192s + 128}\]</div>
 <div class="cell docutils container">
@@ -648,8 +688,8 @@
 </div>
 </div>
 </section>
-<section id="example-4">
-<h3>Example 4<a class="headerlink" href="#example-4" title="Link to this heading">#</a></h3>
+<section id="example-5">
+<h3>Example 5<a class="headerlink" href="#example-5" title="Link to this heading">#</a></h3>
 <div class="math notranslate nohighlight">
 \[ \frac{k}{s^3 + 10s^2 + 31s + 30+k}\]</div>
 <p>Find the largest <span class="math notranslate nohighlight">\(k\)</span> that does not cause the closed-loop system unstable.</p>
@@ -690,6 +730,13 @@
 </div>
 </div>
 </section>
+</section>
+<section id="good-readings">
+<h2>Good readings<a class="headerlink" href="#good-readings" title="Link to this heading">#</a></h2>
+<ul class="simple">
+<li><p>Modern Control Engineering (5th-edition), Chapter 5, by K. Ogata</p></li>
+<li><p><a class="reference external" href="https://doi.org/10.1016/0167-6911(94)00089-E">Elementary proof of the Routh-Hurwitz test, by Gjerrit Meinsma</a></p></li>
+</ul>
 </section>
 </section>
 
@@ -767,8 +814,10 @@
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#example-2">Example 2</a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#example-3">Example 3</a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#example-4">Example 4</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#example-5">Example 5</a></li>
 </ul>
 </li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#good-readings">Good readings</a></li>
 </ul>
   </nav></div>
 

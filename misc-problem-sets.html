@@ -406,6 +406,7 @@
 </div>
 <section id="problem-1">
 <h2>Problem 1<a class="headerlink" href="#problem-1" title="Link to this heading">#</a></h2>
+<p><strong>Topics: block diagram, second-order system</strong></p>
 <p><img alt="" src="_images/p7.png" /></p>
 <p>Determine the values of <span class="math notranslate nohighlight">\(K\)</span> and <span class="math notranslate nohighlight">\(k\)</span> such that the system has a damping ratio <span class="math notranslate nohighlight">\(\zeta\)</span> of 0.7 and an undamped natural frequency <span class="math notranslate nohighlight">\(\omega_n\)</span> of <span class="math notranslate nohighlight">\(4 \mathrm{rad} / \mathrm{sec}\)</span>.</p>
 <section id="solution">
@@ -455,8 +456,13 @@
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">k_</span> <span class="o">=</span> <span class="n">solveset</span><span class="p">(</span><span class="n">eq</span><span class="p">,</span> <span class="n">k</span><span class="p">)</span>
+<span class="n">mprint</span><span class="p">(</span><span class="s2">&quot;k=&quot;</span><span class="p">,</span> <span class="n">latex</span><span class="p">(</span><span class="n">k_</span><span class="p">))</span>
 </pre></div>
 </div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_latex math notranslate nohighlight">
+\[\displaystyle k=\left\{0.225\right\}\]</div>
 </div>
 </div>
 <p>So, the final answer is <span class="math notranslate nohighlight">\(k=0.225\)</span>.</p>
@@ -464,6 +470,7 @@
 </section>
 <section id="problem-2">
 <h2>Problem 2<a class="headerlink" href="#problem-2" title="Link to this heading">#</a></h2>
+<p><strong>Topics: block diagram, second-order system</strong></p>
 <p><img alt="" src="_images/p8.png" /></p>
 <p>Determine the value of <span class="math notranslate nohighlight">\(k\)</span> such that the damping ratio <span class="math notranslate nohighlight">\(\zeta\)</span> is 0.5 . Then obtain the rise time <span class="math notranslate nohighlight">\(t_r\)</span>, peak time <span class="math notranslate nohighlight">\(t_p\)</span>, maximum overshoot <span class="math notranslate nohighlight">\(M_p\)</span>, and settling time <span class="math notranslate nohighlight">\(t_s\)</span> in the unit-step response.</p>
 <section id="id1">

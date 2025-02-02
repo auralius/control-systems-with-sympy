@@ -396,6 +396,12 @@
 <h1>Rectilinear System Modeling<a class="headerlink" href="#rectilinear-system-modeling" title="Link to this heading">#</a></h1>
 <p>In this Python notebook, we are going to make a general method for rectilinear system modeling. Our method uses directed graph where vertex represents mass and edge represents spring or damper. From the graph, we can then generate two adjacency matrices:  for the springs and for the dampers. These matrices are then used by the Lagrange-Euler method to generate the system equations.</p>
 <p><img alt="" src="_images/adjency.png" /></p>
+<p>The model will be presented in three forms:</p>
+<ul class="simple">
+<li><p>ODEs</p></li>
+<li><p>Laplace equations</p></li>
+<li><p>State space</p></li>
+</ul>
 <section id="preparations">
 <h2>Preparations<a class="headerlink" href="#preparations" title="Link to this heading">#</a></h2>
 <div class="cell docutils container">
