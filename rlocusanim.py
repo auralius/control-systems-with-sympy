@@ -1,3 +1,9 @@
+'''
+Auralius Manurung
+Universitas Telkom
+2025
+'''
+
 from IPython.display import HTML
 
 import numpy as np
