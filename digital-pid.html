@@ -128,8 +128,9 @@
 </section>
 <section id="pd-control-with-zoh">
 <h2>PD-control with ZOH<a class="headerlink" href="#pd-control-with-zoh" title="Link to this heading">¶</a></h2>
-<p>Let us perform the following substitution:
-$<span class="math notranslate nohighlight">\( s \longleftarrow \frac{T_s}{1-z^{-1}} \)</span>$</p>
+<p>Let us perform the following substitution:</p>
+<div class="math notranslate nohighlight">
+\[ s \longleftarrow \frac{T_s}{1-z^{-1}} \]</div>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">Gpd</span> <span class="o">=</span> <span class="n">Kp</span> <span class="o">+</span> <span class="n">Kd</span><span class="o">*</span><span class="n">s</span>   <span class="c1"># PD-control</span>
