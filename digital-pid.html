@@ -270,14 +270,14 @@
 </div>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">du_pid1</span> <span class="o">=</span> <span class="n">collect</span><span class="p">(</span><span class="n">pid_eq5</span><span class="o">.</span><span class="n">lhs</span><span class="p">,</span> <span class="n">Kd</span><span class="p">)</span>
-<span class="n">mprintb</span><span class="p">(</span><span class="s2">&quot;u-u_{k-1}=&quot;</span><span class="p">,</span> <span class="n">latex</span><span class="p">(</span><span class="n">du_pid1</span><span class="p">))</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">du_pid1</span> <span class="o">=</span> <span class="n">ratsimp</span><span class="p">(</span><span class="n">pid_eq5</span><span class="o">.</span><span class="n">lhs</span><span class="p">)</span>
+<span class="n">mprint</span><span class="p">(</span><span class="s2">&quot;u-u_{k-1}=&quot;</span><span class="p">,</span> <span class="n">latex</span><span class="p">(</span><span class="n">du_pid1</span><span class="p">))</span>
 </pre></div>
 </div>
 </div>
 <div class="cell_output docutils container">
 <div class="output text_latex math notranslate nohighlight">
-\[\displaystyle \boxed{u-u_{k-1}=K_{d} \left(\frac{e_{k}}{T_{s}} - \frac{2 e_{k-1}}{T_{s}} + \frac{e_{k-2}}{T_{s}}\right) + K_{i} T_{s} e_{k} + K_{p} e_{k} - K_{p} e_{k-1}}\]</div>
+\[\displaystyle u-u_{k-1}=K_{i} T_{s} e_{k} + K_{p} e_{k} - K_{p} e_{k-1} + \frac{K_{d} e_{k} - 2 K_{d} e_{k-1} + K_{d} e_{k-2}}{T_{s}}\]</div>
 </div>
 </div>
 <div class="cell docutils container">
@@ -289,31 +289,7 @@
 </div>
 <div class="cell_output docutils container">
 <div class="output text_latex math notranslate nohighlight">
-\[\displaystyle \boxed{u-u_{k-1}=K_{d} \left(\frac{e_{k}}{T_{s}} - \frac{2 e_{k-1}}{T_{s}} + \frac{e_{k-2}}{T_{s}}\right) + K_{i} T_{s} e_{k} + K_{p} \left(e_{k} - e_{k-1}\right)}\]</div>
-</div>
-</div>
-<div class="cell docutils container">
-<div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">du_pid1</span> <span class="o">=</span> <span class="n">ratsimp</span><span class="p">(</span><span class="n">pid_eq5</span><span class="o">.</span><span class="n">lhs</span><span class="p">)</span>
-<span class="n">mprintb</span><span class="p">(</span><span class="s2">&quot;u-u_{k-1}=&quot;</span><span class="p">,</span> <span class="n">latex</span><span class="p">(</span><span class="n">du_pid1</span><span class="p">))</span>
-</pre></div>
-</div>
-</div>
-<div class="cell_output docutils container">
-<div class="output text_latex math notranslate nohighlight">
-\[\displaystyle \boxed{u-u_{k-1}=K_{i} T_{s} e_{k} + K_{p} e_{k} - K_{p} e_{k-1} + \frac{K_{d} e_{k} - 2 K_{d} e_{k-1} + K_{d} e_{k-2}}{T_{s}}}\]</div>
-</div>
-</div>
-<div class="cell docutils container">
-<div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">du_pid2</span> <span class="o">=</span> <span class="n">expand</span><span class="p">(</span><span class="n">collect</span><span class="p">(</span><span class="n">du_pid1</span><span class="p">,</span> <span class="p">[</span><span class="n">Kp</span><span class="p">,</span> <span class="n">Ki</span><span class="p">,</span> <span class="n">Kd</span><span class="p">]))</span>
-<span class="n">mprintb</span><span class="p">(</span><span class="s2">&quot;u-u_{k-1}=&quot;</span><span class="p">,</span> <span class="n">latex</span><span class="p">(</span><span class="n">du_pid2</span><span class="p">))</span>
-</pre></div>
-</div>
-</div>
-<div class="cell_output docutils container">
-<div class="output text_latex math notranslate nohighlight">
-\[\displaystyle \boxed{u-u_{k-1}=\frac{K_{d} e_{k}}{T_{s}} - \frac{2 K_{d} e_{k-1}}{T_{s}} + \frac{K_{d} e_{k-2}}{T_{s}} + K_{i} T_{s} e_{k} + K_{p} e_{k} - K_{p} e_{k-1}}\]</div>
+\[\displaystyle \boxed{u-u_{k-1}=\frac{K_{d} \left(e_{k} - 2 e_{k-1} + e_{k-2}\right)}{T_{s}} + K_{i} T_{s} e_{k} + K_{p} \left(e_{k} - e_{k-1}\right)}\]</div>
 </div>
 </div>
 </section>
@@ -386,13 +362,13 @@
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">du_pid1</span> <span class="o">=</span> <span class="n">factor</span><span class="p">(</span><span class="n">pid_eq5</span><span class="o">.</span><span class="n">lhs</span><span class="p">)</span>
-<span class="n">mprintb</span><span class="p">(</span><span class="s2">&quot;u-u_{k-1}=&quot;</span><span class="p">,</span> <span class="n">latex</span><span class="p">(</span><span class="n">du_pid1</span><span class="p">))</span>
+<span class="n">mprint</span><span class="p">(</span><span class="s2">&quot;u-u_{k-1}=&quot;</span><span class="p">,</span> <span class="n">latex</span><span class="p">(</span><span class="n">du_pid1</span><span class="p">))</span>
 </pre></div>
 </div>
 </div>
 <div class="cell_output docutils container">
 <div class="output text_latex math notranslate nohighlight">
-\[\displaystyle \boxed{u-u_{k-1}=\frac{2 K_{d} e_{k} - 2 K_{d} e_{k-1} + K_{p} T_{s} e_{k} + K_{p} T_{s} e_{k-1}}{T_{s}}}\]</div>
+\[\displaystyle u-u_{k-1}=\frac{2 K_{d} e_{k} - 2 K_{d} e_{k-1} + K_{p} T_{s} e_{k} + K_{p} T_{s} e_{k-1}}{T_{s}}\]</div>
 </div>
 </div>
 <div class="cell docutils container">
@@ -474,13 +450,13 @@
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">du_pid1</span> <span class="o">=</span> <span class="n">ratsimp</span><span class="p">(</span><span class="n">pid_eq5</span><span class="o">.</span><span class="n">lhs</span><span class="p">)</span>
-<span class="n">mprintb</span><span class="p">(</span><span class="s2">&quot;u-u_{k-2}=&quot;</span><span class="p">,</span> <span class="n">latex</span><span class="p">(</span><span class="n">du_pid1</span><span class="p">))</span>
+<span class="n">mprint</span><span class="p">(</span><span class="s2">&quot;u-u_{k-2}=&quot;</span><span class="p">,</span> <span class="n">latex</span><span class="p">(</span><span class="n">du_pid1</span><span class="p">))</span>
 </pre></div>
 </div>
 </div>
 <div class="cell_output docutils container">
 <div class="output text_latex math notranslate nohighlight">
-\[\displaystyle \boxed{u-u_{k-2}=\frac{K_{i} T_{s} e_{k}}{2} + K_{i} T_{s} e_{k-1} + \frac{K_{i} T_{s} e_{k-2}}{2} + K_{p} e_{k} - K_{p} e_{k-2} + \frac{2 K_{d} e_{k} - 4 K_{d} e_{k-1} + 2 K_{d} e_{k-2}}{T_{s}}}\]</div>
+\[\displaystyle u-u_{k-2}=\frac{K_{i} T_{s} e_{k}}{2} + K_{i} T_{s} e_{k-1} + \frac{K_{i} T_{s} e_{k-2}}{2} + K_{p} e_{k} - K_{p} e_{k-2} + \frac{2 K_{d} e_{k} - 4 K_{d} e_{k-1} + 2 K_{d} e_{k-2}}{T_{s}}\]</div>
 </div>
 </div>
 <div class="cell docutils container">
