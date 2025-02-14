@@ -130,7 +130,7 @@
 <h2>PD-control with ZOH<a class="headerlink" href="#pd-control-with-zoh" title="Link to this heading">¶</a></h2>
 <p>Let us perform the following substitution:</p>
 <div class="math notranslate nohighlight">
-\[ s \longleftarrow \frac{T_s}{1-z^{-1}} \]</div>
+\[ \frac{1}{s} \longleftarrow \frac{T_s}{1-z^{-1}} \]</div>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">Gpd</span> <span class="o">=</span> <span class="n">Kp</span> <span class="o">+</span> <span class="n">Kd</span><span class="o">*</span><span class="n">s</span>   <span class="c1"># PD-control</span>
@@ -182,7 +182,7 @@
 </div>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">pid_eq5</span> <span class="o">=</span> <span class="n">expand</span><span class="p">(</span><span class="n">pid_eq4</span><span class="p">)</span><span class="o">.</span><span class="n">subs</span><span class="p">(</span><span class="n">e</span><span class="o">/</span><span class="n">z</span><span class="o">**</span><span class="mi">2</span><span class="p">,</span> <span class="n">e2</span><span class="p">)</span><span class="o">.</span><span class="n">subs</span><span class="p">(</span><span class="n">e</span><span class="o">/</span><span class="n">z</span><span class="p">,</span> <span class="n">e1</span><span class="p">)</span><span class="o">.</span><span class="n">subs</span><span class="p">(</span><span class="n">e</span><span class="p">,</span> <span class="n">e0</span><span class="p">)</span><span class="o">.</span><span class="n">subs</span><span class="p">(</span><span class="n">u</span><span class="o">/</span><span class="n">z</span><span class="p">,</span> <span class="n">u1</span><span class="p">)</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">pid_eq5</span> <span class="o">=</span> <span class="p">(</span><span class="n">pid_eq4</span><span class="p">)</span><span class="o">.</span><span class="n">subs</span><span class="p">(</span><span class="n">e</span><span class="o">/</span><span class="n">z</span><span class="o">**</span><span class="mi">2</span><span class="p">,</span> <span class="n">e2</span><span class="p">)</span><span class="o">.</span><span class="n">subs</span><span class="p">(</span><span class="n">e</span><span class="o">/</span><span class="n">z</span><span class="p">,</span> <span class="n">e1</span><span class="p">)</span><span class="o">.</span><span class="n">subs</span><span class="p">(</span><span class="n">e</span><span class="p">,</span> <span class="n">e0</span><span class="p">)</span><span class="o">.</span><span class="n">subs</span><span class="p">(</span><span class="n">u</span><span class="o">/</span><span class="n">z</span><span class="p">,</span> <span class="n">u1</span><span class="p">)</span>
 <span class="n">mprint</span><span class="p">(</span><span class="n">latex</span><span class="p">(</span><span class="n">pid_eq5</span><span class="p">))</span>
 </pre></div>
 </div>
@@ -194,14 +194,14 @@
 </div>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">u_pd</span> <span class="o">=</span> <span class="n">ratsimp</span><span class="p">(</span><span class="n">solve</span><span class="p">(</span><span class="n">pid_eq5</span><span class="p">,</span> <span class="n">u</span><span class="p">)[</span><span class="mi">0</span><span class="p">])</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">u_pd</span> <span class="o">=</span> <span class="n">simplify</span><span class="p">(</span><span class="n">collect</span><span class="p">(</span><span class="n">pid_eq5</span><span class="o">.</span><span class="n">lhs</span><span class="p">,</span> <span class="p">[</span><span class="n">Kp</span><span class="p">,</span> <span class="n">Kd</span><span class="p">]))</span>
 <span class="n">mprintb</span><span class="p">(</span><span class="s2">&quot;u=&quot;</span><span class="p">,</span> <span class="n">latex</span><span class="p">(</span><span class="n">u_pd</span><span class="p">))</span>
 </pre></div>
 </div>
 </div>
 <div class="cell_output docutils container">
 <div class="output text_latex math notranslate nohighlight">
-\[\displaystyle \boxed{u=K_{p} e_{k} + \frac{K_{d} e_{k} - K_{d} e_{k-1}}{T_{s}}}\]</div>
+\[\displaystyle \boxed{u=\frac{K_{d} \left(e_{k} - e_{k-1}\right) + K_{p} T_{s} e_{k}}{T_{s}}}\]</div>
 </div>
 </div>
 </section>
@@ -270,6 +270,30 @@
 </div>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">du_pid1</span> <span class="o">=</span> <span class="n">collect</span><span class="p">(</span><span class="n">pid_eq5</span><span class="o">.</span><span class="n">lhs</span><span class="p">,</span> <span class="n">Kd</span><span class="p">)</span>
+<span class="n">mprintb</span><span class="p">(</span><span class="s2">&quot;u-u_{k-1}=&quot;</span><span class="p">,</span> <span class="n">latex</span><span class="p">(</span><span class="n">du_pid1</span><span class="p">))</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_latex math notranslate nohighlight">
+\[\displaystyle \boxed{u-u_{k-1}=K_{d} \left(\frac{e_{k}}{T_{s}} - \frac{2 e_{k-1}}{T_{s}} + \frac{e_{k-2}}{T_{s}}\right) + K_{i} T_{s} e_{k} + K_{p} e_{k} - K_{p} e_{k-1}}\]</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">du_pid2</span> <span class="o">=</span> <span class="n">collect</span><span class="p">(</span><span class="n">du_pid1</span><span class="p">,</span> <span class="p">[</span><span class="n">Kp</span><span class="p">,</span> <span class="n">Ki</span><span class="p">,</span> <span class="n">Kd</span><span class="p">])</span>
+<span class="n">mprintb</span><span class="p">(</span><span class="s2">&quot;u-u_{k-1}=&quot;</span><span class="p">,</span> <span class="n">latex</span><span class="p">(</span><span class="n">du_pid2</span><span class="p">))</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_latex math notranslate nohighlight">
+\[\displaystyle \boxed{u-u_{k-1}=K_{d} \left(\frac{e_{k}}{T_{s}} - \frac{2 e_{k-1}}{T_{s}} + \frac{e_{k-2}}{T_{s}}\right) + K_{i} T_{s} e_{k} + K_{p} \left(e_{k} - e_{k-1}\right)}\]</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">du_pid1</span> <span class="o">=</span> <span class="n">ratsimp</span><span class="p">(</span><span class="n">pid_eq5</span><span class="o">.</span><span class="n">lhs</span><span class="p">)</span>
 <span class="n">mprintb</span><span class="p">(</span><span class="s2">&quot;u-u_{k-1}=&quot;</span><span class="p">,</span> <span class="n">latex</span><span class="p">(</span><span class="n">du_pid1</span><span class="p">))</span>
 </pre></div>
@@ -282,14 +306,193 @@
 </div>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">du_pid2</span> <span class="o">=</span> <span class="n">collect</span><span class="p">(</span><span class="n">du_pid1</span><span class="p">,</span> <span class="p">[</span><span class="n">Kp</span><span class="p">,</span> <span class="n">Ki</span><span class="p">,</span> <span class="n">Kd</span><span class="p">])</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">du_pid2</span> <span class="o">=</span> <span class="n">expand</span><span class="p">(</span><span class="n">collect</span><span class="p">(</span><span class="n">du_pid1</span><span class="p">,</span> <span class="p">[</span><span class="n">Kp</span><span class="p">,</span> <span class="n">Ki</span><span class="p">,</span> <span class="n">Kd</span><span class="p">]))</span>
 <span class="n">mprintb</span><span class="p">(</span><span class="s2">&quot;u-u_{k-1}=&quot;</span><span class="p">,</span> <span class="n">latex</span><span class="p">(</span><span class="n">du_pid2</span><span class="p">))</span>
 </pre></div>
 </div>
 </div>
 <div class="cell_output docutils container">
 <div class="output text_latex math notranslate nohighlight">
-\[\displaystyle \boxed{u-u_{k-1}=\frac{K_{d} \left(e_{k} - 2 e_{k-1} + e_{k-2}\right)}{T_{s}} + K_{i} T_{s} e_{k} + K_{p} \left(e_{k} - e_{k-1}\right)}\]</div>
+\[\displaystyle \boxed{u-u_{k-1}=\frac{K_{d} e_{k}}{T_{s}} - \frac{2 K_{d} e_{k-1}}{T_{s}} + \frac{K_{d} e_{k-2}}{T_{s}} + K_{i} T_{s} e_{k} + K_{p} e_{k} - K_{p} e_{k-1}}\]</div>
+</div>
+</div>
+</section>
+<section id="pd-control-with-bilinear-transformation">
+<h2>PD control with bilinear transformation<a class="headerlink" href="#pd-control-with-bilinear-transformation" title="Link to this heading">¶</a></h2>
+<p>Let us perform the following substitution:</p>
+<div class="math notranslate nohighlight">
+\[ \frac{1}{s} \longleftarrow \frac{T_s}{2} \frac{z+1}{z-1} \]</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">Gpd</span> <span class="o">=</span> <span class="n">Kp</span> <span class="o">+</span> <span class="n">Kd</span><span class="o">*</span><span class="n">s</span>   <span class="c1"># PD-control</span>
+<span class="n">pid_eq1</span> <span class="o">=</span> <span class="n">Eq</span><span class="p">(</span><span class="n">u</span><span class="p">,</span> <span class="n">e</span><span class="o">*</span><span class="n">Gpd</span><span class="o">.</span><span class="n">subs</span><span class="p">(</span><span class="mi">1</span><span class="o">/</span><span class="n">s</span><span class="p">,</span> <span class="n">Ts</span><span class="o">/</span><span class="mi">2</span> <span class="o">*</span> <span class="p">(</span><span class="n">z</span><span class="o">+</span><span class="mi">1</span><span class="p">)</span><span class="o">/</span><span class="p">(</span><span class="n">z</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span> <span class="p">)</span> <span class="p">)</span>
+<span class="n">mprint</span><span class="p">(</span><span class="n">latex</span><span class="p">(</span><span class="n">pid_eq1</span><span class="p">))</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_latex math notranslate nohighlight">
+\[\displaystyle u = e \left(\frac{2 K_{d} \left(z - 1\right)}{T_{s} \left(z + 1\right)} + K_{p}\right)\]</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">pid_eq2</span> <span class="o">=</span> <span class="n">factor</span><span class="p">(</span><span class="n">pid_eq1</span><span class="p">)</span>
+<span class="n">mprint</span><span class="p">(</span><span class="n">latex</span><span class="p">(</span><span class="n">pid_eq2</span><span class="p">))</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_latex math notranslate nohighlight">
+\[\displaystyle u = \frac{e \left(2 K_{d} z - 2 K_{d} + K_{p} T_{s} z + K_{p} T_{s}\right)}{T_{s} \left(z + 1\right)}\]</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">pid_eq3</span> <span class="o">=</span> <span class="p">(</span><span class="n">Eq</span><span class="p">(</span><span class="n">numer</span><span class="p">(</span><span class="n">pid_eq2</span><span class="o">.</span><span class="n">rhs</span><span class="p">),</span> <span class="n">pid_eq2</span><span class="o">.</span><span class="n">lhs</span> <span class="o">*</span> <span class="n">denom</span><span class="p">(</span><span class="n">pid_eq2</span><span class="o">.</span><span class="n">rhs</span><span class="p">)))</span>
+<span class="n">mprint</span><span class="p">(</span><span class="n">latex</span><span class="p">(</span><span class="n">pid_eq3</span><span class="p">))</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_latex math notranslate nohighlight">
+\[\displaystyle e \left(2 K_{d} z - 2 K_{d} + K_{p} T_{s} z + K_{p} T_{s}\right) = T_{s} u \left(z + 1\right)\]</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">pid_eq4</span> <span class="o">=</span> <span class="n">expand</span><span class="p">(</span><span class="n">Eq</span><span class="p">(</span><span class="n">pid_eq3</span><span class="o">.</span><span class="n">lhs</span><span class="o">/</span><span class="n">z</span><span class="o">/</span><span class="n">Ts</span><span class="p">,</span> <span class="n">pid_eq3</span><span class="o">.</span><span class="n">rhs</span><span class="o">/</span><span class="n">z</span><span class="o">/</span><span class="n">Ts</span> <span class="p">))</span>
+<span class="n">mprint</span><span class="p">(</span><span class="n">latex</span><span class="p">(</span><span class="n">pid_eq4</span><span class="p">))</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_latex math notranslate nohighlight">
+\[\displaystyle \frac{2 K_{d} e}{T_{s}} - \frac{2 K_{d} e}{T_{s} z} + K_{p} e + \frac{K_{p} e}{z} = u + \frac{u}{z}\]</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">pid_eq5</span> <span class="o">=</span> <span class="n">expand</span><span class="p">(</span><span class="n">pid_eq4</span><span class="p">)</span><span class="o">.</span><span class="n">subs</span><span class="p">(</span><span class="n">e</span><span class="o">/</span><span class="n">z</span><span class="o">**</span><span class="mi">2</span><span class="p">,</span> <span class="n">e2</span><span class="p">)</span><span class="o">.</span><span class="n">subs</span><span class="p">(</span><span class="n">e</span><span class="o">/</span><span class="n">z</span><span class="p">,</span> <span class="n">e1</span><span class="p">)</span><span class="o">.</span><span class="n">subs</span><span class="p">(</span><span class="n">e</span><span class="p">,</span> <span class="n">e0</span><span class="p">)</span><span class="o">.</span><span class="n">subs</span><span class="p">(</span><span class="n">u</span><span class="o">/</span><span class="n">z</span><span class="p">,</span> <span class="n">u1</span><span class="p">)</span><span class="o">.</span><span class="n">subs</span><span class="p">(</span><span class="n">u</span><span class="p">,</span><span class="n">u0</span><span class="p">)</span>
+<span class="n">mprint</span><span class="p">(</span><span class="n">latex</span><span class="p">(</span><span class="n">pid_eq5</span><span class="p">))</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_latex math notranslate nohighlight">
+\[\displaystyle \frac{2 K_{d} e_{k}}{T_{s}} - \frac{2 K_{d} e_{k-1}}{T_{s}} + K_{p} e_{k} + K_{p} e_{k-1} = u_{k} + u_{k-1}\]</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">du_pid1</span> <span class="o">=</span> <span class="n">factor</span><span class="p">(</span><span class="n">pid_eq5</span><span class="o">.</span><span class="n">lhs</span><span class="p">)</span>
+<span class="n">mprintb</span><span class="p">(</span><span class="s2">&quot;u-u_{k-1}=&quot;</span><span class="p">,</span> <span class="n">latex</span><span class="p">(</span><span class="n">du_pid1</span><span class="p">))</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_latex math notranslate nohighlight">
+\[\displaystyle \boxed{u-u_{k-1}=\frac{2 K_{d} e_{k} - 2 K_{d} e_{k-1} + K_{p} T_{s} e_{k} + K_{p} T_{s} e_{k-1}}{T_{s}}}\]</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">du_pid2</span> <span class="o">=</span> <span class="n">simplify</span><span class="p">(</span><span class="n">collect</span><span class="p">(</span><span class="n">du_pid1</span><span class="p">,</span> <span class="p">[</span><span class="n">Kp</span><span class="p">,</span> <span class="n">Ki</span><span class="p">,</span> <span class="n">Kd</span><span class="p">]))</span>
+<span class="n">mprintb</span><span class="p">(</span><span class="s2">&quot;u-u_{k-1}=&quot;</span><span class="p">,</span> <span class="n">latex</span><span class="p">(</span><span class="n">du_pid2</span><span class="p">))</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_latex math notranslate nohighlight">
+\[\displaystyle \boxed{u-u_{k-1}=\frac{2 K_{d} \left(e_{k} - e_{k-1}\right) + K_{p} T_{s} \left(e_{k} + e_{k-1}\right)}{T_{s}}}\]</div>
+</div>
+</div>
+</section>
+<section id="pid-control-with-bilinear-transformation">
+<h2>PID control with bilinear transformation<a class="headerlink" href="#pid-control-with-bilinear-transformation" title="Link to this heading">¶</a></h2>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">Gpid</span> <span class="o">=</span> <span class="n">Kp</span> <span class="o">+</span> <span class="n">Ki</span><span class="o">/</span><span class="n">s</span> <span class="o">+</span> <span class="n">Kd</span><span class="o">*</span><span class="n">s</span>   <span class="c1"># PD-control</span>
+<span class="n">pid_eq1</span> <span class="o">=</span> <span class="n">Eq</span><span class="p">(</span><span class="n">u</span><span class="p">,</span> <span class="n">e</span><span class="o">*</span><span class="n">Gpid</span><span class="o">.</span><span class="n">subs</span><span class="p">(</span><span class="mi">1</span><span class="o">/</span><span class="n">s</span><span class="p">,</span> <span class="n">Ts</span><span class="o">/</span><span class="mi">2</span> <span class="o">*</span> <span class="p">(</span><span class="n">z</span><span class="o">+</span><span class="mi">1</span><span class="p">)</span><span class="o">/</span><span class="p">(</span><span class="n">z</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span> <span class="p">)</span> <span class="p">)</span>
+<span class="n">mprint</span><span class="p">(</span><span class="n">latex</span><span class="p">(</span><span class="n">pid_eq1</span><span class="p">))</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_latex math notranslate nohighlight">
+\[\displaystyle u = e \left(\frac{2 K_{d} \left(z - 1\right)}{T_{s} \left(z + 1\right)} + \frac{K_{i} T_{s} \left(z + 1\right)}{2 \left(z - 1\right)} + K_{p}\right)\]</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">pid_eq2</span> <span class="o">=</span> <span class="n">factor</span><span class="p">(</span><span class="n">pid_eq1</span><span class="p">)</span>
+<span class="n">mprint</span><span class="p">(</span><span class="n">latex</span><span class="p">(</span><span class="n">pid_eq2</span><span class="p">))</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_latex math notranslate nohighlight">
+\[\displaystyle u = \frac{e \left(4 K_{d} z^{2} - 8 K_{d} z + 4 K_{d} + K_{i} T_{s}^{2} z^{2} + 2 K_{i} T_{s}^{2} z + K_{i} T_{s}^{2} + 2 K_{p} T_{s} z^{2} - 2 K_{p} T_{s}\right)}{2 T_{s} \left(z - 1\right) \left(z + 1\right)}\]</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">pid_eq3</span> <span class="o">=</span> <span class="p">(</span><span class="n">Eq</span><span class="p">(</span><span class="n">numer</span><span class="p">(</span><span class="n">pid_eq2</span><span class="o">.</span><span class="n">rhs</span><span class="p">),</span> <span class="n">pid_eq2</span><span class="o">.</span><span class="n">lhs</span> <span class="o">*</span> <span class="n">denom</span><span class="p">(</span><span class="n">pid_eq2</span><span class="o">.</span><span class="n">rhs</span><span class="p">)))</span>
+<span class="n">mprint</span><span class="p">(</span><span class="n">latex</span><span class="p">(</span><span class="n">pid_eq3</span><span class="p">))</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_latex math notranslate nohighlight">
+\[\displaystyle e \left(4 K_{d} z^{2} - 8 K_{d} z + 4 K_{d} + K_{i} T_{s}^{2} z^{2} + 2 K_{i} T_{s}^{2} z + K_{i} T_{s}^{2} + 2 K_{p} T_{s} z^{2} - 2 K_{p} T_{s}\right) = 2 T_{s} u \left(z - 1\right) \left(z + 1\right)\]</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">pid_eq4</span> <span class="o">=</span> <span class="n">expand</span><span class="p">(</span><span class="n">Eq</span><span class="p">(</span><span class="n">pid_eq3</span><span class="o">.</span><span class="n">lhs</span><span class="o">/</span><span class="n">z</span><span class="o">**</span><span class="mi">2</span><span class="o">/</span><span class="mi">2</span><span class="o">/</span><span class="n">Ts</span><span class="p">,</span> <span class="n">pid_eq3</span><span class="o">.</span><span class="n">rhs</span><span class="o">/</span><span class="n">z</span><span class="o">**</span><span class="mi">2</span><span class="o">/</span><span class="mi">2</span><span class="o">/</span><span class="n">Ts</span> <span class="p">))</span>
+<span class="n">mprint</span><span class="p">(</span><span class="n">latex</span><span class="p">(</span><span class="n">pid_eq4</span><span class="p">))</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_latex math notranslate nohighlight">
+\[\displaystyle \frac{2 K_{d} e}{T_{s}} - \frac{4 K_{d} e}{T_{s} z} + \frac{2 K_{d} e}{T_{s} z^{2}} + \frac{K_{i} T_{s} e}{2} + \frac{K_{i} T_{s} e}{z} + \frac{K_{i} T_{s} e}{2 z^{2}} + K_{p} e - \frac{K_{p} e}{z^{2}} = u - \frac{u}{z^{2}}\]</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">pid_eq5</span> <span class="o">=</span> <span class="n">expand</span><span class="p">(</span><span class="n">pid_eq4</span><span class="p">)</span><span class="o">.</span><span class="n">subs</span><span class="p">(</span><span class="n">e</span><span class="o">/</span><span class="n">z</span><span class="o">**</span><span class="mi">2</span><span class="p">,</span> <span class="n">e2</span><span class="p">)</span><span class="o">.</span><span class="n">subs</span><span class="p">(</span><span class="n">e</span><span class="o">/</span><span class="n">z</span><span class="p">,</span> <span class="n">e1</span><span class="p">)</span><span class="o">.</span><span class="n">subs</span><span class="p">(</span><span class="n">e</span><span class="p">,</span> <span class="n">e0</span><span class="p">)</span><span class="o">.</span><span class="n">subs</span><span class="p">(</span><span class="n">u</span><span class="o">/</span><span class="n">z</span><span class="o">**</span><span class="mi">2</span><span class="p">,</span> <span class="n">u2</span><span class="p">)</span><span class="o">.</span><span class="n">subs</span><span class="p">(</span><span class="n">u</span><span class="p">,</span><span class="n">u0</span><span class="p">)</span>
+<span class="n">mprint</span><span class="p">(</span><span class="n">latex</span><span class="p">(</span><span class="n">pid_eq5</span><span class="p">))</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_latex math notranslate nohighlight">
+\[\displaystyle \frac{2 K_{d} e_{k}}{T_{s}} - \frac{4 K_{d} e_{k-1}}{T_{s}} + \frac{2 K_{d} e_{k-2}}{T_{s}} + \frac{K_{i} T_{s} e_{k}}{2} + K_{i} T_{s} e_{k-1} + \frac{K_{i} T_{s} e_{k-2}}{2} + K_{p} e_{k} - K_{p} e_{k-2} = u_{k} - u_{k-2}\]</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">du_pid1</span> <span class="o">=</span> <span class="n">ratsimp</span><span class="p">(</span><span class="n">pid_eq5</span><span class="o">.</span><span class="n">lhs</span><span class="p">)</span>
+<span class="n">mprintb</span><span class="p">(</span><span class="s2">&quot;u-u_{k-2}=&quot;</span><span class="p">,</span> <span class="n">latex</span><span class="p">(</span><span class="n">du_pid1</span><span class="p">))</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_latex math notranslate nohighlight">
+\[\displaystyle \boxed{u-u_{k-2}=\frac{K_{i} T_{s} e_{k}}{2} + K_{i} T_{s} e_{k-1} + \frac{K_{i} T_{s} e_{k-2}}{2} + K_{p} e_{k} - K_{p} e_{k-2} + \frac{2 K_{d} e_{k} - 4 K_{d} e_{k-1} + 2 K_{d} e_{k-2}}{T_{s}}}\]</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">du_pid2</span> <span class="o">=</span> <span class="n">collect</span><span class="p">(</span><span class="n">du_pid1</span><span class="p">,</span> <span class="p">[</span><span class="n">Kp</span><span class="p">,</span> <span class="n">Ki</span><span class="o">*</span><span class="n">Ts</span><span class="p">,</span> <span class="mi">2</span><span class="o">*</span><span class="n">Kd</span><span class="p">])</span>
+<span class="n">mprintb</span><span class="p">(</span><span class="s2">&quot;u-u_{k-2}=&quot;</span><span class="p">,</span> <span class="n">latex</span><span class="p">(</span><span class="n">du_pid2</span><span class="p">))</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_latex math notranslate nohighlight">
+\[\displaystyle \boxed{u-u_{k-2}=\frac{2 K_{d} \left(e_{k} - 2 e_{k-1} + e_{k-2}\right)}{T_{s}} + K_{i} T_{s} \left(\frac{e_{k}}{2} + e_{k-1} + \frac{e_{k-2}}{2}\right) + K_{p} \left(e_{k} - e_{k-2}\right)}\]</div>
 </div>
 </div>
 </section>
@@ -333,6 +536,8 @@
 <li><a class="reference internal" href="#pid-control-in-s-domain">PID control in s-domain</a></li>
 <li><a class="reference internal" href="#pd-control-with-zoh">PD-control with ZOH</a></li>
 <li><a class="reference internal" href="#pid-control-with-zoh">PID-control with ZOH</a></li>
+<li><a class="reference internal" href="#pd-control-with-bilinear-transformation">PD control with bilinear transformation</a></li>
+<li><a class="reference internal" href="#pid-control-with-bilinear-transformation">PID control with bilinear transformation</a></li>
 </ul>
 </li>
 </ul>
