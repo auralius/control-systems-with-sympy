@@ -404,9 +404,15 @@
 \[ K_p + K_i \cdot T_s \frac{1}{z-1}+ K_d \frac{N}{1+N \cdot T_s \frac{1}{z-1}} \]</div>
 <p>We can see that:</p>
 <ul class="simple">
-<li><p>for the integral term: ZOH with Forward Euler: $<span class="math notranslate nohighlight">\( \frac{1}{s_D} \longleftarrow \frac{T_s}{z-1} \)</span>$</p></li>
-<li><p>for the derivative term: ZOH with backward Euler: $<span class="math notranslate nohighlight">\( s_I \longleftarrow \frac{1}{T_s}\frac{z-1}{z} \)</span>$</p></li>
+<li><p>for the integral term: ZOH with Forward Euler:</p></li>
 </ul>
+<div class="math notranslate nohighlight">
+\[ \frac{1}{s_D} \longleftarrow \frac{T_s}{z-1} \]</div>
+<ul class="simple">
+<li><p>for the derivative term: ZOH with backward Euler:</p></li>
+</ul>
+<div class="math notranslate nohighlight">
+\[ s_I \longleftarrow \frac{1}{T_s}\frac{z-1}{z} \]</div>
 <p>Since the two <span class="math notranslate nohighlight">\(s\)</span> variables are going to be substituted differently, we introduce <span class="math notranslate nohighlight">\(s_I\)</span> for the integral term and <span class="math notranslate nohighlight">\(s_D\)</span> for the derivative term.</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
