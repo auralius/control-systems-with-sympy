@@ -62,6 +62,18 @@
             
   <section class="tex2jax_ignore mathjax_ignore" id="digital-pid-control">
 <h1>Digital PID Control<a class="headerlink" href="#digital-pid-control" title="Link to this heading">¶</a></h1>
+<section id="toc">
+<h2>TOC<a class="headerlink" href="#toc" title="Link to this heading">¶</a></h2>
+<ul class="simple">
+<li><p><a class="reference internal" href="#Continuous-time-PID-with-derivative-filter"><span class="xref myst">Continuous-time PID with derivative filter</span></a></p></li>
+<li><p><a class="reference internal" href="#Discrete-time-PID-with-derivative-filter"><span class="xref myst">Discrete-time PID with derivative filter</span></a></p>
+<ul>
+<li><p><a class="reference internal" href="#Using-forward-Euler-method"><span class="xref myst">Using forward Euler method</span></a></p></li>
+<li><p><a class="reference internal" href="#Using-bilinear-transform-method"><span class="xref myst">Using bilinear transform method</span></a></p></li>
+</ul>
+</li>
+</ul>
+</section>
 <section id="required-imports">
 <h2>Required imports<a class="headerlink" href="#required-imports" title="Link to this heading">¶</a></h2>
 <div class="cell docutils container">
@@ -70,8 +82,6 @@
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 <span class="kn">from</span> <span class="nn">sympy</span> <span class="kn">import</span> <span class="o">*</span>
 <span class="kn">from</span> <span class="nn">mathprint</span> <span class="kn">import</span> <span class="o">*</span>
-
-<span class="n">init_printing</span><span class="p">(</span><span class="n">fontsize</span><span class="o">=</span><span class="s1">&#39;5pt&#39;</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
@@ -81,268 +91,75 @@
 <h2>Define symbols<a class="headerlink" href="#define-symbols" title="Link to this heading">¶</a></h2>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">Kp</span><span class="p">,</span> <span class="n">Ki</span><span class="p">,</span> <span class="n">Kd</span> <span class="o">=</span> <span class="n">symbols</span><span class="p">(</span><span class="s1">&#39;K_p K_i K_d&#39;</span><span class="p">,</span> <span class="n">positive</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">P</span><span class="p">,</span> <span class="n">I</span><span class="p">,</span> <span class="n">D</span>   <span class="o">=</span> <span class="n">symbols</span><span class="p">(</span><span class="s1">&#39;P I D&#39;</span><span class="p">,</span> <span class="n">positive</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 
 <span class="n">Ts</span><span class="p">,</span> <span class="n">N</span>     <span class="o">=</span> <span class="n">symbols</span><span class="p">(</span><span class="s1">&#39;T_s N&#39;</span><span class="p">,</span> <span class="n">positive</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 <span class="n">s</span><span class="p">,</span> <span class="n">sd</span><span class="p">,</span> <span class="n">si</span> <span class="o">=</span> <span class="n">symbols</span><span class="p">(</span><span class="s1">&#39;s s_D s_I&#39;</span><span class="p">,</span> <span class="nb">complex</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 <span class="n">z</span>         <span class="o">=</span> <span class="n">symbols</span><span class="p">(</span><span class="s1">&#39;z&#39;</span><span class="p">)</span>
 
-<span class="n">e</span><span class="p">,</span> <span class="n">u</span>     <span class="o">=</span> <span class="n">symbols</span><span class="p">(</span><span class="s1">&#39;e u&#39;</span><span class="p">)</span>
+<span class="n">e</span><span class="p">,</span> <span class="n">u</span>      <span class="o">=</span> <span class="n">symbols</span><span class="p">(</span><span class="s1">&#39;e u&#39;</span><span class="p">)</span>
 <span class="n">e0</span><span class="p">,</span> <span class="n">e1</span><span class="p">,</span> <span class="n">e2</span><span class="p">,</span> <span class="n">u0</span><span class="p">,</span> <span class="n">u1</span><span class="p">,</span> <span class="n">u2</span> <span class="o">=</span> <span class="n">symbols</span><span class="p">(</span><span class="s1">&#39;e_k e_{k-1} e_{k-2} u_k u_{k-1} u_{k-2}&#39;</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
 </div>
 </section>
-<section id="pid-control-in-s-domain">
-<h2>PID control in s-domain<a class="headerlink" href="#pid-control-in-s-domain" title="Link to this heading">¶</a></h2>
-<p>Let us start with defining our PID control in continuous form.</p>
+<section id="continuous-time-pid-with-derivative-filter">
+<h2>Continuous-time PID with derivative filter<a class="headerlink" href="#continuous-time-pid-with-derivative-filter" title="Link to this heading">¶</a></h2>
+<p>Let us start with defining our PID control in a continuous form. Here, we are going to follow <strong>MATLAB Simulink</strong> implementation. In Simulink, the derivative term is a first-order low-pass filter.</p>
+<div class="math notranslate nohighlight">
+\[ U(s) = \Bigg( P + I \underbrace{\boxed{\frac{1}{s}}}_{\text{integrator}} + D \frac{N}{1+N \underbrace{\boxed{\frac{1}{s}}}_{\text{filter}}} \Bigg) E(s) \]</div>
+<p>where:</p>
+<ul class="simple">
+<li><p><span class="math notranslate nohighlight">\(P\)</span> is the proportional gain</p></li>
+<li><p><span class="math notranslate nohighlight">\(I\)</span> is the integral gain</p></li>
+<li><p><span class="math notranslate nohighlight">\(D\)</span> is the derivative gain</p></li>
+<li><p><span class="math notranslate nohighlight">\(N\)</span> is the filter coefficient</p></li>
+<li><p><span class="math notranslate nohighlight">\(e(t)\)</span> or <span class="math notranslate nohighlight">\(E(s)\)</span> is the input to the controller, which is the error between the target and the actual output of the system</p></li>
+<li><p><span class="math notranslate nohighlight">\(u(t)\)</span> or <span class="math notranslate nohighlight">\(U(s)\)</span> is the computed control signal that will be sent to the system</p></li>
+</ul>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">Gpid</span> <span class="o">=</span> <span class="n">Kp</span> <span class="o">+</span> <span class="n">Ki</span><span class="o">/</span><span class="n">s</span> <span class="o">+</span> <span class="n">Kd</span><span class="o">*</span><span class="n">s</span>   <span class="c1"># PID-control</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">Gpid</span> <span class="o">=</span> <span class="n">P</span> <span class="o">+</span> <span class="n">I</span><span class="o">/</span><span class="n">s</span> <span class="o">+</span> <span class="n">D</span><span class="o">*</span><span class="n">N</span><span class="o">/</span><span class="p">(</span><span class="mi">1</span><span class="o">+</span><span class="n">N</span><span class="o">/</span><span class="n">s</span><span class="p">)</span>   <span class="c1"># PID-control</span>
 <span class="n">mprint</span><span class="p">(</span><span class="s2">&quot;G(s)= &quot;</span><span class="p">,</span> <span class="n">latex</span><span class="p">(</span><span class="n">Gpid</span><span class="p">))</span>
 </pre></div>
 </div>
 </div>
 <div class="cell_output docutils container">
 <div class="output text_latex math notranslate nohighlight">
-\[\displaystyle G(s)= K_{d} s + \frac{K_{i}}{s} + K_{p}\]</div>
+\[\displaystyle G(s)= \frac{D N}{\frac{N}{s} + 1} + \frac{I}{s} + P\]</div>
 </div>
 </div>
-<p>From this point onwards, let us state for any arbitrary system:</p>
-<ul class="simple">
-<li><p><span class="math notranslate nohighlight">\(e(t)\)</span> is the input to the controller, which is the error between the target and the actual output of the system</p></li>
-<li><p><span class="math notranslate nohighlight">\(u(t)\)</span> is the computed control signal that will be sent to the system</p></li>
-<li><p><span class="math notranslate nohighlight">\(T_s\)</span> is the sampling period of the digital controller</p></li>
-</ul>
+<p>As for the discretization methods, there are 3 available methods: tarpezoidal (bilinear transform), forward Euler, and backward Euler. Integrator and filter can use different discretization method.</p>
+<p>From this point onwards, let us introduce <span class="math notranslate nohighlight">\(T_s\)</span> as the sampling period of the discrete-time PID control.</p>
 </section>
-<section id="pd-control-with-zoh-backward-euler">
-<h2>PD-control with ZOH (Backward Euler)<a class="headerlink" href="#pd-control-with-zoh-backward-euler" title="Link to this heading">¶</a></h2>
-<p>Let us perform the following substitution:</p>
+<section id="discrete-time-pid-with-derivative-filter">
+<h2>Discrete-time PID with derivative filter<a class="headerlink" href="#discrete-time-pid-with-derivative-filter" title="Link to this heading">¶</a></h2>
+<section id="using-forward-euler-method">
+<h3>Using forward Euler method<a class="headerlink" href="#using-forward-euler-method" title="Link to this heading">¶</a></h3>
+<p>Let us use the forward Euler method for both the integral term and filter.</p>
 <div class="math notranslate nohighlight">
-\[ \frac{1}{s} \longleftarrow \frac{T_s}{1-z^{-1}} \]</div>
+\[ \frac{1}{s} \longleftarrow \frac{T_s}{z-1} \]</div>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">Gpd</span> <span class="o">=</span> <span class="n">Kp</span> <span class="o">+</span> <span class="n">Kd</span><span class="o">*</span><span class="n">s</span>   <span class="c1"># PD-control</span>
-<span class="n">Gpd</span> <span class="o">=</span> <span class="n">Gpd</span><span class="o">.</span><span class="n">subs</span><span class="p">(</span><span class="mi">1</span><span class="o">/</span><span class="n">s</span><span class="p">,</span> <span class="n">Ts</span> <span class="o">/</span> <span class="p">(</span><span class="mi">1</span> <span class="o">-</span> <span class="mi">1</span><span class="o">/</span><span class="n">z</span><span class="p">))</span>
-<span class="n">mprint</span><span class="p">(</span><span class="s2">&quot;G_</span><span class="si">{PD}</span><span class="s2">=&quot;</span><span class="p">,</span> <span class="n">latex</span><span class="p">(</span><span class="n">Gpd</span><span class="p">))</span>
-
-<span class="n">Gpd</span> <span class="o">=</span> <span class="n">collect</span><span class="p">(</span><span class="n">factor</span><span class="p">(</span><span class="n">Gpd</span><span class="p">),</span><span class="n">z</span><span class="p">)</span>
-<span class="n">mprintb</span><span class="p">(</span><span class="s2">&quot;G_</span><span class="si">{PD}</span><span class="s2">=&quot;</span><span class="p">,</span> <span class="n">latex</span><span class="p">(</span><span class="n">Gpd</span><span class="p">))</span>
-</pre></div>
-</div>
-</div>
-<div class="cell_output docutils container">
-<div class="output text_latex math notranslate nohighlight">
-\[\displaystyle G_{PD}=\frac{K_{d} \left(1 - \frac{1}{z}\right)}{T_{s}} + K_{p}\]</div>
-<div class="output text_latex math notranslate nohighlight">
-\[\displaystyle \boxed{G_{PD}=\frac{- K_{d} + z \left(K_{d} + K_{p} T_{s}\right)}{T_{s} z}}\]</div>
-</div>
-</div>
-<p>Now, let us apply the input and compute the control output.</p>
-<div class="cell docutils container">
-<div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">eq</span> <span class="o">=</span> <span class="n">Eq</span><span class="p">(</span><span class="n">u</span><span class="p">,</span> <span class="n">Gpd</span> <span class="o">*</span> <span class="n">e</span><span class="p">)</span>
-<span class="n">mprint</span><span class="p">(</span><span class="n">latex</span><span class="p">(</span><span class="n">eq</span><span class="p">))</span>
-
-<span class="n">eq</span> <span class="o">=</span> <span class="p">(</span><span class="n">Eq</span><span class="p">(</span><span class="n">numer</span><span class="p">(</span><span class="n">eq</span><span class="o">.</span><span class="n">rhs</span><span class="p">),</span> <span class="n">eq</span><span class="o">.</span><span class="n">lhs</span> <span class="o">*</span> <span class="n">denom</span><span class="p">(</span><span class="n">eq</span><span class="o">.</span><span class="n">rhs</span><span class="p">)))</span>
-<span class="n">mprint</span><span class="p">(</span><span class="n">latex</span><span class="p">(</span><span class="n">eq</span><span class="p">))</span>
-
-<span class="n">eq</span> <span class="o">=</span> <span class="n">Eq</span><span class="p">(</span><span class="n">eq</span><span class="o">.</span><span class="n">lhs</span><span class="o">/</span><span class="n">Ts</span><span class="o">/</span><span class="n">z</span><span class="p">,</span> <span class="n">eq</span><span class="o">.</span><span class="n">rhs</span><span class="o">/</span><span class="n">Ts</span><span class="o">/</span><span class="n">z</span><span class="p">)</span>
-<span class="n">mprint</span><span class="p">(</span><span class="n">latex</span><span class="p">(</span><span class="n">eq</span><span class="p">))</span>
-
-<span class="n">eq</span> <span class="o">=</span> <span class="n">expand</span><span class="p">(</span><span class="n">eq</span><span class="p">)</span><span class="o">.</span><span class="n">subs</span><span class="p">(</span><span class="n">e</span><span class="o">/</span><span class="n">z</span><span class="o">**</span><span class="mi">2</span><span class="p">,</span> <span class="n">e2</span><span class="p">)</span><span class="o">.</span><span class="n">subs</span><span class="p">(</span><span class="n">e</span><span class="o">/</span><span class="n">z</span><span class="p">,</span> <span class="n">e1</span><span class="p">)</span><span class="o">.</span><span class="n">subs</span><span class="p">(</span><span class="n">e</span><span class="p">,</span> <span class="n">e0</span><span class="p">)</span><span class="o">.</span><span class="n">subs</span><span class="p">(</span><span class="n">u</span><span class="o">/</span><span class="n">z</span><span class="p">,</span> <span class="n">u1</span><span class="p">)</span>
-<span class="n">mprint</span><span class="p">(</span><span class="n">latex</span><span class="p">(</span><span class="n">eq</span><span class="p">))</span>
-</pre></div>
-</div>
-</div>
-<div class="cell_output docutils container">
-<div class="output text_latex math notranslate nohighlight">
-\[\displaystyle u = \frac{e \left(- K_{d} + z \left(K_{d} + K_{p} T_{s}\right)\right)}{T_{s} z}\]</div>
-<div class="output text_latex math notranslate nohighlight">
-\[\displaystyle e \left(- K_{d} + z \left(K_{d} + K_{p} T_{s}\right)\right) = T_{s} u z\]</div>
-<div class="output text_latex math notranslate nohighlight">
-\[\displaystyle \frac{e \left(- K_{d} + z \left(K_{d} + K_{p} T_{s}\right)\right)}{T_{s} z} = u\]</div>
-<div class="output text_latex math notranslate nohighlight">
-\[\displaystyle \frac{K_{d} e_{k}}{T_{s}} - \frac{K_{d} e_{k-1}}{T_{s}} + K_{p} e_{k} = u\]</div>
-</div>
-</div>
-<div class="cell docutils container">
-<div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">upd</span> <span class="o">=</span> <span class="n">collect</span><span class="p">(</span><span class="n">eq</span><span class="o">.</span><span class="n">lhs</span><span class="p">,</span> <span class="p">[</span><span class="n">Kp</span><span class="p">,</span> <span class="n">Kd</span><span class="o">/</span><span class="n">Ts</span><span class="p">])</span>
-<span class="n">mprintb</span><span class="p">(</span><span class="s2">&quot;u=&quot;</span><span class="p">,</span> <span class="n">latex</span><span class="p">(</span><span class="n">upd</span><span class="p">))</span>
-</pre></div>
-</div>
-</div>
-<div class="cell_output docutils container">
-<div class="output text_latex math notranslate nohighlight">
-\[\displaystyle \boxed{u=\frac{K_{d} \left(e_{k} - e_{k-1}\right)}{T_{s}} + K_{p} e_{k}}\]</div>
-</div>
-</div>
-</section>
-<section id="pid-control-with-zoh-backward-euler">
-<h2>PID-control with ZOH  (Backward Euler)<a class="headerlink" href="#pid-control-with-zoh-backward-euler" title="Link to this heading">¶</a></h2>
-<div class="cell docutils container">
-<div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">Gpid</span> <span class="o">=</span> <span class="n">Kp</span> <span class="o">+</span> <span class="n">Ki</span><span class="o">/</span><span class="n">s</span> <span class="o">+</span> <span class="n">Kd</span><span class="o">*</span><span class="n">s</span>   <span class="c1"># PID-control</span>
-<span class="n">Gpid</span> <span class="o">=</span> <span class="n">Gpid</span><span class="o">.</span><span class="n">subs</span><span class="p">(</span><span class="mi">1</span><span class="o">/</span><span class="n">s</span><span class="p">,</span> <span class="n">Ts</span> <span class="o">/</span> <span class="p">(</span><span class="mi">1</span> <span class="o">-</span> <span class="mi">1</span><span class="o">/</span><span class="n">z</span><span class="p">))</span>
-<span class="n">mprint</span><span class="p">(</span><span class="s2">&quot;G_</span><span class="si">{PID}</span><span class="s2">=&quot;</span><span class="p">,</span> <span class="n">latex</span><span class="p">(</span><span class="n">Gpid</span><span class="p">))</span>
-
-<span class="n">Gpid</span> <span class="o">=</span> <span class="n">collect</span><span class="p">(</span><span class="n">factor</span><span class="p">(</span><span class="n">Gpid</span><span class="p">),</span> <span class="p">[</span><span class="n">z</span><span class="p">,</span> <span class="n">z</span><span class="o">**</span><span class="mi">2</span><span class="p">])</span>
-<span class="n">mprintb</span><span class="p">(</span><span class="s2">&quot;G_</span><span class="si">{PID}</span><span class="s2">=&quot;</span><span class="p">,</span> <span class="n">latex</span><span class="p">(</span><span class="n">Gpid</span><span class="p">))</span>
-</pre></div>
-</div>
-</div>
-<div class="cell_output docutils container">
-<div class="output text_latex math notranslate nohighlight">
-\[\displaystyle G_{PID}=\frac{K_{d} \left(1 - \frac{1}{z}\right)}{T_{s}} + \frac{K_{i} T_{s}}{1 - \frac{1}{z}} + K_{p}\]</div>
-<div class="output text_latex math notranslate nohighlight">
-\[\displaystyle \boxed{G_{PID}=\frac{K_{d} + z^{2} \left(K_{d} + K_{i} T_{s}^{2} + K_{p} T_{s}\right) + z \left(- 2 K_{d} - K_{p} T_{s}\right)}{T_{s} z \left(z - 1\right)}}\]</div>
-</div>
-</div>
-<p>Now, let us apply the input and compute the control output.</p>
-<div class="cell docutils container">
-<div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">eq</span> <span class="o">=</span> <span class="n">Eq</span><span class="p">(</span><span class="n">u</span><span class="p">,</span> <span class="n">Gpid</span> <span class="o">*</span> <span class="n">e</span><span class="p">)</span>
-<span class="n">mprint</span><span class="p">(</span><span class="n">latex</span><span class="p">(</span><span class="n">eq</span><span class="p">))</span>
-
-<span class="n">eq</span> <span class="o">=</span> <span class="n">factor</span><span class="p">(</span><span class="n">eq</span><span class="p">)</span>
-<span class="n">mprint</span><span class="p">(</span><span class="n">latex</span><span class="p">(</span><span class="n">eq</span><span class="p">))</span>
-
-<span class="n">eq</span> <span class="o">=</span> <span class="n">Eq</span><span class="p">(</span><span class="n">numer</span><span class="p">(</span><span class="n">eq</span><span class="o">.</span><span class="n">rhs</span><span class="p">),</span> <span class="n">eq</span><span class="o">.</span><span class="n">lhs</span> <span class="o">*</span> <span class="n">denom</span><span class="p">(</span><span class="n">eq</span><span class="o">.</span><span class="n">rhs</span><span class="p">))</span>
-<span class="n">mprint</span><span class="p">(</span><span class="n">latex</span><span class="p">(</span><span class="n">eq</span><span class="p">))</span>
-
-<span class="n">eq</span> <span class="o">=</span> <span class="n">expand</span><span class="p">(</span><span class="n">eq</span><span class="p">)</span>
-<span class="n">mprint</span><span class="p">(</span><span class="n">latex</span><span class="p">(</span><span class="n">eq</span><span class="p">))</span>
-
-<span class="n">eq</span> <span class="o">=</span> <span class="n">expand</span><span class="p">(</span><span class="n">Eq</span><span class="p">(</span><span class="n">eq</span><span class="o">.</span><span class="n">lhs</span><span class="o">/</span><span class="n">z</span><span class="o">**</span><span class="mi">2</span><span class="o">/</span><span class="n">Ts</span><span class="p">,</span> <span class="n">eq</span><span class="o">.</span><span class="n">rhs</span><span class="o">/</span><span class="n">z</span><span class="o">**</span><span class="mi">2</span><span class="o">/</span><span class="n">Ts</span> <span class="p">))</span>
-<span class="n">mprint</span><span class="p">(</span><span class="n">latex</span><span class="p">(</span><span class="n">eq</span><span class="p">))</span>
-
-<span class="n">eq</span> <span class="o">=</span> <span class="n">expand</span><span class="p">(</span><span class="n">eq</span><span class="p">)</span><span class="o">.</span><span class="n">subs</span><span class="p">(</span><span class="n">e</span><span class="o">/</span><span class="n">z</span><span class="o">**</span><span class="mi">2</span><span class="p">,</span> <span class="n">e2</span><span class="p">)</span><span class="o">.</span><span class="n">subs</span><span class="p">(</span><span class="n">e</span><span class="o">/</span><span class="n">z</span><span class="p">,</span> <span class="n">e1</span><span class="p">)</span><span class="o">.</span><span class="n">subs</span><span class="p">(</span><span class="n">e</span><span class="p">,</span> <span class="n">e0</span><span class="p">)</span><span class="o">.</span><span class="n">subs</span><span class="p">(</span><span class="n">u</span><span class="o">/</span><span class="n">z</span><span class="p">,</span> <span class="n">u1</span><span class="p">)</span>
-<span class="n">mprint</span><span class="p">(</span><span class="n">latex</span><span class="p">(</span><span class="n">eq</span><span class="p">))</span>
-
-<span class="n">eq</span> <span class="o">=</span> <span class="n">ratsimp</span><span class="p">(</span><span class="n">eq</span><span class="o">.</span><span class="n">lhs</span><span class="p">)</span>
-<span class="n">mprint</span><span class="p">(</span><span class="s2">&quot;u-u_{k-1}=&quot;</span><span class="p">,</span> <span class="n">latex</span><span class="p">(</span><span class="n">eq</span><span class="p">))</span>
-
-<span class="n">eq</span> <span class="o">=</span> <span class="n">collect</span><span class="p">(</span><span class="n">eq</span><span class="p">,</span> <span class="p">[</span><span class="n">Kp</span><span class="p">,</span> <span class="n">Ki</span><span class="p">,</span> <span class="n">Kd</span><span class="p">])</span>
-<span class="n">mprintb</span><span class="p">(</span><span class="s2">&quot;u-u_{k-1}=&quot;</span><span class="p">,</span> <span class="n">latex</span><span class="p">(</span><span class="n">eq</span><span class="p">))</span>
-</pre></div>
-</div>
-</div>
-<div class="cell_output docutils container">
-<div class="output text_latex math notranslate nohighlight">
-\[\displaystyle u = \frac{e \left(K_{d} + z^{2} \left(K_{d} + K_{i} T_{s}^{2} + K_{p} T_{s}\right) + z \left(- 2 K_{d} - K_{p} T_{s}\right)\right)}{T_{s} z \left(z - 1\right)}\]</div>
-<div class="output text_latex math notranslate nohighlight">
-\[\displaystyle u = \frac{e \left(K_{d} z^{2} - 2 K_{d} z + K_{d} + K_{i} T_{s}^{2} z^{2} + K_{p} T_{s} z^{2} - K_{p} T_{s} z\right)}{T_{s} z \left(z - 1\right)}\]</div>
-<div class="output text_latex math notranslate nohighlight">
-\[\displaystyle e \left(K_{d} z^{2} - 2 K_{d} z + K_{d} + K_{i} T_{s}^{2} z^{2} + K_{p} T_{s} z^{2} - K_{p} T_{s} z\right) = T_{s} u z \left(z - 1\right)\]</div>
-<div class="output text_latex math notranslate nohighlight">
-\[\displaystyle K_{d} e z^{2} - 2 K_{d} e z + K_{d} e + K_{i} T_{s}^{2} e z^{2} + K_{p} T_{s} e z^{2} - K_{p} T_{s} e z = T_{s} u z^{2} - T_{s} u z\]</div>
-<div class="output text_latex math notranslate nohighlight">
-\[\displaystyle \frac{K_{d} e}{T_{s}} - \frac{2 K_{d} e}{T_{s} z} + \frac{K_{d} e}{T_{s} z^{2}} + K_{i} T_{s} e + K_{p} e - \frac{K_{p} e}{z} = u - \frac{u}{z}\]</div>
-<div class="output text_latex math notranslate nohighlight">
-\[\displaystyle \frac{K_{d} e_{k}}{T_{s}} - \frac{2 K_{d} e_{k-1}}{T_{s}} + \frac{K_{d} e_{k-2}}{T_{s}} + K_{i} T_{s} e_{k} + K_{p} e_{k} - K_{p} e_{k-1} = u - u_{k-1}\]</div>
-<div class="output text_latex math notranslate nohighlight">
-\[\displaystyle u-u_{k-1}=K_{i} T_{s} e_{k} + K_{p} e_{k} - K_{p} e_{k-1} + \frac{K_{d} e_{k} - 2 K_{d} e_{k-1} + K_{d} e_{k-2}}{T_{s}}\]</div>
-<div class="output text_latex math notranslate nohighlight">
-\[\displaystyle \boxed{u-u_{k-1}=\frac{K_{d} \left(e_{k} - 2 e_{k-1} + e_{k-2}\right)}{T_{s}} + K_{i} T_{s} e_{k} + K_{p} \left(e_{k} - e_{k-1}\right)}\]</div>
-</div>
-</div>
-</section>
-<section id="pd-control-with-bilinear-transformation">
-<h2>PD-control with bilinear transformation<a class="headerlink" href="#pd-control-with-bilinear-transformation" title="Link to this heading">¶</a></h2>
-<p>Let us perform the following substitution:</p>
-<div class="math notranslate nohighlight">
-\[ \frac{1}{s} \longleftarrow \frac{T_s}{2} \frac{z+1}{z-1} \]</div>
-<div class="cell docutils container">
-<div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">Gpd</span> <span class="o">=</span> <span class="n">Kp</span> <span class="o">+</span> <span class="n">Kd</span><span class="o">*</span><span class="n">s</span>   <span class="c1"># PD-control</span>
-<span class="n">Gpd</span> <span class="o">=</span> <span class="n">Gpd</span><span class="o">.</span><span class="n">subs</span><span class="p">(</span><span class="mi">1</span><span class="o">/</span><span class="n">s</span><span class="p">,</span> <span class="n">Ts</span><span class="o">/</span><span class="mi">2</span> <span class="o">*</span> <span class="p">(</span><span class="n">z</span><span class="o">+</span><span class="mi">1</span><span class="p">)</span><span class="o">/</span><span class="p">(</span><span class="n">z</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span> <span class="p">)</span>
-<span class="n">mprint</span><span class="p">(</span><span class="s2">&quot;G_</span><span class="si">{PD}</span><span class="s2">=&quot;</span><span class="p">,</span> <span class="n">latex</span><span class="p">(</span><span class="n">Gpd</span><span class="p">))</span>
-
-<span class="n">Gpd</span> <span class="o">=</span> <span class="n">collect</span><span class="p">(</span><span class="n">factor</span><span class="p">(</span><span class="n">Gpd</span><span class="p">),</span><span class="n">z</span><span class="p">)</span>
-<span class="n">mprintb</span><span class="p">(</span><span class="s2">&quot;G_</span><span class="si">{PD}</span><span class="s2">=&quot;</span><span class="p">,</span> <span class="n">latex</span><span class="p">(</span><span class="n">Gpd</span><span class="p">))</span>
-</pre></div>
-</div>
-</div>
-<div class="cell_output docutils container">
-<div class="output text_latex math notranslate nohighlight">
-\[\displaystyle G_{PD}=\frac{2 K_{d} \left(z - 1\right)}{T_{s} \left(z + 1\right)} + K_{p}\]</div>
-<div class="output text_latex math notranslate nohighlight">
-\[\displaystyle \boxed{G_{PD}=\frac{- 2 K_{d} + K_{p} T_{s} + z \left(2 K_{d} + K_{p} T_{s}\right)}{T_{s} \left(z + 1\right)}}\]</div>
-</div>
-</div>
-<div class="cell docutils container">
-<div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">eq</span> <span class="o">=</span> <span class="n">Eq</span><span class="p">(</span><span class="n">u</span><span class="p">,</span> <span class="n">Gpd</span> <span class="o">*</span> <span class="n">e</span><span class="p">)</span>
-<span class="n">mprint</span><span class="p">(</span><span class="n">latex</span><span class="p">(</span><span class="n">eq</span><span class="p">))</span>
-
-<span class="n">eq</span> <span class="o">=</span> <span class="n">factor</span><span class="p">(</span><span class="n">eq</span><span class="p">)</span>
-<span class="n">mprint</span><span class="p">(</span><span class="n">latex</span><span class="p">(</span><span class="n">eq</span><span class="p">))</span>
-
-<span class="n">eq</span> <span class="o">=</span> <span class="n">Eq</span><span class="p">(</span><span class="n">numer</span><span class="p">(</span><span class="n">eq</span><span class="o">.</span><span class="n">rhs</span><span class="p">),</span> <span class="n">eq</span><span class="o">.</span><span class="n">lhs</span> <span class="o">*</span> <span class="n">denom</span><span class="p">(</span><span class="n">eq</span><span class="o">.</span><span class="n">rhs</span><span class="p">))</span>
-<span class="n">mprint</span><span class="p">(</span><span class="n">latex</span><span class="p">(</span><span class="n">eq</span><span class="p">))</span>
-
-<span class="n">eq</span> <span class="o">=</span> <span class="n">expand</span><span class="p">(</span><span class="n">eq</span><span class="p">)</span>
-<span class="n">mprint</span><span class="p">(</span><span class="n">latex</span><span class="p">(</span><span class="n">eq</span><span class="p">))</span>
-
-<span class="n">eq</span> <span class="o">=</span> <span class="n">expand</span><span class="p">(</span><span class="n">Eq</span><span class="p">(</span><span class="n">eq</span><span class="o">.</span><span class="n">lhs</span><span class="o">/</span><span class="n">z</span><span class="o">**</span><span class="mi">2</span><span class="o">/</span><span class="n">Ts</span><span class="p">,</span> <span class="n">eq</span><span class="o">.</span><span class="n">rhs</span><span class="o">/</span><span class="n">z</span><span class="o">**</span><span class="mi">2</span><span class="o">/</span><span class="n">Ts</span> <span class="p">))</span>
-<span class="n">mprint</span><span class="p">(</span><span class="n">latex</span><span class="p">(</span><span class="n">eq</span><span class="p">))</span>
-
-<span class="n">eq</span> <span class="o">=</span> <span class="n">expand</span><span class="p">(</span><span class="n">eq</span><span class="p">)</span><span class="o">.</span><span class="n">subs</span><span class="p">(</span><span class="n">e</span><span class="o">/</span><span class="n">z</span><span class="o">**</span><span class="mi">2</span><span class="p">,</span> <span class="n">e2</span><span class="p">)</span><span class="o">.</span><span class="n">subs</span><span class="p">(</span><span class="n">e</span><span class="o">/</span><span class="n">z</span><span class="p">,</span> <span class="n">e1</span><span class="p">)</span><span class="o">.</span><span class="n">subs</span><span class="p">(</span><span class="n">e</span><span class="p">,</span> <span class="n">e0</span><span class="p">)</span><span class="o">.</span><span class="n">subs</span><span class="p">(</span><span class="n">u</span><span class="o">/</span><span class="n">z</span><span class="o">**</span><span class="mi">2</span><span class="p">,</span> <span class="n">u2</span><span class="p">)</span><span class="o">.</span><span class="n">subs</span><span class="p">(</span><span class="n">u</span><span class="o">/</span><span class="n">z</span><span class="p">,</span> <span class="n">u1</span><span class="p">)</span>
-<span class="n">mprint</span><span class="p">(</span><span class="n">latex</span><span class="p">(</span><span class="n">eq</span><span class="p">))</span>
-
-<span class="n">eq</span> <span class="o">=</span> <span class="n">ratsimp</span><span class="p">(</span><span class="n">eq</span><span class="o">.</span><span class="n">lhs</span><span class="p">)</span>
-<span class="n">mprint</span><span class="p">(</span><span class="s2">&quot;u-u_{k-1}=&quot;</span><span class="p">,</span> <span class="n">latex</span><span class="p">(</span><span class="n">eq</span><span class="p">))</span>
-
-<span class="n">eq</span> <span class="o">=</span> <span class="n">collect</span><span class="p">(</span><span class="n">eq</span><span class="p">,</span> <span class="p">[</span><span class="n">Kp</span><span class="p">,</span> <span class="n">Ki</span><span class="p">,</span> <span class="mi">2</span><span class="o">*</span><span class="n">Kd</span><span class="p">])</span>
-<span class="n">mprintb</span><span class="p">(</span><span class="s2">&quot;u-u_{k-1}=&quot;</span><span class="p">,</span> <span class="n">latex</span><span class="p">(</span><span class="n">eq</span><span class="p">))</span>
-</pre></div>
-</div>
-</div>
-<div class="cell_output docutils container">
-<div class="output text_latex math notranslate nohighlight">
-\[\displaystyle u = \frac{e \left(- 2 K_{d} + K_{p} T_{s} + z \left(2 K_{d} + K_{p} T_{s}\right)\right)}{T_{s} \left(z + 1\right)}\]</div>
-<div class="output text_latex math notranslate nohighlight">
-\[\displaystyle u = \frac{e \left(2 K_{d} z - 2 K_{d} + K_{p} T_{s} z + K_{p} T_{s}\right)}{T_{s} \left(z + 1\right)}\]</div>
-<div class="output text_latex math notranslate nohighlight">
-\[\displaystyle e \left(2 K_{d} z - 2 K_{d} + K_{p} T_{s} z + K_{p} T_{s}\right) = T_{s} u \left(z + 1\right)\]</div>
-<div class="output text_latex math notranslate nohighlight">
-\[\displaystyle 2 K_{d} e z - 2 K_{d} e + K_{p} T_{s} e z + K_{p} T_{s} e = T_{s} u z + T_{s} u\]</div>
-<div class="output text_latex math notranslate nohighlight">
-\[\displaystyle \frac{2 K_{d} e}{T_{s} z} - \frac{2 K_{d} e}{T_{s} z^{2}} + \frac{K_{p} e}{z} + \frac{K_{p} e}{z^{2}} = \frac{u}{z} + \frac{u}{z^{2}}\]</div>
-<div class="output text_latex math notranslate nohighlight">
-\[\displaystyle \frac{2 K_{d} e_{k-1}}{T_{s}} - \frac{2 K_{d} e_{k-2}}{T_{s}} + K_{p} e_{k-1} + K_{p} e_{k-2} = u_{k-1} + u_{k-2}\]</div>
-<div class="output text_latex math notranslate nohighlight">
-\[\displaystyle u-u_{k-1}=K_{p} e_{k-1} + K_{p} e_{k-2} + \frac{2 K_{d} e_{k-1} - 2 K_{d} e_{k-2}}{T_{s}}\]</div>
-<div class="output text_latex math notranslate nohighlight">
-\[\displaystyle \boxed{u-u_{k-1}=\frac{2 K_{d} \left(e_{k-1} - e_{k-2}\right)}{T_{s}} + K_{p} \left(e_{k-1} + e_{k-2}\right)}\]</div>
-</div>
-</div>
-</section>
-<section id="pid-control-with-bilinear-transformation">
-<h2>PID-control with bilinear transformation<a class="headerlink" href="#pid-control-with-bilinear-transformation" title="Link to this heading">¶</a></h2>
-<div class="cell docutils container">
-<div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">Gpid</span> <span class="o">=</span> <span class="n">Kp</span> <span class="o">+</span> <span class="n">Ki</span><span class="o">/</span><span class="n">s</span> <span class="o">+</span> <span class="n">Kd</span><span class="o">*</span><span class="n">s</span>   <span class="c1"># PID-control</span>
-<span class="n">Gpid</span> <span class="o">=</span> <span class="n">Gpid</span><span class="o">.</span><span class="n">subs</span><span class="p">(</span><span class="mi">1</span><span class="o">/</span><span class="n">s</span><span class="p">,</span> <span class="n">Ts</span><span class="o">/</span><span class="mi">2</span> <span class="o">*</span> <span class="p">(</span><span class="n">z</span><span class="o">+</span><span class="mi">1</span><span class="p">)</span><span class="o">/</span><span class="p">(</span><span class="n">z</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span> <span class="p">)</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">Gpid</span> <span class="o">=</span> <span class="n">P</span> <span class="o">+</span> <span class="n">I</span><span class="o">/</span><span class="n">s</span> <span class="o">+</span> <span class="n">D</span><span class="o">*</span><span class="n">N</span><span class="o">/</span><span class="p">(</span><span class="mi">1</span><span class="o">+</span><span class="n">N</span><span class="o">/</span><span class="n">s</span><span class="p">)</span>   <span class="c1"># PID-control</span>
+<span class="n">Gpid</span> <span class="o">=</span> <span class="n">Gpid</span><span class="o">.</span><span class="n">subs</span><span class="p">(</span> <span class="mi">1</span><span class="o">/</span><span class="n">s</span><span class="p">,</span> <span class="n">Ts</span><span class="o">/</span><span class="p">(</span><span class="n">z</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span> <span class="p">)</span>
 <span class="n">mprint</span><span class="p">(</span><span class="s2">&quot;G_</span><span class="si">{PID}</span><span class="s2">=&quot;</span><span class="p">,</span> <span class="n">latex</span><span class="p">(</span><span class="n">Gpid</span><span class="p">))</span>
 
 <span class="n">Gpid</span> <span class="o">=</span> <span class="n">factor</span><span class="p">(</span><span class="n">Gpid</span><span class="p">)</span>
-
-<span class="n">Gpid</span> <span class="o">=</span> <span class="n">collect</span><span class="p">(</span><span class="n">numer</span><span class="p">(</span><span class="n">Gpid</span><span class="p">),</span> <span class="p">[</span><span class="n">z</span><span class="p">,</span> <span class="n">z</span><span class="o">**</span><span class="mi">2</span><span class="p">])</span> <span class="o">/</span>  <span class="n">expand</span><span class="p">(</span><span class="n">denom</span><span class="p">(</span><span class="n">Gpid</span><span class="p">))</span>
+<span class="n">Gpid</span> <span class="o">=</span> <span class="n">collect</span><span class="p">(</span><span class="n">Gpid</span><span class="p">,</span> <span class="p">[</span><span class="n">z</span><span class="p">,</span> <span class="n">z</span><span class="o">**</span><span class="mi">2</span><span class="p">,</span> <span class="n">Ts</span><span class="p">])</span>
 <span class="n">mprintb</span><span class="p">(</span><span class="s2">&quot;G_</span><span class="si">{PID}</span><span class="s2">=&quot;</span><span class="p">,</span> <span class="n">latex</span><span class="p">(</span><span class="n">Gpid</span><span class="p">))</span>
 </pre></div>
 </div>
 </div>
 <div class="cell_output docutils container">
 <div class="output text_latex math notranslate nohighlight">
-\[\displaystyle G_{PID}=\frac{2 K_{d} \left(z - 1\right)}{T_{s} \left(z + 1\right)} + \frac{K_{i} T_{s} \left(z + 1\right)}{2 \left(z - 1\right)} + K_{p}\]</div>
+\[\displaystyle G_{PID}=\frac{D N}{\frac{N T_{s}}{z - 1} + 1} + \frac{I T_{s}}{z - 1} + P\]</div>
 <div class="output text_latex math notranslate nohighlight">
-\[\displaystyle \boxed{G_{PID}=\frac{4 K_{d} + K_{i} T_{s}^{2} - 2 K_{p} T_{s} + z^{2} \left(4 K_{d} + K_{i} T_{s}^{2} + 2 K_{p} T_{s}\right) + z \left(- 8 K_{d} + 2 K_{i} T_{s}^{2}\right)}{2 T_{s} z^{2} - 2 T_{s}}}\]</div>
+\[\displaystyle \boxed{G_{PID}=\frac{D N + I N T_{s}^{2} + P + T_{s} \left(- I - N P\right) + z^{2} \left(D N + P\right) + z \left(- 2 D N + I T_{s} + N P T_{s} - 2 P\right)}{\left(z - 1\right) \left(N T_{s} + z - 1\right)}}\]</div>
 </div>
 </div>
-<p>Now, let us apply the input to the output.</p>
+<p>Now, let us apply the input and compute the control output.</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">eq</span> <span class="o">=</span> <span class="n">Eq</span><span class="p">(</span><span class="n">u</span><span class="p">,</span> <span class="n">Gpid</span> <span class="o">*</span> <span class="n">e</span><span class="p">)</span>
@@ -353,131 +170,156 @@
 
 <span class="n">eq</span> <span class="o">=</span> <span class="n">Eq</span><span class="p">(</span><span class="n">numer</span><span class="p">(</span><span class="n">eq</span><span class="o">.</span><span class="n">rhs</span><span class="p">),</span> <span class="n">eq</span><span class="o">.</span><span class="n">lhs</span> <span class="o">*</span> <span class="n">denom</span><span class="p">(</span><span class="n">eq</span><span class="o">.</span><span class="n">rhs</span><span class="p">))</span>
 <span class="n">mprint</span><span class="p">(</span><span class="n">latex</span><span class="p">(</span><span class="n">eq</span><span class="p">))</span>
-
-<span class="n">eq</span> <span class="o">=</span> <span class="n">expand</span><span class="p">(</span><span class="n">eq</span><span class="p">)</span>
-<span class="n">mprint</span><span class="p">(</span><span class="n">latex</span><span class="p">(</span><span class="n">eq</span><span class="p">))</span>
-
-<span class="n">eq</span> <span class="o">=</span> <span class="n">expand</span><span class="p">(</span><span class="n">Eq</span><span class="p">(</span><span class="n">eq</span><span class="o">.</span><span class="n">lhs</span><span class="o">/</span><span class="n">z</span><span class="o">**</span><span class="mi">2</span><span class="o">/</span><span class="n">Ts</span><span class="p">,</span> <span class="n">eq</span><span class="o">.</span><span class="n">rhs</span><span class="o">/</span><span class="n">z</span><span class="o">**</span><span class="mi">2</span><span class="o">/</span><span class="n">Ts</span> <span class="p">))</span>
-<span class="n">mprint</span><span class="p">(</span><span class="n">latex</span><span class="p">(</span><span class="n">eq</span><span class="p">))</span>
-
-<span class="n">eq</span> <span class="o">=</span> <span class="n">expand</span><span class="p">(</span><span class="n">eq</span><span class="p">)</span><span class="o">.</span><span class="n">subs</span><span class="p">(</span><span class="n">e</span><span class="o">/</span><span class="n">z</span><span class="o">**</span><span class="mi">2</span><span class="p">,</span> <span class="n">e2</span><span class="p">)</span><span class="o">.</span><span class="n">subs</span><span class="p">(</span><span class="n">e</span><span class="o">/</span><span class="n">z</span><span class="p">,</span> <span class="n">e1</span><span class="p">)</span><span class="o">.</span><span class="n">subs</span><span class="p">(</span><span class="n">e</span><span class="p">,</span> <span class="n">e0</span><span class="p">)</span><span class="o">.</span><span class="n">subs</span><span class="p">(</span><span class="n">u</span><span class="o">/</span><span class="n">z</span><span class="o">**</span><span class="mi">2</span><span class="p">,</span> <span class="n">u2</span><span class="p">)</span>
-<span class="n">mprint</span><span class="p">(</span><span class="n">latex</span><span class="p">(</span><span class="n">eq</span><span class="p">))</span>
-
-<span class="n">eq</span> <span class="o">=</span> <span class="n">ratsimp</span><span class="p">(</span><span class="n">eq</span><span class="o">.</span><span class="n">lhs</span><span class="p">)</span>
-<span class="n">mprint</span><span class="p">(</span><span class="s2">&quot;u-u_{k-2}=&quot;</span><span class="p">,</span> <span class="n">latex</span><span class="p">(</span><span class="n">eq</span><span class="p">))</span>
-
-<span class="n">eq_</span> <span class="o">=</span> <span class="n">collect</span><span class="p">(</span><span class="n">eq</span><span class="p">,</span> <span class="p">[</span><span class="mi">2</span><span class="o">*</span><span class="n">Kp</span><span class="p">,</span> <span class="n">Ki</span><span class="o">*</span><span class="n">Ts</span><span class="p">,</span> <span class="mi">4</span><span class="o">*</span><span class="n">Kd</span><span class="p">])</span>
-<span class="n">mprintb</span><span class="p">(</span><span class="s2">&quot;u-u_{k-2}=&quot;</span><span class="p">,</span> <span class="n">latex</span><span class="p">(</span><span class="n">eq_</span><span class="p">))</span>
-
-<span class="n">eq_</span> <span class="o">=</span> <span class="n">collect</span><span class="p">(</span><span class="n">expand</span><span class="p">(</span><span class="n">eq</span><span class="p">),</span> <span class="p">[</span><span class="n">e0</span><span class="p">,</span> <span class="n">e1</span><span class="p">,</span> <span class="n">e2</span><span class="p">])</span>
-<span class="n">mprintb</span><span class="p">(</span><span class="s2">&quot;u-u_{k-2}=&quot;</span><span class="p">,</span> <span class="n">latex</span><span class="p">(</span><span class="n">eq_</span><span class="p">))</span>
-</pre></div>
-</div>
-</div>
-<div class="cell_output docutils container">
-<div class="output text_latex math notranslate nohighlight">
-\[\displaystyle u = \frac{e \left(4 K_{d} + K_{i} T_{s}^{2} - 2 K_{p} T_{s} + z^{2} \left(4 K_{d} + K_{i} T_{s}^{2} + 2 K_{p} T_{s}\right) + z \left(- 8 K_{d} + 2 K_{i} T_{s}^{2}\right)\right)}{2 T_{s} z^{2} - 2 T_{s}}\]</div>
-<div class="output text_latex math notranslate nohighlight">
-\[\displaystyle u = \frac{e \left(4 K_{d} z^{2} - 8 K_{d} z + 4 K_{d} + K_{i} T_{s}^{2} z^{2} + 2 K_{i} T_{s}^{2} z + K_{i} T_{s}^{2} + 2 K_{p} T_{s} z^{2} - 2 K_{p} T_{s}\right)}{2 T_{s} \left(z - 1\right) \left(z + 1\right)}\]</div>
-<div class="output text_latex math notranslate nohighlight">
-\[\displaystyle e \left(4 K_{d} z^{2} - 8 K_{d} z + 4 K_{d} + K_{i} T_{s}^{2} z^{2} + 2 K_{i} T_{s}^{2} z + K_{i} T_{s}^{2} + 2 K_{p} T_{s} z^{2} - 2 K_{p} T_{s}\right) = 2 T_{s} u \left(z - 1\right) \left(z + 1\right)\]</div>
-<div class="output text_latex math notranslate nohighlight">
-\[\displaystyle 4 K_{d} e z^{2} - 8 K_{d} e z + 4 K_{d} e + K_{i} T_{s}^{2} e z^{2} + 2 K_{i} T_{s}^{2} e z + K_{i} T_{s}^{2} e + 2 K_{p} T_{s} e z^{2} - 2 K_{p} T_{s} e = 2 T_{s} u z^{2} - 2 T_{s} u\]</div>
-<div class="output text_latex math notranslate nohighlight">
-\[\displaystyle \frac{4 K_{d} e}{T_{s}} - \frac{8 K_{d} e}{T_{s} z} + \frac{4 K_{d} e}{T_{s} z^{2}} + K_{i} T_{s} e + \frac{2 K_{i} T_{s} e}{z} + \frac{K_{i} T_{s} e}{z^{2}} + 2 K_{p} e - \frac{2 K_{p} e}{z^{2}} = 2 u - \frac{2 u}{z^{2}}\]</div>
-<div class="output text_latex math notranslate nohighlight">
-\[\displaystyle \frac{4 K_{d} e_{k}}{T_{s}} - \frac{8 K_{d} e_{k-1}}{T_{s}} + \frac{4 K_{d} e_{k-2}}{T_{s}} + K_{i} T_{s} e_{k} + 2 K_{i} T_{s} e_{k-1} + K_{i} T_{s} e_{k-2} + 2 K_{p} e_{k} - 2 K_{p} e_{k-2} = 2 u - 2 u_{k-2}\]</div>
-<div class="output text_latex math notranslate nohighlight">
-\[\displaystyle u-u_{k-2}=K_{i} T_{s} e_{k} + 2 K_{i} T_{s} e_{k-1} + K_{i} T_{s} e_{k-2} + 2 K_{p} e_{k} - 2 K_{p} e_{k-2} + \frac{4 K_{d} e_{k} - 8 K_{d} e_{k-1} + 4 K_{d} e_{k-2}}{T_{s}}\]</div>
-<div class="output text_latex math notranslate nohighlight">
-\[\displaystyle \boxed{u-u_{k-2}=\frac{4 K_{d} \left(e_{k} - 2 e_{k-1} + e_{k-2}\right)}{T_{s}} + K_{i} T_{s} \left(e_{k} + 2 e_{k-1} + e_{k-2}\right) + 2 K_{p} \left(e_{k} - e_{k-2}\right)}\]</div>
-<div class="output text_latex math notranslate nohighlight">
-\[\displaystyle \boxed{u-u_{k-2}=e_{k} \left(\frac{4 K_{d}}{T_{s}} + K_{i} T_{s} + 2 K_{p}\right) + e_{k-1} \left(- \frac{8 K_{d}}{T_{s}} + 2 K_{i} T_{s}\right) + e_{k-2} \left(\frac{4 K_{d}}{T_{s}} + K_{i} T_{s} - 2 K_{p}\right)}\]</div>
-</div>
-</div>
-</section>
-<section id="pid-control-with-zoh-both-forward-and-backward-euler-and-derivative-filter">
-<h2>PID-control with ZOH (both Forward and Backward Euler) and derivative filter<a class="headerlink" href="#pid-control-with-zoh-both-forward-and-backward-euler-and-derivative-filter" title="Link to this heading">¶</a></h2>
-<p>If we use MATLAB Simulink, we will notice that the MATLAB Simulink allows us to use various discrete forms for its PID control. Additionally, in MATLAB Simulink, the derivative term is equpped with a first-order low-pass filter.</p>
-<p>For validation purposes, let us use the default options where MATLAB Simulink presents us with the following discrete PID formula:</p>
-<div class="math notranslate nohighlight">
-\[ K_p + K_i \cdot T_s \frac{1}{z-1}+ K_d \frac{N}{1+N \cdot T_s \frac{1}{z-1}} \]</div>
-<p>We can see that:</p>
-<ul class="simple">
-<li><p>for the integral term: ZOH with Forward Euler:</p></li>
-</ul>
-<div class="math notranslate nohighlight">
-\[ \frac{1}{s_D} \longleftarrow \frac{T_s}{z-1} \]</div>
-<ul class="simple">
-<li><p>for the derivative term: ZOH with backward Euler:</p></li>
-</ul>
-<div class="math notranslate nohighlight">
-\[ s_I \longleftarrow \frac{1}{T_s}\frac{z-1}{z} \]</div>
-<p>Since the two <span class="math notranslate nohighlight">\(s\)</span> variables are going to be substituted differently, we introduce <span class="math notranslate nohighlight">\(s_I\)</span> for the integral term and <span class="math notranslate nohighlight">\(s_D\)</span> for the derivative term.</p>
-<div class="cell docutils container">
-<div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">Gpid</span> <span class="o">=</span> <span class="n">Kp</span> <span class="o">+</span> <span class="n">Ki</span><span class="o">/</span><span class="n">si</span> <span class="o">+</span> <span class="n">Kd</span><span class="o">*</span><span class="n">N</span><span class="o">/</span><span class="p">(</span><span class="mi">1</span><span class="o">+</span><span class="n">N</span><span class="o">/</span><span class="n">sd</span><span class="p">)</span>   <span class="c1"># PID-control</span>
-<span class="n">mprint</span><span class="p">(</span><span class="s2">&quot;G_</span><span class="si">{PID}</span><span class="s2">=&quot;</span><span class="p">,</span> <span class="n">latex</span><span class="p">(</span><span class="n">Gpid</span><span class="p">))</span>
-
-<span class="n">Gpid</span> <span class="o">=</span> <span class="n">Gpid</span><span class="o">.</span><span class="n">subs</span><span class="p">(([</span><span class="mi">1</span><span class="o">/</span><span class="n">si</span><span class="p">,</span> <span class="n">Ts</span> <span class="o">/</span> <span class="p">(</span><span class="n">z</span><span class="o">-</span><span class="mi">1</span><span class="p">)],</span> 
-                  <span class="p">[</span><span class="n">sd</span>  <span class="p">,</span> <span class="p">(</span><span class="n">z</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span> <span class="o">/</span> <span class="p">(</span><span class="n">Ts</span> <span class="o">*</span><span class="n">z</span><span class="p">)]))</span>
-<span class="n">mprint</span><span class="p">(</span><span class="s2">&quot;G_</span><span class="si">{PID}</span><span class="s2">=&quot;</span><span class="p">,</span> <span class="n">latex</span><span class="p">(</span><span class="n">Gpid</span><span class="p">))</span>
-</pre></div>
-</div>
-</div>
-<div class="cell_output docutils container">
-<div class="output text_latex math notranslate nohighlight">
-\[\displaystyle G_{PID}=\frac{K_{d} N}{\frac{N}{s_{D}} + 1} + \frac{K_{i}}{s_{I}} + K_{p}\]</div>
-<div class="output text_latex math notranslate nohighlight">
-\[\displaystyle G_{PID}=\frac{K_{d} N}{\frac{N T_{s} z}{z - 1} + 1} + \frac{K_{i} T_{s}}{z - 1} + K_{p}\]</div>
-</div>
-</div>
-<div class="cell docutils container">
-<div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">eq</span> <span class="o">=</span> <span class="n">Eq</span><span class="p">(</span><span class="n">u</span><span class="p">,</span> <span class="n">Gpid</span> <span class="o">*</span> <span class="n">e</span><span class="p">)</span>
-<span class="n">mprint</span><span class="p">(</span><span class="n">latex</span><span class="p">(</span><span class="n">eq</span><span class="p">))</span>
-
-<span class="n">eq</span> <span class="o">=</span> <span class="n">factor</span><span class="p">(</span><span class="n">eq</span><span class="p">)</span>
-<span class="n">mprint</span><span class="p">(</span><span class="n">latex</span><span class="p">(</span><span class="n">eq</span><span class="p">))</span>
-
-<span class="n">eq</span> <span class="o">=</span> <span class="n">Eq</span><span class="p">(</span><span class="n">numer</span><span class="p">(</span><span class="n">eq</span><span class="o">.</span><span class="n">rhs</span><span class="p">),</span> <span class="n">eq</span><span class="o">.</span><span class="n">lhs</span> <span class="o">*</span> <span class="n">denom</span><span class="p">(</span><span class="n">eq</span><span class="o">.</span><span class="n">rhs</span><span class="p">))</span>
-<span class="n">mprint</span><span class="p">(</span><span class="n">latex</span><span class="p">(</span><span class="n">eq</span><span class="p">))</span>
-
-<span class="c1">#eq = expand(eq)</span>
-<span class="c1">#mprint(latex(eq))</span>
 
 <span class="n">eq</span> <span class="o">=</span> <span class="n">expand</span><span class="p">(</span><span class="n">Eq</span><span class="p">(</span><span class="n">eq</span><span class="o">.</span><span class="n">lhs</span><span class="o">/</span><span class="n">z</span><span class="o">**</span><span class="mi">2</span><span class="o">/</span><span class="n">Ts</span><span class="o">/</span><span class="n">N</span><span class="p">,</span> <span class="n">eq</span><span class="o">.</span><span class="n">rhs</span><span class="o">/</span><span class="n">z</span><span class="o">**</span><span class="mi">2</span><span class="o">/</span><span class="n">Ts</span><span class="o">/</span><span class="n">N</span> <span class="p">))</span>
 <span class="n">mprint</span><span class="p">(</span><span class="n">latex</span><span class="p">(</span><span class="n">eq</span><span class="p">))</span>
 
-<span class="n">eq</span> <span class="o">=</span> <span class="p">(</span><span class="n">eq</span><span class="o">.</span><span class="n">subs</span><span class="p">(</span><span class="n">e</span><span class="o">/</span><span class="n">z</span><span class="o">**</span><span class="mi">2</span><span class="p">,</span> <span class="n">e2</span><span class="p">)</span><span class="o">.</span><span class="n">subs</span><span class="p">(</span><span class="n">e</span><span class="o">/</span><span class="n">z</span><span class="p">,</span> <span class="n">e1</span><span class="p">)</span><span class="o">.</span><span class="n">subs</span><span class="p">(</span><span class="n">e</span><span class="p">,</span> <span class="n">e0</span><span class="p">)</span><span class="o">.</span><span class="n">subs</span><span class="p">(</span><span class="n">u</span><span class="o">/</span><span class="n">z</span><span class="o">**</span><span class="mi">2</span><span class="p">,</span> <span class="n">u2</span><span class="p">)</span><span class="o">.</span><span class="n">subs</span><span class="p">(</span><span class="n">u</span><span class="o">/</span><span class="n">z</span><span class="p">,</span> <span class="n">u1</span><span class="p">)</span><span class="o">.</span><span class="n">subs</span><span class="p">(</span><span class="n">u</span><span class="p">,</span> <span class="n">u0</span><span class="p">))</span>
+<span class="n">eq</span> <span class="o">=</span> <span class="n">eq</span><span class="o">.</span><span class="n">subs</span><span class="p">(</span><span class="n">e</span><span class="o">/</span><span class="n">z</span><span class="o">**</span><span class="mi">2</span><span class="p">,</span> <span class="n">e2</span><span class="p">)</span><span class="o">.</span><span class="n">subs</span><span class="p">(</span><span class="n">e</span><span class="o">/</span><span class="n">z</span><span class="p">,</span> <span class="n">e1</span><span class="p">)</span><span class="o">.</span><span class="n">subs</span><span class="p">(</span><span class="n">e</span><span class="p">,</span> <span class="n">e0</span><span class="p">)</span><span class="o">.</span><span class="n">subs</span><span class="p">(</span><span class="n">u</span><span class="o">/</span><span class="n">z</span><span class="o">**</span><span class="mi">2</span><span class="p">,</span> <span class="n">u2</span><span class="p">)</span><span class="o">.</span><span class="n">subs</span><span class="p">(</span><span class="n">u</span><span class="o">/</span><span class="n">z</span><span class="p">,</span> <span class="n">u1</span><span class="p">)</span><span class="o">.</span><span class="n">subs</span><span class="p">(</span><span class="n">u</span><span class="p">,</span> <span class="n">u0</span><span class="p">)</span>
 <span class="n">mprint</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\\</span><span class="s2">small &quot;</span><span class="p">,</span> <span class="n">latex</span><span class="p">(</span><span class="n">eq</span><span class="p">))</span>
 
-<span class="n">eq</span> <span class="o">=</span><span class="n">Eq</span><span class="p">(</span><span class="n">collect</span><span class="p">(</span><span class="n">eq</span><span class="o">.</span><span class="n">rhs</span><span class="p">,</span> <span class="p">[</span><span class="n">u0</span><span class="p">,</span> <span class="n">u1</span><span class="p">,</span> <span class="n">u2</span><span class="p">]),</span> <span class="n">collect</span><span class="p">(</span><span class="n">eq</span><span class="o">.</span><span class="n">lhs</span><span class="p">,</span> <span class="p">[</span><span class="n">e0</span><span class="p">,</span> <span class="n">e1</span><span class="p">,</span> <span class="n">e2</span><span class="p">]))</span>
+<span class="n">eq</span> <span class="o">=</span> <span class="n">Eq</span><span class="p">(</span><span class="n">collect</span><span class="p">(</span><span class="n">eq</span><span class="o">.</span><span class="n">rhs</span><span class="p">,</span> <span class="p">[</span><span class="n">u0</span><span class="p">,</span> <span class="n">u1</span><span class="p">,</span> <span class="n">u2</span><span class="p">]),</span> <span class="n">collect</span><span class="p">(</span><span class="n">eq</span><span class="o">.</span><span class="n">lhs</span><span class="p">,</span> <span class="p">[</span><span class="n">e0</span><span class="p">,</span> <span class="n">e1</span><span class="p">,</span> <span class="n">e2</span><span class="p">])</span> <span class="p">)</span>
 <span class="n">mprintb</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\\</span><span class="s2">small &quot;</span><span class="p">,</span> <span class="n">latex</span><span class="p">(</span><span class="n">eq</span><span class="p">))</span>
 </pre></div>
 </div>
 </div>
 <div class="cell_output docutils container">
 <div class="output text_latex math notranslate nohighlight">
-\[\displaystyle u = e \left(\frac{K_{d} N}{\frac{N T_{s} z}{z - 1} + 1} + \frac{K_{i} T_{s}}{z - 1} + K_{p}\right)\]</div>
+\[\displaystyle u = \frac{e \left(D N + I N T_{s}^{2} + P + T_{s} \left(- I - N P\right) + z^{2} \left(D N + P\right) + z \left(- 2 D N + I T_{s} + N P T_{s} - 2 P\right)\right)}{\left(z - 1\right) \left(N T_{s} + z - 1\right)}\]</div>
 <div class="output text_latex math notranslate nohighlight">
-\[\displaystyle u = \frac{e \left(K_{d} N z^{2} - 2 K_{d} N z + K_{d} N + K_{i} N T_{s}^{2} z + K_{i} T_{s} z - K_{i} T_{s} + K_{p} N T_{s} z^{2} - K_{p} N T_{s} z + K_{p} z^{2} - 2 K_{p} z + K_{p}\right)}{\left(z - 1\right) \left(N T_{s} z + z - 1\right)}\]</div>
+\[\displaystyle u = \frac{e \left(D N z^{2} - 2 D N z + D N + I N T_{s}^{2} + I T_{s} z - I T_{s} + N P T_{s} z - N P T_{s} + P z^{2} - 2 P z + P\right)}{\left(z - 1\right) \left(N T_{s} + z - 1\right)}\]</div>
 <div class="output text_latex math notranslate nohighlight">
-\[\displaystyle e \left(K_{d} N z^{2} - 2 K_{d} N z + K_{d} N + K_{i} N T_{s}^{2} z + K_{i} T_{s} z - K_{i} T_{s} + K_{p} N T_{s} z^{2} - K_{p} N T_{s} z + K_{p} z^{2} - 2 K_{p} z + K_{p}\right) = u \left(z - 1\right) \left(N T_{s} z + z - 1\right)\]</div>
+\[\displaystyle e \left(D N z^{2} - 2 D N z + D N + I N T_{s}^{2} + I T_{s} z - I T_{s} + N P T_{s} z - N P T_{s} + P z^{2} - 2 P z + P\right) = u \left(z - 1\right) \left(N T_{s} + z - 1\right)\]</div>
 <div class="output text_latex math notranslate nohighlight">
-\[\displaystyle \frac{K_{d} e}{T_{s}} - \frac{2 K_{d} e}{T_{s} z} + \frac{K_{d} e}{T_{s} z^{2}} + \frac{K_{i} T_{s} e}{z} + \frac{K_{i} e}{N z} - \frac{K_{i} e}{N z^{2}} + K_{p} e - \frac{K_{p} e}{z} + \frac{K_{p} e}{N T_{s}} - \frac{2 K_{p} e}{N T_{s} z} + \frac{K_{p} e}{N T_{s} z^{2}} = u - \frac{u}{z} + \frac{u}{N T_{s}} - \frac{2 u}{N T_{s} z} + \frac{u}{N T_{s} z^{2}}\]</div>
+\[\displaystyle \frac{D e}{T_{s}} - \frac{2 D e}{T_{s} z} + \frac{D e}{T_{s} z^{2}} + \frac{I T_{s} e}{z^{2}} + \frac{I e}{N z} - \frac{I e}{N z^{2}} + \frac{P e}{z} - \frac{P e}{z^{2}} + \frac{P e}{N T_{s}} - \frac{2 P e}{N T_{s} z} + \frac{P e}{N T_{s} z^{2}} = \frac{u}{z} - \frac{u}{z^{2}} + \frac{u}{N T_{s}} - \frac{2 u}{N T_{s} z} + \frac{u}{N T_{s} z^{2}}\]</div>
 <div class="output text_latex math notranslate nohighlight">
-\[\displaystyle \small \frac{K_{d} e_{k}}{T_{s}} - \frac{2 K_{d} e_{k-1}}{T_{s}} + \frac{K_{d} e_{k-2}}{T_{s}} + K_{i} T_{s} e_{k-1} + \frac{K_{i} e_{k-1}}{N} - \frac{K_{i} e_{k-2}}{N} + K_{p} e_{k} - K_{p} e_{k-1} + \frac{K_{p} e_{k}}{N T_{s}} - \frac{2 K_{p} e_{k-1}}{N T_{s}} + \frac{K_{p} e_{k-2}}{N T_{s}} = u_{k} - u_{k-1} + \frac{u_{k}}{N T_{s}} - \frac{2 u_{k-1}}{N T_{s}} + \frac{u_{k-2}}{N T_{s}}\]</div>
+\[\displaystyle \small \frac{D e_{k}}{T_{s}} - \frac{2 D e_{k-1}}{T_{s}} + \frac{D e_{k-2}}{T_{s}} + I T_{s} e_{k-2} + \frac{I e_{k-1}}{N} - \frac{I e_{k-2}}{N} + P e_{k-1} - P e_{k-2} + \frac{P e_{k}}{N T_{s}} - \frac{2 P e_{k-1}}{N T_{s}} + \frac{P e_{k-2}}{N T_{s}} = u_{k-1} - u_{k-2} + \frac{u_{k}}{N T_{s}} - \frac{2 u_{k-1}}{N T_{s}} + \frac{u_{k-2}}{N T_{s}}\]</div>
 <div class="output text_latex math notranslate nohighlight">
-\[\displaystyle \boxed{\small u_{k} \left(1 + \frac{1}{N T_{s}}\right) + u_{k-1} \left(-1 - \frac{2}{N T_{s}}\right) + \frac{u_{k-2}}{N T_{s}} = e_{k} \left(\frac{K_{d}}{T_{s}} + K_{p} + \frac{K_{p}}{N T_{s}}\right) + e_{k-1} \left(- \frac{2 K_{d}}{T_{s}} + K_{i} T_{s} + \frac{K_{i}}{N} - K_{p} - \frac{2 K_{p}}{N T_{s}}\right) + e_{k-2} \left(\frac{K_{d}}{T_{s}} - \frac{K_{i}}{N} + \frac{K_{p}}{N T_{s}}\right)}\]</div>
+\[\displaystyle \boxed{\small u_{k-1} \left(1 - \frac{2}{N T_{s}}\right) + u_{k-2} \left(-1 + \frac{1}{N T_{s}}\right) + \frac{u_{k}}{N T_{s}} = e_{k} \left(\frac{D}{T_{s}} + \frac{P}{N T_{s}}\right) + e_{k-1} \left(- \frac{2 D}{T_{s}} + \frac{I}{N} + P - \frac{2 P}{N T_{s}}\right) + e_{k-2} \left(\frac{D}{T_{s}} + I T_{s} - \frac{I}{N} - P + \frac{P}{N T_{s}}\right)}\]</div>
 </div>
 </div>
-<section id="comparison-with-matlab-simulink">
-<h3>Comparison with MATLAB Simulink<a class="headerlink" href="#comparison-with-matlab-simulink" title="Link to this heading">¶</a></h3>
-<p>Simulink file: <a class="reference external" href="https://www.dropbox.com/scl/fi/e82galim0xalsd4ya2bg9/comparison.slx?rlkey=f1gv08mb8m8fci54xqltybwll&amp;amp;dl=0">download it here (for MATLAB R2024b)</a>.</p>
-<p><img alt="" src="_images/p15.png" /></p>
+<section id="comparison-with-simulink">
+<h4>Comparison with Simulink<a class="headerlink" href="#comparison-with-simulink" title="Link to this heading">¶</a></h4>
+<p>The following figure will be our general PID subsytem, where we can implement the discrete PID algorithm inside the MATLAB function block.</p>
 <p><img alt="" src="_images/p14.png" /></p>
+<p>The MATLAB function:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">function</span> <span class="n">u</span> <span class="o">=</span> <span class="n">PID</span><span class="p">(</span><span class="n">u1</span><span class="p">,</span> <span class="n">u2</span><span class="p">,</span> <span class="n">e0</span><span class="p">,</span> <span class="n">e1</span><span class="p">,</span> <span class="n">e2</span><span class="p">)</span>
+<span class="o">%</span> <span class="n">Integral</span> <span class="n">term</span>     <span class="p">:</span> <span class="n">Forward</span> <span class="n">Euler</span><span class="p">:</span>
+<span class="o">%</span> <span class="n">Derivative</span> <span class="nb">filter</span> <span class="p">:</span> <span class="n">Forward</span> <span class="n">Euler</span>
+
+<span class="n">P</span> <span class="o">=</span> <span class="mf">0.12</span><span class="p">;</span>
+<span class="n">D</span> <span class="o">=</span> <span class="mf">0.1</span><span class="p">;</span>
+<span class="n">I</span> <span class="o">=</span> <span class="mf">1.2</span><span class="p">;</span>
+<span class="n">N</span> <span class="o">=</span> <span class="mi">100</span><span class="p">;</span>
+<span class="n">Ts</span> <span class="o">=</span> <span class="mf">1e-3</span><span class="p">;</span>
+<span class="n">NTs</span> <span class="o">=</span> <span class="n">N</span> <span class="o">*</span> <span class="n">Ts</span><span class="p">;</span>
+
+<span class="n">E0</span> <span class="o">=</span> <span class="n">D</span><span class="o">/</span><span class="n">Ts</span> <span class="o">+</span> <span class="n">P</span><span class="o">/</span><span class="n">NTs</span><span class="p">;</span>
+<span class="n">E1</span> <span class="o">=</span> <span class="o">-</span><span class="mi">2</span><span class="o">*</span><span class="n">D</span><span class="o">/</span><span class="n">Ts</span> <span class="o">+</span> <span class="n">I</span><span class="o">/</span><span class="n">N</span> <span class="o">+</span> <span class="n">P</span> <span class="o">-</span><span class="mi">2</span><span class="o">*</span><span class="n">P</span><span class="o">/</span><span class="n">NTs</span><span class="p">;</span>
+<span class="n">E2</span> <span class="o">=</span> <span class="n">D</span><span class="o">/</span><span class="n">Ts</span> <span class="o">+</span> <span class="n">I</span><span class="o">*</span><span class="n">Ts</span> <span class="o">-</span><span class="n">I</span><span class="o">/</span><span class="n">N</span> <span class="o">-</span><span class="n">P</span> <span class="o">+</span> <span class="n">P</span><span class="o">/</span><span class="n">NTs</span><span class="p">;</span>
+
+<span class="n">rhs</span> <span class="o">=</span> <span class="p">(</span><span class="mi">1</span> <span class="o">-</span> <span class="mi">2</span><span class="o">/</span><span class="n">NTs</span><span class="p">)</span> <span class="o">*</span> <span class="n">u1</span> <span class="o">+</span> <span class="p">(</span><span class="o">-</span><span class="mi">1</span> <span class="o">+</span> <span class="mi">1</span><span class="o">/</span><span class="n">NTs</span><span class="p">)</span><span class="o">*</span><span class="n">u2</span><span class="p">;</span>
+<span class="n">lhs</span> <span class="o">=</span> <span class="n">E0</span> <span class="o">*</span> <span class="n">e0</span> <span class="o">+</span> <span class="n">E1</span> <span class="o">*</span> <span class="n">e1</span> <span class="o">+</span> <span class="n">E2</span> <span class="o">*</span> <span class="n">e2</span><span class="p">;</span>
+<span class="n">u</span> <span class="o">=</span> <span class="p">(</span><span class="n">lhs</span> <span class="o">-</span> <span class="n">rhs</span><span class="p">)</span> <span class="o">*</span> <span class="n">NTs</span><span class="p">;</span>
+</pre></div>
+</div>
+<p>To compare our PID algorithm with Simulink, we then use the following scenario.</p>
+<p><img alt="" src="_images/p15.png" /></p>
+<p><img alt="" src="_images/p16.png" /></p>
 </section>
+</section>
+<section id="using-bilinear-transform-method">
+<h3>Using bilinear transform method<a class="headerlink" href="#using-bilinear-transform-method" title="Link to this heading">¶</a></h3>
+<p>Let us use the forward Euler method for both the integral term and filter.</p>
+<div class="math notranslate nohighlight">
+\[ \frac{1}{s} \longleftarrow \frac{T_s}{2} \frac{z+1}{z-1} \]</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">Gpid</span> <span class="o">=</span> <span class="n">P</span> <span class="o">+</span> <span class="n">I</span><span class="o">/</span><span class="n">s</span> <span class="o">+</span> <span class="n">D</span><span class="o">*</span><span class="n">N</span><span class="o">/</span><span class="p">(</span><span class="mi">1</span><span class="o">+</span><span class="n">N</span><span class="o">/</span><span class="n">s</span><span class="p">)</span>     <span class="c1"># PID-control</span>
+<span class="n">Gpid</span> <span class="o">=</span> <span class="n">Gpid</span><span class="o">.</span><span class="n">subs</span><span class="p">(</span><span class="mi">1</span><span class="o">/</span><span class="n">s</span><span class="p">,</span> <span class="n">Ts</span><span class="o">/</span><span class="mi">2</span> <span class="o">*</span> <span class="p">(</span><span class="n">z</span><span class="o">+</span><span class="mi">1</span><span class="p">)</span><span class="o">/</span><span class="p">(</span><span class="n">z</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span> <span class="p">)</span>
+<span class="n">mprint</span><span class="p">(</span><span class="s2">&quot;G_</span><span class="si">{PID}</span><span class="s2">=&quot;</span><span class="p">,</span> <span class="n">latex</span><span class="p">(</span><span class="n">Gpid</span><span class="p">))</span>
+
+<span class="n">Gpid</span> <span class="o">=</span> <span class="n">factor</span><span class="p">(</span><span class="n">Gpid</span><span class="p">)</span>
+
+<span class="n">Gpid</span> <span class="o">=</span> <span class="n">collect</span><span class="p">(</span><span class="n">numer</span><span class="p">(</span><span class="n">Gpid</span><span class="p">),</span> <span class="p">[</span><span class="n">z</span><span class="o">**</span><span class="mi">2</span><span class="p">,</span> <span class="n">z</span><span class="p">])</span> <span class="o">/</span>  <span class="n">simplify</span><span class="p">(</span><span class="n">denom</span><span class="p">(</span><span class="n">Gpid</span><span class="p">))</span>
+<span class="n">mprintb</span><span class="p">(</span><span class="s2">&quot;G_</span><span class="si">{PID}</span><span class="s2">=&quot;</span><span class="p">,</span> <span class="n">latex</span><span class="p">(</span><span class="n">Gpid</span><span class="p">))</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_latex math notranslate nohighlight">
+\[\displaystyle G_{PID}=\frac{D N}{\frac{N T_{s} \left(z + 1\right)}{2 \left(z - 1\right)} + 1} + \frac{I T_{s} \left(z + 1\right)}{2 \left(z - 1\right)} + P\]</div>
+<div class="output text_latex math notranslate nohighlight">
+\[\displaystyle \boxed{G_{PID}=\frac{4 D N + I N T_{s}^{2} - 2 I T_{s} - 2 N P T_{s} + 4 P + z^{2} \left(4 D N + I N T_{s}^{2} + 2 I T_{s} + 2 N P T_{s} + 4 P\right) + z \left(- 8 D N + 2 I N T_{s}^{2} - 8 P\right)}{2 \left(z - 1\right) \left(N T_{s} z + N T_{s} + 2 z - 2\right)}}\]</div>
+</div>
+</div>
+<p>Now, let us apply the input to the output.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">eq</span> <span class="o">=</span> <span class="n">Eq</span><span class="p">(</span><span class="n">u</span><span class="p">,</span> <span class="n">Gpid</span> <span class="o">*</span> <span class="n">e</span><span class="p">)</span>
+<span class="n">mprint</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\\</span><span class="s2">small &quot;</span><span class="p">,</span> <span class="n">latex</span><span class="p">(</span><span class="n">eq</span><span class="p">))</span>
+
+<span class="n">eq</span> <span class="o">=</span> <span class="n">Eq</span><span class="p">(</span><span class="n">numer</span><span class="p">(</span><span class="n">eq</span><span class="o">.</span><span class="n">rhs</span><span class="p">),</span> <span class="n">eq</span><span class="o">.</span><span class="n">lhs</span> <span class="o">*</span> <span class="n">denom</span><span class="p">(</span><span class="n">eq</span><span class="o">.</span><span class="n">rhs</span><span class="p">))</span>
+<span class="n">mprint</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\\</span><span class="s2">small &quot;</span><span class="p">,</span> <span class="n">latex</span><span class="p">(</span><span class="n">eq</span><span class="p">))</span>
+
+<span class="n">eq</span> <span class="o">=</span> <span class="n">expand</span><span class="p">(</span><span class="n">Eq</span><span class="p">(</span><span class="n">eq</span><span class="o">.</span><span class="n">lhs</span><span class="o">/</span><span class="n">z</span><span class="o">**</span><span class="mi">2</span><span class="o">/</span><span class="n">Ts</span><span class="o">/</span><span class="n">N</span><span class="o">/</span><span class="mi">8</span><span class="p">,</span> <span class="n">eq</span><span class="o">.</span><span class="n">rhs</span><span class="o">/</span><span class="n">z</span><span class="o">**</span><span class="mi">2</span><span class="o">/</span><span class="n">Ts</span><span class="o">/</span><span class="n">N</span><span class="o">/</span><span class="mi">8</span> <span class="p">))</span>
+<span class="n">mprint</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\\</span><span class="s2">small &quot;</span><span class="p">,</span> <span class="n">latex</span><span class="p">(</span><span class="n">eq</span><span class="p">))</span>
+
+<span class="n">eq</span> <span class="o">=</span> <span class="n">eq</span><span class="o">.</span><span class="n">subs</span><span class="p">(</span><span class="n">e</span><span class="o">/</span><span class="n">z</span><span class="o">**</span><span class="mi">2</span><span class="p">,</span> <span class="n">e2</span><span class="p">)</span><span class="o">.</span><span class="n">subs</span><span class="p">(</span><span class="n">e</span><span class="o">/</span><span class="n">z</span><span class="p">,</span> <span class="n">e1</span><span class="p">)</span><span class="o">.</span><span class="n">subs</span><span class="p">(</span><span class="n">e</span><span class="p">,</span> <span class="n">e0</span><span class="p">)</span><span class="o">.</span><span class="n">subs</span><span class="p">(</span><span class="n">u</span><span class="o">/</span><span class="n">z</span><span class="o">**</span><span class="mi">2</span><span class="p">,</span> <span class="n">u2</span><span class="p">)</span><span class="o">.</span><span class="n">subs</span><span class="p">(</span><span class="n">u</span><span class="o">/</span><span class="n">z</span><span class="p">,</span> <span class="n">u1</span><span class="p">)</span><span class="o">.</span><span class="n">subs</span><span class="p">(</span><span class="n">u</span><span class="p">,</span> <span class="n">u0</span><span class="p">)</span>
+<span class="n">mprint</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\\</span><span class="s2">small &quot;</span><span class="p">,</span> <span class="n">latex</span><span class="p">(</span><span class="n">eq</span><span class="p">))</span>
+
+<span class="n">eq_</span> <span class="o">=</span> <span class="n">Eq</span><span class="p">(</span><span class="n">collect</span><span class="p">(</span><span class="n">eq</span><span class="o">.</span><span class="n">rhs</span><span class="p">,</span> <span class="p">[</span><span class="n">u0</span><span class="p">,</span> <span class="n">u1</span><span class="p">,</span> <span class="n">u2</span><span class="p">]),</span> <span class="n">collect</span><span class="p">(</span><span class="n">expand</span><span class="p">(</span><span class="n">eq</span><span class="o">.</span><span class="n">lhs</span><span class="p">),</span> <span class="p">[</span><span class="n">e0</span><span class="p">,</span> <span class="n">e1</span><span class="p">,</span> <span class="n">e2</span><span class="p">]))</span>
+<span class="n">mprintb</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\\</span><span class="s2">small &quot;</span><span class="p">,</span> <span class="n">latex</span><span class="p">(</span><span class="n">eq_</span><span class="p">))</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_latex math notranslate nohighlight">
+\[\displaystyle \small u = \frac{e \left(4 D N + I N T_{s}^{2} - 2 I T_{s} - 2 N P T_{s} + 4 P + z^{2} \left(4 D N + I N T_{s}^{2} + 2 I T_{s} + 2 N P T_{s} + 4 P\right) + z \left(- 8 D N + 2 I N T_{s}^{2} - 8 P\right)\right)}{2 \left(z - 1\right) \left(N T_{s} z + N T_{s} + 2 z - 2\right)}\]</div>
+<div class="output text_latex math notranslate nohighlight">
+\[\displaystyle \small e \left(4 D N + I N T_{s}^{2} - 2 I T_{s} - 2 N P T_{s} + 4 P + z^{2} \left(4 D N + I N T_{s}^{2} + 2 I T_{s} + 2 N P T_{s} + 4 P\right) + z \left(- 8 D N + 2 I N T_{s}^{2} - 8 P\right)\right) = 2 u \left(z - 1\right) \left(N T_{s} z + N T_{s} + 2 z - 2\right)\]</div>
+<div class="output text_latex math notranslate nohighlight">
+\[\displaystyle \small \frac{D e}{2 T_{s}} - \frac{D e}{T_{s} z} + \frac{D e}{2 T_{s} z^{2}} + \frac{I T_{s} e}{8} + \frac{I T_{s} e}{4 z} + \frac{I T_{s} e}{8 z^{2}} + \frac{I e}{4 N} - \frac{I e}{4 N z^{2}} + \frac{P e}{4} - \frac{P e}{4 z^{2}} + \frac{P e}{2 N T_{s}} - \frac{P e}{N T_{s} z} + \frac{P e}{2 N T_{s} z^{2}} = \frac{u}{4} - \frac{u}{4 z^{2}} + \frac{u}{2 N T_{s}} - \frac{u}{N T_{s} z} + \frac{u}{2 N T_{s} z^{2}}\]</div>
+<div class="output text_latex math notranslate nohighlight">
+\[\displaystyle \small \frac{D e_{k}}{2 T_{s}} - \frac{D e_{k-1}}{T_{s}} + \frac{D e_{k-2}}{2 T_{s}} + \frac{I T_{s} e_{k}}{8} + \frac{I T_{s} e_{k-1}}{4} + \frac{I T_{s} e_{k-2}}{8} + \frac{I e_{k}}{4 N} - \frac{I e_{k-2}}{4 N} + \frac{P e_{k}}{4} - \frac{P e_{k-2}}{4} + \frac{P e_{k}}{2 N T_{s}} - \frac{P e_{k-1}}{N T_{s}} + \frac{P e_{k-2}}{2 N T_{s}} = \frac{u_{k}}{4} - \frac{u_{k-2}}{4} + \frac{u_{k}}{2 N T_{s}} - \frac{u_{k-1}}{N T_{s}} + \frac{u_{k-2}}{2 N T_{s}}\]</div>
+<div class="output text_latex math notranslate nohighlight">
+\[\displaystyle \boxed{\small u_{k} \left(\frac{1}{4} + \frac{1}{2 N T_{s}}\right) + u_{k-2} \left(- \frac{1}{4} + \frac{1}{2 N T_{s}}\right) - \frac{u_{k-1}}{N T_{s}} = e_{k} \left(\frac{D}{2 T_{s}} + \frac{I T_{s}}{8} + \frac{I}{4 N} + \frac{P}{4} + \frac{P}{2 N T_{s}}\right) + e_{k-1} \left(- \frac{D}{T_{s}} + \frac{I T_{s}}{4} - \frac{P}{N T_{s}}\right) + e_{k-2} \left(\frac{D}{2 T_{s}} + \frac{I T_{s}}{8} - \frac{I}{4 N} - \frac{P}{4} + \frac{P}{2 N T_{s}}\right)}\]</div>
+</div>
+</div>
+<section id="id1">
+<h4>Comparison with Simulink<a class="headerlink" href="#id1" title="Link to this heading">¶</a></h4>
+<p>The Simulink subsystem and testing scenario for the bilinear PID is similar to the forward-Euler PID from the previous section. The only difference is in the MATLAB function.</p>
+<p>The MATLAB function:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">function</span> <span class="n">u</span> <span class="o">=</span> <span class="n">PID</span><span class="p">(</span><span class="n">u1</span><span class="p">,</span> <span class="n">u2</span><span class="p">,</span> <span class="n">e0</span><span class="p">,</span> <span class="n">e1</span><span class="p">,</span> <span class="n">e2</span><span class="p">)</span>
+<span class="o">%</span> <span class="n">Integral</span> <span class="n">term</span>     <span class="p">:</span> <span class="n">bilinear</span>
+<span class="o">%</span> <span class="n">Derivative</span> <span class="nb">filter</span> <span class="p">:</span> <span class="n">bilinear</span>
+
+<span class="n">P</span> <span class="o">=</span> <span class="mf">0.12</span><span class="p">;</span>
+<span class="n">D</span> <span class="o">=</span> <span class="mf">0.1</span><span class="p">;</span>
+<span class="n">I</span> <span class="o">=</span> <span class="mf">1.2</span><span class="p">;</span>
+<span class="n">N</span> <span class="o">=</span> <span class="mi">100</span><span class="p">;</span>
+<span class="n">Ts</span> <span class="o">=</span> <span class="mf">1e-3</span><span class="p">;</span>
+<span class="n">NTs</span> <span class="o">=</span> <span class="n">N</span> <span class="o">*</span> <span class="n">Ts</span><span class="p">;</span>
+
+<span class="n">E0</span> <span class="o">=</span> <span class="n">D</span><span class="o">/</span><span class="p">(</span><span class="mi">2</span><span class="o">*</span><span class="n">Ts</span><span class="p">)</span> <span class="o">+</span> <span class="n">I</span><span class="o">*</span><span class="n">Ts</span><span class="o">/</span><span class="mi">8</span> <span class="o">+</span> <span class="n">I</span><span class="o">/</span><span class="p">(</span><span class="mi">4</span><span class="o">*</span><span class="n">N</span><span class="p">)</span> <span class="o">+</span> <span class="n">P</span><span class="o">/</span><span class="mi">4</span> <span class="o">+</span> <span class="n">P</span><span class="o">/</span><span class="p">(</span><span class="mi">2</span><span class="o">*</span><span class="n">NTs</span><span class="p">);</span>
+<span class="n">E1</span> <span class="o">=</span> <span class="o">-</span><span class="n">D</span><span class="o">/</span><span class="n">Ts</span> <span class="o">+</span> <span class="n">I</span><span class="o">*</span><span class="n">Ts</span><span class="o">/</span><span class="mi">4</span> <span class="o">-</span> <span class="n">P</span><span class="o">/</span><span class="n">NTs</span><span class="p">;</span>
+<span class="n">E2</span> <span class="o">=</span> <span class="n">D</span><span class="o">/</span><span class="p">(</span><span class="mi">2</span><span class="o">*</span><span class="n">Ts</span><span class="p">)</span> <span class="o">+</span> <span class="n">I</span><span class="o">*</span><span class="n">Ts</span><span class="o">/</span><span class="mi">8</span> <span class="o">-</span> <span class="n">I</span><span class="o">/</span><span class="p">(</span><span class="mi">4</span><span class="o">*</span><span class="n">N</span><span class="p">)</span> <span class="o">-</span> <span class="n">P</span><span class="o">/</span><span class="mi">4</span> <span class="o">+</span> <span class="n">P</span><span class="o">/</span><span class="p">(</span><span class="mi">2</span><span class="o">*</span><span class="n">NTs</span><span class="p">);</span>
+
+<span class="n">rhs</span> <span class="o">=</span> <span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="o">/</span><span class="n">NTs</span><span class="p">)</span> <span class="o">*</span> <span class="n">u1</span> <span class="o">+</span> <span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="o">/</span><span class="mi">4</span> <span class="o">+</span> <span class="mi">1</span><span class="o">/</span><span class="p">(</span><span class="mi">2</span><span class="o">*</span><span class="n">NTs</span><span class="p">))</span><span class="o">*</span><span class="n">u2</span><span class="p">;</span>
+<span class="n">lhs</span> <span class="o">=</span> <span class="n">E0</span> <span class="o">*</span> <span class="n">e0</span> <span class="o">+</span> <span class="n">E1</span> <span class="o">*</span> <span class="n">e1</span> <span class="o">+</span> <span class="n">E2</span> <span class="o">*</span> <span class="n">e2</span><span class="p">;</span>
+<span class="n">u</span> <span class="o">=</span> <span class="p">(</span><span class="n">lhs</span> <span class="o">-</span> <span class="n">rhs</span><span class="p">)</span> <span class="o">/</span> <span class="p">(</span><span class="mi">1</span><span class="o">/</span><span class="mi">4</span> <span class="o">+</span> <span class="mi">1</span><span class="o">/</span><span class="p">(</span><span class="mi">2</span><span class="o">*</span><span class="n">NTs</span><span class="p">));</span>
+
+</pre></div>
+</div>
+</section>
+</section>
+</section>
+<section id="downloads">
+<h2>Downloads<a class="headerlink" href="#downloads" title="Link to this heading">¶</a></h2>
+<ul class="simple">
+<li><p><a class="reference external" href="https://www.dropbox.com/scl/fi/e82galim0xalsd4ya2bg9/mypid1.slx?rlkey=f1gv08mb8m8fci54xqltybwll&amp;amp;dl=0">Simulink file for forward-Euler PID</a></p></li>
+<li><p><a class="reference external" href="https://www.dropbox.com/scl/fi/469bgqh589eacz7lbrthq/mypid2.slx?rlkey=1gsb4naa980vuuohs0og4l9sx&amp;amp;dl=0">Simulink file for bilinear PID</a></p></li>
+</ul>
+<p>MATLAB version: R2024b</p>
 </section>
 </section>
 
@@ -514,17 +356,22 @@
     <h3><a href="intro.html">Table of Contents</a></h3>
     <ul>
 <li><a class="reference internal" href="#">Digital PID Control</a><ul>
+<li><a class="reference internal" href="#toc">TOC</a></li>
 <li><a class="reference internal" href="#required-imports">Required imports</a></li>
 <li><a class="reference internal" href="#define-symbols">Define symbols</a></li>
-<li><a class="reference internal" href="#pid-control-in-s-domain">PID control in s-domain</a></li>
-<li><a class="reference internal" href="#pd-control-with-zoh-backward-euler">PD-control with ZOH (Backward Euler)</a></li>
-<li><a class="reference internal" href="#pid-control-with-zoh-backward-euler">PID-control with ZOH  (Backward Euler)</a></li>
-<li><a class="reference internal" href="#pd-control-with-bilinear-transformation">PD-control with bilinear transformation</a></li>
-<li><a class="reference internal" href="#pid-control-with-bilinear-transformation">PID-control with bilinear transformation</a></li>
-<li><a class="reference internal" href="#pid-control-with-zoh-both-forward-and-backward-euler-and-derivative-filter">PID-control with ZOH (both Forward and Backward Euler) and derivative filter</a><ul>
-<li><a class="reference internal" href="#comparison-with-matlab-simulink">Comparison with MATLAB Simulink</a></li>
+<li><a class="reference internal" href="#continuous-time-pid-with-derivative-filter">Continuous-time PID with derivative filter</a></li>
+<li><a class="reference internal" href="#discrete-time-pid-with-derivative-filter">Discrete-time PID with derivative filter</a><ul>
+<li><a class="reference internal" href="#using-forward-euler-method">Using forward Euler method</a><ul>
+<li><a class="reference internal" href="#comparison-with-simulink">Comparison with Simulink</a></li>
 </ul>
 </li>
+<li><a class="reference internal" href="#using-bilinear-transform-method">Using bilinear transform method</a><ul>
+<li><a class="reference internal" href="#id1">Comparison with Simulink</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><a class="reference internal" href="#downloads">Downloads</a></li>
 </ul>
 </li>
 </ul>
