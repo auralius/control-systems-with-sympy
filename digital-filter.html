@@ -60,11 +60,11 @@
             
   <section class="tex2jax_ignore mathjax_ignore" id="digital-low-pass-filter">
 <h1>Digital Low-Pass Filter<a class="headerlink" href="#digital-low-pass-filter" title="Link to this heading">¶</a></h1>
-<p>Here, out goal is:</p>
+<p>Here, our goals are:</p>
 <ul class="simple">
 <li><p>discretize the second order Butterworth low-pass filter  by using bilinear transformation.</p></li>
 <li><p>implement the discretization into MATLAB Simulink</p></li>
-<li><p>compare thw results to the exsiting (built-in) filter in MATLAB SImulink</p></li>
+<li><p>compare the results to the exsiting discrete filter in MATLAB Simulink</p></li>
 </ul>
 <section id="required-imports">
 <h2>Required Imports<a class="headerlink" href="#required-imports" title="Link to this heading">¶</a></h2>
@@ -81,7 +81,7 @@
 </section>
 <section id="second-order-low-pass-butterworth-filter">
 <h2>Second Order Low-Pass Butterworth Filter<a class="headerlink" href="#second-order-low-pass-butterworth-filter" title="Link to this heading">¶</a></h2>
-<p>Transfer function of a second order lowpass filter (Butterworth):</p>
+<p>Transfer function of a second-order-low-pass filter (Butterworth):</p>
 <div class="math notranslate nohighlight">
 \[ H(s) = \frac{\omega_{c}^{2}}{\omega_{c}^{2} + \sqrt{2} \omega_{c} s + s^{2}} \]</div>
 <div class="cell docutils container">
@@ -99,7 +99,7 @@
 </div>
 <section id="discretization-with-bilinear-transformation">
 <h3>Discretization with Bilinear Transformation<a class="headerlink" href="#discretization-with-bilinear-transformation" title="Link to this heading">¶</a></h3>
-<p>A second order low-pass Butterworth filter is defined as follows:</p>
+<p>A second-order-low-pass Butterworth filter is defined as follows:</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">H</span> <span class="o">=</span> <span class="n">wc</span><span class="o">**</span><span class="mi">2</span> <span class="o">/</span> <span class="p">(</span><span class="n">wc</span><span class="o">**</span><span class="mi">2</span><span class="o">+</span><span class="n">sqrt</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span><span class="o">*</span><span class="n">s</span><span class="o">*</span><span class="n">wc</span><span class="o">+</span><span class="n">s</span><span class="o">**</span><span class="mi">2</span><span class="p">)</span>
@@ -112,8 +112,9 @@
 \[\displaystyle H=\frac{\omega_{c}^{2}}{\omega_{c}^{2} + \sqrt{2} \omega_{c} s + s^{2}}\]</div>
 </div>
 </div>
-<p>Next, we transform <span class="math notranslate nohighlight">\(s\)</span> into <span class="math notranslate nohighlight">\(z\)</span> by applying the following substitution.
-$<span class="math notranslate nohighlight">\( \frac{1}{s} \longleftarrow \frac{T_s}{2} \frac{z+1}{z-1} \)</span>$</p>
+<p>Next, we transform <span class="math notranslate nohighlight">\(s\)</span> into <span class="math notranslate nohighlight">\(z\)</span> by applying the following substitution.</p>
+<div class="math notranslate nohighlight">
+\[ \frac{1}{s} \longleftarrow \frac{T_s}{2} \frac{z+1}{z-1} \]</div>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">H</span> <span class="o">=</span> <span class="n">H</span><span class="o">.</span><span class="n">subs</span><span class="p">(</span><span class="mi">1</span><span class="o">/</span><span class="n">s</span><span class="p">,</span> <span class="n">Ts</span><span class="o">/</span><span class="mi">2</span> <span class="o">*</span> <span class="p">(</span><span class="n">z</span><span class="o">+</span><span class="mi">1</span><span class="p">)</span><span class="o">/</span><span class="p">(</span><span class="n">z</span><span class="o">-</span><span class="mi">1</span><span class="p">))</span>
@@ -182,8 +183,10 @@ $<span class="math notranslate nohighlight">\( \frac{1}{s} \longleftarrow \frac{
 <h3>Implementation in Simulink<a class="headerlink" href="#implementation-in-simulink" title="Link to this heading">¶</a></h3>
 <p><a class="reference external" href="https://www.dropbox.com/scl/fi/k3pyr1w9zjjy9xytu2tai/lpfbuttter2nd.slx?rlkey=1fxpi9xvcoqnb5085nd2v8y8t&amp;amp;dl=0">Download the Simulink file here (R2024b).</a></p>
 <div class="highlight-octave notranslate"><div class="highlight"><pre><span></span><span class="k">function</span><span class="w"> </span>y<span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="nf">LPF</span><span class="p">(</span>y1, y2, x0, x1, x2, wc, Ts<span class="p">)</span>
-<span class="c">% Integral term     : bilinear</span>
-<span class="c">% Derivative filter : bilinear</span>
+<span class="c">% y : filter output</span>
+<span class="c">% x : filter input</span>
+<span class="c">% wc: cut-off frequency</span>
+<span class="c">% Ts: sampling period</span>
 
 <span class="n">sq22</span> <span class="p">=</span> <span class="mi">2</span><span class="o">*</span><span class="nb">sqrt</span><span class="p">(</span><span class="mi">2</span><span class="p">);</span>
 <span class="n">Tswc</span> <span class="p">=</span> <span class="n">Ts</span> <span class="o">*</span> <span class="n">wc</span><span class="p">;</span>
