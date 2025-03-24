@@ -34,7 +34,7 @@
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
     <link rel="next" title="Solved Various Problem Sets" href="misc-problem-sets.html" />
-    <link rel="prev" title="Digital PID Control" href="digital-pid.html" /> 
+    <link rel="prev" title="Digital PID Control - Part 2" href="digital-pid-2.html" /> 
   </head><body>
     <div class="related" role="navigation" aria-label="Related">
       <h3>Navigation</h3>
@@ -46,7 +46,7 @@
           <a href="misc-problem-sets.html" title="Solved Various Problem Sets"
              accesskey="N">next</a> |</li>
         <li class="right" >
-          <a href="digital-pid.html" title="Digital PID Control"
+          <a href="digital-pid-2.html" title="Digital PID Control - Part 2"
              accesskey="P">previous</a> |</li>
         <li class="nav-item nav-item-0"><a href="intro.html">Control Systems with Sympy</a> &#187;</li>
         <li class="nav-item nav-item-this"><a href="">Digital Low-Pass Filter</a></li> 
@@ -60,11 +60,11 @@
             
   <section class="tex2jax_ignore mathjax_ignore" id="digital-low-pass-filter">
 <h1>Digital Low-Pass Filter<a class="headerlink" href="#digital-low-pass-filter" title="Link to this heading">¶</a></h1>
-<p>Here, our goals are:</p>
+<p>Here, out goal is:</p>
 <ul class="simple">
-<li><p>discretize the second order Butterworth low-pass filter  by using bilinear transformation.</p></li>
+<li><p>discretize the low-pass filter  by using bilinear transformation.</p></li>
 <li><p>implement the discretization into MATLAB Simulink</p></li>
-<li><p>compare the results to the exsiting discrete filter in MATLAB Simulink</p></li>
+<li><p>compare thw results to the exsiting (built-in) filter in MATLAB SImulink</p></li>
 </ul>
 <section id="required-imports">
 <h2>Required Imports<a class="headerlink" href="#required-imports" title="Link to this heading">¶</a></h2>
@@ -78,15 +78,9 @@
 </div>
 </div>
 </div>
-</section>
-<section id="second-order-low-pass-butterworth-filter">
-<h2>Second Order Low-Pass Butterworth Filter<a class="headerlink" href="#second-order-low-pass-butterworth-filter" title="Link to this heading">¶</a></h2>
-<p>Transfer function of a second-order-low-pass filter (Butterworth):</p>
-<div class="math notranslate nohighlight">
-\[ H(s) = \frac{\omega_{c}^{2}}{\omega_{c}^{2} + \sqrt{2} \omega_{c} s + s^{2}} \]</div>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">Ts</span><span class="p">,</span> <span class="n">N</span>     <span class="o">=</span> <span class="n">symbols</span><span class="p">(</span><span class="s1">&#39;T_s N&#39;</span><span class="p">,</span> <span class="n">positive</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">Ts</span><span class="p">,</span> <span class="n">tau</span>   <span class="o">=</span> <span class="n">symbols</span><span class="p">(</span><span class="s1">&#39;T_s tau&#39;</span><span class="p">,</span> <span class="n">positive</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 <span class="n">s</span>         <span class="o">=</span> <span class="n">symbols</span><span class="p">(</span><span class="s1">&#39;s&#39;</span><span class="p">,</span> <span class="nb">complex</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 <span class="n">z</span>         <span class="o">=</span> <span class="n">symbols</span><span class="p">(</span><span class="s1">&#39;z&#39;</span><span class="p">)</span>
 <span class="n">wc</span>        <span class="o">=</span> <span class="n">symbols</span><span class="p">(</span><span class="s1">&#39;omega_c&#39;</span><span class="p">,</span> <span class="n">positive</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
@@ -97,9 +91,100 @@
 </div>
 </div>
 </div>
+</section>
+<section id="first-order-low-pass-filter">
+<h2>First-Order Low-Pass Filter<a class="headerlink" href="#first-order-low-pass-filter" title="Link to this heading">¶</a></h2>
+<p>Transfer function of a first order lowpass filter (time-constant filter):</p>
+<div class="math notranslate nohighlight">
+\[ H(s) = \frac{1}  {\tau s+1} \]</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">H</span> <span class="o">=</span> <span class="mi">1</span> <span class="o">/</span> <span class="p">(</span><span class="n">tau</span><span class="o">*</span><span class="n">s</span><span class="o">+</span><span class="mi">1</span><span class="p">)</span>
+<span class="n">mprint</span><span class="p">(</span><span class="s1">&#39;H=&#39;</span><span class="p">,</span><span class="n">latex</span><span class="p">(</span><span class="n">H</span><span class="p">))</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_latex math notranslate nohighlight">
+\[\displaystyle H=\frac{1}{s \tau + 1}\]</div>
+</div>
+</div>
 <section id="discretization-with-bilinear-transformation">
 <h3>Discretization with Bilinear Transformation<a class="headerlink" href="#discretization-with-bilinear-transformation" title="Link to this heading">¶</a></h3>
-<p>A second-order-low-pass Butterworth filter is defined as follows:</p>
+<p>Next, we transform <span class="math notranslate nohighlight">\(s\)</span> into <span class="math notranslate nohighlight">\(z\)</span> by applying the following substitution.
+$<span class="math notranslate nohighlight">\( \frac{1}{s} \longleftarrow \frac{T_s}{2} \frac{z+1}{z-1} \)</span>$</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">H</span> <span class="o">=</span> <span class="n">H</span><span class="o">.</span><span class="n">subs</span><span class="p">(</span><span class="mi">1</span><span class="o">/</span><span class="n">s</span><span class="p">,</span> <span class="n">Ts</span><span class="o">/</span><span class="mi">2</span> <span class="o">*</span> <span class="p">(</span><span class="n">z</span><span class="o">+</span><span class="mi">1</span><span class="p">)</span><span class="o">/</span><span class="p">(</span><span class="n">z</span><span class="o">-</span><span class="mi">1</span><span class="p">))</span>
+<span class="n">mprint</span><span class="p">(</span><span class="s1">&#39;H=&#39;</span><span class="p">,</span><span class="n">latex</span><span class="p">(</span><span class="n">H</span><span class="p">))</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_latex math notranslate nohighlight">
+\[\displaystyle H=\frac{1}{1 + \frac{2 \tau \left(z - 1\right)}{T_{s} \left(z + 1\right)}}\]</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">eq</span> <span class="o">=</span> <span class="n">Eq</span><span class="p">(</span><span class="n">y</span><span class="p">,</span> <span class="n">H</span> <span class="o">*</span> <span class="n">x</span><span class="p">)</span>
+<span class="n">mprint</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\\</span><span class="s2">small &quot;</span><span class="p">,</span> <span class="n">latex</span><span class="p">(</span><span class="n">eq</span><span class="p">))</span>
+
+<span class="n">eq</span> <span class="o">=</span> <span class="n">simplify</span><span class="p">(</span><span class="n">eq</span><span class="p">)</span>
+<span class="n">mprint</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\\</span><span class="s2">small &quot;</span><span class="p">,</span> <span class="n">latex</span><span class="p">(</span><span class="n">eq</span><span class="p">))</span>
+
+<span class="n">eq</span> <span class="o">=</span> <span class="n">Eq</span><span class="p">(</span><span class="n">numer</span><span class="p">(</span><span class="n">eq</span><span class="o">.</span><span class="n">rhs</span><span class="p">),</span> <span class="n">expand</span><span class="p">(</span><span class="n">eq</span><span class="o">.</span><span class="n">lhs</span> <span class="o">*</span> <span class="n">denom</span><span class="p">(</span><span class="n">eq</span><span class="o">.</span><span class="n">rhs</span><span class="p">)))</span>
+<span class="n">mprint</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\\</span><span class="s2">small &quot;</span><span class="p">,</span> <span class="n">latex</span><span class="p">(</span><span class="n">eq</span><span class="p">))</span>
+
+<span class="n">eq</span> <span class="o">=</span><span class="n">expand</span><span class="p">(</span><span class="n">Eq</span><span class="p">(</span><span class="n">numer</span><span class="p">(</span><span class="n">eq</span><span class="o">.</span><span class="n">rhs</span><span class="p">)</span><span class="o">/</span><span class="n">z</span><span class="o">/</span><span class="n">Ts</span><span class="p">,</span> <span class="n">eq</span><span class="o">.</span><span class="n">lhs</span> <span class="o">*</span> <span class="n">denom</span><span class="p">(</span><span class="n">eq</span><span class="o">.</span><span class="n">rhs</span><span class="p">)</span><span class="o">/</span><span class="n">z</span><span class="o">/</span><span class="n">Ts</span><span class="p">))</span>
+<span class="n">mprint</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\\</span><span class="s2">small &quot;</span><span class="p">,</span> <span class="n">latex</span><span class="p">(</span><span class="n">eq</span><span class="p">))</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_latex math notranslate nohighlight">
+\[\displaystyle \small y = \frac{x}{1 + \frac{2 \tau \left(z - 1\right)}{T_{s} \left(z + 1\right)}}\]</div>
+<div class="output text_latex math notranslate nohighlight">
+\[\displaystyle \small y = \frac{T_{s} x \left(z + 1\right)}{T_{s} \left(z + 1\right) + 2 \tau \left(z - 1\right)}\]</div>
+<div class="output text_latex math notranslate nohighlight">
+\[\displaystyle \small T_{s} x \left(z + 1\right) = T_{s} y z + T_{s} y + 2 \tau y z - 2 \tau y\]</div>
+<div class="output text_latex math notranslate nohighlight">
+\[\displaystyle \small y + \frac{y}{z} + \frac{2 \tau y}{T_{s}} - \frac{2 \tau y}{T_{s} z} = x + \frac{x}{z}\]</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">eq</span> <span class="o">=</span> <span class="n">eq</span><span class="o">.</span><span class="n">subs</span><span class="p">(</span><span class="n">x</span><span class="o">/</span><span class="n">z</span><span class="o">**</span><span class="mi">3</span><span class="p">,</span> <span class="n">x3</span><span class="p">)</span><span class="o">.</span><span class="n">subs</span><span class="p">(</span><span class="n">x</span><span class="o">/</span><span class="n">z</span><span class="o">**</span><span class="mi">2</span><span class="p">,</span> <span class="n">x2</span><span class="p">)</span><span class="o">.</span><span class="n">subs</span><span class="p">(</span><span class="n">x</span><span class="o">/</span><span class="n">z</span><span class="p">,</span> <span class="n">x1</span><span class="p">)</span><span class="o">.</span><span class="n">subs</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">x0</span><span class="p">)</span><span class="o">.</span><span class="n">subs</span><span class="p">(</span><span class="n">y</span><span class="o">/</span><span class="n">z</span><span class="o">**</span><span class="mi">3</span><span class="p">,</span> <span class="n">y3</span><span class="p">)</span><span class="o">.</span><span class="n">subs</span><span class="p">(</span><span class="n">y</span><span class="o">/</span><span class="n">z</span><span class="o">**</span><span class="mi">2</span><span class="p">,</span> <span class="n">y2</span><span class="p">)</span><span class="o">.</span><span class="n">subs</span><span class="p">(</span><span class="n">y</span><span class="o">/</span><span class="n">z</span><span class="p">,</span> <span class="n">y1</span><span class="p">)</span><span class="o">.</span><span class="n">subs</span><span class="p">(</span><span class="n">y</span><span class="p">,</span> <span class="n">y0</span><span class="p">)</span>
+<span class="n">mprint</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\\</span><span class="s2">small &quot;</span><span class="p">,</span> <span class="n">latex</span><span class="p">(</span><span class="n">eq</span><span class="p">))</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_latex math notranslate nohighlight">
+\[\displaystyle \small y_{k} + y_{k-1} + \frac{2 \tau y_{k}}{T_{s}} - \frac{2 \tau y_{k-1}}{T_{s}} = x_{k} + x_{k-1}\]</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">eq</span> <span class="o">=</span> <span class="n">Eq</span><span class="p">(</span><span class="n">collect</span><span class="p">(</span><span class="n">eq</span><span class="o">.</span><span class="n">rhs</span><span class="p">,</span> <span class="p">[</span><span class="n">x0</span><span class="p">,</span> <span class="n">x1</span><span class="p">,</span> <span class="n">x2</span><span class="p">,</span> <span class="n">x3</span><span class="p">]),</span> <span class="n">collect</span><span class="p">(</span><span class="n">eq</span><span class="o">.</span><span class="n">lhs</span><span class="p">,</span> <span class="p">[</span><span class="n">y0</span><span class="p">,</span> <span class="n">y1</span><span class="p">,</span> <span class="n">y2</span><span class="p">,</span> <span class="n">y3</span><span class="p">])</span> <span class="p">)</span>
+<span class="n">mprintb</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\\</span><span class="s2">small &quot;</span><span class="p">,</span> <span class="n">latex</span><span class="p">(</span><span class="n">eq</span><span class="p">))</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_latex math notranslate nohighlight">
+\[\displaystyle \boxed{\small x_{k} + x_{k-1} = y_{k} \left(1 + \frac{2 \tau}{T_{s}}\right) + y_{k-1} \left(1 - \frac{2 \tau}{T_{s}}\right)}\]</div>
+</div>
+</div>
+</section>
+</section>
+<section id="second-order-low-pass-butterworth-filter">
+<h2>Second Order Low-Pass Butterworth Filter<a class="headerlink" href="#second-order-low-pass-butterworth-filter" title="Link to this heading">¶</a></h2>
+<p>Transfer function of a second order lowpass filter (Butterworth):</p>
+<div class="math notranslate nohighlight">
+\[ H(s) = \frac{\omega_{c}^{2}}{\omega_{c}^{2} + \sqrt{2} \omega_{c} s + s^{2}} \]</div>
+<section id="id1">
+<h3>Discretization with Bilinear Transformation<a class="headerlink" href="#id1" title="Link to this heading">¶</a></h3>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">H</span> <span class="o">=</span> <span class="n">wc</span><span class="o">**</span><span class="mi">2</span> <span class="o">/</span> <span class="p">(</span><span class="n">wc</span><span class="o">**</span><span class="mi">2</span><span class="o">+</span><span class="n">sqrt</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span><span class="o">*</span><span class="n">s</span><span class="o">*</span><span class="n">wc</span><span class="o">+</span><span class="n">s</span><span class="o">**</span><span class="mi">2</span><span class="p">)</span>
@@ -112,9 +197,21 @@
 \[\displaystyle H=\frac{\omega_{c}^{2}}{\omega_{c}^{2} + \sqrt{2} \omega_{c} s + s^{2}}\]</div>
 </div>
 </div>
-<p>Next, we transform <span class="math notranslate nohighlight">\(s\)</span> into <span class="math notranslate nohighlight">\(z\)</span> by applying the following substitution.</p>
-<div class="math notranslate nohighlight">
-\[ \frac{1}{s} \longleftarrow \frac{T_s}{2} \frac{z+1}{z-1} \]</div>
+<p>A second order low-pass Butterworth filter is defined as follows:</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">H</span> <span class="o">=</span> <span class="n">wc</span><span class="o">**</span><span class="mi">2</span> <span class="o">/</span> <span class="p">(</span><span class="n">wc</span><span class="o">**</span><span class="mi">2</span><span class="o">+</span><span class="n">sqrt</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span><span class="o">*</span><span class="n">s</span><span class="o">*</span><span class="n">wc</span><span class="o">+</span><span class="n">s</span><span class="o">**</span><span class="mi">2</span><span class="p">)</span>
+<span class="n">mprint</span><span class="p">(</span><span class="s1">&#39;H=&#39;</span><span class="p">,</span><span class="n">latex</span><span class="p">(</span><span class="n">H</span><span class="p">))</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_latex math notranslate nohighlight">
+\[\displaystyle H=\frac{\omega_{c}^{2}}{\omega_{c}^{2} + \sqrt{2} \omega_{c} s + s^{2}}\]</div>
+</div>
+</div>
+<p>Next, we transform <span class="math notranslate nohighlight">\(s\)</span> into <span class="math notranslate nohighlight">\(z\)</span> by applying the following substitution.
+$<span class="math notranslate nohighlight">\( \frac{1}{s} \longleftarrow \frac{T_s}{2} \frac{z+1}{z-1} \)</span>$</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">H</span> <span class="o">=</span> <span class="n">H</span><span class="o">.</span><span class="n">subs</span><span class="p">(</span><span class="mi">1</span><span class="o">/</span><span class="n">s</span><span class="p">,</span> <span class="n">Ts</span><span class="o">/</span><span class="mi">2</span> <span class="o">*</span> <span class="p">(</span><span class="n">z</span><span class="o">+</span><span class="mi">1</span><span class="p">)</span><span class="o">/</span><span class="p">(</span><span class="n">z</span><span class="o">-</span><span class="mi">1</span><span class="p">))</span>
@@ -183,10 +280,8 @@
 <h3>Implementation in Simulink<a class="headerlink" href="#implementation-in-simulink" title="Link to this heading">¶</a></h3>
 <p><a class="reference external" href="https://www.dropbox.com/scl/fi/k3pyr1w9zjjy9xytu2tai/lpfbuttter2nd.slx?rlkey=1fxpi9xvcoqnb5085nd2v8y8t&amp;amp;dl=0">Download the Simulink file here (R2024b).</a></p>
 <div class="highlight-octave notranslate"><div class="highlight"><pre><span></span><span class="k">function</span><span class="w"> </span>y<span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="nf">LPF</span><span class="p">(</span>y1, y2, x0, x1, x2, wc, Ts<span class="p">)</span>
-<span class="c">% y : filter output</span>
-<span class="c">% x : filter input</span>
-<span class="c">% wc: cut-off frequency</span>
-<span class="c">% Ts: sampling period</span>
+<span class="c">% Integral term     : bilinear</span>
+<span class="c">% Derivative filter : bilinear</span>
 
 <span class="n">sq22</span> <span class="p">=</span> <span class="mi">2</span><span class="o">*</span><span class="nb">sqrt</span><span class="p">(</span><span class="mi">2</span><span class="p">);</span>
 <span class="n">Tswc</span> <span class="p">=</span> <span class="n">Ts</span> <span class="o">*</span> <span class="n">wc</span><span class="p">;</span>
@@ -237,8 +332,12 @@
     <ul>
 <li><a class="reference internal" href="#">Digital Low-Pass Filter</a><ul>
 <li><a class="reference internal" href="#required-imports">Required Imports</a></li>
-<li><a class="reference internal" href="#second-order-low-pass-butterworth-filter">Second Order Low-Pass Butterworth Filter</a><ul>
+<li><a class="reference internal" href="#first-order-low-pass-filter">First-Order Low-Pass Filter</a><ul>
 <li><a class="reference internal" href="#discretization-with-bilinear-transformation">Discretization with Bilinear Transformation</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#second-order-low-pass-butterworth-filter">Second Order Low-Pass Butterworth Filter</a><ul>
+<li><a class="reference internal" href="#id1">Discretization with Bilinear Transformation</a></li>
 <li><a class="reference internal" href="#implementation-in-simulink">Implementation in Simulink</a></li>
 </ul>
 </li>
@@ -249,8 +348,8 @@
   </div>
   <div>
     <h4>Previous topic</h4>
-    <p class="topless"><a href="digital-pid.html"
-                          title="previous chapter">Digital PID Control</a></p>
+    <p class="topless"><a href="digital-pid-2.html"
+                          title="previous chapter">Digital PID Control - Part 2</a></p>
   </div>
   <div>
     <h4>Next topic</h4>
@@ -288,7 +387,7 @@
           <a href="misc-problem-sets.html" title="Solved Various Problem Sets"
              >next</a> |</li>
         <li class="right" >
-          <a href="digital-pid.html" title="Digital PID Control"
+          <a href="digital-pid-2.html" title="Digital PID Control - Part 2"
              >previous</a> |</li>
         <li class="nav-item nav-item-0"><a href="intro.html">Control Systems with Sympy</a> &#187;</li>
         <li class="nav-item nav-item-this"><a href="">Digital Low-Pass Filter</a></li> 
