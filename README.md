@@ -1,4 +1,7 @@
 # control-systems-with-sympy
+
+![](./logo.png)
+
 Learning control systems with symbolic mathematics, specifically with SymPy
 
 
