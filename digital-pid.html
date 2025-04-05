@@ -250,6 +250,11 @@
 <p><img alt="" src="_images/p14.png" /></p>
 <p>The MATLAB function below has already been equipped with an <strong>integral windup prevention (clamping method)</strong>:</p>
 <div class="highlight-octave notranslate"><div class="highlight"><pre><span></span><span class="k">function</span><span class="w"> </span><span class="nf">[u0, u] = PID</span><span class="p">(</span>u1, u2, e0, e1, e2, params<span class="p">)</span>
+<span class="c">% u1 is u(k-1)</span>
+<span class="c">% u2 is u(k-2)</span>
+<span class="c">% e0 is e(k)</span>
+<span class="c">% e1 is e(k-1)</span>
+<span class="c">% e2 is e(k-2)</span>
 
 <span class="n">Kp</span> <span class="p">=</span> <span class="n">params</span><span class="p">(</span><span class="mi">1</span><span class="p">);</span>
 <span class="n">Ki</span> <span class="p">=</span> <span class="n">params</span><span class="p">(</span><span class="mi">2</span><span class="p">);</span>  

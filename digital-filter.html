@@ -281,8 +281,9 @@
 <div class="highlight-octave notranslate"><div class="highlight"><pre><span></span><span class="k">function</span><span class="w"> </span>y<span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="nf">LPF</span><span class="p">(</span>y1, y2, x0, x1, x2, wc, Ts<span class="p">)</span>
 <span class="c">% y1 is y(k-1)</span>
 <span class="c">% y2 is y(k-2)</span>
-<span class="c">% y1 is y(k-1)</span>
-<span class="c">% y1 is y(k-1)</span>
+<span class="c">% x0 is x(k)</span>
+<span class="c">% x1 is x(k-1)</span>
+<span class="c">% x2 is x(k-2)</span>
 
 <span class="n">sq22</span> <span class="p">=</span> <span class="mi">2</span><span class="o">*</span><span class="nb">sqrt</span><span class="p">(</span><span class="mi">2</span><span class="p">);</span>
 <span class="n">Tswc</span> <span class="p">=</span> <span class="n">Ts</span> <span class="o">*</span> <span class="n">wc</span><span class="p">;</span>
@@ -295,6 +296,13 @@
 </pre></div>
 </div>
 <p><img alt="" src="_images/p17.png" /></p>
+<p>The complete Simulink test file is shown below:</p>
+<ul class="simple">
+<li><p>The top filter block is our filter block.</p></li>
+<li><p>The bottom filter block by MATLAB Simulink, which is <strong>the “Discrete Varying Lowpass” block from Control System Toolbox.</strong></p></li>
+</ul>
+<p><img alt="" src="_images/p20.png" /></p>
+<p>The comparison results are shown in the following figure. As we can see, our implementation is identical to Simulink implementation.</p>
 <p><img alt="" src="_images/p18.png" /></p>
 </section>
 </section>
