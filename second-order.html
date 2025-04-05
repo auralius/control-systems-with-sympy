@@ -1,0 +1,688 @@
+<!DOCTYPE html>
+
+<html lang="en" data-content_root="./">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>Second-Order System &#8212; Control Systems with Sympy</title>
+    <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=fa44fd50" />
+    <link rel="stylesheet" type="text/css" href="_static/traditional.css?v=608ddc6c" />
+    <link rel="stylesheet" type="text/css" href="_static/togglebutton.css?v=13237357" />
+    <link rel="stylesheet" type="text/css" href="_static/copybutton.css?v=76b2166b" />
+    <link rel="stylesheet" type="text/css" href="_static/mystnb.4510f1fc1dee50b3e5859aac5469c37c29e427902b24a333a5f9fcb2f0b3ac41.css?v=be8a1c11" />
+    <link rel="stylesheet" type="text/css" href="_static/sphinx-thebe.css?v=4fa983c6" />
+    <link rel="stylesheet" type="text/css" href="_static/sphinx-design.min.css?v=95c83b7e" />
+    <script src="_static/documentation_options.js?v=9eb32ce0"></script>
+    <script src="_static/doctools.js?v=9a2dae69"></script>
+    <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="_static/clipboard.min.js?v=a7894cd8"></script>
+    <script src="_static/copybutton.js?v=f281be69"></script>
+    <script src="_static/scripts/sphinx-book-theme.js?v=887ef09a"></script>
+    <script>let toggleHintShow = 'Click to show';</script>
+    <script>let toggleHintHide = 'Click to hide';</script>
+    <script>let toggleOpenOnPrint = 'true';</script>
+    <script src="_static/togglebutton.js?v=4a39c7ea"></script>
+    <script>var togglebuttonSelector = '.toggle, .admonition.dropdown';</script>
+    <script src="_static/design-tabs.js?v=f930bc37"></script>
+    <script>const THEBE_JS_URL = "https://unpkg.com/thebe@0.8.2/lib/index.js"; const thebe_selector = ".thebe,.cell"; const thebe_selector_input = "pre"; const thebe_selector_output = ".output, .cell_output"</script>
+    <script async="async" src="_static/sphinx-thebe.js?v=c100c467"></script>
+    <script>var togglebuttonSelector = '.toggle, .admonition.dropdown';</script>
+    <script>const THEBE_JS_URL = "https://unpkg.com/thebe@0.8.2/lib/index.js"; const thebe_selector = ".thebe,.cell"; const thebe_selector_input = "pre"; const thebe_selector_output = ".output, .cell_output"</script>
+    <script>window.MathJax = {"HTML-CSS": {"matchFontHeight": true, "scale": 50}, "options": {"processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
+    <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Routh-Hurwitz Stability Criterion" href="routh-hurwitz.html" />
+    <link rel="prev" title="First-Order Systems" href="first-order.html" /> 
+  </head><body>
+    <div class="related" role="navigation" aria-label="Related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="routh-hurwitz.html" title="Routh-Hurwitz Stability Criterion"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="first-order.html" title="First-Order Systems"
+             accesskey="P">previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="intro.html">Control Systems with Sympy</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">Second-Order System</a></li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <section class="tex2jax_ignore mathjax_ignore" id="second-order-system">
+<h1>Second-Order System<a class="headerlink" href="#second-order-system" title="Link to this heading">¶</a></h1>
+<section id="required-imports">
+<h2>Required imports<a class="headerlink" href="#required-imports" title="Link to this heading">¶</a></h2>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">IPython.core.display</span> <span class="kn">import</span> <span class="n">HTML</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+
+<span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">rcParams</span><span class="o">.</span><span class="n">update</span><span class="p">({</span>
+    <span class="s2">&quot;text.usetex&quot;</span><span class="p">:</span> <span class="kc">True</span><span class="p">,</span>
+    <span class="s2">&quot;font.family&quot;</span><span class="p">:</span> <span class="s2">&quot;Helvetica&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;font.size&quot;</span><span class="p">:</span> <span class="mi">10</span><span class="p">,</span>
+<span class="p">})</span>
+
+<span class="kn">from</span> <span class="nn">sympy</span> <span class="kn">import</span> <span class="o">*</span>
+<span class="kn">from</span> <span class="nn">sympy.plotting</span> <span class="kn">import</span> <span class="n">plot</span>
+
+<span class="kn">from</span> <span class="nn">mathprint</span> <span class="kn">import</span> <span class="o">*</span>
+</pre></div>
+</div>
+</div>
+</div>
+</section>
+<section id="preparations">
+<h2>Preparations<a class="headerlink" href="#preparations" title="Link to this heading">¶</a></h2>
+<p>Define variables that we are going to use repetitively:
+<span class="math notranslate nohighlight">\(s, t, \tau\)</span>.
+We also need to define specific prpoperties of the variables.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">t</span>   <span class="o">=</span> <span class="n">symbols</span><span class="p">(</span><span class="s1">&#39;t&#39;</span><span class="p">,</span> <span class="n">real</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">positive</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="n">s</span>   <span class="o">=</span> <span class="n">symbols</span><span class="p">(</span><span class="s1">&#39;s&#39;</span><span class="p">,</span> <span class="nb">complex</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="n">tau</span> <span class="o">=</span> <span class="n">symbols</span><span class="p">(</span><span class="s1">&#39;tau&#39;</span><span class="p">,</span> <span class="n">real</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">positive</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="n">omega_n</span> <span class="o">=</span> <span class="n">symbols</span><span class="p">(</span><span class="s1">&#39;omega_n&#39;</span><span class="p">,</span> <span class="n">real</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">positive</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="n">zeta</span> <span class="o">=</span> <span class="n">symbols</span><span class="p">(</span><span class="s1">&#39;zeta&#39;</span><span class="p">,</span> <span class="n">real</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">positive</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+<p>The original laplace transformation functions are a little too long. We will simplify the laplace and the inverse laplace transformation functions, as follows.</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">laplace_transform(f,</span> <span class="pre">t,</span> <span class="pre">s,</span> <span class="pre">noconds=True)</span></code> as <code class="docutils literal notranslate"><span class="pre">laplace(f)</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">inverse_laplace_transform(F,</span> <span class="pre">s,</span> <span class="pre">t)</span></code> as <code class="docutils literal notranslate"><span class="pre">ilapalce(F)</span></code></p></li>
+</ul>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">laplace</span><span class="p">(</span><span class="n">f</span><span class="p">):</span>
+    <span class="n">F</span> <span class="o">=</span> <span class="n">laplace_transform</span><span class="p">(</span><span class="n">f</span><span class="p">,</span> <span class="n">t</span><span class="p">,</span> <span class="n">s</span><span class="p">,</span> <span class="n">noconds</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">F</span>
+
+<span class="k">def</span> <span class="nf">ilaplace</span><span class="p">(</span><span class="n">F</span><span class="p">):</span>
+    <span class="n">f</span> <span class="o">=</span> <span class="n">inverse_laplace_transform</span><span class="p">(</span><span class="n">F</span><span class="p">,</span> <span class="n">s</span><span class="p">,</span> <span class="n">t</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">f</span>
+</pre></div>
+</div>
+</div>
+</div>
+</section>
+<section id="second-order-system-equation">
+<h2>Second-Order System Equation<a class="headerlink" href="#second-order-system-equation" title="Link to this heading">¶</a></h2>
+<p>A second-order system:</p>
+<div class="math notranslate nohighlight">
+\[ G(s)=\frac{C(s)}{R(s)} = \frac{ \omega_n^2 } { s^2+2 \zeta \omega_n s + \omega_n^2 } \]</div>
+<p>Here <span class="math notranslate nohighlight">\(R(s)\)</span> and <span class="math notranslate nohighlight">\(C(s)\)</span> are the input and output functions in <span class="math notranslate nohighlight">\(s\)</span>-domain, respectively. In time-domain, they become <span class="math notranslate nohighlight">\(r(t)\)</span> and <span class="math notranslate nohighlight">\(c(t)\)</span>, respectively. We have two parameters:</p>
+<ul class="simple">
+<li><p>natural frequency at which system: <span class="math notranslate nohighlight">\(\omega_n\)</span></p></li>
+<li><p>damping ratio is a system: <span class="math notranslate nohighlight">\(\zeta\)</span></p></li>
+</ul>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">G</span> <span class="o">=</span> <span class="n">omega_n</span><span class="o">**</span><span class="mi">2</span> <span class="o">/</span> <span class="p">(</span><span class="n">s</span><span class="o">**</span><span class="mi">2</span> <span class="o">+</span> <span class="mi">2</span><span class="o">*</span><span class="n">zeta</span><span class="o">*</span><span class="n">omega_n</span><span class="o">*</span><span class="n">s</span> <span class="o">+</span> <span class="n">omega_n</span><span class="o">**</span><span class="mi">2</span><span class="p">)</span>
+<span class="n">mprint</span><span class="p">(</span><span class="s2">&quot;G=&quot;</span><span class="p">,</span> <span class="n">latex</span><span class="p">(</span><span class="n">G</span><span class="p">))</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_latex math notranslate nohighlight">
+\[\displaystyle G=\frac{\omega_{n}^{2}}{\omega_{n}^{2} + 2 \omega_{n} s \zeta + s^{2}}\]</div>
+</div>
+</div>
+</section>
+<section id="responses-to-a-unit-step-input">
+<h2>Responses to a Unit-Step Input<a class="headerlink" href="#responses-to-a-unit-step-input" title="Link to this heading">¶</a></h2>
+<p>What we do here:</p>
+<ul class="simple">
+<li><p>define a step function as the input function</p></li>
+</ul>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">r</span> <span class="o">=</span> <span class="n">Heaviside</span><span class="p">(</span><span class="n">t</span><span class="p">)</span>
+<span class="n">mprint</span><span class="p">(</span><span class="s1">&#39;r(t)=&#39;</span><span class="p">,</span> <span class="n">latex</span><span class="p">(</span><span class="n">r</span><span class="p">))</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_latex math notranslate nohighlight">
+\[\displaystyle r(t)=1\]</div>
+</div>
+</div>
+<ul class="simple">
+<li><p>compute the Laplace formof the input function:</p></li>
+</ul>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">R</span> <span class="o">=</span> <span class="n">laplace</span><span class="p">(</span><span class="n">r</span><span class="p">)</span>
+<span class="n">mprint</span><span class="p">(</span><span class="s1">&#39;R(s)=&#39;</span><span class="p">,</span> <span class="n">latex</span><span class="p">(</span><span class="n">R</span><span class="p">))</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_latex math notranslate nohighlight">
+\[\displaystyle R(s)=\frac{1}{s}\]</div>
+</div>
+</div>
+<ul class="simple">
+<li><p>apply the input to the system, obtain the output</p></li>
+</ul>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">C</span> <span class="o">=</span> <span class="n">G</span><span class="o">*</span><span class="n">R</span>
+<span class="n">mprint</span><span class="p">(</span><span class="s1">&#39;C(s)=&#39;</span><span class="p">,</span> <span class="n">latex</span><span class="p">(</span><span class="n">C</span><span class="p">))</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_latex math notranslate nohighlight">
+\[\displaystyle C(s)=\frac{\omega_{n}^{2}}{s \left(\omega_{n}^{2} + 2 \omega_{n} s \zeta + s^{2}\right)}\]</div>
+</div>
+</div>
+<ul class="simple">
+<li><p>compute the Laplace inverse of the output</p></li>
+</ul>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">c</span> <span class="o">=</span> <span class="n">ratsimp</span><span class="p">(</span><span class="n">ilaplace</span><span class="p">(</span><span class="n">C</span><span class="p">))</span>
+<span class="n">mprintb</span><span class="p">(</span><span class="s1">&#39;c(t)=&#39;</span><span class="p">,</span> <span class="n">latex</span><span class="p">(</span><span class="n">c</span><span class="p">))</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_latex math notranslate nohighlight">
+\[\displaystyle \boxed{c(t)=1 + \frac{\left(- \zeta \sin{\left(\omega_{n} t \sqrt{1 - \zeta^{2}} \right)} - \sqrt{1 - \zeta^{2}} \cos{\left(\omega_{n} t \sqrt{1 - \zeta} \sqrt{\zeta + 1} \right)}\right) e^{- \omega_{n} t \zeta}}{\sqrt{1 - \zeta^{2}}}}\]</div>
+</div>
+</div>
+<p>As <span class="math notranslate nohighlight">\( \zeta = 1 \)</span>, <span class="math notranslate nohighlight">\( c(t) \)</span> becomes undfined. Hence, we must use limit operation when <span class="math notranslate nohighlight">\(\zeta = 1\)</span>.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">cz1</span> <span class="o">=</span> <span class="n">ratsimp</span><span class="p">(</span><span class="n">limit</span><span class="p">(</span><span class="n">c</span><span class="p">,</span> <span class="n">zeta</span><span class="p">,</span> <span class="mi">1</span><span class="p">))</span>
+<span class="n">mprintb</span><span class="p">(</span><span class="s1">&#39;c_{</span><span class="se">\\</span><span class="s1">zeta=1}(t)=&#39;</span><span class="p">,</span> <span class="n">latex</span><span class="p">(</span><span class="n">cz1</span><span class="p">))</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_latex math notranslate nohighlight">
+\[\displaystyle \boxed{c_{\zeta=1}(t)=\left(- \omega_{n} t - 1\right) e^{- \omega_{n} t} + 1}\]</div>
+</div>
+</div>
+<p>Let us rewrite the response equation, for <span class="math notranslate nohighlight">\( \zeta \geq 0 \)</span> :</p>
+<div class="math notranslate nohighlight">
+\[ \boxed{ c(t) = 1 + \frac{ \left(- \zeta \sin{\left(\omega_{n} t \sqrt{1 - \zeta^{2}} \right)} \theta\left(t\right) - \sqrt{1 - \zeta^{2}} \cos{\left(\omega_{n} t \sqrt{1 - \zeta^{2}} \right)} \theta\left(t\right)\right) e^{- \omega_{n} t \zeta}}{\sqrt{1 - \zeta^{2}}}, \,\, \zeta \neq 1 } \]</div>
+<div class="math notranslate nohighlight">
+\[ \boxed{ c(t) = \left(- \omega_{n} t - 1 \right) e^{- \omega_{n} t} + 1, \,\, \zeta = 1 } \]</div>
+<p>System response is composed by 2 main components:</p>
+<ul class="simple">
+<li><p>Forced response:</p>
+<ul>
+<li><p>DC component: <span class="math notranslate nohighlight">\(c_1(t) = 1\)</span></p></li>
+</ul>
+</li>
+<li><p>Natural response <span class="math notranslate nohighlight">\((c_n)\)</span>, which is made by a sinusiodal component divided by an exponential component:</p>
+<ul>
+<li><p>Sinusoidal component: <span class="math notranslate nohighlight">\(c_2(t) = - \zeta \sin{\left(\omega_{n} t \sqrt{1 - \zeta^{2}} \right)} \theta\left(t\right) - \sqrt{1 - \zeta^{2}} \cos{\left(\omega_{n} t \sqrt{1 - \zeta^{2}} \right)} \theta\left(t\right)\)</span></p></li>
+<li><p>Exponential component: <span class="math notranslate nohighlight">\(c_3(t) = e^{\omega_{n} t \zeta}\sqrt{1 - \zeta^{2}}\)</span></p></li>
+</ul>
+</li>
+</ul>
+<p>Thus:</p>
+<div class="math notranslate nohighlight">
+\[c(t) = \underbrace{c_1(t)}_{\text{DC}} + \underbrace{c_2(t)c_3(t)}_{\large c_n}\]</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">zeta_</span> <span class="o">=</span> <span class="mf">0.5</span>   <span class="c1"># set zeta &gt; 0 and zeta != 1</span>
+<span class="n">omega_n_</span> <span class="o">=</span> <span class="mi">1</span>  <span class="c1"># set omega_n &gt; 0</span>
+
+<span class="n">c_lst</span> <span class="o">=</span> <span class="n">Add</span><span class="o">.</span><span class="n">make_args</span><span class="p">(</span><span class="n">c</span><span class="p">)</span> <span class="c1"># separate cn</span>
+<span class="n">c1</span> <span class="o">=</span> <span class="n">c_lst</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+<span class="n">c2</span> <span class="o">=</span> <span class="n">numer</span><span class="p">(</span><span class="n">c_lst</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
+<span class="n">c3</span> <span class="o">=</span> <span class="mi">1</span> <span class="o">/</span> <span class="n">denom</span><span class="p">(</span><span class="n">c_lst</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">p1</span> <span class="o">=</span> <span class="n">plot</span><span class="p">(</span><span class="n">c1</span><span class="o">.</span><span class="n">subs</span><span class="p">(([</span><span class="n">omega_n</span><span class="p">,</span> <span class="n">omega_n_</span><span class="p">],[</span><span class="n">zeta</span><span class="p">,</span> <span class="n">zeta_</span><span class="p">])),</span> <span class="p">(</span><span class="n">t</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">11</span><span class="p">),</span> <span class="n">size</span><span class="o">=</span><span class="p">(</span><span class="mi">4</span><span class="p">,</span> <span class="mf">2.5</span><span class="p">),</span> <span class="n">ylabel</span><span class="o">=</span><span class="s1">&#39;$c(t)$&#39;</span><span class="p">,</span> <span class="n">show</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">legend</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="n">p2</span> <span class="o">=</span> <span class="n">plot</span><span class="p">(</span><span class="n">c2</span><span class="o">.</span><span class="n">subs</span><span class="p">(([</span><span class="n">omega_n</span><span class="p">,</span> <span class="n">omega_n_</span><span class="p">],[</span><span class="n">zeta</span><span class="p">,</span> <span class="n">zeta_</span><span class="p">])),</span> <span class="p">(</span><span class="n">t</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">11</span><span class="p">),</span> <span class="n">show</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">legend</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="n">p3</span> <span class="o">=</span> <span class="n">plot</span><span class="p">(</span><span class="n">c3</span><span class="o">.</span><span class="n">subs</span><span class="p">(([</span><span class="n">omega_n</span><span class="p">,</span> <span class="n">omega_n_</span><span class="p">],[</span><span class="n">zeta</span><span class="p">,</span> <span class="n">zeta_</span><span class="p">])),</span> <span class="p">(</span><span class="n">t</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">11</span><span class="p">),</span> <span class="n">show</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">legend</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="n">p4</span> <span class="o">=</span> <span class="n">plot</span><span class="p">(</span> <span class="n">c</span><span class="o">.</span><span class="n">subs</span><span class="p">(([</span><span class="n">omega_n</span><span class="p">,</span> <span class="n">omega_n_</span><span class="p">],[</span><span class="n">zeta</span><span class="p">,</span> <span class="n">zeta_</span><span class="p">])),</span> <span class="p">(</span><span class="n">t</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">11</span><span class="p">),</span> <span class="n">show</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">legend</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+<span class="n">p1</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">p2</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+<span class="n">p1</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">p3</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+<span class="n">p1</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">p4</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+
+<span class="n">p1</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">label</span> <span class="o">=</span> <span class="s2">&quot;$c_1$&quot;</span>
+<span class="n">p2</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">label</span> <span class="o">=</span> <span class="s2">&quot;$c_2$&quot;</span>
+<span class="n">p3</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">label</span> <span class="o">=</span> <span class="s2">&quot;$c_3$&quot;</span>
+<span class="n">p4</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">label</span> <span class="o">=</span> <span class="s2">&quot;$c = c_1 + c_2  c_3$&quot;</span>
+
+<span class="n">p1</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<img alt="_images/6d6775f036a89607b23928884862f42ee7c03027a14b9da6c26c0dd998c4966d.png" src="_images/6d6775f036a89607b23928884862f42ee7c03027a14b9da6c26c0dd998c4966d.png" />
+</div>
+</div>
+<section id="peak-time">
+<h3>Peak time<a class="headerlink" href="#peak-time" title="Link to this heading">¶</a></h3>
+<p>Peak time is achieved when <span class="math notranslate nohighlight">\(\frac{\mathtt{d}c}{\mathtt{d}t}=0\)</span></p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">cdot</span> <span class="o">=</span> <span class="n">Eq</span><span class="p">(</span><span class="n">simplify</span><span class="p">(</span><span class="n">diff</span><span class="p">(</span><span class="n">c</span><span class="p">,</span><span class="n">t</span><span class="p">)),</span> <span class="mi">0</span><span class="p">)</span>
+<span class="n">mprint</span><span class="p">(</span><span class="n">latex</span><span class="p">(</span><span class="n">cdot</span><span class="p">))</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_latex math notranslate nohighlight">
+\[\displaystyle \frac{\omega_{n} \left(\zeta^{2} + \sqrt{1 - \zeta} \sqrt{1 - \zeta^{2}} \sqrt{\zeta + 1}\right) e^{- \omega_{n} t \zeta} \sin{\left(\omega_{n} t \sqrt{1 - \zeta^{2}} \right)}}{\sqrt{1 - \zeta^{2}}} = 0\]</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">tp</span> <span class="o">=</span> <span class="n">solve</span><span class="p">(</span><span class="n">cdot</span><span class="p">,</span> <span class="n">t</span><span class="p">)</span>
+<span class="n">mprintb</span><span class="p">(</span><span class="s2">&quot;t_p=&quot;</span><span class="p">,</span> <span class="n">latex</span><span class="p">(</span><span class="n">tp</span><span class="p">))</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_latex math notranslate nohighlight">
+\[\displaystyle \boxed{t_p=\left[ \frac{\pi}{\omega_{n} \sqrt{1 - \zeta^{2}}}\right]}\]</div>
+</div>
+</div>
+<p>For our example, let us apply the previous numerical values to <span class="math notranslate nohighlight">\(\omega_n\)</span> and <span class="math notranslate nohighlight">\(\zeta\)</span>.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">tp</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">subs</span><span class="p">(([</span><span class="n">omega_n</span><span class="p">,</span> <span class="n">omega_n_</span><span class="p">],[</span><span class="n">zeta</span><span class="p">,</span> <span class="n">zeta_</span><span class="p">]))</span><span class="o">.</span><span class="n">evalf</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_latex math notranslate nohighlight">
+\[\displaystyle 3.62759872846844\]</div>
+</div>
+</div>
+</section>
+<section id="maximum-overshoot">
+<h3>Maximum Overshoot<a class="headerlink" href="#maximum-overshoot" title="Link to this heading">¶</a></h3>
+<p>Maximum overshot happens at <span class="math notranslate nohighlight">\(c(t_p)\)</span>.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">Mp</span> <span class="o">=</span> <span class="n">simplify</span><span class="p">(</span><span class="n">c</span><span class="o">.</span><span class="n">subs</span><span class="p">(</span><span class="n">t</span><span class="p">,</span> <span class="n">tp</span><span class="p">[</span><span class="mi">0</span><span class="p">]))</span> <span class="o">-</span> <span class="mi">1</span>
+<span class="n">mprintb</span><span class="p">(</span><span class="s2">&quot;M_p= </span><span class="se">\\</span><span class="s2">Large &quot;</span><span class="p">,</span> <span class="n">latex</span><span class="p">(</span><span class="n">Mp</span><span class="p">))</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_latex math notranslate nohighlight">
+\[\displaystyle \boxed{M_p= \Large e^{- \frac{\pi \zeta}{\sqrt{1 - \zeta^{2}}}}}\]</div>
+</div>
+</div>
+<p>For our example, let us apply the previous numerical values to <span class="math notranslate nohighlight">\(\omega_n\)</span> and <span class="math notranslate nohighlight">\(\zeta\)</span>.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">Mp</span><span class="o">.</span><span class="n">subs</span><span class="p">(([</span><span class="n">omega_n</span><span class="p">,</span> <span class="n">omega_n_</span><span class="p">],[</span><span class="n">zeta</span><span class="p">,</span> <span class="n">zeta_</span><span class="p">]))</span><span class="o">.</span><span class="n">evalf</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_latex math notranslate nohighlight">
+\[\displaystyle 0.16303353482158\]</div>
+</div>
+</div>
+</section>
+<section id="settling-time">
+<h3>Settling Time<a class="headerlink" href="#settling-time" title="Link to this heading">¶</a></h3>
+<p>Settling time happens when the output reaches a certain accuracy limit from the steady state output.</p>
+<p>Let us take a look only at <span class="math notranslate nohighlight">\(c_2(t)\)</span> and <span class="math notranslate nohighlight">\(c_3(t)\)</span></p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">mprint</span><span class="p">(</span><span class="s2">&quot;c_2(t)=&quot;</span><span class="p">,</span> <span class="n">latex</span><span class="p">(</span><span class="n">c2</span><span class="p">))</span>
+<span class="n">mprint</span><span class="p">(</span><span class="s2">&quot;c_3(t)=&quot;</span><span class="p">,</span> <span class="n">latex</span><span class="p">(</span><span class="n">c3</span><span class="p">))</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_latex math notranslate nohighlight">
+\[\displaystyle c_2(t)=- \zeta \sin{\left(\omega_{n} t \sqrt{1 - \zeta^{2}} \right)} - \sqrt{1 - \zeta^{2}} \cos{\left(\omega_{n} t \sqrt{1 - \zeta} \sqrt{\zeta + 1} \right)}\]</div>
+<div class="output text_latex math notranslate nohighlight">
+\[\displaystyle c_3(t)=\frac{e^{- \omega_{n} t \zeta}}{\sqrt{1 - \zeta^{2}}}\]</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">tspan</span> <span class="o">=</span> <span class="p">(</span><span class="n">t</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">11</span><span class="p">)</span>
+
+<span class="n">p1</span> <span class="o">=</span> <span class="n">plot</span><span class="p">((</span><span class="n">c</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span><span class="o">.</span><span class="n">subs</span><span class="p">(([</span><span class="n">omega_n</span><span class="p">,</span> <span class="n">omega_n_</span><span class="p">],[</span><span class="n">zeta</span><span class="p">,</span> <span class="n">zeta_</span><span class="p">])),</span> <span class="n">tspan</span><span class="p">,</span> <span class="n">size</span><span class="o">=</span><span class="p">(</span><span class="mi">6</span><span class="p">,</span> <span class="mi">4</span><span class="p">),</span> <span class="n">ylabel</span><span class="o">=</span><span class="s1">&#39;$c(t)$&#39;</span><span class="p">,</span> <span class="n">show</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">legend</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="n">p2</span> <span class="o">=</span> <span class="n">plot</span><span class="p">(</span>   <span class="n">c3</span><span class="o">.</span><span class="n">subs</span><span class="p">(([</span><span class="n">omega_n</span><span class="p">,</span> <span class="n">omega_n_</span><span class="p">],[</span><span class="n">zeta</span><span class="p">,</span> <span class="n">zeta_</span><span class="p">])),</span> <span class="n">tspan</span><span class="p">,</span> <span class="n">show</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">legend</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="n">p3</span> <span class="o">=</span> <span class="n">plot</span><span class="p">(</span>  <span class="o">-</span><span class="n">c3</span><span class="o">.</span><span class="n">subs</span><span class="p">(([</span><span class="n">omega_n</span><span class="p">,</span> <span class="n">omega_n_</span><span class="p">],[</span><span class="n">zeta</span><span class="p">,</span> <span class="n">zeta_</span><span class="p">])),</span> <span class="n">tspan</span><span class="p">,</span> <span class="n">show</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">legend</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+<span class="n">p1</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">p2</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+<span class="n">p1</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">p3</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+
+<span class="n">p1</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">label</span> <span class="o">=</span> <span class="s2">&quot;$c(t)-1$&quot;</span>
+<span class="n">p2</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">label</span> <span class="o">=</span> <span class="s2">&quot;$c_3(t)$&quot;</span>
+<span class="n">p3</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">label</span> <span class="o">=</span> <span class="s2">&quot;$-c_3(t)$&quot;</span>
+
+<span class="n">p1</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<img alt="_images/83277e111697c0cb7ef16ca6b84c2bef88a441f0dc37feb1bf62cbaa25b27290.png" src="_images/83277e111697c0cb7ef16ca6b84c2bef88a441f0dc37feb1bf62cbaa25b27290.png" />
+</div>
+</div>
+<p>Notice that <span class="math notranslate nohighlight">\(c_3(t)\)</span> is the envelope of the <span class="math notranslate nohighlight">\(c1(t)-1\)</span>.</p>
+<section id="percent-settling-time">
+<h4>2-percent settling time<a class="headerlink" href="#percent-settling-time" title="Link to this heading">¶</a></h4>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">ts</span> <span class="o">=</span> <span class="n">solve</span><span class="p">(</span><span class="n">Eq</span><span class="p">(</span><span class="n">c3</span><span class="p">,</span> <span class="mf">0.02</span><span class="p">)</span> <span class="p">,</span> <span class="n">t</span><span class="p">)</span>
+<span class="n">ts2</span> <span class="o">=</span> <span class="n">ts</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+<span class="n">mprintb</span><span class="p">(</span><span class="s1">&#39;t_</span><span class="si">{s2}</span><span class="s1"> =&#39;</span><span class="p">,</span> <span class="n">latex</span><span class="p">(</span><span class="n">ts</span><span class="p">))</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_latex math notranslate nohighlight">
+\[\displaystyle \boxed{t_{s2} =\left[ \frac{3.91202300542815 - 0.5 \log{\left(1.0 - \zeta^{2} \right)}}{\omega_{n} \zeta}\right]}\]</div>
+</div>
+</div>
+<p>For our example, let us apply the previous numerical values to <span class="math notranslate nohighlight">\(\omega_n\)</span> and <span class="math notranslate nohighlight">\(\zeta\)</span>.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">ts2_</span> <span class="o">=</span> <span class="n">ts2</span><span class="o">.</span><span class="n">subs</span><span class="p">(([</span><span class="n">omega_n</span><span class="p">,</span> <span class="n">omega_n_</span><span class="p">],[</span><span class="n">zeta</span><span class="p">,</span> <span class="n">zeta_</span><span class="p">]))</span>
+<span class="n">ts2_</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_latex math notranslate nohighlight">
+\[\displaystyle 8.11172808330807\]</div>
+</div>
+</div>
+</section>
+<section id="id1">
+<h4>5-percent settling time<a class="headerlink" href="#id1" title="Link to this heading">¶</a></h4>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">ts</span> <span class="o">=</span> <span class="n">solve</span><span class="p">(</span><span class="n">Eq</span><span class="p">(</span><span class="n">c3</span><span class="p">,</span> <span class="mf">0.05</span><span class="p">)</span> <span class="p">,</span> <span class="n">t</span><span class="p">)</span>
+<span class="n">ts5</span> <span class="o">=</span> <span class="n">ts</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+<span class="n">mprintb</span><span class="p">(</span><span class="s1">&#39;t_</span><span class="si">{s5}</span><span class="s1"> =&#39;</span><span class="p">,</span> <span class="n">latex</span><span class="p">(</span><span class="n">ts</span><span class="p">))</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_latex math notranslate nohighlight">
+\[\displaystyle \boxed{t_{s5} =\left[ \frac{2.99573227355399 - 0.5 \log{\left(1.0 - \zeta^{2} \right)}}{\omega_{n} \zeta}\right]}\]</div>
+</div>
+</div>
+<p>For our example, let us apply the previous numerical values to <span class="math notranslate nohighlight">\(\omega_n\)</span> and <span class="math notranslate nohighlight">\(\zeta\)</span>.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">ts5_</span> <span class="o">=</span> <span class="n">ts5</span><span class="o">.</span><span class="n">subs</span><span class="p">(([</span><span class="n">omega_n</span><span class="p">,</span> <span class="n">omega_n_</span><span class="p">],[</span><span class="n">zeta</span><span class="p">,</span> <span class="n">zeta_</span><span class="p">]))</span>
+<span class="n">ts5_</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_latex math notranslate nohighlight">
+\[\displaystyle 6.27914661955976\]</div>
+</div>
+</div>
+</section>
+</section>
+</section>
+<section id="rise-time">
+<h2>Rise time<a class="headerlink" href="#rise-time" title="Link to this heading">¶</a></h2>
+<p>Rise time happens when <span class="math notranslate nohighlight">\(c(t_r) = 1\)</span>.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">tr</span> <span class="o">=</span> <span class="n">solve</span><span class="p">(</span><span class="n">Eq</span><span class="p">(</span><span class="n">c</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span> <span class="n">t</span><span class="p">)</span>
+<span class="n">mprintb</span><span class="p">(</span><span class="s1">&#39;t_r = &#39;</span><span class="p">,</span> <span class="n">latex</span><span class="p">(</span><span class="n">tr</span><span class="p">))</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_latex math notranslate nohighlight">
+\[\displaystyle \boxed{t_r = \left[ \frac{2 \operatorname{atan}{\left(\frac{\sqrt{\zeta + 1}}{\sqrt{1 - \zeta}} \right)}}{\omega_{n} \sqrt{1 - \zeta^{2}}}, \  - \frac{2 \operatorname{atan}{\left(\frac{\sqrt{1 - \zeta}}{\sqrt{\zeta + 1}} \right)}}{\omega_{n} \sqrt{1 - \zeta^{2}}}\right]}\]</div>
+</div>
+</div>
+<p>We take the first solution since <span class="math notranslate nohighlight">\(t_r &gt; 0\)</span></p>
+<p>For our example, let us apply the previous numerical values to <span class="math notranslate nohighlight">\(\omega_n\)</span> and <span class="math notranslate nohighlight">\(\zeta\)</span>.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">tr</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">subs</span><span class="p">(([</span><span class="n">omega_n</span><span class="p">,</span> <span class="n">omega_n_</span><span class="p">],[</span><span class="n">zeta</span><span class="p">,</span> <span class="n">zeta_</span><span class="p">]))</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_latex math notranslate nohighlight">
+\[\displaystyle 2.41839915231229\]</div>
+</div>
+</div>
+</section>
+<section id="the-effect-of-damping-ratio">
+<h2>The effect of damping ratio<a class="headerlink" href="#the-effect-of-damping-ratio" title="Link to this heading">¶</a></h2>
+<p>If we consider only the system’s natural response:</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">cn</span> <span class="o">=</span> <span class="n">c2</span> <span class="o">*</span> <span class="n">c3</span>
+<span class="n">mprint</span><span class="p">(</span><span class="s2">&quot;c_n=&quot;</span><span class="p">,</span> <span class="n">latex</span><span class="p">(</span><span class="n">cn</span><span class="p">))</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_latex math notranslate nohighlight">
+\[\displaystyle c_n=\frac{\left(- \zeta \sin{\left(\omega_{n} t \sqrt{1 - \zeta^{2}} \right)} - \sqrt{1 - \zeta^{2}} \cos{\left(\omega_{n} t \sqrt{1 - \zeta} \sqrt{\zeta + 1} \right)}\right) e^{- \omega_{n} t \zeta}}{\sqrt{1 - \zeta^{2}}}\]</div>
+</div>
+</div>
+<p>We can easily conclude that the damping ratio:</p>
+<ul class="simple">
+<li><p>changes system’s natural frequency</p></li>
+<li><p>changes system’s transient behaviour</p></li>
+</ul>
+<p>The first point is quite straight forward. Thus, we will explore more on the second point.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">tspan</span> <span class="o">=</span> <span class="p">(</span><span class="n">t</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">20</span><span class="p">)</span>
+<span class="n">zetas</span> <span class="o">=</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mf">0.1</span><span class="p">,</span> <span class="mf">0.2</span><span class="p">,</span> <span class="mf">0.4</span><span class="p">,</span> <span class="mf">0.7</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">]</span>
+
+<span class="n">p1</span> <span class="o">=</span> <span class="n">plot</span><span class="p">(</span><span class="n">c</span><span class="o">.</span><span class="n">subs</span><span class="p">(([</span><span class="n">omega_n</span><span class="p">,</span> <span class="n">omega_n_</span><span class="p">],[</span><span class="n">zeta</span><span class="p">,</span> <span class="n">zetas</span><span class="p">[</span><span class="mi">0</span><span class="p">]])),</span> <span class="n">tspan</span><span class="p">,</span> <span class="n">size</span><span class="o">=</span><span class="p">(</span><span class="mi">6</span><span class="p">,</span> <span class="mi">4</span><span class="p">),</span> <span class="n">ylabel</span><span class="o">=</span><span class="s1">&#39;$c(t)$&#39;</span><span class="p">,</span> <span class="n">show</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">legend</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="n">p1</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">label</span> <span class="o">=</span> <span class="s2">&quot;$</span><span class="se">\\</span><span class="s2">zeta = &quot;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">zetas</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span> <span class="o">+</span> <span class="s2">&quot;$&quot;</span>
+
+<span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">zetas</span><span class="p">)):</span>
+    <span class="k">if</span> <span class="n">zetas</span><span class="p">[</span><span class="n">k</span><span class="p">]</span> <span class="o">!=</span> <span class="mi">1</span><span class="p">:</span>
+        <span class="n">p2</span> <span class="o">=</span> <span class="n">plot</span><span class="p">(</span><span class="n">c</span><span class="o">.</span><span class="n">subs</span><span class="p">(([</span><span class="n">omega_n</span><span class="p">,</span> <span class="n">omega_n_</span><span class="p">],[</span><span class="n">zeta</span><span class="p">,</span> <span class="n">zetas</span><span class="p">[</span><span class="n">k</span><span class="p">]])),</span> <span class="n">tspan</span><span class="p">,</span> <span class="n">show</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">legend</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>    
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">p2</span> <span class="o">=</span> <span class="n">plot</span><span class="p">(</span><span class="n">cz1</span><span class="o">.</span><span class="n">subs</span><span class="p">(</span><span class="n">omega_n</span><span class="p">,</span> <span class="n">omega_n_</span><span class="p">),</span> <span class="n">tspan</span><span class="p">,</span> <span class="n">show</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">legend</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>    
+
+    <span class="n">p1</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">p2</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+    <span class="n">p2</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">label</span> <span class="o">=</span> <span class="s2">&quot;$</span><span class="se">\\</span><span class="s2">zeta = &quot;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">zetas</span><span class="p">[</span><span class="n">k</span><span class="p">])</span> <span class="o">+</span> <span class="s2">&quot;$&quot;</span>
+
+
+<span class="n">p1</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<img alt="_images/803f7cd0751cf2bc74a4daf71c49c00fff4468cbdef6db98e272c406ddaa8ab8.png" src="_images/803f7cd0751cf2bc74a4daf71c49c00fff4468cbdef6db98e272c406ddaa8ab8.png" />
+</div>
+</div>
+</section>
+<section id="summary">
+<h2>Summary<a class="headerlink" href="#summary" title="Link to this heading">¶</a></h2>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">pandas</span> <span class="kn">import</span> <span class="n">DataFrame</span>
+<span class="kn">from</span> <span class="nn">IPython.display</span> <span class="kn">import</span> <span class="n">Markdown</span>
+
+<span class="k">def</span> <span class="nf">makelatex</span><span class="p">(</span><span class="n">args</span><span class="p">):</span>
+    <span class="k">return</span> <span class="p">[</span><span class="s2">&quot;$</span><span class="se">\\</span><span class="s2">Large </span><span class="si">{}</span><span class="s2">$&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">latex</span><span class="p">(</span><span class="n">a</span><span class="p">))</span> <span class="k">for</span> <span class="n">a</span> <span class="ow">in</span> <span class="n">args</span><span class="p">]</span>
+
+<span class="n">descs</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;Rise time&quot;</span><span class="p">,</span> 
+         <span class="s2">&quot;Peak time&quot;</span><span class="p">,</span>
+         <span class="s2">&quot;Maximum overshoot&quot;</span><span class="p">,</span>
+         <span class="s2">&quot;2-percent settling time&quot;</span><span class="p">,</span>
+         <span class="s2">&quot;5-percent settling time&quot;</span><span class="p">]</span>
+
+<span class="n">vals</span>  <span class="o">=</span> <span class="p">[</span><span class="n">tr</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">tp</span><span class="p">,</span> <span class="n">Mp</span><span class="p">,</span> <span class="n">ts2</span><span class="p">,</span> <span class="n">ts5</span><span class="p">]</span>
+
+<span class="n">dic</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;Parameters&#39;</span><span class="p">:</span> <span class="n">descs</span><span class="p">,</span> 
+       <span class="s1">&#39;Formulas&#39;</span><span class="p">:</span> <span class="n">makelatex</span><span class="p">(</span><span class="n">vals</span><span class="p">)}</span>
+
+<span class="n">df</span> <span class="o">=</span> <span class="n">DataFrame</span><span class="p">(</span><span class="n">dic</span><span class="p">)</span>
+<span class="n">Markdown</span><span class="p">(</span><span class="n">df</span><span class="o">.</span><span class="n">to_markdown</span><span class="p">(</span><span class="n">index</span><span class="o">=</span><span class="kc">False</span><span class="p">))</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head text-left"><p>Parameters</p></th>
+<th class="head text-left"><p>Formulas</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td class="text-left"><p>Rise time</p></td>
+<td class="text-left"><p><span class="math notranslate nohighlight">\(\Large \frac{2 \operatorname{atan}{\left(\frac{\sqrt{\zeta + 1}}{\sqrt{1 - \zeta}} \right)}}{\omega_{n} \sqrt{1 - \zeta^{2}}}\)</span></p></td>
+</tr>
+<tr class="row-odd"><td class="text-left"><p>Peak time</p></td>
+<td class="text-left"><p><span class="math notranslate nohighlight">\(\Large \left[ \frac{\pi}{\omega_{n} \sqrt{1 - \zeta^{2}}}\right]\)</span></p></td>
+</tr>
+<tr class="row-even"><td class="text-left"><p>Maximum overshoot</p></td>
+<td class="text-left"><p><span class="math notranslate nohighlight">\(\Large e^{- \frac{\pi \zeta}{\sqrt{1 - \zeta^{2}}}}\)</span></p></td>
+</tr>
+<tr class="row-odd"><td class="text-left"><p>2-percent settling time</p></td>
+<td class="text-left"><p><span class="math notranslate nohighlight">\(\Large \frac{3.91202300542815 - 0.5 \log{\left(1.0 - \zeta^{2} \right)}}{\omega_{n} \zeta}\)</span></p></td>
+</tr>
+<tr class="row-even"><td class="text-left"><p>5-percent settling time</p></td>
+<td class="text-left"><p><span class="math notranslate nohighlight">\(\Large \frac{2.99573227355399 - 0.5 \log{\left(1.0 - \zeta^{2} \right)}}{\omega_{n} \zeta}\)</span></p></td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</section>
+</section>
+
+    <script type="text/x-thebe-config">
+    {
+        requestKernel: true,
+        binderOptions: {
+            repo: "binder-examples/jupyter-stacks-datascience",
+            ref: "master",
+        },
+        codeMirrorConfig: {
+            theme: "abcdef",
+            mode: "py.3.12.4"
+        },
+        kernelOptions: {
+            name: "py.3.12.4",
+            path: "./."
+        },
+        predefinedOutput: true
+    }
+    </script>
+    <script>kernelName = 'py.3.12.4'</script>
+
+            <div class="clearer"></div>
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="Main">
+        <div class="sphinxsidebarwrapper">
+            <p class="logo"><a href="intro.html">
+              <img class="logo" src="_static/logo.png" alt="Logo of Project name not set"/>
+            </a></p>
+  <div>
+    <h3><a href="intro.html">Table of Contents</a></h3>
+    <ul>
+<li><a class="reference internal" href="#">Second-Order System</a><ul>
+<li><a class="reference internal" href="#required-imports">Required imports</a></li>
+<li><a class="reference internal" href="#preparations">Preparations</a></li>
+<li><a class="reference internal" href="#second-order-system-equation">Second-Order System Equation</a></li>
+<li><a class="reference internal" href="#responses-to-a-unit-step-input">Responses to a Unit-Step Input</a><ul>
+<li><a class="reference internal" href="#peak-time">Peak time</a></li>
+<li><a class="reference internal" href="#maximum-overshoot">Maximum Overshoot</a></li>
+<li><a class="reference internal" href="#settling-time">Settling Time</a><ul>
+<li><a class="reference internal" href="#percent-settling-time">2-percent settling time</a></li>
+<li><a class="reference internal" href="#id1">5-percent settling time</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><a class="reference internal" href="#rise-time">Rise time</a></li>
+<li><a class="reference internal" href="#the-effect-of-damping-ratio">The effect of damping ratio</a></li>
+<li><a class="reference internal" href="#summary">Summary</a></li>
+</ul>
+</li>
+</ul>
+
+  </div>
+  <div>
+    <h4>Previous topic</h4>
+    <p class="topless"><a href="first-order.html"
+                          title="previous chapter">First-Order Systems</a></p>
+  </div>
+  <div>
+    <h4>Next topic</h4>
+    <p class="topless"><a href="routh-hurwitz.html"
+                          title="next chapter">Routh-Hurwitz Stability Criterion</a></p>
+  </div>
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="_sources/second-order.ipynb"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<search id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</search>
+<script>document.getElementById('searchbox').style.display = "block"</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="Related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="routh-hurwitz.html" title="Routh-Hurwitz Stability Criterion"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="first-order.html" title="First-Order Systems"
+             >previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="intro.html">Control Systems with Sympy</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">Second-Order System</a></li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+    &#169; Copyright 2025.
+      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 7.4.7.
+    </div>
+  </body>
+</html>

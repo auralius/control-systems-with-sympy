@@ -1,0 +1,509 @@
+<!DOCTYPE html>
+
+<html lang="en" data-content_root="./">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>Routh-Hurwitz Stability Criterion &#8212; Control Systems with Sympy</title>
+    <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=fa44fd50" />
+    <link rel="stylesheet" type="text/css" href="_static/traditional.css?v=608ddc6c" />
+    <link rel="stylesheet" type="text/css" href="_static/togglebutton.css?v=13237357" />
+    <link rel="stylesheet" type="text/css" href="_static/copybutton.css?v=76b2166b" />
+    <link rel="stylesheet" type="text/css" href="_static/mystnb.4510f1fc1dee50b3e5859aac5469c37c29e427902b24a333a5f9fcb2f0b3ac41.css?v=be8a1c11" />
+    <link rel="stylesheet" type="text/css" href="_static/sphinx-thebe.css?v=4fa983c6" />
+    <link rel="stylesheet" type="text/css" href="_static/sphinx-design.min.css?v=95c83b7e" />
+    <script src="_static/documentation_options.js?v=9eb32ce0"></script>
+    <script src="_static/doctools.js?v=9a2dae69"></script>
+    <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="_static/clipboard.min.js?v=a7894cd8"></script>
+    <script src="_static/copybutton.js?v=f281be69"></script>
+    <script src="_static/scripts/sphinx-book-theme.js?v=887ef09a"></script>
+    <script>let toggleHintShow = 'Click to show';</script>
+    <script>let toggleHintHide = 'Click to hide';</script>
+    <script>let toggleOpenOnPrint = 'true';</script>
+    <script src="_static/togglebutton.js?v=4a39c7ea"></script>
+    <script>var togglebuttonSelector = '.toggle, .admonition.dropdown';</script>
+    <script src="_static/design-tabs.js?v=f930bc37"></script>
+    <script>const THEBE_JS_URL = "https://unpkg.com/thebe@0.8.2/lib/index.js"; const thebe_selector = ".thebe,.cell"; const thebe_selector_input = "pre"; const thebe_selector_output = ".output, .cell_output"</script>
+    <script async="async" src="_static/sphinx-thebe.js?v=c100c467"></script>
+    <script>var togglebuttonSelector = '.toggle, .admonition.dropdown';</script>
+    <script>const THEBE_JS_URL = "https://unpkg.com/thebe@0.8.2/lib/index.js"; const thebe_selector = ".thebe,.cell"; const thebe_selector_input = "pre"; const thebe_selector_output = ".output, .cell_output"</script>
+    <script>window.MathJax = {"HTML-CSS": {"matchFontHeight": true, "scale": 50}, "options": {"processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
+    <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="The Root-Locus Method" href="root-locus.html" />
+    <link rel="prev" title="Second-Order System" href="second-order.html" /> 
+  </head><body>
+    <div class="related" role="navigation" aria-label="Related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="root-locus.html" title="The Root-Locus Method"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="second-order.html" title="Second-Order System"
+             accesskey="P">previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="intro.html">Control Systems with Sympy</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">Routh-Hurwitz Stability Criterion</a></li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <section class="tex2jax_ignore mathjax_ignore" id="routh-hurwitz-stability-criterion">
+<h1>Routh-Hurwitz Stability Criterion<a class="headerlink" href="#routh-hurwitz-stability-criterion" title="Link to this heading">¶</a></h1>
+<section id="required-imports">
+<h2>Required imports<a class="headerlink" href="#required-imports" title="Link to this heading">¶</a></h2>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">sympy</span> <span class="kn">import</span> <span class="o">*</span>
+<span class="kn">from</span> <span class="nn">sympy.abc</span> <span class="kn">import</span> <span class="n">s</span><span class="p">,</span> <span class="n">epsilon</span><span class="p">,</span> <span class="n">k</span>
+
+<span class="kn">from</span> <span class="nn">mathprint</span> <span class="kn">import</span> <span class="o">*</span>
+</pre></div>
+</div>
+</div>
+</div>
+</section>
+<section id="motivation">
+<h2>Motivation<a class="headerlink" href="#motivation" title="Link to this heading">¶</a></h2>
+<p>Given the following transfer function:</p>
+<div class="math notranslate nohighlight">
+\[ G(S) = \frac{ N(s) }{D(s)}\]</div>
+<p>where <span class="math notranslate nohighlight">\(N(s)\)</span> is the numerator and <span class="math notranslate nohighlight">\(D(s)\)</span> is the denominator. Both are polynomials. The roots of the numerator defines the system stabilty.</p>
+<p><strong>Routh-Hurwitz method allows us to conclude the system’s stability without actually calculating the polynomial roots of the denominator.</strong></p>
+</section>
+<section id="the-routh-table">
+<h2>The Routh table<a class="headerlink" href="#the-routh-table" title="Link to this heading">¶</a></h2>
+<p>Given the following system:</p>
+<p><span class="math notranslate nohighlight">\(\boxed{G(s) = \frac{ \text{num}(s)}{a_ns^n + a_{n-1}s^{n-1} + \dots + a_1s + a_0}}\)</span></p>
+<p>As an example, let us take <span class="math notranslate nohighlight">\(n=4\)</span>. The RH-table is as follows:</p>
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head text-center"><p><span class="math notranslate nohighlight">\(s^4\)</span></p></th>
+<th class="head text-center"><p><span class="math notranslate nohighlight">\(a_4\)</span></p></th>
+<th class="head text-center"><p><span class="math notranslate nohighlight">\(a_2\)</span></p></th>
+<th class="head text-center"><p><span class="math notranslate nohighlight">\(a_0\)</span></p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td class="text-center"><p><span class="math notranslate nohighlight">\(s^3\)</span></p></td>
+<td class="text-center"><p><span class="math notranslate nohighlight">\(a_3\)</span></p></td>
+<td class="text-center"><p><span class="math notranslate nohighlight">\(a_1\)</span></p></td>
+<td class="text-center"><p>0</p></td>
+</tr>
+<tr class="row-odd"><td class="text-center"><p><span class="math notranslate nohighlight">\(s^2\)</span></p></td>
+<td class="text-center"><p><span class="math notranslate nohighlight">\(\frac{-\left|\begin{array}{ll}a_4 &amp; a_2 \\ a_3 &amp; a_1\end{array}\right|}{a_3}=b_1\)</span></p></td>
+<td class="text-center"><p><span class="math notranslate nohighlight">\(\frac{-\left|\begin{array}{cc}a_4 &amp; a_0 \\ a_3 &amp; 0\end{array}\right|}{a_3}=b_2\)</span></p></td>
+<td class="text-center"><p><span class="math notranslate nohighlight">\(\frac{-\left|\begin{array}{ll}a_4 &amp; 0 \\ a_3 &amp; 0\end{array}\right|}{a_3}=0\)</span></p></td>
+</tr>
+<tr class="row-even"><td class="text-center"><p><span class="math notranslate nohighlight">\(s^1\)</span></p></td>
+<td class="text-center"><p><span class="math notranslate nohighlight">\(\frac{-\left|\begin{array}{ll}a_3 &amp; a_1 \\b_1 &amp; b_2\end{array}\right|}{b_1}=c_1\)</span></p></td>
+<td class="text-center"><p><span class="math notranslate nohighlight">\(\frac{-\left|\begin{array}{ll}a_3 &amp; 0 \\ b_1 &amp; 0\end{array}\right|}{b_1}=0\)</span></p></td>
+<td class="text-center"><p><span class="math notranslate nohighlight">\(\frac{-\left|\begin{array}{ll}a_3 &amp; 0 \\ b_1 &amp; 0\end{array}\right|}{b_1}=0\)</span></p></td>
+</tr>
+<tr class="row-odd"><td class="text-center"><p><span class="math notranslate nohighlight">\(s^0\)</span></p></td>
+<td class="text-center"><p><span class="math notranslate nohighlight">\(\frac{-\left|\begin{array}{cc}b_1 &amp; b_2 \\c_1 &amp; 0\end{array}\right|}{c_1}=d_1\)</span></p></td>
+<td class="text-center"><p><span class="math notranslate nohighlight">\(\frac{-\left|\begin{array}{ll}b_1 &amp; 0 \\ c_1 &amp; 0\end{array}\right|}{c_1}=0\)</span></p></td>
+<td class="text-center"><p><span class="math notranslate nohighlight">\(\frac{-\left|\begin{array}{ll}b_1 &amp; 0 \\ c_1 &amp; 0\end{array}\right|}{c_1}=0\)</span></p></td>
+</tr>
+</tbody>
+</table>
+<div class="math notranslate nohighlight">
+\[
+\boxed{ 
+\text{ 
+The denominator polynomial is stable iff all elements of the first column of the Routh table are nonzero and have the same sign.
+} 
+} 
+\]</div>
+<p>As we can see, the procedures to build a Routh table is repetitive. Thus, we will use Python SymPy to automate the the procedure.</p>
+</section>
+<section id="implementations">
+<h2>Implementations<a class="headerlink" href="#implementations" title="Link to this heading">¶</a></h2>
+<p>The implementation involves four functions:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">simplify_line</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">make_routh_table</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">evaluate_table</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">print_table</span></code></p></li>
+</ul>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">This function is to simplify one line/row by dividing all its elements </span>
+<span class="sd">with the greatest common divisor. However, before that, we must exclude</span>
+<span class="sd">any element that is zero.</span>
+<span class="sd">&#39;&#39;&#39;</span>
+<span class="k">def</span> <span class="nf">simplify_line</span><span class="p">(</span><span class="n">line</span><span class="p">):</span>
+    <span class="n">l</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">line</span><span class="p">)):</span>
+        <span class="k">if</span> <span class="n">line</span><span class="p">[</span><span class="n">k</span><span class="p">]</span> <span class="o">!=</span> <span class="mf">0.0</span><span class="p">:</span>
+            <span class="n">l</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">line</span><span class="p">[</span><span class="n">k</span><span class="p">])</span>
+
+    <span class="k">return</span> <span class="n">gcd</span><span class="p">(</span><span class="n">l</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">This is the core function that generates the RH-table.</span>
+<span class="sd">&#39;&#39;&#39;</span>
+<span class="k">def</span> <span class="nf">make_routh_table</span><span class="p">(</span><span class="n">sys</span><span class="p">):</span>
+    <span class="n">table</span> <span class="o">=</span> <span class="p">[]</span>
+
+    <span class="c1"># convert into fraction, </span>
+    <span class="c1"># take the coefficients of the denominator</span>
+    <span class="n">f</span> <span class="o">=</span> <span class="n">fraction</span><span class="p">(</span><span class="n">sys</span><span class="p">)</span>
+    <span class="n">den</span> <span class="o">=</span> <span class="n">Poly</span><span class="p">(</span><span class="n">f</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">s</span><span class="p">)</span>
+    <span class="n">a</span> <span class="o">=</span> <span class="n">den</span><span class="o">.</span><span class="n">all_coeffs</span><span class="p">()</span>
+    
+    <span class="n">norder</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">a</span><span class="p">)</span> <span class="o">-</span> <span class="mi">1</span> <span class="c1"># system order number</span>
+    <span class="n">nrow</span> <span class="o">=</span> <span class="n">norder</span> <span class="o">+</span> <span class="mi">1</span>
+    <span class="n">ncol</span> <span class="o">=</span> <span class="nb">round</span><span class="p">(</span><span class="n">norder</span> <span class="o">/</span> <span class="mi">2</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">ncol</span> <span class="o">%</span> <span class="mi">2</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="n">ncol</span> <span class="o">=</span> <span class="n">ncol</span> <span class="o">+</span> <span class="mi">1</span>
+
+    <span class="n">table</span> <span class="o">=</span> <span class="n">zeros</span><span class="p">(</span><span class="n">nrow</span><span class="p">,</span> <span class="n">ncol</span><span class="p">)</span>
+
+    <span class="c1"># Fill the first two rows</span>
+    <span class="n">table</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">:</span><span class="nb">len</span><span class="p">(</span><span class="n">a</span><span class="p">[</span><span class="mi">0</span><span class="p">::</span><span class="mi">2</span><span class="p">])]</span> <span class="o">=</span> <span class="p">[</span><span class="n">a</span><span class="p">[</span><span class="mi">0</span><span class="p">::</span><span class="mi">2</span><span class="p">]]</span>
+    <span class="n">table</span><span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">:</span><span class="nb">len</span><span class="p">(</span><span class="n">a</span><span class="p">[</span><span class="mi">1</span><span class="p">::</span><span class="mi">2</span><span class="p">])]</span> <span class="o">=</span> <span class="p">[</span><span class="n">a</span><span class="p">[</span><span class="mi">1</span><span class="p">::</span><span class="mi">2</span><span class="p">]]</span>
+    
+    <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">norder</span><span class="o">-</span><span class="mi">1</span><span class="p">):</span>
+        <span class="n">r</span> <span class="o">=</span> <span class="n">simplify_line</span><span class="p">(</span><span class="n">table</span><span class="p">[</span><span class="n">j</span><span class="p">,:])</span>
+        <span class="n">table</span><span class="p">[</span><span class="n">j</span><span class="p">,:]</span> <span class="o">=</span> <span class="n">table</span><span class="p">[</span><span class="n">j</span><span class="p">,:]</span> <span class="o">/</span> <span class="n">r</span>
+
+        <span class="k">if</span> <span class="n">table</span><span class="p">[</span><span class="n">j</span><span class="o">+</span><span class="mi">1</span><span class="p">,:]</span><span class="o">.</span><span class="n">is_zero_matrix</span> <span class="o">==</span> <span class="kc">False</span><span class="p">:</span>  <span class="c1"># NOT a row of all zeros</span>
+            <span class="k">if</span> <span class="p">(</span><span class="n">table</span><span class="p">[</span><span class="n">j</span><span class="o">+</span><span class="mi">1</span><span class="p">,</span><span class="mi">0</span><span class="p">]</span><span class="o">==</span> <span class="mi">0</span><span class="p">):</span>                <span class="c1"># case 1: first column is zero, avoid division by zero</span>
+                <span class="n">table</span><span class="p">[</span><span class="n">j</span><span class="o">+</span><span class="mi">1</span><span class="p">,</span><span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="n">epsilon</span>
+        <span class="k">elif</span> <span class="n">table</span><span class="p">[</span><span class="n">j</span><span class="o">+</span><span class="mi">1</span><span class="p">,:]</span><span class="o">.</span><span class="n">is_zero_matrix</span> <span class="o">==</span> <span class="kc">True</span><span class="p">:</span> <span class="c1"># case2: a row of all zeros  </span>
+            <span class="n">expr</span> <span class="o">=</span> <span class="mf">0.0</span>
+            <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="n">ncol</span><span class="p">):</span>
+                <span class="n">expr</span> <span class="o">=</span>  <span class="n">expr</span> <span class="o">+</span> <span class="n">table</span><span class="p">[</span><span class="n">j</span><span class="p">,</span><span class="n">k</span><span class="p">]</span><span class="o">*</span><span class="n">s</span><span class="o">**</span><span class="p">((</span><span class="n">norder</span><span class="o">-</span><span class="mi">2</span><span class="p">)</span><span class="o">-</span><span class="mi">2</span><span class="o">*</span><span class="n">k</span><span class="p">)</span>
+
+            <span class="n">a</span> <span class="o">=</span> <span class="n">Poly</span><span class="p">(</span><span class="n">diff</span><span class="p">(</span><span class="n">expr</span><span class="p">,</span><span class="n">s</span><span class="p">),</span> <span class="n">s</span><span class="p">)</span><span class="o">.</span><span class="n">all_coeffs</span><span class="p">()[</span><span class="mi">0</span><span class="p">::</span><span class="mi">2</span><span class="p">]</span>
+            <span class="n">table</span><span class="p">[</span><span class="n">j</span><span class="o">+</span><span class="mi">1</span><span class="p">,</span><span class="mi">0</span><span class="p">:</span><span class="nb">len</span><span class="p">(</span><span class="n">a</span><span class="p">)]</span> <span class="o">=</span> <span class="p">[</span><span class="n">a</span><span class="p">]</span>
+
+        <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">ncol</span><span class="o">-</span><span class="mi">1</span><span class="p">):</span>
+            <span class="n">A</span> <span class="o">=</span> <span class="n">Matrix</span><span class="p">([[</span><span class="n">table</span><span class="p">[</span><span class="n">j</span><span class="p">,</span><span class="mi">0</span><span class="p">],</span>    <span class="n">table</span><span class="p">[</span><span class="n">j</span><span class="p">,</span><span class="n">k</span><span class="o">+</span><span class="mi">1</span><span class="p">]],</span>
+                       <span class="p">[</span><span class="n">table</span><span class="p">[</span><span class="n">j</span><span class="o">+</span><span class="mi">1</span><span class="p">,</span><span class="mi">0</span><span class="p">],</span>  <span class="n">table</span><span class="p">[</span><span class="n">j</span><span class="o">+</span><span class="mi">1</span><span class="p">,</span><span class="n">k</span><span class="o">+</span><span class="mi">1</span><span class="p">]]])</span>
+            
+            <span class="n">table</span><span class="p">[</span><span class="n">j</span><span class="o">+</span><span class="mi">2</span><span class="p">,</span><span class="n">k</span><span class="p">]</span> <span class="o">=</span> <span class="n">simplify</span><span class="p">(</span><span class="o">-</span><span class="n">A</span><span class="o">.</span><span class="n">det</span><span class="p">()</span><span class="o">/</span><span class="n">A</span><span class="p">[</span><span class="mi">1</span><span class="p">,</span><span class="mi">0</span><span class="p">])</span>
+        
+    <span class="k">return</span> <span class="n">table</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">This function does not conclude the stability based on the generated Routh table. </span>
+<span class="sd">It simply generates and print the first-column signs which we can use to draw the conclusion.</span>
+<span class="sd">&#39;&#39;&#39;</span>
+<span class="k">def</span> <span class="nf">evaluate_table</span><span class="p">(</span><span class="n">table</span><span class="p">):</span>
+    <span class="n">signs</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">table</span><span class="p">[:,</span><span class="mi">0</span><span class="p">])):</span>
+        <span class="n">table</span><span class="p">[</span><span class="n">k</span><span class="p">,</span><span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="n">table</span><span class="p">[</span><span class="n">k</span><span class="p">,</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">subs</span><span class="p">(</span><span class="n">epsilon</span><span class="p">,</span> <span class="mf">0.001</span><span class="p">)</span> 
+        <span class="k">if</span> <span class="n">table</span><span class="p">[</span><span class="n">k</span><span class="p">,</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">evalf</span><span class="p">()</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="n">signs</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s1">&#39;-&#39;</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="n">table</span><span class="p">[</span><span class="n">k</span><span class="p">,</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">evalf</span><span class="p">()</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="n">signs</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s1">&#39;+&#39;</span><span class="p">)</span>
+
+    <span class="n">sp</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span>
+    <span class="n">cnt</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">s</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">signs</span><span class="p">):</span>
+        <span class="k">if</span> <span class="p">(</span><span class="n">k</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">)</span> <span class="ow">and</span> <span class="p">(</span><span class="n">s</span> <span class="o">!=</span> <span class="n">sp</span><span class="p">):</span>
+            <span class="n">cnt</span> <span class="o">=</span> <span class="n">cnt</span> <span class="o">+</span> <span class="mi">1</span>
+        <span class="n">sp</span> <span class="o">=</span> <span class="n">s</span>
+
+    <span class="nb">print</span><span class="p">(</span><span class="n">cnt</span><span class="p">,</span> <span class="s1">&#39;sign changes.&#39;</span><span class="p">)</span>
+    
+    <span class="k">return</span> <span class="n">signs</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">This prints the Routh table</span>
+<span class="sd">&#39;&#39;&#39;</span>
+<span class="k">def</span> <span class="nf">print_table</span><span class="p">(</span><span class="n">table</span><span class="p">):</span>
+    <span class="n">mprint</span><span class="p">(</span><span class="n">latex</span><span class="p">(</span><span class="n">Matrix</span><span class="p">(</span><span class="n">table</span><span class="p">)))</span>
+</pre></div>
+</div>
+</div>
+</div>
+</section>
+<section id="examples">
+<h2>Examples<a class="headerlink" href="#examples" title="Link to this heading">¶</a></h2>
+<section id="example-1">
+<h3>Example 1<a class="headerlink" href="#example-1" title="Link to this heading">¶</a></h3>
+<div class="math notranslate nohighlight">
+\[ \frac{1}{a_0s^3 + a_1s^2 + a_2s + a_3}\]</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">a0</span><span class="p">,</span> <span class="n">a1</span><span class="p">,</span> <span class="n">a2</span><span class="p">,</span> <span class="n">a3</span> <span class="o">=</span> <span class="n">symbols</span><span class="p">(</span><span class="s2">&quot;a0 a1 a2 a3&quot;</span><span class="p">)</span>
+<span class="n">table</span> <span class="o">=</span> <span class="n">make_routh_table</span><span class="p">(</span><span class="mi">1</span> <span class="o">/</span> <span class="p">(</span><span class="n">a0</span><span class="o">*</span><span class="n">s</span><span class="o">**</span><span class="mi">3</span> <span class="o">+</span> <span class="n">a1</span><span class="o">*</span><span class="n">s</span><span class="o">**</span><span class="mi">2</span> <span class="o">+</span> <span class="n">a2</span><span class="o">*</span><span class="n">s</span> <span class="o">+</span> <span class="n">a3</span><span class="p">))</span>
+<span class="n">print_table</span><span class="p">(</span><span class="n">table</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_latex math notranslate nohighlight">
+\[\begin{split}\displaystyle \left[\begin{matrix}a_{0} &amp; a_{2} &amp; 0\\a_{1} &amp; a_{3} &amp; 0\\- \frac{a_{0} a_{3}}{a_{1}} + a_{2} &amp; 0 &amp; 0\\a_{3} &amp; 0 &amp; 0\end{matrix}\right]\end{split}\]</div>
+</div>
+</div>
+<p>Therefore, to guarantee stabilty:</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">table</span><span class="p">[</span><span class="mi">2</span><span class="p">,</span><span class="mi">0</span><span class="p">]</span><span class="o">&gt;</span><span class="mi">0</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_latex math notranslate nohighlight">
+\[\displaystyle - \frac{a_{0} a_{3}}{a_{1}} + a_{2} &gt; 0\]</div>
+</div>
+</div>
+</section>
+<section id="example-2">
+<h3>Example 2<a class="headerlink" href="#example-2" title="Link to this heading">¶</a></h3>
+<div class="math notranslate nohighlight">
+\[ \frac{1000}{s^3 + 10s^2 + 31s + 1030}\]</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">table</span> <span class="o">=</span> <span class="n">make_routh_table</span><span class="p">(</span><span class="mi">1000</span> <span class="o">/</span> <span class="p">(</span><span class="n">s</span><span class="o">**</span><span class="mi">3</span> <span class="o">+</span> <span class="mi">10</span><span class="o">*</span><span class="n">s</span><span class="o">**</span><span class="mi">2</span> <span class="o">+</span> <span class="mi">31</span><span class="o">*</span><span class="n">s</span> <span class="o">+</span> <span class="mi">1030</span><span class="p">))</span>
+<span class="n">print_table</span><span class="p">(</span><span class="n">table</span><span class="p">)</span>
+<span class="n">evaluate_table</span><span class="p">(</span><span class="n">table</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_latex math notranslate nohighlight">
+\[\begin{split}\displaystyle \left[\begin{matrix}1 &amp; 31 &amp; 0\\1 &amp; 103 &amp; 0\\-72 &amp; 0 &amp; 0\\103 &amp; 0 &amp; 0\end{matrix}\right]\end{split}\]</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>2 sign changes.
+</pre></div>
+</div>
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>[&#39;+&#39;, &#39;+&#39;, &#39;-&#39;, &#39;+&#39;]
+</pre></div>
+</div>
+</div>
+</div>
+</section>
+<section id="example-3">
+<h3>Example 3<a class="headerlink" href="#example-3" title="Link to this heading">¶</a></h3>
+<div class="math notranslate nohighlight">
+\[G(s)= \frac{10}{s^5+2s^4+3s^3+6s^2+5s+3}\]</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">table</span> <span class="o">=</span> <span class="n">make_routh_table</span><span class="p">(</span><span class="mi">10</span> <span class="o">/</span> <span class="p">(</span><span class="n">s</span><span class="o">**</span><span class="mi">5</span> <span class="o">+</span> <span class="mi">2</span><span class="o">*</span><span class="n">s</span><span class="o">**</span><span class="mi">4</span> <span class="o">+</span> <span class="mi">3</span><span class="o">*</span><span class="n">s</span><span class="o">**</span><span class="mi">3</span> <span class="o">+</span> <span class="mi">6</span><span class="o">*</span><span class="n">s</span><span class="o">**</span><span class="mi">2</span> <span class="o">+</span> <span class="mi">5</span><span class="o">*</span><span class="n">s</span> <span class="o">+</span> <span class="mi">3</span><span class="p">))</span>
+<span class="n">print_table</span><span class="p">(</span><span class="n">table</span><span class="p">)</span>
+<span class="n">evaluate_table</span><span class="p">(</span><span class="n">table</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_latex math notranslate nohighlight">
+\[\begin{split}\displaystyle \left[\begin{matrix}1 &amp; 3 &amp; 5\\2 &amp; 6 &amp; 3\\\epsilon &amp; \frac{7}{2} &amp; 0\\6 - \frac{7}{\epsilon} &amp; 3 &amp; 0\\\frac{- 6 \epsilon \left(\epsilon - 7\right) - 49}{2 \left(6 \epsilon - 7\right)} &amp; 0 &amp; 0\\3 &amp; 0 &amp; 0\end{matrix}\right]\end{split}\]</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>2 sign changes.
+</pre></div>
+</div>
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>[&#39;+&#39;, &#39;+&#39;, &#39;+&#39;, &#39;-&#39;, &#39;+&#39;, &#39;+&#39;]
+</pre></div>
+</div>
+</div>
+</div>
+</section>
+<section id="example-4">
+<h3>Example 4<a class="headerlink" href="#example-4" title="Link to this heading">¶</a></h3>
+<div class="math notranslate nohighlight">
+\[ \frac{128}{s^8 + 3s^7 + 10s^6 + 24s^5 + 48s^4 + 96s^3 + 128s^2 + 192s + 128}\]</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">table</span> <span class="o">=</span> <span class="n">make_routh_table</span><span class="p">(</span><span class="mi">128</span> <span class="o">/</span> <span class="p">(</span><span class="n">s</span><span class="o">**</span><span class="mi">8</span> <span class="o">+</span> <span class="mi">3</span><span class="o">*</span><span class="n">s</span><span class="o">**</span><span class="mi">7</span> <span class="o">+</span> <span class="mi">10</span><span class="o">*</span><span class="n">s</span><span class="o">**</span><span class="mi">6</span> <span class="o">+</span> <span class="mi">24</span><span class="o">*</span><span class="n">s</span><span class="o">**</span><span class="mi">5</span> <span class="o">+</span> <span class="mi">48</span><span class="o">*</span><span class="n">s</span><span class="o">**</span><span class="mi">4</span> <span class="o">+</span> <span class="mi">96</span><span class="o">*</span><span class="n">s</span><span class="o">**</span><span class="mi">3</span> <span class="o">+</span> <span class="mi">128</span><span class="o">*</span><span class="n">s</span><span class="o">**</span><span class="mi">2</span> <span class="o">+</span> <span class="mi">192</span><span class="o">*</span><span class="n">s</span> <span class="o">+</span> <span class="mi">128</span><span class="p">))</span>
+<span class="n">print_table</span><span class="p">(</span><span class="n">table</span><span class="p">)</span>
+<span class="n">evaluate_table</span><span class="p">(</span><span class="n">table</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_latex math notranslate nohighlight">
+\[\begin{split}\displaystyle \left[\begin{matrix}1 &amp; 10 &amp; 48 &amp; 128 &amp; 128\\1 &amp; 8 &amp; 32 &amp; 64 &amp; 0\\1 &amp; 8 &amp; 32 &amp; 64 &amp; 0\\3 &amp; 16 &amp; 32 &amp; 0 &amp; 0\\1 &amp; 8 &amp; 24 &amp; 0 &amp; 0\\-1 &amp; -5 &amp; 0 &amp; 0 &amp; 0\\1 &amp; 8 &amp; 0 &amp; 0 &amp; 0\\3 &amp; 0 &amp; 0 &amp; 0 &amp; 0\\8 &amp; 0 &amp; 0 &amp; 0 &amp; 0\end{matrix}\right]\end{split}\]</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>2 sign changes.
+</pre></div>
+</div>
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>[&#39;+&#39;, &#39;+&#39;, &#39;+&#39;, &#39;+&#39;, &#39;+&#39;, &#39;-&#39;, &#39;+&#39;, &#39;+&#39;, &#39;+&#39;]
+</pre></div>
+</div>
+</div>
+</div>
+</section>
+<section id="example-5">
+<h3>Example 5<a class="headerlink" href="#example-5" title="Link to this heading">¶</a></h3>
+<div class="math notranslate nohighlight">
+\[ \frac{k}{s^3 + 10s^2 + 31s + 30+k}\]</div>
+<p>Find the largest <span class="math notranslate nohighlight">\(k\)</span> that does not cause the closed-loop system unstable.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">table</span> <span class="o">=</span> <span class="n">make_routh_table</span><span class="p">(</span><span class="n">k</span> <span class="o">/</span> <span class="p">(</span><span class="n">s</span><span class="o">**</span><span class="mi">3</span> <span class="o">+</span> <span class="mi">10</span><span class="o">*</span><span class="n">s</span><span class="o">**</span><span class="mi">2</span> <span class="o">+</span> <span class="mi">31</span><span class="o">*</span><span class="n">s</span> <span class="o">+</span> <span class="mi">30</span><span class="o">+</span><span class="n">k</span><span class="p">))</span>
+<span class="n">print_table</span><span class="p">(</span><span class="n">table</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_latex math notranslate nohighlight">
+\[\begin{split}\displaystyle \left[\begin{matrix}1 &amp; 31 &amp; 0\\10 &amp; k + 30 &amp; 0\\28 - \frac{k}{10} &amp; 0 &amp; 0\\k + 30 &amp; 0 &amp; 0\end{matrix}\right]\end{split}\]</div>
+</div>
+</div>
+<p>Our main interest lies in row #3, column #1: it must be a positive number.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">table</span><span class="p">[</span><span class="mi">2</span><span class="p">,</span><span class="mi">0</span><span class="p">]</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_latex math notranslate nohighlight">
+\[\displaystyle 28 - \frac{k}{10}\]</div>
+</div>
+</div>
+<p>Hence, we create the inequality and solve for <span class="math notranslate nohighlight">\(k\)</span>:</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">reduce_inequalities</span><span class="p">(</span><span class="n">table</span><span class="p">[</span><span class="mi">2</span><span class="p">,</span><span class="mi">0</span><span class="p">]</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">,</span> <span class="n">k</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_latex math notranslate nohighlight">
+\[\displaystyle -\infty &lt; k \wedge k &lt; 280\]</div>
+</div>
+</div>
+</section>
+</section>
+<section id="good-readings">
+<h2>Good readings<a class="headerlink" href="#good-readings" title="Link to this heading">¶</a></h2>
+<ul class="simple">
+<li><p>Modern Control Engineering (5th-edition), Chapter 5, by K. Ogata</p></li>
+<li><p><a class="reference external" href="https://doi.org/10.1016/0167-6911(94)00089-E">Elementary proof of the Routh-Hurwitz test, by Gjerrit Meinsma</a></p></li>
+</ul>
+</section>
+</section>
+
+    <script type="text/x-thebe-config">
+    {
+        requestKernel: true,
+        binderOptions: {
+            repo: "binder-examples/jupyter-stacks-datascience",
+            ref: "master",
+        },
+        codeMirrorConfig: {
+            theme: "abcdef",
+            mode: "python"
+        },
+        kernelOptions: {
+            name: "python3",
+            path: "./."
+        },
+        predefinedOutput: true
+    }
+    </script>
+    <script>kernelName = 'python3'</script>
+
+            <div class="clearer"></div>
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="Main">
+        <div class="sphinxsidebarwrapper">
+            <p class="logo"><a href="intro.html">
+              <img class="logo" src="_static/logo.png" alt="Logo of Project name not set"/>
+            </a></p>
+  <div>
+    <h3><a href="intro.html">Table of Contents</a></h3>
+    <ul>
+<li><a class="reference internal" href="#">Routh-Hurwitz Stability Criterion</a><ul>
+<li><a class="reference internal" href="#required-imports">Required imports</a></li>
+<li><a class="reference internal" href="#motivation">Motivation</a></li>
+<li><a class="reference internal" href="#the-routh-table">The Routh table</a></li>
+<li><a class="reference internal" href="#implementations">Implementations</a></li>
+<li><a class="reference internal" href="#examples">Examples</a><ul>
+<li><a class="reference internal" href="#example-1">Example 1</a></li>
+<li><a class="reference internal" href="#example-2">Example 2</a></li>
+<li><a class="reference internal" href="#example-3">Example 3</a></li>
+<li><a class="reference internal" href="#example-4">Example 4</a></li>
+<li><a class="reference internal" href="#example-5">Example 5</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#good-readings">Good readings</a></li>
+</ul>
+</li>
+</ul>
+
+  </div>
+  <div>
+    <h4>Previous topic</h4>
+    <p class="topless"><a href="second-order.html"
+                          title="previous chapter">Second-Order System</a></p>
+  </div>
+  <div>
+    <h4>Next topic</h4>
+    <p class="topless"><a href="root-locus.html"
+                          title="next chapter">The Root-Locus Method</a></p>
+  </div>
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="_sources/routh-hurwitz.ipynb"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<search id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</search>
+<script>document.getElementById('searchbox').style.display = "block"</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="Related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="root-locus.html" title="The Root-Locus Method"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="second-order.html" title="Second-Order System"
+             >previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="intro.html">Control Systems with Sympy</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">Routh-Hurwitz Stability Criterion</a></li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+    &#169; Copyright 2025.
+      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 7.4.7.
+    </div>
+  </body>
+</html>

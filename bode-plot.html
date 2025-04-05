@@ -1,0 +1,1132 @@
+<!DOCTYPE html>
+
+<html lang="en" data-content_root="./">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>Asymptotic Bode &#8212; Control Systems with Sympy</title>
+    <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=fa44fd50" />
+    <link rel="stylesheet" type="text/css" href="_static/traditional.css?v=608ddc6c" />
+    <link rel="stylesheet" type="text/css" href="_static/togglebutton.css?v=13237357" />
+    <link rel="stylesheet" type="text/css" href="_static/copybutton.css?v=76b2166b" />
+    <link rel="stylesheet" type="text/css" href="_static/mystnb.4510f1fc1dee50b3e5859aac5469c37c29e427902b24a333a5f9fcb2f0b3ac41.css?v=be8a1c11" />
+    <link rel="stylesheet" type="text/css" href="_static/sphinx-thebe.css?v=4fa983c6" />
+    <link rel="stylesheet" type="text/css" href="_static/sphinx-design.min.css?v=95c83b7e" />
+    <script src="_static/documentation_options.js?v=9eb32ce0"></script>
+    <script src="_static/doctools.js?v=9a2dae69"></script>
+    <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="_static/clipboard.min.js?v=a7894cd8"></script>
+    <script src="_static/copybutton.js?v=f281be69"></script>
+    <script src="_static/scripts/sphinx-book-theme.js?v=887ef09a"></script>
+    <script>let toggleHintShow = 'Click to show';</script>
+    <script>let toggleHintHide = 'Click to hide';</script>
+    <script>let toggleOpenOnPrint = 'true';</script>
+    <script src="_static/togglebutton.js?v=4a39c7ea"></script>
+    <script>var togglebuttonSelector = '.toggle, .admonition.dropdown';</script>
+    <script src="_static/design-tabs.js?v=f930bc37"></script>
+    <script>const THEBE_JS_URL = "https://unpkg.com/thebe@0.8.2/lib/index.js"; const thebe_selector = ".thebe,.cell"; const thebe_selector_input = "pre"; const thebe_selector_output = ".output, .cell_output"</script>
+    <script async="async" src="_static/sphinx-thebe.js?v=c100c467"></script>
+    <script>var togglebuttonSelector = '.toggle, .admonition.dropdown';</script>
+    <script>const THEBE_JS_URL = "https://unpkg.com/thebe@0.8.2/lib/index.js"; const thebe_selector = ".thebe,.cell"; const thebe_selector_input = "pre"; const thebe_selector_output = ".output, .cell_output"</script>
+    <script>window.MathJax = {"HTML-CSS": {"matchFontHeight": true, "scale": 50}, "options": {"processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
+    <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Gain Margin and Phase Margin" href="bode-margins.html" />
+    <link rel="prev" title="The Root-Locus Method" href="root-locus.html" /> 
+  </head><body>
+    <div class="related" role="navigation" aria-label="Related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="bode-margins.html" title="Gain Margin and Phase Margin"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="root-locus.html" title="The Root-Locus Method"
+             accesskey="P">previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="intro.html">Control Systems with Sympy</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">Asymptotic Bode</a></li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <section class="tex2jax_ignore mathjax_ignore" id="asymptotic-bode">
+<h1>Asymptotic Bode<a class="headerlink" href="#asymptotic-bode" title="Link to this heading">¶</a></h1>
+<p>Goal:</p>
+<ul class="simple">
+<li><p>Express the frequency response of a system defined by a transfer function as piecewise linear funtions.</p></li>
+</ul>
+<section id="preparations">
+<h2>Preparations<a class="headerlink" href="#preparations" title="Link to this heading">¶</a></h2>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+
+<span class="kn">from</span> <span class="nn">sympy</span> <span class="kn">import</span> <span class="o">*</span>
+<span class="kn">from</span> <span class="nn">sympy.physics.control.lti</span> <span class="kn">import</span> <span class="n">TransferFunction</span>
+
+<span class="kn">from</span> <span class="nn">mathprint</span> <span class="kn">import</span> <span class="o">*</span>
+
+<span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">rcParams</span><span class="o">.</span><span class="n">update</span><span class="p">({</span>
+    <span class="s2">&quot;text.usetex&quot;</span><span class="p">:</span> <span class="kc">True</span><span class="p">,</span>
+    <span class="s2">&quot;font.family&quot;</span><span class="p">:</span> <span class="s2">&quot;Helvetica&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;font.size&quot;</span><span class="p">:</span> <span class="mi">10</span><span class="p">,</span>
+<span class="p">})</span>
+</pre></div>
+</div>
+</div>
+</div>
+<p>Define variables that we are going to use repetitively.
+We also need to define specific prpoperties of the variables.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">t</span>        <span class="o">=</span> <span class="n">symbols</span><span class="p">(</span><span class="s1">&#39;t&#39;</span>       <span class="p">,</span> <span class="n">real</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="n">s</span>        <span class="o">=</span> <span class="n">symbols</span><span class="p">(</span><span class="s1">&#39;s&#39;</span>       <span class="p">,</span> <span class="nb">complex</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="n">omega</span>    <span class="o">=</span> <span class="n">symbols</span><span class="p">(</span><span class="s1">&#39;omega&#39;</span>   <span class="p">,</span> <span class="n">positive</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="n">a</span><span class="p">,</span> <span class="n">b</span>     <span class="o">=</span> <span class="n">symbols</span><span class="p">(</span><span class="s1">&#39;a b&#39;</span>     <span class="p">,</span> <span class="n">real</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="n">zeta</span>     <span class="o">=</span> <span class="n">symbols</span><span class="p">(</span><span class="s1">&#39;zeta&#39;</span>    <span class="p">,</span> <span class="n">positive</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="n">omega_n</span>  <span class="o">=</span> <span class="n">symbols</span><span class="p">(</span><span class="s1">&#39;omega_n&#39;</span> <span class="p">,</span> <span class="n">positive</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+</section>
+<section id="asymptotic-bode-plots-of-low-order-transfer-functions">
+<h2>Asymptotic Bode Plots of Low-Order Transfer Functions<a class="headerlink" href="#asymptotic-bode-plots-of-low-order-transfer-functions" title="Link to this heading">¶</a></h2>
+<p>These are the fundamental steps that we must do to plot the frequence response (Bode plot) of a system defined by a transfer function <span class="math notranslate nohighlight">\(H(s)\)</span>:</p>
+<ul class="simple">
+<li><p>Do substitution: <span class="math notranslate nohighlight">\(s = j \omega\)</span></p></li>
+<li><p>Compute <span class="math notranslate nohighlight">\(H( j \omega )\)</span></p></li>
+<li><p>The result is a complex number:</p>
+<ul>
+<li><p>Extract the magnitude: <span class="math notranslate nohighlight">\( M = \big| H(j \omega) \big| \)</span></p></li>
+<li><p>Convert the magnitude into dB: <span class="math notranslate nohighlight">\( M_{dB} = 20 \log_{10} M  \)</span></p></li>
+<li><p>Extract the the phase: <span class="math notranslate nohighlight">\( \phi = \angle H(j \omega) \)</span></p></li>
+</ul>
+</li>
+</ul>
+<p>It is very easy to execute those steps by using a computer. On the other hand, when we simply want to sketch the Bode plot without using a computer, we can use the asymptotic method to draw the approximated version of the Bode plot.</p>
+</section>
+<section id="case-1-a-pole-at-the-origin-of-the-s-plane">
+<h2>Case 1: A pole at the origin of the s-plane<a class="headerlink" href="#case-1-a-pole-at-the-origin-of-the-s-plane" title="Link to this heading">¶</a></h2>
+<p>Let us start by first defining the transfer function:</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">H1</span> <span class="o">=</span> <span class="mi">1</span><span class="o">/</span><span class="n">s</span>
+<span class="n">mprint</span><span class="p">(</span><span class="s1">&#39;H(s)=&#39;</span><span class="p">,</span> <span class="n">latex</span><span class="p">(</span><span class="n">H1</span><span class="p">))</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_latex math notranslate nohighlight">
+\[\displaystyle H(s)=\frac{1}{s}\]</div>
+</div>
+</div>
+<p>After the substitution, we then obtain:</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">Hjw</span>  <span class="o">=</span> <span class="n">H1</span><span class="o">.</span><span class="n">subs</span><span class="p">(</span><span class="n">s</span><span class="p">,</span> <span class="n">I</span><span class="o">*</span><span class="n">omega</span><span class="p">)</span>
+<span class="n">M1</span>   <span class="o">=</span> <span class="n">simplify</span><span class="p">(</span><span class="n">Abs</span><span class="p">(</span><span class="n">Hjw</span><span class="p">))</span>
+<span class="n">Mdb1</span> <span class="o">=</span> <span class="n">simplify</span><span class="p">(</span><span class="mi">20</span><span class="o">*</span><span class="n">log</span><span class="p">(</span><span class="n">M1</span><span class="p">,</span> <span class="mi">10</span><span class="p">))</span>
+<span class="n">Phi1</span> <span class="o">=</span> <span class="n">arg</span><span class="p">(</span><span class="n">Hjw</span><span class="p">)</span>
+<span class="n">mprintb</span><span class="p">(</span><span class="s2">&quot;M  =&quot;</span><span class="p">,</span> <span class="n">latex</span><span class="p">(</span><span class="n">M1</span><span class="p">))</span>
+<span class="n">mprintb</span><span class="p">(</span><span class="s2">&quot;M_</span><span class="si">{dB}</span><span class="s2"> =&quot;</span><span class="p">,</span> <span class="n">latex</span><span class="p">(</span><span class="n">Mdb1</span><span class="p">))</span>
+<span class="n">mprintb</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\\</span><span class="s2">phi =&quot;</span><span class="p">,</span> <span class="n">latex</span><span class="p">(</span><span class="n">Phi1</span><span class="p">))</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_latex math notranslate nohighlight">
+\[\displaystyle \boxed{M  =\frac{1}{\omega}}\]</div>
+<div class="output text_latex math notranslate nohighlight">
+\[\displaystyle \boxed{M_{dB} =- \frac{20 \log{\left(\omega \right)}}{\log{\left(10 \right)}}}\]</div>
+<div class="output text_latex math notranslate nohighlight">
+\[\displaystyle \boxed{\phi =- \frac{\pi}{2}}\]</div>
+</div>
+</div>
+<p><strong>Magnitude plot:</strong></p>
+<div class="cell tag_hide-input docutils container">
+<details class="hide above-input">
+<summary aria-label="Toggle hidden content">
+<span class="collapsed">Show code cell source</span>
+<span class="expanded">Hide code cell source</span>
+</summary>
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">title</span> <span class="o">=</span> <span class="s1">&#39;$ M_</span><span class="si">{dB}</span><span class="s1"> $&#39;</span>
+<span class="n">p1</span> <span class="o">=</span> <span class="n">plot</span><span class="p">(</span><span class="n">Mdb1</span><span class="p">,</span> <span class="p">(</span><span class="n">omega</span><span class="p">,</span> <span class="mf">0.01</span> <span class="p">,</span> <span class="mi">100</span><span class="p">),</span> <span class="n">size</span><span class="o">=</span><span class="p">(</span><span class="mi">4</span><span class="p">,</span> <span class="mi">2</span><span class="p">),</span> <span class="n">title</span><span class="o">=</span><span class="n">title</span><span class="p">,</span> <span class="n">show</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>  <span class="n">xscale</span><span class="o">=</span><span class="s1">&#39;log&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</details>
+<div class="cell_output docutils container">
+<img alt="_images/2aaf9144938336d6b5caf808eabed6622f3a533f6755568c275bc626f296e1c0.png" src="_images/2aaf9144938336d6b5caf808eabed6622f3a533f6755568c275bc626f296e1c0.png" />
+</div>
+</div>
+<p><strong>Phase plot:</strong></p>
+<div class="cell tag_hide-input docutils container">
+<details class="hide above-input">
+<summary aria-label="Toggle hidden content">
+<span class="collapsed">Show code cell source</span>
+<span class="expanded">Hide code cell source</span>
+</summary>
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">title</span> <span class="o">=</span> <span class="s1">&#39;$</span><span class="se">\\</span><span class="s1">phi $&#39;</span>
+<span class="n">p2</span> <span class="o">=</span> <span class="n">plot</span><span class="p">(</span><span class="n">Phi1</span><span class="p">,</span> <span class="p">(</span><span class="n">omega</span><span class="p">,</span> <span class="mf">0.01</span> <span class="p">,</span> <span class="mi">100</span><span class="p">),</span> <span class="n">size</span><span class="o">=</span><span class="p">(</span><span class="mi">4</span><span class="p">,</span> <span class="mi">2</span><span class="p">),</span> <span class="n">title</span><span class="o">=</span><span class="n">title</span><span class="p">,</span> <span class="n">show</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>  <span class="n">xscale</span><span class="o">=</span><span class="s1">&#39;log&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</details>
+<div class="cell_output docutils container">
+<img alt="_images/8dc352e088a343cb6b932e13c2719016b14e517b492890c6fa17bfc3f1eff0d1.png" src="_images/8dc352e088a343cb6b932e13c2719016b14e517b492890c6fa17bfc3f1eff0d1.png" />
+</div>
+</div>
+</section>
+<section id="case-2-a-zero-at-the-origin-of-the-s-plane">
+<h2>Case 2: A zero at the origin of the s-plane<a class="headerlink" href="#case-2-a-zero-at-the-origin-of-the-s-plane" title="Link to this heading">¶</a></h2>
+<p>Let us start by first defining the transfer function:</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">H2</span> <span class="o">=</span> <span class="n">s</span>
+<span class="n">mprint</span><span class="p">(</span><span class="s1">&#39;H(s)=&#39;</span><span class="p">,</span> <span class="n">latex</span><span class="p">(</span><span class="n">H2</span><span class="p">))</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_latex math notranslate nohighlight">
+\[\displaystyle H(s)=s\]</div>
+</div>
+</div>
+<p>After the substitution, we then obtain:</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">Hjw</span>  <span class="o">=</span> <span class="n">H2</span><span class="o">.</span><span class="n">subs</span><span class="p">(</span><span class="n">s</span><span class="p">,</span> <span class="n">I</span><span class="o">*</span><span class="n">omega</span><span class="p">)</span>
+<span class="n">M2</span>   <span class="o">=</span> <span class="n">simplify</span><span class="p">(</span><span class="n">Abs</span><span class="p">(</span><span class="n">Hjw</span><span class="p">))</span>
+<span class="n">Mdb2</span> <span class="o">=</span> <span class="n">simplify</span><span class="p">(</span><span class="mi">20</span> <span class="o">*</span> <span class="n">log</span><span class="p">(</span><span class="n">M2</span><span class="p">,</span> <span class="mi">10</span><span class="p">))</span>
+<span class="n">Phi2</span> <span class="o">=</span> <span class="n">arg</span><span class="p">(</span><span class="n">Hjw</span><span class="p">)</span>
+<span class="n">mprintb</span><span class="p">(</span><span class="s2">&quot;M  =&quot;</span><span class="p">,</span> <span class="n">latex</span><span class="p">(</span><span class="n">M2</span><span class="p">))</span>
+<span class="n">mprintb</span><span class="p">(</span><span class="s2">&quot;M_</span><span class="si">{dB}</span><span class="s2"> =&quot;</span><span class="p">,</span> <span class="n">latex</span><span class="p">(</span><span class="n">Mdb2</span><span class="p">))</span>
+<span class="n">mprintb</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\\</span><span class="s2">phi =&quot;</span><span class="p">,</span> <span class="n">latex</span><span class="p">(</span><span class="n">Phi2</span><span class="p">))</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_latex math notranslate nohighlight">
+\[\displaystyle \boxed{M  =\omega}\]</div>
+<div class="output text_latex math notranslate nohighlight">
+\[\displaystyle \boxed{M_{dB} =\frac{20 \log{\left(\omega \right)}}{\log{\left(10 \right)}}}\]</div>
+<div class="output text_latex math notranslate nohighlight">
+\[\displaystyle \boxed{\phi =\frac{\pi}{2}}\]</div>
+</div>
+</div>
+<p><strong>Magnitude plot:</strong></p>
+<div class="cell tag_hide-input docutils container">
+<details class="hide above-input">
+<summary aria-label="Toggle hidden content">
+<span class="collapsed">Show code cell source</span>
+<span class="expanded">Hide code cell source</span>
+</summary>
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">title</span> <span class="o">=</span> <span class="s1">&#39;$M_</span><span class="si">{dB}</span><span class="s1">$&#39;</span>
+<span class="n">p1</span> <span class="o">=</span> <span class="n">plot</span><span class="p">(</span><span class="n">Mdb2</span><span class="p">,</span> <span class="p">(</span><span class="n">omega</span><span class="p">,</span> <span class="mf">0.01</span> <span class="p">,</span> <span class="mi">100</span><span class="p">),</span> <span class="n">size</span><span class="o">=</span><span class="p">(</span><span class="mi">4</span><span class="p">,</span> <span class="mi">2</span><span class="p">),</span> <span class="n">title</span><span class="o">=</span><span class="n">title</span><span class="p">,</span> <span class="n">show</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>  <span class="n">xscale</span><span class="o">=</span><span class="s1">&#39;log&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</details>
+<div class="cell_output docutils container">
+<img alt="_images/0039480639105640ccc260f2cd411f7d5f33d5c75afe8abab8f5362490a58a18.png" src="_images/0039480639105640ccc260f2cd411f7d5f33d5c75afe8abab8f5362490a58a18.png" />
+</div>
+</div>
+<p><strong>Phase plot:</strong></p>
+<div class="cell tag_hide-input docutils container">
+<details class="hide above-input">
+<summary aria-label="Toggle hidden content">
+<span class="collapsed">Show code cell source</span>
+<span class="expanded">Hide code cell source</span>
+</summary>
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">title</span> <span class="o">=</span> <span class="s1">&#39;$</span><span class="se">\\</span><span class="s1">phi $&#39;</span>
+<span class="n">p2</span> <span class="o">=</span> <span class="n">plot</span><span class="p">(</span><span class="n">Phi2</span><span class="p">,</span> <span class="p">(</span><span class="n">omega</span><span class="p">,</span> <span class="mf">0.01</span> <span class="p">,</span> <span class="mi">100</span><span class="p">),</span> <span class="n">size</span><span class="o">=</span><span class="p">(</span><span class="mi">4</span><span class="p">,</span> <span class="mi">2</span><span class="p">),</span> <span class="n">title</span><span class="o">=</span><span class="n">title</span><span class="p">,</span> <span class="n">show</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>  <span class="n">xscale</span><span class="o">=</span><span class="s1">&#39;log&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</details>
+<div class="cell_output docutils container">
+<img alt="_images/e00ed22de6e13f7512d4b38041b0b3fc28b81c46d5198b0f61632be9efed0336.png" src="_images/e00ed22de6e13f7512d4b38041b0b3fc28b81c46d5198b0f61632be9efed0336.png" />
+</div>
+</div>
+</section>
+<section id="case-3-a-single-real-pole">
+<h2>Case 3: A single real pole<a class="headerlink" href="#case-3-a-single-real-pole" title="Link to this heading">¶</a></h2>
+<p>Let us start by first defining the transfer function:</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">H3</span> <span class="o">=</span> <span class="mi">1</span><span class="o">/</span><span class="p">(</span><span class="n">s</span><span class="o">+</span><span class="n">a</span><span class="p">)</span>
+<span class="n">mprint</span><span class="p">(</span><span class="s1">&#39;H(s)=&#39;</span><span class="p">,</span> <span class="n">latex</span><span class="p">(</span><span class="n">H3</span><span class="p">))</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_latex math notranslate nohighlight">
+\[\displaystyle H(s)=\frac{1}{a + s}\]</div>
+</div>
+</div>
+<p>After the substitution, we then obtain:</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">Hjw</span>  <span class="o">=</span> <span class="n">H3</span><span class="o">.</span><span class="n">subs</span><span class="p">(</span><span class="n">s</span><span class="p">,</span> <span class="n">I</span><span class="o">*</span><span class="n">omega</span><span class="p">)</span>
+<span class="n">M3</span>   <span class="o">=</span> <span class="n">simplify</span><span class="p">(</span><span class="n">Abs</span><span class="p">(</span><span class="n">Hjw</span><span class="p">))</span>
+<span class="n">Mdb3</span> <span class="o">=</span> <span class="n">simplify</span><span class="p">(</span><span class="mi">20</span> <span class="o">*</span> <span class="n">log</span><span class="p">(</span><span class="n">M3</span><span class="p">,</span> <span class="mi">10</span><span class="p">))</span>
+<span class="n">Phi3</span> <span class="o">=</span> <span class="n">arg</span><span class="p">(</span><span class="n">Hjw</span><span class="p">)</span>
+<span class="n">mprintb</span><span class="p">(</span><span class="s2">&quot;M =&quot;</span><span class="p">,</span> <span class="n">latex</span><span class="p">(</span><span class="n">M3</span><span class="p">))</span>
+<span class="n">mprintb</span><span class="p">(</span><span class="s2">&quot;M_</span><span class="si">{dB}</span><span class="s2"> =&quot;</span><span class="p">,</span> <span class="n">latex</span><span class="p">(</span><span class="n">Mdb3</span><span class="p">))</span>
+<span class="n">mprintb</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\\</span><span class="s2">phi =&quot;</span><span class="p">,</span> <span class="n">latex</span><span class="p">(</span><span class="n">Phi3</span><span class="p">))</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_latex math notranslate nohighlight">
+\[\displaystyle \boxed{M =\frac{1}{\sqrt{a^{2} + \omega^{2}}}}\]</div>
+<div class="output text_latex math notranslate nohighlight">
+\[\displaystyle \boxed{M_{dB} =- \frac{10 \log{\left(a^{2} + \omega^{2} \right)}}{\log{\left(10 \right)}}}\]</div>
+<div class="output text_latex math notranslate nohighlight">
+\[\displaystyle \boxed{\phi =\arg{\left(\frac{1}{a + i \omega} \right)}}\]</div>
+</div>
+</div>
+<p>Now, let us plot the results for both the magnitude and the phase. To do this, we must first set a numerical value for <span class="math notranslate nohighlight">\(a\)</span>. Let us set <span class="math notranslate nohighlight">\(a=1\)</span>.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">a_</span> <span class="o">=</span> <span class="mi">1</span>
+</pre></div>
+</div>
+</div>
+</div>
+<p>Next, let us write down the approximated version of the plots, for the magnitude and the phase. What we do here is a bit based on observations.</p>
+<p><strong>Magnitude plot:</strong></p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">Mhatdb3</span> <span class="o">=</span> <span class="n">Piecewise</span><span class="p">((</span><span class="o">-</span><span class="mi">20</span> <span class="o">*</span> <span class="n">log</span><span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="mi">10</span><span class="p">),</span>     <span class="n">omega</span> <span class="o">&lt;=</span> <span class="n">a</span><span class="p">),</span>
+                    <span class="p">(</span><span class="o">-</span><span class="mi">20</span> <span class="o">*</span> <span class="n">log</span><span class="p">(</span><span class="n">omega</span><span class="p">,</span> <span class="mi">10</span><span class="p">),</span> <span class="kc">True</span><span class="p">))</span>
+<span class="n">mprintb</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\\</span><span class="s2">hat{ M }_</span><span class="si">{dB}</span><span class="s2"> = &quot;</span><span class="p">,</span> <span class="n">latex</span><span class="p">(</span><span class="n">Mhatdb3</span><span class="p">))</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_latex math notranslate nohighlight">
+\[\begin{split}\displaystyle \boxed{\hat{ M }_{dB} = \begin{cases} - \frac{20 \log{\left(a \right)}}{\log{\left(10 \right)}} &amp; \text{for}\: a \geq \omega \\- \frac{20 \log{\left(\omega \right)}}{\log{\left(10 \right)}} &amp; \text{otherwise} \end{cases}}\end{split}\]</div>
+</div>
+</div>
+<div class="cell tag_hide-input docutils container">
+<details class="hide above-input">
+<summary aria-label="Toggle hidden content">
+<span class="collapsed">Show code cell source</span>
+<span class="expanded">Hide code cell source</span>
+</summary>
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">title</span> <span class="o">=</span> <span class="s1">&#39;$M_</span><span class="si">{dB}</span><span class="s1">$&#39;</span>
+<span class="n">p1</span> <span class="o">=</span> <span class="n">plot</span><span class="p">(</span><span class="n">Mdb3</span><span class="o">.</span><span class="n">subs</span><span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="n">a_</span><span class="p">),</span>    <span class="p">(</span><span class="n">omega</span><span class="p">,</span> <span class="n">a_</span><span class="o">/</span><span class="mi">100</span> <span class="p">,</span> <span class="mi">100</span><span class="o">*</span><span class="n">a_</span><span class="p">),</span> <span class="n">size</span><span class="o">=</span><span class="p">(</span><span class="mi">4</span><span class="p">,</span> <span class="mi">2</span><span class="p">),</span> <span class="n">title</span><span class="o">=</span><span class="n">title</span><span class="p">,</span> <span class="n">show</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>  <span class="n">xscale</span><span class="o">=</span><span class="s1">&#39;log&#39;</span><span class="p">)</span>
+<span class="n">p2</span> <span class="o">=</span> <span class="n">plot</span><span class="p">(</span><span class="n">Mhatdb3</span><span class="o">.</span><span class="n">subs</span><span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="n">a_</span><span class="p">),</span> <span class="p">(</span><span class="n">omega</span><span class="p">,</span> <span class="n">a_</span><span class="o">/</span><span class="mi">100</span> <span class="p">,</span> <span class="mi">100</span><span class="o">*</span><span class="n">a_</span><span class="p">),</span> <span class="n">show</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+<span class="n">p1</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">p2</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+<span class="n">p1</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+</details>
+<div class="cell_output docutils container">
+<img alt="_images/c738659b29af0c1da96f605bf6c0fed7ad82a626f70c3b598ada3889a1192c87.png" src="_images/c738659b29af0c1da96f605bf6c0fed7ad82a626f70c3b598ada3889a1192c87.png" />
+</div>
+</div>
+<p><strong>Phase plot:</strong></p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">Phihat3</span> <span class="o">=</span> <span class="n">Piecewise</span><span class="p">((</span><span class="mi">0</span><span class="p">,</span> <span class="n">omega</span> <span class="o">&lt;=</span> <span class="mf">0.1</span><span class="o">*</span><span class="n">a</span><span class="p">),</span>
+                    <span class="p">(</span><span class="o">-</span><span class="n">pi</span><span class="o">/</span><span class="mi">4</span> <span class="o">*</span> <span class="n">log</span><span class="p">(</span><span class="n">omega</span><span class="o">/</span><span class="p">(</span><span class="mf">0.1</span><span class="o">*</span><span class="n">a</span><span class="p">),</span> <span class="mi">10</span><span class="p">)</span> <span class="p">,</span> <span class="n">omega</span> <span class="o">&lt;</span> <span class="n">a</span><span class="o">*</span><span class="mi">10</span><span class="p">),</span> 
+                    <span class="p">(</span><span class="o">-</span><span class="n">pi</span><span class="o">/</span><span class="mi">2</span><span class="p">,</span> <span class="kc">True</span><span class="p">))</span>
+<span class="n">mprintb</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\\</span><span class="s2">hat{ </span><span class="se">\\</span><span class="s2">phi }  = &quot;</span><span class="p">,</span> <span class="n">latex</span><span class="p">(</span><span class="n">simplify</span><span class="p">(</span><span class="n">Phihat3</span><span class="p">)))</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_latex math notranslate nohighlight">
+\[\begin{split}\displaystyle \boxed{\hat{ \phi }  = \begin{cases} 0 &amp; \text{for}\: 0.1 a \geq 1.0 \omega \\- \frac{\pi \log{\left(\frac{10.0 \omega}{a} \right)}}{4 \log{\left(10 \right)}} &amp; \text{for}\: \omega &lt; 10 a \\- \frac{\pi}{2} &amp; \text{otherwise} \end{cases}}\end{split}\]</div>
+</div>
+</div>
+<div class="cell tag_hide-input docutils container">
+<details class="hide above-input">
+<summary aria-label="Toggle hidden content">
+<span class="collapsed">Show code cell source</span>
+<span class="expanded">Hide code cell source</span>
+</summary>
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">title</span> <span class="o">=</span> <span class="s1">&#39;$ </span><span class="se">\\</span><span class="s1">phi $&#39;</span>
+<span class="n">p1</span> <span class="o">=</span> <span class="n">plot</span><span class="p">(</span><span class="n">Phi3</span><span class="o">.</span><span class="n">subs</span><span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="n">a_</span><span class="p">),</span>    <span class="p">(</span><span class="n">omega</span><span class="p">,</span> <span class="n">a_</span><span class="o">/</span><span class="mi">100</span> <span class="p">,</span> <span class="mi">100</span><span class="o">*</span><span class="n">a_</span><span class="p">),</span> <span class="n">size</span><span class="o">=</span><span class="p">(</span><span class="mi">4</span><span class="p">,</span> <span class="mi">2</span><span class="p">),</span> <span class="n">title</span><span class="o">=</span><span class="n">title</span><span class="p">,</span> <span class="n">show</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>  <span class="n">xscale</span><span class="o">=</span><span class="s1">&#39;log&#39;</span><span class="p">)</span>
+<span class="n">p2</span> <span class="o">=</span> <span class="n">plot</span><span class="p">(</span><span class="n">Phihat3</span><span class="o">.</span><span class="n">subs</span><span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="n">a_</span><span class="p">),</span> <span class="p">(</span><span class="n">omega</span><span class="p">,</span> <span class="n">a_</span><span class="o">/</span><span class="mi">100</span> <span class="p">,</span> <span class="mi">100</span><span class="o">*</span><span class="n">a_</span><span class="p">),</span> <span class="n">show</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+<span class="n">p1</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">p2</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+<span class="n">p1</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+</details>
+<div class="cell_output docutils container">
+<img alt="_images/3065685ccf8ab10db5d0e8762804d69e9a87e5a867d20be340bd893eabad7364.png" src="_images/3065685ccf8ab10db5d0e8762804d69e9a87e5a867d20be340bd893eabad7364.png" />
+</div>
+</div>
+</section>
+<section id="case-4-a-single-real-zero">
+<h2>Case 4: A single real zero<a class="headerlink" href="#case-4-a-single-real-zero" title="Link to this heading">¶</a></h2>
+<p>Let us start by first defining the transfer function:</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">H4</span> <span class="o">=</span> <span class="n">s</span><span class="o">+</span><span class="n">a</span>
+<span class="n">mprint</span><span class="p">(</span><span class="s1">&#39;H(s)=&#39;</span><span class="p">,</span> <span class="n">latex</span><span class="p">(</span><span class="n">H4</span><span class="p">))</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_latex math notranslate nohighlight">
+\[\displaystyle H(s)=a + s\]</div>
+</div>
+</div>
+<p>After the substitution, we then obtain:</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">Hjw</span>  <span class="o">=</span> <span class="n">H4</span><span class="o">.</span><span class="n">subs</span><span class="p">(</span><span class="n">s</span><span class="p">,</span> <span class="n">I</span><span class="o">*</span><span class="n">omega</span><span class="p">)</span>
+<span class="n">M4</span>   <span class="o">=</span> <span class="n">simplify</span><span class="p">(</span><span class="n">Abs</span><span class="p">(</span><span class="n">Hjw</span><span class="p">))</span>
+<span class="n">Mdb4</span> <span class="o">=</span> <span class="n">simplify</span><span class="p">(</span><span class="mi">20</span> <span class="o">*</span> <span class="n">log</span><span class="p">(</span><span class="n">M4</span><span class="p">,</span> <span class="mi">10</span><span class="p">))</span>
+<span class="n">Phi4</span> <span class="o">=</span> <span class="n">arg</span><span class="p">(</span><span class="n">Hjw</span><span class="p">)</span>
+<span class="n">mprint</span><span class="p">(</span><span class="s2">&quot;M  =&quot;</span><span class="p">,</span> <span class="n">latex</span><span class="p">(</span><span class="n">M4</span><span class="p">))</span>
+<span class="n">mprint</span><span class="p">(</span><span class="s2">&quot;M_</span><span class="si">{dB}</span><span class="s2"> =&quot;</span><span class="p">,</span> <span class="n">latex</span><span class="p">(</span><span class="n">Mdb4</span><span class="p">))</span>
+<span class="n">mprint</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\\</span><span class="s2">phi =&quot;</span><span class="p">,</span> <span class="n">latex</span><span class="p">(</span><span class="n">Phi4</span><span class="p">))</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_latex math notranslate nohighlight">
+\[\displaystyle M  =\sqrt{a^{2} + \omega^{2}}\]</div>
+<div class="output text_latex math notranslate nohighlight">
+\[\displaystyle M_{dB} =\frac{10 \log{\left(a^{2} + \omega^{2} \right)}}{\log{\left(10 \right)}}\]</div>
+<div class="output text_latex math notranslate nohighlight">
+\[\displaystyle \phi =\arg{\left(a + i \omega \right)}\]</div>
+</div>
+</div>
+<p>Now, let us plot the results for both the magnitude and the phase. To do this, we must first set a numerical value for <span class="math notranslate nohighlight">\(a\)</span>. Let us set <span class="math notranslate nohighlight">\(a=1\)</span>.</p>
+<p>Next, let us write down the approximated version of the plots, for both the magnitude and the phase. What we do here is a bit based on observations.</p>
+<p><strong>Magnitude plot:</strong></p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">Mhatdb4</span> <span class="o">=</span> <span class="n">Piecewise</span><span class="p">((</span><span class="mi">20</span> <span class="o">*</span> <span class="n">log</span><span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="mi">10</span><span class="p">),</span> <span class="n">omega</span> <span class="o">&lt;=</span> <span class="n">a</span><span class="p">),</span>
+                    <span class="p">(</span><span class="mi">20</span> <span class="o">*</span> <span class="n">log</span><span class="p">(</span><span class="n">omega</span><span class="p">,</span> <span class="mi">10</span><span class="p">),</span> <span class="kc">True</span><span class="p">))</span>
+<span class="n">mprintb</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\\</span><span class="s2">hat{ M }_</span><span class="si">{dB}</span><span class="s2"> = &quot;</span><span class="p">,</span> <span class="n">latex</span><span class="p">(</span><span class="n">Mhatdb4</span><span class="p">))</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_latex math notranslate nohighlight">
+\[\begin{split}\displaystyle \boxed{\hat{ M }_{dB} = \begin{cases} \frac{20 \log{\left(a \right)}}{\log{\left(10 \right)}} &amp; \text{for}\: a \geq \omega \\\frac{20 \log{\left(\omega \right)}}{\log{\left(10 \right)}} &amp; \text{otherwise} \end{cases}}\end{split}\]</div>
+</div>
+</div>
+<div class="cell tag_hide-input docutils container">
+<details class="hide above-input">
+<summary aria-label="Toggle hidden content">
+<span class="collapsed">Show code cell source</span>
+<span class="expanded">Hide code cell source</span>
+</summary>
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">title</span> <span class="o">=</span> <span class="s1">&#39;$M_</span><span class="si">{dB}</span><span class="s1">$&#39;</span>
+<span class="n">p1</span> <span class="o">=</span> <span class="n">plot</span><span class="p">(</span><span class="n">Mdb4</span><span class="o">.</span><span class="n">subs</span><span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="n">a_</span><span class="p">),</span>    <span class="p">(</span><span class="n">omega</span><span class="p">,</span> <span class="n">a_</span><span class="o">/</span><span class="mi">100</span> <span class="p">,</span> <span class="mi">100</span><span class="o">*</span><span class="n">a_</span><span class="p">),</span> <span class="n">size</span><span class="o">=</span><span class="p">(</span><span class="mi">4</span><span class="p">,</span> <span class="mi">2</span><span class="p">),</span> <span class="n">title</span><span class="o">=</span><span class="n">title</span><span class="p">,</span> <span class="n">show</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>  <span class="n">xscale</span><span class="o">=</span><span class="s1">&#39;log&#39;</span><span class="p">)</span>
+<span class="n">p2</span> <span class="o">=</span> <span class="n">plot</span><span class="p">(</span><span class="n">Mhatdb4</span><span class="o">.</span><span class="n">subs</span><span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="n">a_</span><span class="p">),</span> <span class="p">(</span><span class="n">omega</span><span class="p">,</span> <span class="n">a_</span><span class="o">/</span><span class="mi">100</span> <span class="p">,</span> <span class="mi">100</span><span class="o">*</span><span class="n">a_</span><span class="p">),</span> <span class="n">show</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+<span class="n">p1</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">p2</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+<span class="n">p1</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+</details>
+<div class="cell_output docutils container">
+<img alt="_images/4194803b2de4d19947fdf76d3b2befb5f0f93f2d0fd558de670da57ec3414a23.png" src="_images/4194803b2de4d19947fdf76d3b2befb5f0f93f2d0fd558de670da57ec3414a23.png" />
+</div>
+</div>
+<p><strong>Phase plot:</strong></p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">Phihat4</span> <span class="o">=</span> <span class="n">Piecewise</span><span class="p">((</span><span class="mi">0</span><span class="p">,</span> <span class="n">omega</span> <span class="o">&lt;=</span> <span class="mf">0.1</span><span class="o">*</span><span class="n">a</span><span class="p">),</span>
+                    <span class="p">(</span><span class="n">pi</span><span class="o">/</span><span class="mi">4</span> <span class="o">*</span> <span class="n">log</span><span class="p">(</span><span class="n">omega</span><span class="o">/</span><span class="p">(</span><span class="mf">0.1</span><span class="o">*</span><span class="n">a</span><span class="p">),</span> <span class="mi">10</span><span class="p">)</span> <span class="p">,</span> <span class="n">omega</span> <span class="o">&lt;</span> <span class="n">a</span><span class="o">*</span><span class="mi">10</span><span class="p">),</span> 
+                    <span class="p">(</span><span class="n">pi</span><span class="o">/</span><span class="mi">2</span><span class="p">,</span> <span class="kc">True</span><span class="p">))</span>
+<span class="n">mprintb</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\\</span><span class="s2">hat{ </span><span class="se">\\</span><span class="s2">phi } = &quot;</span><span class="p">,</span> <span class="n">latex</span><span class="p">(</span><span class="n">simplify</span><span class="p">(</span><span class="n">Phihat4</span><span class="p">)))</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_latex math notranslate nohighlight">
+\[\begin{split}\displaystyle \boxed{\hat{ \phi } = \begin{cases} 0 &amp; \text{for}\: 0.1 a \geq 1.0 \omega \\\frac{\pi \log{\left(\frac{10.0 \omega}{a} \right)}}{4 \log{\left(10 \right)}} &amp; \text{for}\: \omega &lt; 10 a \\\frac{\pi}{2} &amp; \text{otherwise} \end{cases}}\end{split}\]</div>
+</div>
+</div>
+<div class="cell tag_hide-input docutils container">
+<details class="hide above-input">
+<summary aria-label="Toggle hidden content">
+<span class="collapsed">Show code cell source</span>
+<span class="expanded">Hide code cell source</span>
+</summary>
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">title</span> <span class="o">=</span> <span class="s1">&#39;$ </span><span class="se">\\</span><span class="s1">phi $&#39;</span>
+<span class="n">p1</span> <span class="o">=</span> <span class="n">plot</span><span class="p">(</span><span class="n">Phi4</span><span class="o">.</span><span class="n">subs</span><span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="n">a_</span><span class="p">),</span>    <span class="p">(</span><span class="n">omega</span><span class="p">,</span> <span class="n">a_</span><span class="o">/</span><span class="mi">100</span> <span class="p">,</span> <span class="mi">100</span><span class="o">*</span><span class="n">a_</span><span class="p">),</span> <span class="n">size</span><span class="o">=</span><span class="p">(</span><span class="mi">4</span><span class="p">,</span> <span class="mi">2</span><span class="p">),</span> <span class="n">title</span><span class="o">=</span><span class="n">title</span><span class="p">,</span> <span class="n">show</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>  <span class="n">xscale</span><span class="o">=</span><span class="s1">&#39;log&#39;</span><span class="p">)</span>
+<span class="n">p2</span> <span class="o">=</span> <span class="n">plot</span><span class="p">(</span><span class="n">Phihat4</span><span class="o">.</span><span class="n">subs</span><span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="n">a_</span><span class="p">),</span> <span class="p">(</span><span class="n">omega</span><span class="p">,</span> <span class="n">a_</span><span class="o">/</span><span class="mi">100</span> <span class="p">,</span> <span class="mi">100</span><span class="o">*</span><span class="n">a_</span><span class="p">),</span> <span class="n">show</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+<span class="n">p1</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">p2</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+<span class="n">p1</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+</details>
+<div class="cell_output docutils container">
+<img alt="_images/42b9b87d0a5a2c0fd50bee8f96ee451949c98b786536a81377c536a79983e5dd.png" src="_images/42b9b87d0a5a2c0fd50bee8f96ee451949c98b786536a81377c536a79983e5dd.png" />
+</div>
+</div>
+</section>
+<section id="case-5-complex-conjugate-pole-pair">
+<h2>Case 5: Complex Conjugate Pole Pair<a class="headerlink" href="#case-5-complex-conjugate-pole-pair" title="Link to this heading">¶</a></h2>
+<p>Let us start by first defining the transfer function:</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">H5</span> <span class="o">=</span> <span class="mi">1</span> <span class="o">/</span> <span class="p">(</span><span class="n">s</span><span class="o">**</span><span class="mi">2</span> <span class="o">+</span> <span class="mi">2</span><span class="o">*</span><span class="n">zeta</span><span class="o">*</span><span class="n">omega_n</span><span class="o">*</span><span class="n">s</span> <span class="o">+</span> <span class="n">omega_n</span><span class="o">**</span><span class="mi">2</span><span class="p">)</span>
+<span class="n">mprint</span><span class="p">(</span><span class="s1">&#39;H(s)=&#39;</span><span class="p">,</span> <span class="n">latex</span><span class="p">(</span><span class="n">H5</span><span class="p">))</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_latex math notranslate nohighlight">
+\[\displaystyle H(s)=\frac{1}{\omega_{n}^{2} + 2 \omega_{n} s \zeta + s^{2}}\]</div>
+</div>
+</div>
+<p>By substituting <span class="math notranslate nohighlight">\(s\)</span> with <span class="math notranslate nohighlight">\(j \omega\)</span>, we can obtain:</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">Hjw</span>  <span class="o">=</span> <span class="n">H5</span><span class="o">.</span><span class="n">subs</span><span class="p">(</span><span class="n">s</span><span class="p">,</span> <span class="n">I</span><span class="o">*</span><span class="n">omega</span><span class="p">)</span>
+<span class="n">M5</span>   <span class="o">=</span> <span class="n">simplify</span><span class="p">(</span><span class="n">Abs</span><span class="p">(</span><span class="n">Hjw</span><span class="p">))</span>
+<span class="n">Mdb5</span> <span class="o">=</span> <span class="n">expand_log</span><span class="p">(</span><span class="mi">20</span> <span class="o">*</span> <span class="n">log</span><span class="p">(</span><span class="n">M5</span><span class="p">,</span> <span class="mi">10</span><span class="p">))</span>
+<span class="n">Phi5</span> <span class="o">=</span> <span class="n">arg</span><span class="p">(</span><span class="n">Hjw</span><span class="p">)</span>
+<span class="n">mprint</span><span class="p">(</span><span class="s2">&quot;M =&quot;</span><span class="p">,</span> <span class="n">latex</span><span class="p">(</span><span class="n">M5</span><span class="p">))</span>
+<span class="n">mprint</span><span class="p">(</span><span class="s2">&quot;M_</span><span class="si">{dB}</span><span class="s2"> =&quot;</span><span class="p">,</span> <span class="n">latex</span><span class="p">(</span><span class="n">Mdb5</span><span class="p">))</span>
+<span class="n">mprint</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\\</span><span class="s2">phi =&quot;</span><span class="p">,</span> <span class="n">latex</span><span class="p">(</span><span class="n">Phi5</span><span class="p">))</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_latex math notranslate nohighlight">
+\[\displaystyle M =\frac{1}{\sqrt{\omega^{4} + 4 \omega^{2} \omega_{n}^{2} \zeta^{2} - 2 \omega^{2} \omega_{n}^{2} + \omega_{n}^{4}}}\]</div>
+<div class="output text_latex math notranslate nohighlight">
+\[\displaystyle M_{dB} =- \frac{10 \log{\left(\omega^{4} + 4 \omega^{2} \omega_{n}^{2} \zeta^{2} - 2 \omega^{2} \omega_{n}^{2} + \omega_{n}^{4} \right)}}{\log{\left(10 \right)}}\]</div>
+<div class="output text_latex math notranslate nohighlight">
+\[\displaystyle \phi =\arg{\left(\frac{1}{- \omega^{2} + 2 i \omega \omega_{n} \zeta + \omega_{n}^{2}} \right)}\]</div>
+</div>
+</div>
+<p><strong>Resonance peak:</strong></p>
+<ul class="simple">
+<li><p>Complex conjugate pole pair occurs when <span class="math notranslate nohighlight">\(\zeta &lt; 1\)</span>.</p></li>
+<li><p>When <span class="math notranslate nohighlight">\(\zeta &lt; 1\)</span>, the system becomes underdamped and resonace peak appears in the magnitude plot.</p></li>
+<li><p>Resonance peak appears at <span class="math notranslate nohighlight">\(\omega_p\)</span> and its peak magnitude is <span class="math notranslate nohighlight">\(M_p\)</span>.</p></li>
+</ul>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">omega_p5</span> <span class="o">=</span> <span class="n">solve</span><span class="p">(</span><span class="n">Eq</span><span class="p">(</span><span class="n">diff</span><span class="p">(</span><span class="n">M5</span><span class="p">,</span> <span class="n">omega</span><span class="p">),</span> <span class="mi">0</span><span class="p">),</span> <span class="n">omega</span><span class="p">)</span>
+<span class="n">mprintb</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\\</span><span class="s2">omega_p=&quot;</span><span class="p">,</span> <span class="n">latex</span><span class="p">(</span><span class="n">omega_p5</span><span class="p">[</span><span class="mi">0</span><span class="p">]))</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_latex math notranslate nohighlight">
+\[\displaystyle \boxed{\omega_p=\omega_{n} \sqrt{1 - 2 \zeta^{2}}}\]</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">Mp5</span> <span class="o">=</span> <span class="n">simplify</span><span class="p">(</span><span class="n">M5</span><span class="o">.</span><span class="n">subs</span><span class="p">(</span><span class="n">omega</span><span class="p">,</span> <span class="n">omega_p5</span><span class="p">[</span><span class="mi">0</span><span class="p">]))</span>
+<span class="n">Mdbp5</span> <span class="o">=</span><span class="n">simplify</span><span class="p">(</span><span class="n">Mdb5</span><span class="o">.</span><span class="n">subs</span><span class="p">(</span><span class="n">omega</span><span class="p">,</span> <span class="n">omega_p5</span><span class="p">[</span><span class="mi">0</span><span class="p">]))</span>
+<span class="n">mprintb</span><span class="p">(</span><span class="s2">&quot;M_p = &quot;</span><span class="p">,</span> <span class="n">latex</span><span class="p">(</span><span class="n">Mp5</span><span class="p">))</span>
+<span class="n">mprintb</span><span class="p">(</span><span class="s2">&quot;M_{p(dB)} = &quot;</span><span class="p">,</span> <span class="n">latex</span><span class="p">(</span><span class="n">Mdbp5</span><span class="p">))</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_latex math notranslate nohighlight">
+\[\displaystyle \boxed{M_p = \frac{1}{2 \omega_{n}^{2} \zeta \sqrt{1 - \zeta^{2}}}}\]</div>
+<div class="output text_latex math notranslate nohighlight">
+\[\displaystyle \boxed{M_{p(dB)} = - \frac{10 \log{\left(- 4 \omega_{n}^{4} \zeta^{2} \left(\zeta^{2} - 1\right) \right)}}{\log{\left(10 \right)}}}\]</div>
+</div>
+</div>
+<p>Now, let’s express the asymptotic Bode plot as piecewise functions. At the moment, we will do this by intuition.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">Mhatdb5</span> <span class="o">=</span> <span class="n">Piecewise</span><span class="p">((</span><span class="o">-</span><span class="mi">40</span> <span class="o">*</span> <span class="n">log</span><span class="p">(</span><span class="n">omega_n</span><span class="p">,</span> <span class="mi">10</span><span class="p">),</span> <span class="n">omega</span> <span class="o">&lt;=</span> <span class="n">omega_n</span><span class="p">),</span>
+                    <span class="p">(</span><span class="o">-</span><span class="mi">40</span> <span class="o">*</span> <span class="n">log</span><span class="p">(</span><span class="n">omega</span><span class="p">,</span> <span class="mi">10</span><span class="p">),</span> <span class="n">omega</span> <span class="o">&gt;</span> <span class="n">omega_n</span><span class="p">))</span>
+<span class="n">mprintb</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\\</span><span class="s2">hat{ M }_</span><span class="si">{dB}</span><span class="s2"> ( </span><span class="se">\\</span><span class="s2">omega ) = &quot;</span><span class="p">,</span> <span class="n">latex</span><span class="p">(</span><span class="n">Mhatdb5</span><span class="p">))</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_latex math notranslate nohighlight">
+\[\begin{split}\displaystyle \boxed{\hat{ M }_{dB} ( \omega ) = \begin{cases} - \frac{40 \log{\left(\omega_{n} \right)}}{\log{\left(10 \right)}} &amp; \text{for}\: \omega \leq \omega_{n} \\- \frac{40 \log{\left(\omega \right)}}{\log{\left(10 \right)}} &amp; \text{otherwise} \end{cases}}\end{split}\]</div>
+</div>
+</div>
+<p><strong>Magnitude plot:</strong></p>
+<p>For plotting, we need to define some numerical values for:</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">omega_n_</span> <span class="o">=</span> <span class="mi">1</span>
+<span class="n">zeta_</span> <span class="o">=</span> <span class="p">[</span><span class="mf">0.1</span><span class="p">,</span> <span class="mf">0.2</span><span class="p">,</span> <span class="mf">0.5</span><span class="p">]</span> <span class="c1"># plot for several values</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell tag_hide-input docutils container">
+<details class="hide above-input">
+<summary aria-label="Toggle hidden content">
+<span class="collapsed">Show code cell source</span>
+<span class="expanded">Hide code cell source</span>
+</summary>
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">title</span> <span class="o">=</span> <span class="s1">&#39;$ M_</span><span class="si">{dB}</span><span class="s1"> $&#39;</span>
+<span class="n">p1</span> <span class="o">=</span> <span class="n">plot</span><span class="p">(</span><span class="n">Mdb5</span><span class="o">.</span><span class="n">subs</span><span class="p">(([</span><span class="n">omega_n</span><span class="p">,</span> <span class="n">omega_n_</span><span class="p">],[</span><span class="n">zeta</span><span class="p">,</span> <span class="n">zeta_</span><span class="p">[</span><span class="mi">0</span><span class="p">]])),</span>    <span class="p">(</span><span class="n">omega</span><span class="p">,</span> <span class="n">omega_n_</span><span class="o">/</span><span class="mi">10</span> <span class="p">,</span> <span class="mi">10</span><span class="o">*</span><span class="n">omega_n_</span><span class="p">),</span> <span class="n">line_color</span><span class="o">=</span><span class="s1">&#39;r&#39;</span><span class="p">,</span> <span class="n">size</span><span class="o">=</span><span class="p">(</span><span class="mi">5</span><span class="p">,</span> <span class="mi">3</span><span class="p">),</span> <span class="n">title</span><span class="o">=</span><span class="n">title</span><span class="p">,</span> <span class="n">show</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>  <span class="n">xscale</span><span class="o">=</span><span class="s1">&#39;log&#39;</span><span class="p">,</span> <span class="n">legend</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="n">p2</span> <span class="o">=</span> <span class="n">plot</span><span class="p">(</span><span class="n">Mdb5</span><span class="o">.</span><span class="n">subs</span><span class="p">(([</span><span class="n">omega_n</span><span class="p">,</span> <span class="n">omega_n_</span><span class="p">],[</span><span class="n">zeta</span><span class="p">,</span> <span class="n">zeta_</span><span class="p">[</span><span class="mi">1</span><span class="p">]])),</span>    <span class="p">(</span><span class="n">omega</span><span class="p">,</span> <span class="n">omega_n_</span><span class="o">/</span><span class="mi">10</span> <span class="p">,</span> <span class="mi">10</span><span class="o">*</span><span class="n">omega_n_</span><span class="p">),</span> <span class="n">line_color</span><span class="o">=</span><span class="s1">&#39;b&#39;</span><span class="p">,</span> <span class="n">show</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+<span class="n">p3</span> <span class="o">=</span> <span class="n">plot</span><span class="p">(</span><span class="n">Mdb5</span><span class="o">.</span><span class="n">subs</span><span class="p">(([</span><span class="n">omega_n</span><span class="p">,</span> <span class="n">omega_n_</span><span class="p">],[</span><span class="n">zeta</span><span class="p">,</span> <span class="n">zeta_</span><span class="p">[</span><span class="mi">2</span><span class="p">]])),</span>    <span class="p">(</span><span class="n">omega</span><span class="p">,</span> <span class="n">omega_n_</span><span class="o">/</span><span class="mi">10</span> <span class="p">,</span> <span class="mi">10</span><span class="o">*</span><span class="n">omega_n_</span><span class="p">),</span> <span class="n">line_color</span><span class="o">=</span><span class="s1">&#39;g&#39;</span><span class="p">,</span> <span class="n">show</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+<span class="n">p4</span> <span class="o">=</span> <span class="n">plot</span><span class="p">(</span><span class="n">Mhatdb5</span><span class="o">.</span><span class="n">subs</span><span class="p">(([</span><span class="n">omega_n</span><span class="p">,</span> <span class="n">omega_n_</span><span class="p">],[</span><span class="n">zeta</span><span class="p">,</span> <span class="n">zeta_</span><span class="p">[</span><span class="mi">0</span><span class="p">]])),</span> <span class="p">(</span><span class="n">omega</span><span class="p">,</span> <span class="n">omega_n_</span><span class="o">/</span><span class="mi">10</span> <span class="p">,</span> <span class="mi">10</span><span class="o">*</span><span class="n">omega_n_</span><span class="p">),</span> <span class="n">line_color</span><span class="o">=</span><span class="s1">&#39;k&#39;</span><span class="p">,</span> <span class="n">show</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+
+<span class="n">p1</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">label</span> <span class="o">=</span> <span class="s2">&quot;$</span><span class="se">\\</span><span class="s2">zeta=&quot;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">zeta_</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span> <span class="o">+</span> <span class="s2">&quot;$&quot;</span>
+<span class="n">p2</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">label</span> <span class="o">=</span> <span class="s2">&quot;$</span><span class="se">\\</span><span class="s2">zeta=&quot;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">zeta_</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span> <span class="o">+</span> <span class="s2">&quot;$&quot;</span>
+<span class="n">p3</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">label</span> <span class="o">=</span> <span class="s2">&quot;$</span><span class="se">\\</span><span class="s2">zeta=&quot;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">zeta_</span><span class="p">[</span><span class="mi">2</span><span class="p">])</span> <span class="o">+</span> <span class="s2">&quot;$&quot;</span>
+<span class="n">p4</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">label</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span>
+
+<span class="n">p1</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">p2</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+<span class="n">p1</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">p3</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+<span class="n">p1</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">p4</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+
+<span class="n">p1</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+</details>
+<div class="cell_output docutils container">
+<img alt="_images/94143c2aad31a6fd3094ea30a6eccf949378c00ad61cd4f99bed2542ed8da30b.png" src="_images/94143c2aad31a6fd3094ea30a6eccf949378c00ad61cd4f99bed2542ed8da30b.png" />
+</div>
+</div>
+<p>The general shape of the asymptotic magnitude plot is not affected by <span class="math notranslate nohighlight">\(\zeta\)</span>.</p>
+<p>We are not going to include the resonance peak for the asymptotic plots. However, we can still compute this peak value by using the equation expressed by <span class="math notranslate nohighlight">\(M_{p(dB)}\)</span>:</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="nb">print</span><span class="p">(</span><span class="n">Mdbp5</span><span class="o">.</span><span class="n">subs</span><span class="p">(([</span><span class="n">omega_n</span><span class="p">,</span> <span class="n">omega_n_</span><span class="p">],[</span><span class="n">zeta</span><span class="p">,</span> <span class="n">zeta_</span><span class="p">[</span><span class="mi">0</span><span class="p">]]))</span><span class="o">.</span><span class="n">evalf</span><span class="p">())</span> <span class="c1"># for zeta[0]</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">Mdbp5</span><span class="o">.</span><span class="n">subs</span><span class="p">(([</span><span class="n">omega_n</span><span class="p">,</span> <span class="n">omega_n_</span><span class="p">],[</span><span class="n">zeta</span><span class="p">,</span> <span class="n">zeta_</span><span class="p">[</span><span class="mi">1</span><span class="p">]]))</span><span class="o">.</span><span class="n">evalf</span><span class="p">())</span> <span class="c1"># for zeta[1]</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">Mdbp5</span><span class="o">.</span><span class="n">subs</span><span class="p">(([</span><span class="n">omega_n</span><span class="p">,</span> <span class="n">omega_n_</span><span class="p">],[</span><span class="n">zeta</span><span class="p">,</span> <span class="n">zeta_</span><span class="p">[</span><span class="mi">2</span><span class="p">]]))</span><span class="o">.</span><span class="n">evalf</span><span class="p">())</span> <span class="c1"># for zeta[2]</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>14.0230481407449
+8.13608784304507
+1.24938736608300
+</pre></div>
+</div>
+</div>
+</div>
+<p>Resonance peak happens at <span class="math notranslate nohighlight">\(\omega = \omega_{p}\)</span>:</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="nb">print</span><span class="p">(</span><span class="n">omega_p5</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">subs</span><span class="p">(([</span><span class="n">omega_n</span><span class="p">,</span> <span class="n">omega_n_</span><span class="p">],[</span><span class="n">zeta</span><span class="p">,</span> <span class="n">zeta_</span><span class="p">[</span><span class="mi">0</span><span class="p">]]))</span><span class="o">.</span><span class="n">evalf</span><span class="p">())</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>0.989949493661167
+</pre></div>
+</div>
+</div>
+</div>
+<p><strong>Phase plot:</strong></p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">Phihat5</span> <span class="o">=</span> <span class="n">Piecewise</span><span class="p">((</span><span class="mi">0</span><span class="p">,</span> <span class="n">omega</span> <span class="o">&lt;=</span> <span class="p">(</span><span class="n">omega_n</span> <span class="o">/</span> <span class="mi">10</span><span class="o">**</span><span class="n">zeta</span><span class="p">)),</span>
+                    <span class="p">(</span><span class="o">-</span><span class="n">pi</span><span class="o">/</span><span class="p">(</span><span class="mi">2</span><span class="o">*</span><span class="n">zeta</span><span class="p">)</span> <span class="o">*</span> <span class="n">log</span><span class="p">(</span><span class="n">omega</span><span class="o">/</span><span class="p">(</span><span class="mi">10</span><span class="o">**</span><span class="p">(</span><span class="o">-</span><span class="n">zeta</span><span class="p">)</span><span class="o">*</span><span class="n">omega_n</span><span class="p">),</span> <span class="mi">10</span><span class="p">)</span> <span class="p">,</span> <span class="n">omega</span> <span class="o">&lt;</span> <span class="p">(</span><span class="n">omega_n</span><span class="o">*</span><span class="mi">10</span><span class="o">**</span><span class="n">zeta</span><span class="p">)),</span> 
+                    <span class="p">(</span><span class="o">-</span><span class="n">pi</span><span class="p">,</span> <span class="kc">True</span><span class="p">))</span>
+<span class="n">mprintb</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\\</span><span class="s2">hat{ </span><span class="se">\\</span><span class="s2">phi } ( </span><span class="se">\\</span><span class="s2">omega ) = &quot;</span><span class="p">,</span> <span class="n">latex</span><span class="p">(</span><span class="n">Phihat5</span><span class="p">))</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_latex math notranslate nohighlight">
+\[\begin{split}\displaystyle \boxed{\hat{ \phi } ( \omega ) = \begin{cases} 0 &amp; \text{for}\: \omega \leq 10^{- \zeta} \omega_{n} \\- \frac{\pi \log{\left(\frac{10^{\zeta} \omega}{\omega_{n}} \right)}}{2 \zeta \log{\left(10 \right)}} &amp; \text{for}\: \omega &lt; 10^{\zeta} \omega_{n} \\- \pi &amp; \text{otherwise} \end{cases}}\end{split}\]</div>
+</div>
+</div>
+<div class="cell tag_hide-input docutils container">
+<details class="hide above-input">
+<summary aria-label="Toggle hidden content">
+<span class="collapsed">Show code cell source</span>
+<span class="expanded">Hide code cell source</span>
+</summary>
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">title</span> <span class="o">=</span> <span class="s1">&#39;$ </span><span class="se">\\</span><span class="s1">phi $&#39;</span>
+<span class="n">p1</span> <span class="o">=</span> <span class="n">plot</span><span class="p">(</span><span class="n">Phi5</span><span class="o">.</span><span class="n">subs</span><span class="p">(([</span><span class="n">omega_n</span><span class="p">,</span> <span class="n">omega_n_</span><span class="p">],[</span><span class="n">zeta</span><span class="p">,</span> <span class="n">zeta_</span><span class="p">[</span><span class="mi">0</span><span class="p">]])),</span>    <span class="p">(</span><span class="n">omega</span><span class="p">,</span> <span class="n">omega_n_</span><span class="o">/</span><span class="mi">10</span> <span class="p">,</span> <span class="mi">10</span><span class="o">*</span><span class="n">omega_n_</span><span class="p">),</span> <span class="n">line_color</span><span class="o">=</span><span class="s1">&#39;r&#39;</span><span class="p">,</span> <span class="n">size</span><span class="o">=</span><span class="p">(</span><span class="mi">5</span><span class="p">,</span> <span class="mi">3</span><span class="p">),</span> <span class="n">title</span><span class="o">=</span><span class="n">title</span><span class="p">,</span> <span class="n">show</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>  <span class="n">xscale</span><span class="o">=</span><span class="s1">&#39;log&#39;</span><span class="p">,</span> <span class="n">legend</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="n">p2</span> <span class="o">=</span> <span class="n">plot</span><span class="p">(</span><span class="n">Phi5</span><span class="o">.</span><span class="n">subs</span><span class="p">(([</span><span class="n">omega_n</span><span class="p">,</span> <span class="n">omega_n_</span><span class="p">],[</span><span class="n">zeta</span><span class="p">,</span> <span class="n">zeta_</span><span class="p">[</span><span class="mi">1</span><span class="p">]])),</span>    <span class="p">(</span><span class="n">omega</span><span class="p">,</span> <span class="n">omega_n_</span><span class="o">/</span><span class="mi">10</span> <span class="p">,</span> <span class="mi">10</span><span class="o">*</span><span class="n">omega_n_</span><span class="p">),</span> <span class="n">line_color</span><span class="o">=</span><span class="s1">&#39;b&#39;</span><span class="p">,</span> <span class="n">show</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+<span class="n">p3</span> <span class="o">=</span> <span class="n">plot</span><span class="p">(</span><span class="n">Phi5</span><span class="o">.</span><span class="n">subs</span><span class="p">(([</span><span class="n">omega_n</span><span class="p">,</span> <span class="n">omega_n_</span><span class="p">],[</span><span class="n">zeta</span><span class="p">,</span> <span class="n">zeta_</span><span class="p">[</span><span class="mi">2</span><span class="p">]])),</span>    <span class="p">(</span><span class="n">omega</span><span class="p">,</span> <span class="n">omega_n_</span><span class="o">/</span><span class="mi">10</span> <span class="p">,</span> <span class="mi">10</span><span class="o">*</span><span class="n">omega_n_</span><span class="p">),</span> <span class="n">line_color</span><span class="o">=</span><span class="s1">&#39;g&#39;</span><span class="p">,</span> <span class="n">show</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+
+<span class="n">p4</span> <span class="o">=</span> <span class="n">plot</span><span class="p">(</span><span class="n">Phihat5</span><span class="o">.</span><span class="n">subs</span><span class="p">(([</span><span class="n">omega_n</span><span class="p">,</span> <span class="n">omega_n_</span><span class="p">],[</span><span class="n">zeta</span><span class="p">,</span> <span class="n">zeta_</span><span class="p">[</span><span class="mi">0</span><span class="p">]])),</span> <span class="p">(</span><span class="n">omega</span><span class="p">,</span> <span class="n">omega_n_</span><span class="o">/</span><span class="mi">10</span> <span class="p">,</span> <span class="mi">10</span><span class="o">*</span><span class="n">omega_n_</span><span class="p">),</span> <span class="n">line_color</span><span class="o">=</span><span class="s1">&#39;k&#39;</span><span class="p">,</span> <span class="n">show</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+<span class="n">p5</span> <span class="o">=</span> <span class="n">plot</span><span class="p">(</span><span class="n">Phihat5</span><span class="o">.</span><span class="n">subs</span><span class="p">(([</span><span class="n">omega_n</span><span class="p">,</span> <span class="n">omega_n_</span><span class="p">],[</span><span class="n">zeta</span><span class="p">,</span> <span class="n">zeta_</span><span class="p">[</span><span class="mi">1</span><span class="p">]])),</span> <span class="p">(</span><span class="n">omega</span><span class="p">,</span> <span class="n">omega_n_</span><span class="o">/</span><span class="mi">10</span> <span class="p">,</span> <span class="mi">10</span><span class="o">*</span><span class="n">omega_n_</span><span class="p">),</span> <span class="n">line_color</span><span class="o">=</span><span class="s1">&#39;k&#39;</span><span class="p">,</span> <span class="n">show</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+<span class="n">p6</span> <span class="o">=</span> <span class="n">plot</span><span class="p">(</span><span class="n">Phihat5</span><span class="o">.</span><span class="n">subs</span><span class="p">(([</span><span class="n">omega_n</span><span class="p">,</span> <span class="n">omega_n_</span><span class="p">],[</span><span class="n">zeta</span><span class="p">,</span> <span class="n">zeta_</span><span class="p">[</span><span class="mi">2</span><span class="p">]])),</span> <span class="p">(</span><span class="n">omega</span><span class="p">,</span> <span class="n">omega_n_</span><span class="o">/</span><span class="mi">10</span> <span class="p">,</span> <span class="mi">10</span><span class="o">*</span><span class="n">omega_n_</span><span class="p">),</span> <span class="n">line_color</span><span class="o">=</span><span class="s1">&#39;k&#39;</span><span class="p">,</span> <span class="n">show</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+
+
+<span class="n">p1</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">label</span> <span class="o">=</span> <span class="s2">&quot;$</span><span class="se">\\</span><span class="s2">zeta=&quot;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">zeta_</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span> <span class="o">+</span> <span class="s2">&quot;$&quot;</span>
+<span class="n">p2</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">label</span> <span class="o">=</span> <span class="s2">&quot;$</span><span class="se">\\</span><span class="s2">zeta=&quot;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">zeta_</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span> <span class="o">+</span> <span class="s2">&quot;$&quot;</span>
+<span class="n">p3</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">label</span> <span class="o">=</span> <span class="s2">&quot;$</span><span class="se">\\</span><span class="s2">zeta=&quot;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">zeta_</span><span class="p">[</span><span class="mi">2</span><span class="p">])</span> <span class="o">+</span> <span class="s2">&quot;$&quot;</span>
+<span class="n">p4</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">label</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span>
+<span class="n">p5</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">label</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span>
+<span class="n">p6</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">label</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span>
+
+<span class="n">p1</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">p2</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+<span class="n">p1</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">p3</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+<span class="n">p1</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">p4</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+<span class="n">p1</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">p5</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+<span class="n">p1</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">p6</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+
+<span class="n">p1</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+</details>
+<div class="cell_output docutils container">
+<img alt="_images/20c954db5470688266fe1fe7623571d265f7442397308b0ac6e979e58b801515.png" src="_images/20c954db5470688266fe1fe7623571d265f7442397308b0ac6e979e58b801515.png" />
+</div>
+</div>
+</section>
+<section id="case-6-complex-conjugate-zero-pair">
+<h2>Case 6: Complex Conjugate Zero Pair<a class="headerlink" href="#case-6-complex-conjugate-zero-pair" title="Link to this heading">¶</a></h2>
+<p>Let us start by first defining the transfer function:</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">H6</span> <span class="o">=</span> <span class="p">(</span><span class="n">s</span><span class="o">**</span><span class="mi">2</span> <span class="o">+</span> <span class="mi">2</span><span class="o">*</span><span class="n">zeta</span><span class="o">*</span><span class="n">omega_n</span><span class="o">*</span><span class="n">s</span> <span class="o">+</span> <span class="n">omega_n</span><span class="o">**</span><span class="mi">2</span><span class="p">)</span> 
+<span class="n">mprint</span><span class="p">(</span><span class="s1">&#39;H(s)=&#39;</span><span class="p">,</span> <span class="n">latex</span><span class="p">(</span><span class="n">H6</span><span class="p">))</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_latex math notranslate nohighlight">
+\[\displaystyle H(s)=\omega_{n}^{2} + 2 \omega_{n} s \zeta + s^{2}\]</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">Hjw</span>  <span class="o">=</span> <span class="n">H6</span><span class="o">.</span><span class="n">subs</span><span class="p">(</span><span class="n">s</span><span class="p">,</span> <span class="n">I</span><span class="o">*</span><span class="n">omega</span><span class="p">)</span>
+<span class="n">M6</span>   <span class="o">=</span> <span class="n">simplify</span><span class="p">(</span><span class="n">Abs</span><span class="p">(</span><span class="n">Hjw</span><span class="p">))</span>
+<span class="n">Mdb6</span> <span class="o">=</span> <span class="n">simplify</span><span class="p">(</span><span class="mi">20</span> <span class="o">*</span> <span class="n">log</span><span class="p">(</span><span class="n">M6</span><span class="p">,</span> <span class="mi">10</span><span class="p">))</span>
+<span class="n">Phi6</span> <span class="o">=</span> <span class="n">arg</span><span class="p">(</span><span class="n">Hjw</span><span class="p">)</span>
+<span class="n">mprint</span><span class="p">(</span><span class="s2">&quot;M  =&quot;</span><span class="p">,</span> <span class="n">latex</span><span class="p">(</span><span class="n">M6</span><span class="p">))</span>
+<span class="n">mprint</span><span class="p">(</span><span class="s2">&quot;M_</span><span class="si">{dB}</span><span class="s2">  =&quot;</span><span class="p">,</span> <span class="n">latex</span><span class="p">(</span><span class="n">Mdb6</span><span class="p">))</span>
+<span class="n">mprint</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\\</span><span class="s2">phi  =&quot;</span><span class="p">,</span> <span class="n">latex</span><span class="p">(</span><span class="n">Phi6</span><span class="p">))</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_latex math notranslate nohighlight">
+\[\displaystyle M  =\sqrt{\omega^{4} + 4 \omega^{2} \omega_{n}^{2} \zeta^{2} - 2 \omega^{2} \omega_{n}^{2} + \omega_{n}^{4}}\]</div>
+<div class="output text_latex math notranslate nohighlight">
+\[\displaystyle M_{dB}  =\frac{10 \log{\left(\omega^{4} + 4 \omega^{2} \omega_{n}^{2} \zeta^{2} - 2 \omega^{2} \omega_{n}^{2} + \omega_{n}^{4} \right)}}{\log{\left(10 \right)}}\]</div>
+<div class="output text_latex math notranslate nohighlight">
+\[\displaystyle \phi  =\arg{\left(- \omega^{2} + 2 i \omega \omega_{n} \zeta + \omega_{n}^{2} \right)}\]</div>
+</div>
+</div>
+<p><strong>Resonance peak:</strong></p>
+<p>Complex conjugate zero pair occurs when <span class="math notranslate nohighlight">\(\zeta &lt; 1\)</span>. Resonance peak appears in the Bode magnitude plot at <span class="math notranslate nohighlight">\(\omega = \omega_n\)</span>. The magnitude at this resonance peak can be computed as:</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">omega_p6</span> <span class="o">=</span> <span class="n">solve</span><span class="p">(</span><span class="n">Eq</span><span class="p">(</span><span class="n">diff</span><span class="p">(</span><span class="n">M6</span><span class="p">,</span> <span class="n">omega</span><span class="p">),</span> <span class="mi">0</span><span class="p">),</span> <span class="n">omega</span><span class="p">)</span>
+<span class="n">mprintb</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\\</span><span class="s2">omega_p=&quot;</span><span class="p">,</span> <span class="n">latex</span><span class="p">(</span><span class="n">omega_p6</span><span class="p">[</span><span class="mi">0</span><span class="p">]))</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_latex math notranslate nohighlight">
+\[\displaystyle \boxed{\omega_p=\omega_{n} \sqrt{1 - 2 \zeta^{2}}}\]</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">Mp6</span> <span class="o">=</span> <span class="n">simplify</span><span class="p">(</span><span class="n">M6</span><span class="o">.</span><span class="n">subs</span><span class="p">(</span><span class="n">omega</span><span class="p">,</span> <span class="n">omega_p6</span><span class="p">[</span><span class="mi">0</span><span class="p">]))</span>
+<span class="n">Mdbp6</span> <span class="o">=</span><span class="n">simplify</span><span class="p">(</span><span class="n">Mdb6</span><span class="o">.</span><span class="n">subs</span><span class="p">(</span><span class="n">omega</span><span class="p">,</span> <span class="n">omega_p6</span><span class="p">[</span><span class="mi">0</span><span class="p">]))</span>
+<span class="n">mprintb</span><span class="p">(</span><span class="s2">&quot;M_p = &quot;</span><span class="p">,</span> <span class="n">latex</span><span class="p">(</span><span class="n">Mp6</span><span class="p">))</span>
+<span class="n">mprintb</span><span class="p">(</span><span class="s2">&quot;M_{p(dB)} = &quot;</span><span class="p">,</span> <span class="n">latex</span><span class="p">(</span><span class="n">Mdbp6</span><span class="p">))</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_latex math notranslate nohighlight">
+\[\displaystyle \boxed{M_p = 2 \omega_{n}^{2} \zeta \sqrt{1 - \zeta^{2}}}\]</div>
+<div class="output text_latex math notranslate nohighlight">
+\[\displaystyle \boxed{M_{p(dB)} = \frac{10 \log{\left(4 \omega_{n}^{4} \zeta^{2} \left(1 - \zeta^{2}\right) \right)}}{\log{\left(10 \right)}}}\]</div>
+</div>
+</div>
+<p><strong>Magnitude plot:</strong></p>
+<p>We first present the piecewise logarithmic representation of the asymptotic Bode plot. After that, we present the plot for several diffrent values for <span class="math notranslate nohighlight">\(\zeta\)</span>.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">Mhatdb6</span> <span class="o">=</span> <span class="n">Piecewise</span><span class="p">((</span><span class="mi">40</span> <span class="o">*</span> <span class="n">log</span><span class="p">(</span><span class="n">omega_n</span><span class="p">,</span> <span class="mi">10</span><span class="p">),</span> <span class="n">omega</span> <span class="o">&lt;</span> <span class="n">omega_n</span><span class="p">),</span>
+                    <span class="p">(</span><span class="mi">40</span> <span class="o">*</span> <span class="n">log</span><span class="p">(</span><span class="n">omega</span><span class="p">,</span> <span class="mi">10</span><span class="p">),</span> <span class="n">omega</span> <span class="o">&gt;=</span> <span class="n">omega_n</span><span class="p">))</span>
+<span class="n">mprintb</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\\</span><span class="s2">hat{ M } ( </span><span class="se">\\</span><span class="s2">omega ) = &quot;</span><span class="p">,</span> <span class="n">latex</span><span class="p">(</span><span class="n">Mhatdb6</span><span class="p">))</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_latex math notranslate nohighlight">
+\[\begin{split}\displaystyle \boxed{\hat{ M } ( \omega ) = \begin{cases} \frac{40 \log{\left(\omega_{n} \right)}}{\log{\left(10 \right)}} &amp; \text{for}\: \omega &lt; \omega_{n} \\\frac{40 \log{\left(\omega \right)}}{\log{\left(10 \right)}} &amp; \text{otherwise} \end{cases}}\end{split}\]</div>
+</div>
+</div>
+<div class="cell tag_hide-input docutils container">
+<details class="hide above-input">
+<summary aria-label="Toggle hidden content">
+<span class="collapsed">Show code cell source</span>
+<span class="expanded">Hide code cell source</span>
+</summary>
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">title</span> <span class="o">=</span> <span class="s1">&#39;$ M_</span><span class="si">{dB}</span><span class="s1"> $&#39;</span>
+<span class="n">p1</span> <span class="o">=</span> <span class="n">plot</span><span class="p">(</span><span class="n">Mdb6</span><span class="o">.</span><span class="n">subs</span><span class="p">(([</span><span class="n">omega_n</span><span class="p">,</span> <span class="n">omega_n_</span><span class="p">],[</span><span class="n">zeta</span><span class="p">,</span> <span class="n">zeta_</span><span class="p">[</span><span class="mi">0</span><span class="p">]])),</span>    <span class="p">(</span><span class="n">omega</span><span class="p">,</span> <span class="n">omega_n_</span><span class="o">/</span><span class="mi">10</span> <span class="p">,</span> <span class="mi">10</span><span class="o">*</span><span class="n">omega_n_</span><span class="p">),</span> <span class="n">line_color</span><span class="o">=</span><span class="s1">&#39;r&#39;</span><span class="p">,</span> <span class="n">size</span><span class="o">=</span><span class="p">(</span><span class="mi">5</span><span class="p">,</span> <span class="mi">3</span><span class="p">),</span> <span class="n">title</span><span class="o">=</span><span class="n">title</span><span class="p">,</span> <span class="n">show</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>  <span class="n">xscale</span><span class="o">=</span><span class="s1">&#39;log&#39;</span><span class="p">,</span> <span class="n">legend</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="n">p2</span> <span class="o">=</span> <span class="n">plot</span><span class="p">(</span><span class="n">Mdb6</span><span class="o">.</span><span class="n">subs</span><span class="p">(([</span><span class="n">omega_n</span><span class="p">,</span> <span class="n">omega_n_</span><span class="p">],[</span><span class="n">zeta</span><span class="p">,</span> <span class="n">zeta_</span><span class="p">[</span><span class="mi">1</span><span class="p">]])),</span>    <span class="p">(</span><span class="n">omega</span><span class="p">,</span> <span class="n">omega_n_</span><span class="o">/</span><span class="mi">10</span> <span class="p">,</span> <span class="mi">10</span><span class="o">*</span><span class="n">omega_n_</span><span class="p">),</span> <span class="n">line_color</span><span class="o">=</span><span class="s1">&#39;b&#39;</span><span class="p">,</span> <span class="n">show</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+<span class="n">p3</span> <span class="o">=</span> <span class="n">plot</span><span class="p">(</span><span class="n">Mdb6</span><span class="o">.</span><span class="n">subs</span><span class="p">(([</span><span class="n">omega_n</span><span class="p">,</span> <span class="n">omega_n_</span><span class="p">],[</span><span class="n">zeta</span><span class="p">,</span> <span class="n">zeta_</span><span class="p">[</span><span class="mi">2</span><span class="p">]])),</span>    <span class="p">(</span><span class="n">omega</span><span class="p">,</span> <span class="n">omega_n_</span><span class="o">/</span><span class="mi">10</span> <span class="p">,</span> <span class="mi">10</span><span class="o">*</span><span class="n">omega_n_</span><span class="p">),</span> <span class="n">line_color</span><span class="o">=</span><span class="s1">&#39;g&#39;</span><span class="p">,</span> <span class="n">show</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+<span class="n">p4</span> <span class="o">=</span> <span class="n">plot</span><span class="p">(</span><span class="n">Mhatdb6</span><span class="o">.</span><span class="n">subs</span><span class="p">(([</span><span class="n">omega_n</span><span class="p">,</span> <span class="n">omega_n_</span><span class="p">],[</span><span class="n">zeta</span><span class="p">,</span> <span class="n">zeta_</span><span class="p">[</span><span class="mi">0</span><span class="p">]])),</span> <span class="p">(</span><span class="n">omega</span><span class="p">,</span> <span class="n">omega_n_</span><span class="o">/</span><span class="mi">10</span> <span class="p">,</span> <span class="mi">10</span><span class="o">*</span><span class="n">omega_n_</span><span class="p">),</span> <span class="n">line_color</span><span class="o">=</span><span class="s1">&#39;k&#39;</span><span class="p">,</span> <span class="n">show</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+
+<span class="n">p1</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">label</span> <span class="o">=</span> <span class="s2">&quot;$</span><span class="se">\\</span><span class="s2">zeta=&quot;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">zeta_</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span> <span class="o">+</span> <span class="s2">&quot;$&quot;</span>
+<span class="n">p2</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">label</span> <span class="o">=</span> <span class="s2">&quot;$</span><span class="se">\\</span><span class="s2">zeta=&quot;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">zeta_</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span> <span class="o">+</span> <span class="s2">&quot;$&quot;</span>
+<span class="n">p3</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">label</span> <span class="o">=</span> <span class="s2">&quot;$</span><span class="se">\\</span><span class="s2">zeta=&quot;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">zeta_</span><span class="p">[</span><span class="mi">2</span><span class="p">])</span> <span class="o">+</span> <span class="s2">&quot;$&quot;</span>
+<span class="n">p4</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">label</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span>
+
+<span class="n">p1</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">p2</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+<span class="n">p1</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">p3</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+<span class="n">p1</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">p4</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+
+<span class="n">p1</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+</details>
+<div class="cell_output docutils container">
+<img alt="_images/d857f3552b25d75e5223481fe1a7ae25a14a77d089588a0e6727e6bb999b1182.png" src="_images/d857f3552b25d75e5223481fe1a7ae25a14a77d089588a0e6727e6bb999b1182.png" />
+</div>
+</div>
+<p>The general shape of the asymptotic magnitude plot is not affected by <span class="math notranslate nohighlight">\(\zeta\)</span>.</p>
+<p>We are not going to include the resonance peak for the asymptotic plots. However, we can still compute this peak value by using the equation expressed by <span class="math notranslate nohighlight">\(M_{p(dB)}\)</span>:</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="nb">print</span><span class="p">(</span><span class="n">Mdbp6</span><span class="o">.</span><span class="n">subs</span><span class="p">(([</span><span class="n">omega_n</span><span class="p">,</span> <span class="n">omega_n_</span><span class="p">],[</span><span class="n">zeta</span><span class="p">,</span> <span class="n">zeta_</span><span class="p">[</span><span class="mi">0</span><span class="p">]]))</span><span class="o">.</span><span class="n">evalf</span><span class="p">())</span> <span class="c1"># for zeta[0]</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">Mdbp6</span><span class="o">.</span><span class="n">subs</span><span class="p">(([</span><span class="n">omega_n</span><span class="p">,</span> <span class="n">omega_n_</span><span class="p">],[</span><span class="n">zeta</span><span class="p">,</span> <span class="n">zeta_</span><span class="p">[</span><span class="mi">1</span><span class="p">]]))</span><span class="o">.</span><span class="n">evalf</span><span class="p">())</span> <span class="c1"># for zeta[1]</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">Mdbp6</span><span class="o">.</span><span class="n">subs</span><span class="p">(([</span><span class="n">omega_n</span><span class="p">,</span> <span class="n">omega_n_</span><span class="p">],[</span><span class="n">zeta</span><span class="p">,</span> <span class="n">zeta_</span><span class="p">[</span><span class="mi">2</span><span class="p">]]))</span><span class="o">.</span><span class="n">evalf</span><span class="p">())</span> <span class="c1"># for zeta[2]</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>-14.0230481407449
+-8.13608784304507
+-1.24938736608300
+</pre></div>
+</div>
+</div>
+</div>
+<p>Resonance peak happens at <span class="math notranslate nohighlight">\(\omega = \omega_{p}\)</span>:</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="nb">print</span><span class="p">(</span><span class="n">omega_p6</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">subs</span><span class="p">(([</span><span class="n">omega_n</span><span class="p">,</span> <span class="n">omega_n_</span><span class="p">],[</span><span class="n">zeta</span><span class="p">,</span> <span class="n">zeta_</span><span class="p">[</span><span class="mi">0</span><span class="p">]]))</span><span class="o">.</span><span class="n">evalf</span><span class="p">())</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>0.989949493661167
+</pre></div>
+</div>
+</div>
+</div>
+<p><strong>Phase plot:</strong></p>
+<p>Similar to the prevoius section, we first present the piecewise logarithmic representation of the asymptotic Bode plot. After that, we present the plot for several diffrent values for <span class="math notranslate nohighlight">\(\zeta\)</span>.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">Phihat6</span> <span class="o">=</span> <span class="n">Piecewise</span><span class="p">((</span><span class="mi">0</span><span class="p">,</span> <span class="n">omega</span> <span class="o">&lt;=</span> <span class="p">(</span><span class="n">omega_n</span> <span class="o">/</span> <span class="mi">10</span><span class="o">**</span><span class="n">zeta</span><span class="p">)),</span>
+                    <span class="p">(</span><span class="n">pi</span><span class="o">/</span><span class="p">(</span><span class="mi">2</span><span class="o">*</span><span class="n">zeta</span><span class="p">)</span> <span class="o">*</span> <span class="n">log</span><span class="p">(</span><span class="n">omega</span><span class="o">/</span><span class="p">(</span><span class="mi">10</span><span class="o">**</span><span class="p">(</span><span class="o">-</span><span class="n">zeta</span><span class="p">)</span><span class="o">*</span><span class="n">omega_n</span><span class="p">),</span> <span class="mi">10</span><span class="p">)</span> <span class="p">,</span> <span class="n">omega</span> <span class="o">&lt;</span> <span class="p">(</span><span class="n">omega_n</span><span class="o">*</span><span class="mi">10</span><span class="o">**</span><span class="n">zeta</span><span class="p">)),</span> 
+                    <span class="p">(</span><span class="n">pi</span><span class="p">,</span> <span class="kc">True</span><span class="p">))</span>
+<span class="n">mprintb</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\\</span><span class="s2">hat{ </span><span class="se">\\</span><span class="s2">phi } ( </span><span class="se">\\</span><span class="s2">omega ) = &quot;</span><span class="p">,</span> <span class="n">latex</span><span class="p">(</span><span class="n">Phihat6</span><span class="p">))</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_latex math notranslate nohighlight">
+\[\begin{split}\displaystyle \boxed{\hat{ \phi } ( \omega ) = \begin{cases} 0 &amp; \text{for}\: \omega \leq 10^{- \zeta} \omega_{n} \\\frac{\pi \log{\left(\frac{10^{\zeta} \omega}{\omega_{n}} \right)}}{2 \zeta \log{\left(10 \right)}} &amp; \text{for}\: \omega &lt; 10^{\zeta} \omega_{n} \\\pi &amp; \text{otherwise} \end{cases}}\end{split}\]</div>
+</div>
+</div>
+<div class="cell tag_hide-input docutils container">
+<details class="hide above-input">
+<summary aria-label="Toggle hidden content">
+<span class="collapsed">Show code cell source</span>
+<span class="expanded">Hide code cell source</span>
+</summary>
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">title</span> <span class="o">=</span> <span class="s1">&#39;$ </span><span class="se">\\</span><span class="s1">phi $&#39;</span>
+<span class="n">p1</span> <span class="o">=</span> <span class="n">plot</span><span class="p">(</span><span class="n">Phi6</span><span class="o">.</span><span class="n">subs</span><span class="p">(([</span><span class="n">omega_n</span><span class="p">,</span> <span class="n">omega_n_</span><span class="p">],[</span><span class="n">zeta</span><span class="p">,</span> <span class="n">zeta_</span><span class="p">[</span><span class="mi">0</span><span class="p">]])),</span>    <span class="p">(</span><span class="n">omega</span><span class="p">,</span> <span class="n">omega_n_</span><span class="o">/</span><span class="mi">10</span> <span class="p">,</span> <span class="mi">10</span><span class="o">*</span><span class="n">omega_n_</span><span class="p">),</span> <span class="n">line_color</span><span class="o">=</span><span class="s1">&#39;r&#39;</span><span class="p">,</span> <span class="n">size</span><span class="o">=</span><span class="p">(</span><span class="mi">5</span><span class="p">,</span> <span class="mi">3</span><span class="p">),</span> <span class="n">title</span><span class="o">=</span><span class="n">title</span><span class="p">,</span> <span class="n">show</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>  <span class="n">xscale</span><span class="o">=</span><span class="s1">&#39;log&#39;</span><span class="p">,</span> <span class="n">legend</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="n">p2</span> <span class="o">=</span> <span class="n">plot</span><span class="p">(</span><span class="n">Phi6</span><span class="o">.</span><span class="n">subs</span><span class="p">(([</span><span class="n">omega_n</span><span class="p">,</span> <span class="n">omega_n_</span><span class="p">],[</span><span class="n">zeta</span><span class="p">,</span> <span class="n">zeta_</span><span class="p">[</span><span class="mi">1</span><span class="p">]])),</span>    <span class="p">(</span><span class="n">omega</span><span class="p">,</span> <span class="n">omega_n_</span><span class="o">/</span><span class="mi">10</span> <span class="p">,</span> <span class="mi">10</span><span class="o">*</span><span class="n">omega_n_</span><span class="p">),</span> <span class="n">line_color</span><span class="o">=</span><span class="s1">&#39;b&#39;</span><span class="p">,</span> <span class="n">show</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+<span class="n">p3</span> <span class="o">=</span> <span class="n">plot</span><span class="p">(</span><span class="n">Phi6</span><span class="o">.</span><span class="n">subs</span><span class="p">(([</span><span class="n">omega_n</span><span class="p">,</span> <span class="n">omega_n_</span><span class="p">],[</span><span class="n">zeta</span><span class="p">,</span> <span class="n">zeta_</span><span class="p">[</span><span class="mi">2</span><span class="p">]])),</span>    <span class="p">(</span><span class="n">omega</span><span class="p">,</span> <span class="n">omega_n_</span><span class="o">/</span><span class="mi">10</span> <span class="p">,</span> <span class="mi">10</span><span class="o">*</span><span class="n">omega_n_</span><span class="p">),</span> <span class="n">line_color</span><span class="o">=</span><span class="s1">&#39;g&#39;</span><span class="p">,</span> <span class="n">show</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+
+<span class="n">p4</span> <span class="o">=</span> <span class="n">plot</span><span class="p">(</span><span class="n">Phihat6</span><span class="o">.</span><span class="n">subs</span><span class="p">(([</span><span class="n">omega_n</span><span class="p">,</span> <span class="n">omega_n_</span><span class="p">],[</span><span class="n">zeta</span><span class="p">,</span> <span class="n">zeta_</span><span class="p">[</span><span class="mi">0</span><span class="p">]])),</span> <span class="p">(</span><span class="n">omega</span><span class="p">,</span> <span class="n">omega_n_</span><span class="o">/</span><span class="mi">10</span> <span class="p">,</span> <span class="mi">10</span><span class="o">*</span><span class="n">omega_n_</span><span class="p">),</span> <span class="n">line_color</span><span class="o">=</span><span class="s1">&#39;k&#39;</span><span class="p">,</span> <span class="n">show</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+<span class="n">p5</span> <span class="o">=</span> <span class="n">plot</span><span class="p">(</span><span class="n">Phihat6</span><span class="o">.</span><span class="n">subs</span><span class="p">(([</span><span class="n">omega_n</span><span class="p">,</span> <span class="n">omega_n_</span><span class="p">],[</span><span class="n">zeta</span><span class="p">,</span> <span class="n">zeta_</span><span class="p">[</span><span class="mi">1</span><span class="p">]])),</span> <span class="p">(</span><span class="n">omega</span><span class="p">,</span> <span class="n">omega_n_</span><span class="o">/</span><span class="mi">10</span> <span class="p">,</span> <span class="mi">10</span><span class="o">*</span><span class="n">omega_n_</span><span class="p">),</span> <span class="n">line_color</span><span class="o">=</span><span class="s1">&#39;k&#39;</span><span class="p">,</span> <span class="n">show</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+<span class="n">p6</span> <span class="o">=</span> <span class="n">plot</span><span class="p">(</span><span class="n">Phihat6</span><span class="o">.</span><span class="n">subs</span><span class="p">(([</span><span class="n">omega_n</span><span class="p">,</span> <span class="n">omega_n_</span><span class="p">],[</span><span class="n">zeta</span><span class="p">,</span> <span class="n">zeta_</span><span class="p">[</span><span class="mi">2</span><span class="p">]])),</span> <span class="p">(</span><span class="n">omega</span><span class="p">,</span> <span class="n">omega_n_</span><span class="o">/</span><span class="mi">10</span> <span class="p">,</span> <span class="mi">10</span><span class="o">*</span><span class="n">omega_n_</span><span class="p">),</span> <span class="n">line_color</span><span class="o">=</span><span class="s1">&#39;k&#39;</span><span class="p">,</span> <span class="n">show</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+
+<span class="n">p1</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">p2</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+<span class="n">p1</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">p3</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+<span class="n">p1</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">p4</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+<span class="n">p1</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">p5</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+<span class="n">p1</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">p6</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+
+<span class="n">p1</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">label</span> <span class="o">=</span> <span class="s2">&quot;$</span><span class="se">\\</span><span class="s2">zeta=&quot;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">zeta_</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span> <span class="o">+</span> <span class="s2">&quot;$&quot;</span>
+<span class="n">p2</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">label</span> <span class="o">=</span> <span class="s2">&quot;$</span><span class="se">\\</span><span class="s2">zeta=&quot;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">zeta_</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span> <span class="o">+</span> <span class="s2">&quot;$&quot;</span>
+<span class="n">p3</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">label</span> <span class="o">=</span> <span class="s2">&quot;$</span><span class="se">\\</span><span class="s2">zeta=&quot;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">zeta_</span><span class="p">[</span><span class="mi">2</span><span class="p">])</span> <span class="o">+</span> <span class="s2">&quot;$&quot;</span>
+<span class="n">p4</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">label</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span>
+<span class="n">p5</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">label</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span>
+<span class="n">p6</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">label</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span>
+
+
+<span class="n">p1</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+</details>
+<div class="cell_output docutils container">
+<img alt="_images/d786e42d0f33673bc425c6d69fbea81a780f82fc7cdb3bb706a2f6ef1c1bdf4a.png" src="_images/d786e42d0f33673bc425c6d69fbea81a780f82fc7cdb3bb706a2f6ef1c1bdf4a.png" />
+</div>
+</div>
+</section>
+<section id="summary">
+<h2>Summary<a class="headerlink" href="#summary" title="Link to this heading">¶</a></h2>
+<p>Finally, let us summarize all boxed formulas.</p>
+<section id="asymptotic-bode-as-piecewise-functions">
+<h3>Asymptotic Bode as piecewise functions<a class="headerlink" href="#asymptotic-bode-as-piecewise-functions" title="Link to this heading">¶</a></h3>
+<p>The following table shows piecewise approximations of a Bode plot.</p>
+<div class="cell tag_hide-input docutils container">
+<details class="hide above-input">
+<summary aria-label="Toggle hidden content">
+<span class="collapsed">Show code cell source</span>
+<span class="expanded">Hide code cell source</span>
+</summary>
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">pandas</span> <span class="kn">import</span> <span class="n">DataFrame</span>
+<span class="kn">from</span> <span class="nn">IPython.display</span> <span class="kn">import</span> <span class="n">Markdown</span>
+
+<span class="k">def</span> <span class="nf">makelatex</span><span class="p">(</span><span class="n">args</span><span class="p">):</span>
+    <span class="k">return</span> <span class="p">[</span><span class="s2">&quot;$</span><span class="si">{}</span><span class="s2">$&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">latex</span><span class="p">(</span><span class="n">a</span><span class="p">))</span> <span class="k">for</span> <span class="n">a</span> <span class="ow">in</span> <span class="n">args</span><span class="p">]</span>
+
+<span class="n">Hs</span>   <span class="o">=</span> <span class="p">[</span><span class="n">H1</span><span class="p">,</span> <span class="n">H2</span><span class="p">,</span> <span class="n">H3</span><span class="p">,</span> <span class="n">H4</span><span class="p">,</span> <span class="n">H5</span><span class="p">,</span> <span class="n">H6</span><span class="p">]</span>
+<span class="n">Mdbs</span> <span class="o">=</span> <span class="p">[</span><span class="n">Mdb1</span><span class="p">,</span> <span class="n">Mdb2</span><span class="p">,</span> <span class="n">Mhatdb3</span><span class="p">,</span> <span class="n">Mhatdb4</span><span class="p">,</span> <span class="n">Mhatdb5</span><span class="p">,</span> <span class="n">Mhatdb6</span><span class="p">]</span>
+<span class="n">Phis</span> <span class="o">=</span> <span class="p">[</span><span class="n">Phi1</span><span class="p">,</span> <span class="n">Phi2</span><span class="p">,</span> <span class="n">Phihat3</span><span class="p">,</span> <span class="n">Phihat4</span><span class="p">,</span> <span class="n">Phihat5</span><span class="p">,</span> <span class="n">Phihat6</span><span class="p">]</span>
+
+<span class="n">dic</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;$ H(s) $&#39;</span><span class="p">:</span> <span class="n">makelatex</span><span class="p">(</span><span class="n">Hs</span><span class="p">),</span> 
+       <span class="s1">&#39;$ M_</span><span class="si">{dB}</span><span class="s1"> $&#39;</span><span class="p">:</span> <span class="n">makelatex</span><span class="p">(</span><span class="n">Mdbs</span><span class="p">),</span> 
+       <span class="s1">&#39;$ </span><span class="se">\\</span><span class="s1">phi $&#39;</span><span class="p">:</span> <span class="n">makelatex</span><span class="p">(</span><span class="n">Phis</span><span class="p">)}</span>
+
+<span class="n">df</span> <span class="o">=</span> <span class="n">DataFrame</span><span class="p">(</span><span class="n">dic</span><span class="p">)</span>
+<span class="n">Markdown</span><span class="p">(</span><span class="n">df</span><span class="o">.</span><span class="n">to_markdown</span><span class="p">(</span><span class="n">index</span><span class="o">=</span><span class="kc">False</span><span class="p">))</span>
+</pre></div>
+</div>
+</div>
+</details>
+<div class="cell_output docutils container">
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head text-left"><p><span class="math notranslate nohighlight">\( H(s) \)</span></p></th>
+<th class="head text-left"><p><span class="math notranslate nohighlight">\( M_{dB} \)</span></p></th>
+<th class="head text-left"><p><span class="math notranslate nohighlight">\( \phi \)</span></p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td class="text-left"><p><span class="math notranslate nohighlight">\(\frac{1}{s}\)</span></p></td>
+<td class="text-left"><p><span class="math notranslate nohighlight">\(- \frac{20 \log{\left(\omega \right)}}{\log{\left(10 \right)}}\)</span></p></td>
+<td class="text-left"><p><span class="math notranslate nohighlight">\(- \frac{\pi}{2}\)</span></p></td>
+</tr>
+<tr class="row-odd"><td class="text-left"><p><span class="math notranslate nohighlight">\(s\)</span></p></td>
+<td class="text-left"><p><span class="math notranslate nohighlight">\(\frac{20 \log{\left(\omega \right)}}{\log{\left(10 \right)}}\)</span></p></td>
+<td class="text-left"><p><span class="math notranslate nohighlight">\(\frac{\pi}{2}\)</span></p></td>
+</tr>
+<tr class="row-even"><td class="text-left"><p><span class="math notranslate nohighlight">\(\frac{1}{a + s}\)</span></p></td>
+<td class="text-left"><p><span class="math notranslate nohighlight">\(\begin{cases} - \frac{20 \log{\left(a \right)}}{\log{\left(10 \right)}} &amp; \text{for}\: a \geq \omega \\- \frac{20 \log{\left(\omega \right)}}{\log{\left(10 \right)}} &amp; \text{otherwise} \end{cases}\)</span></p></td>
+<td class="text-left"><p><span class="math notranslate nohighlight">\(\begin{cases} 0 &amp; \text{for}\: \omega \leq 0.1 a \\- \frac{\pi \log{\left(\frac{10.0 \omega}{a} \right)}}{4 \log{\left(10 \right)}} &amp; \text{for}\: \omega &lt; 10 a \\- \frac{\pi}{2} &amp; \text{otherwise} \end{cases}\)</span></p></td>
+</tr>
+<tr class="row-odd"><td class="text-left"><p><span class="math notranslate nohighlight">\(a + s\)</span></p></td>
+<td class="text-left"><p><span class="math notranslate nohighlight">\(\begin{cases} \frac{20 \log{\left(a \right)}}{\log{\left(10 \right)}} &amp; \text{for}\: a \geq \omega \\\frac{20 \log{\left(\omega \right)}}{\log{\left(10 \right)}} &amp; \text{otherwise} \end{cases}\)</span></p></td>
+<td class="text-left"><p><span class="math notranslate nohighlight">\(\begin{cases} 0 &amp; \text{for}\: \omega \leq 0.1 a \\\frac{\pi \log{\left(\frac{10.0 \omega}{a} \right)}}{4 \log{\left(10 \right)}} &amp; \text{for}\: \omega &lt; 10 a \\\frac{\pi}{2} &amp; \text{otherwise} \end{cases}\)</span></p></td>
+</tr>
+<tr class="row-even"><td class="text-left"><p><span class="math notranslate nohighlight">\(\frac{1}{\omega_{n}^{2} + 2 \omega_{n} s \zeta + s^{2}}\)</span></p></td>
+<td class="text-left"><p><span class="math notranslate nohighlight">\(\begin{cases} - \frac{40 \log{\left(\omega_{n} \right)}}{\log{\left(10 \right)}} &amp; \text{for}\: \omega \leq \omega_{n} \\- \frac{40 \log{\left(\omega \right)}}{\log{\left(10 \right)}} &amp; \text{otherwise} \end{cases}\)</span></p></td>
+<td class="text-left"><p><span class="math notranslate nohighlight">\(\begin{cases} 0 &amp; \text{for}\: \omega \leq 10^{- \zeta} \omega_{n} \\- \frac{\pi \log{\left(\frac{10^{\zeta} \omega}{\omega_{n}} \right)}}{2 \zeta \log{\left(10 \right)}} &amp; \text{for}\: \omega &lt; 10^{\zeta} \omega_{n} \\- \pi &amp; \text{otherwise} \end{cases}\)</span></p></td>
+</tr>
+<tr class="row-odd"><td class="text-left"><p><span class="math notranslate nohighlight">\(\omega_{n}^{2} + 2 \omega_{n} s \zeta + s^{2}\)</span></p></td>
+<td class="text-left"><p><span class="math notranslate nohighlight">\(\begin{cases} \frac{40 \log{\left(\omega_{n} \right)}}{\log{\left(10 \right)}} &amp; \text{for}\: \omega &lt; \omega_{n} \\\frac{40 \log{\left(\omega \right)}}{\log{\left(10 \right)}} &amp; \text{otherwise} \end{cases}\)</span></p></td>
+<td class="text-left"><p><span class="math notranslate nohighlight">\(\begin{cases} 0 &amp; \text{for}\: \omega \leq 10^{- \zeta} \omega_{n} \\\frac{\pi \log{\left(\frac{10^{\zeta} \omega}{\omega_{n}} \right)}}{2 \zeta \log{\left(10 \right)}} &amp; \text{for}\: \omega &lt; 10^{\zeta} \omega_{n} \\\pi &amp; \text{otherwise} \end{cases}\)</span></p></td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</section>
+<section id="resonance-peaks">
+<h3>Resonance peaks<a class="headerlink" href="#resonance-peaks" title="Link to this heading">¶</a></h3>
+<p>The following table summarizes when a resonance occurs  and its peak value.</p>
+<div class="cell tag_hide-input docutils container">
+<details class="hide above-input">
+<summary aria-label="Toggle hidden content">
+<span class="collapsed">Show code cell source</span>
+<span class="expanded">Hide code cell source</span>
+</summary>
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">Hs</span>   <span class="o">=</span> <span class="p">[</span><span class="n">H5</span><span class="p">,</span> <span class="n">H6</span><span class="p">]</span>
+<span class="n">wp</span>   <span class="o">=</span> <span class="p">[</span><span class="n">omega_p5</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">omega_p6</span><span class="p">[</span><span class="mi">0</span><span class="p">]]</span>
+<span class="n">Mp</span>   <span class="o">=</span> <span class="p">[</span><span class="n">Mp5</span><span class="p">,</span> <span class="n">Mp6</span><span class="p">]</span>
+<span class="n">Mpdb</span> <span class="o">=</span> <span class="p">[</span><span class="n">Mdbp5</span><span class="p">,</span> <span class="n">Mdbp6</span><span class="p">]</span>
+
+<span class="n">dic</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;$H(s)$&#39;</span><span class="p">:</span> <span class="n">makelatex</span><span class="p">(</span><span class="n">Hs</span><span class="p">),</span> 
+       <span class="s1">&#39;$ </span><span class="se">\\</span><span class="s1">omega_p $&#39;</span><span class="p">:</span> <span class="n">makelatex</span><span class="p">(</span><span class="n">wp</span><span class="p">),</span> 
+       <span class="s1">&#39;$ M_p $&#39;</span><span class="p">:</span> <span class="n">makelatex</span><span class="p">(</span><span class="n">Mp</span><span class="p">),</span>
+       <span class="s1">&#39;$ M_{p(dB)} $&#39;</span><span class="p">:</span> <span class="n">makelatex</span><span class="p">(</span><span class="n">Mpdb</span><span class="p">)}</span>
+
+<span class="n">df</span> <span class="o">=</span> <span class="n">DataFrame</span><span class="p">(</span><span class="n">dic</span><span class="p">)</span>
+
+<span class="n">Markdown</span><span class="p">(</span><span class="n">df</span><span class="o">.</span><span class="n">to_markdown</span><span class="p">(</span><span class="n">index</span><span class="o">=</span><span class="kc">False</span><span class="p">))</span>
+</pre></div>
+</div>
+</div>
+</details>
+<div class="cell_output docutils container">
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head text-left"><p><span class="math notranslate nohighlight">\(H(s)\)</span></p></th>
+<th class="head text-left"><p><span class="math notranslate nohighlight">\( \omega_p \)</span></p></th>
+<th class="head text-left"><p><span class="math notranslate nohighlight">\( M_p \)</span></p></th>
+<th class="head text-left"><p><span class="math notranslate nohighlight">\( M_{p(dB)} \)</span></p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td class="text-left"><p><span class="math notranslate nohighlight">\(\frac{1}{\omega_{n}^{2} + 2 \omega_{n} s \zeta + s^{2}}\)</span></p></td>
+<td class="text-left"><p><span class="math notranslate nohighlight">\(\omega_{n} \sqrt{1 - 2 \zeta^{2}}\)</span></p></td>
+<td class="text-left"><p><span class="math notranslate nohighlight">\(\frac{1}{2 \omega_{n}^{2} \zeta \sqrt{1 - \zeta^{2}}}\)</span></p></td>
+<td class="text-left"><p><span class="math notranslate nohighlight">\(- \frac{10 \log{\left(- 4 \omega_{n}^{4} \zeta^{2} \left(\zeta^{2} - 1\right) \right)}}{\log{\left(10 \right)}}\)</span></p></td>
+</tr>
+<tr class="row-odd"><td class="text-left"><p><span class="math notranslate nohighlight">\(\omega_{n}^{2} + 2 \omega_{n} s \zeta + s^{2}\)</span></p></td>
+<td class="text-left"><p><span class="math notranslate nohighlight">\(\omega_{n} \sqrt{1 - 2 \zeta^{2}}\)</span></p></td>
+<td class="text-left"><p><span class="math notranslate nohighlight">\(2 \omega_{n}^{2} \zeta \sqrt{1 - \zeta^{2}}\)</span></p></td>
+<td class="text-left"><p><span class="math notranslate nohighlight">\(\frac{10 \log{\left(4 \omega_{n}^{4} \zeta^{2} \left(1 - \zeta^{2}\right) \right)}}{\log{\left(10 \right)}}\)</span></p></td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</section>
+</section>
+</section>
+
+    <script type="text/x-thebe-config">
+    {
+        requestKernel: true,
+        binderOptions: {
+            repo: "binder-examples/jupyter-stacks-datascience",
+            ref: "master",
+        },
+        codeMirrorConfig: {
+            theme: "abcdef",
+            mode: "py.3.12.4"
+        },
+        kernelOptions: {
+            name: "py.3.12.4",
+            path: "./."
+        },
+        predefinedOutput: true
+    }
+    </script>
+    <script>kernelName = 'py.3.12.4'</script>
+
+            <div class="clearer"></div>
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="Main">
+        <div class="sphinxsidebarwrapper">
+            <p class="logo"><a href="intro.html">
+              <img class="logo" src="_static/logo.png" alt="Logo of Project name not set"/>
+            </a></p>
+  <div>
+    <h3><a href="intro.html">Table of Contents</a></h3>
+    <ul>
+<li><a class="reference internal" href="#">Asymptotic Bode</a><ul>
+<li><a class="reference internal" href="#preparations">Preparations</a></li>
+<li><a class="reference internal" href="#asymptotic-bode-plots-of-low-order-transfer-functions">Asymptotic Bode Plots of Low-Order Transfer Functions</a></li>
+<li><a class="reference internal" href="#case-1-a-pole-at-the-origin-of-the-s-plane">Case 1: A pole at the origin of the s-plane</a></li>
+<li><a class="reference internal" href="#case-2-a-zero-at-the-origin-of-the-s-plane">Case 2: A zero at the origin of the s-plane</a></li>
+<li><a class="reference internal" href="#case-3-a-single-real-pole">Case 3: A single real pole</a></li>
+<li><a class="reference internal" href="#case-4-a-single-real-zero">Case 4: A single real zero</a></li>
+<li><a class="reference internal" href="#case-5-complex-conjugate-pole-pair">Case 5: Complex Conjugate Pole Pair</a></li>
+<li><a class="reference internal" href="#case-6-complex-conjugate-zero-pair">Case 6: Complex Conjugate Zero Pair</a></li>
+<li><a class="reference internal" href="#summary">Summary</a><ul>
+<li><a class="reference internal" href="#asymptotic-bode-as-piecewise-functions">Asymptotic Bode as piecewise functions</a></li>
+<li><a class="reference internal" href="#resonance-peaks">Resonance peaks</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+  </div>
+  <div>
+    <h4>Previous topic</h4>
+    <p class="topless"><a href="root-locus.html"
+                          title="previous chapter">The Root-Locus Method</a></p>
+  </div>
+  <div>
+    <h4>Next topic</h4>
+    <p class="topless"><a href="bode-margins.html"
+                          title="next chapter">Gain Margin and Phase Margin</a></p>
+  </div>
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="_sources/bode-plot.ipynb"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<search id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</search>
+<script>document.getElementById('searchbox').style.display = "block"</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="Related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="bode-margins.html" title="Gain Margin and Phase Margin"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="root-locus.html" title="The Root-Locus Method"
+             >previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="intro.html">Control Systems with Sympy</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">Asymptotic Bode</a></li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+    &#169; Copyright 2025.
+      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 7.4.7.
+    </div>
+  </body>
+</html>

@@ -1,0 +1,596 @@
+<!DOCTYPE html>
+
+<html lang="en" data-content_root="./">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>First-Order Systems &#8212; Control Systems with Sympy</title>
+    <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=fa44fd50" />
+    <link rel="stylesheet" type="text/css" href="_static/traditional.css?v=608ddc6c" />
+    <link rel="stylesheet" type="text/css" href="_static/togglebutton.css?v=13237357" />
+    <link rel="stylesheet" type="text/css" href="_static/copybutton.css?v=76b2166b" />
+    <link rel="stylesheet" type="text/css" href="_static/mystnb.4510f1fc1dee50b3e5859aac5469c37c29e427902b24a333a5f9fcb2f0b3ac41.css?v=be8a1c11" />
+    <link rel="stylesheet" type="text/css" href="_static/sphinx-thebe.css?v=4fa983c6" />
+    <link rel="stylesheet" type="text/css" href="_static/sphinx-design.min.css?v=95c83b7e" />
+    <script src="_static/documentation_options.js?v=9eb32ce0"></script>
+    <script src="_static/doctools.js?v=9a2dae69"></script>
+    <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="_static/clipboard.min.js?v=a7894cd8"></script>
+    <script src="_static/copybutton.js?v=f281be69"></script>
+    <script src="_static/scripts/sphinx-book-theme.js?v=887ef09a"></script>
+    <script>let toggleHintShow = 'Click to show';</script>
+    <script>let toggleHintHide = 'Click to hide';</script>
+    <script>let toggleOpenOnPrint = 'true';</script>
+    <script src="_static/togglebutton.js?v=4a39c7ea"></script>
+    <script>var togglebuttonSelector = '.toggle, .admonition.dropdown';</script>
+    <script src="_static/design-tabs.js?v=f930bc37"></script>
+    <script>const THEBE_JS_URL = "https://unpkg.com/thebe@0.8.2/lib/index.js"; const thebe_selector = ".thebe,.cell"; const thebe_selector_input = "pre"; const thebe_selector_output = ".output, .cell_output"</script>
+    <script async="async" src="_static/sphinx-thebe.js?v=c100c467"></script>
+    <script>var togglebuttonSelector = '.toggle, .admonition.dropdown';</script>
+    <script>const THEBE_JS_URL = "https://unpkg.com/thebe@0.8.2/lib/index.js"; const thebe_selector = ".thebe,.cell"; const thebe_selector_input = "pre"; const thebe_selector_output = ".output, .cell_output"</script>
+    <script>window.MathJax = {"HTML-CSS": {"matchFontHeight": true, "scale": 50}, "options": {"processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
+    <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Second-Order System" href="second-order.html" />
+    <link rel="prev" title="System Modeling: Rectilinear System" href="rectilinear.html" /> 
+  </head><body>
+    <div class="related" role="navigation" aria-label="Related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="second-order.html" title="Second-Order System"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="rectilinear.html" title="System Modeling: Rectilinear System"
+             accesskey="P">previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="intro.html">Control Systems with Sympy</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">First-Order Systems</a></li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <section class="tex2jax_ignore mathjax_ignore" id="first-order-systems">
+<h1>First-Order Systems<a class="headerlink" href="#first-order-systems" title="Link to this heading">¶</a></h1>
+<section id="required-imports">
+<h2>Required imports<a class="headerlink" href="#required-imports" title="Link to this heading">¶</a></h2>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">IPython.core.display</span> <span class="kn">import</span> <span class="n">HTML</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+
+<span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">rcParams</span><span class="o">.</span><span class="n">update</span><span class="p">({</span>
+    <span class="s2">&quot;text.usetex&quot;</span><span class="p">:</span> <span class="kc">True</span><span class="p">,</span>
+    <span class="s2">&quot;font.family&quot;</span><span class="p">:</span> <span class="s2">&quot;Helvetica&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;font.size&quot;</span><span class="p">:</span> <span class="mi">10</span><span class="p">,</span>
+<span class="p">})</span>
+
+<span class="kn">from</span> <span class="nn">sympy</span> <span class="kn">import</span> <span class="o">*</span>
+<span class="kn">from</span> <span class="nn">sympy.plotting</span> <span class="kn">import</span> <span class="n">plot</span>
+<span class="kn">from</span> <span class="nn">sympy.abc</span> <span class="kn">import</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span>
+
+<span class="kn">from</span> <span class="nn">mathprint</span> <span class="kn">import</span> <span class="o">*</span>
+</pre></div>
+</div>
+</div>
+</div>
+</section>
+<section id="preparations">
+<h2>Preparations<a class="headerlink" href="#preparations" title="Link to this heading">¶</a></h2>
+<p>Define variables that we are going to use repetitively:
+<span class="math notranslate nohighlight">\(s, t, \tau\)</span>.
+We also need to define specific prpoperties of the variables.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">t</span>   <span class="o">=</span> <span class="n">symbols</span><span class="p">(</span><span class="s1">&#39;t&#39;</span><span class="p">,</span> <span class="n">real</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="n">s</span>   <span class="o">=</span> <span class="n">symbols</span><span class="p">(</span><span class="s1">&#39;s&#39;</span><span class="p">,</span> <span class="nb">complex</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="n">tau</span> <span class="o">=</span> <span class="n">symbols</span><span class="p">(</span><span class="s1">&#39;tau&#39;</span><span class="p">,</span> <span class="n">real</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+<p>The original laplace transformation functions are a little too long. We will simplify the laplace and the inverse laplace transformation functions, as follows.</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">laplace_transform(f,</span> <span class="pre">t,</span> <span class="pre">s,</span> <span class="pre">noconds=True)</span></code> as <code class="docutils literal notranslate"><span class="pre">laplace(f)</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">inverse_laplace_transform(F,</span> <span class="pre">s,</span> <span class="pre">t)</span></code> as <code class="docutils literal notranslate"><span class="pre">ilapalce(F)</span></code></p></li>
+</ul>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">laplace</span><span class="p">(</span><span class="n">f</span><span class="p">):</span>
+    <span class="n">F</span> <span class="o">=</span> <span class="n">laplace_transform</span><span class="p">(</span><span class="n">f</span><span class="p">,</span> <span class="n">t</span><span class="p">,</span> <span class="n">s</span><span class="p">,</span> <span class="n">noconds</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">F</span>
+
+<span class="k">def</span> <span class="nf">ilaplace</span><span class="p">(</span><span class="n">F</span><span class="p">):</span>
+    <span class="n">f</span> <span class="o">=</span> <span class="n">inverse_laplace_transform</span><span class="p">(</span><span class="n">F</span><span class="p">,</span> <span class="n">s</span><span class="p">,</span> <span class="n">t</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">f</span>
+</pre></div>
+</div>
+</div>
+</div>
+</section>
+<section id="special-functions-in-sympy">
+<h2>Special functions in SymPy<a class="headerlink" href="#special-functions-in-sympy" title="Link to this heading">¶</a></h2>
+<p>We will use these two special functions very often:</p>
+<ul class="simple">
+<li><p><span class="math notranslate nohighlight">\(\delta(t)\)</span> is an impulse function or a Dirac Delta function</p></li>
+<li><p><span class="math notranslate nohighlight">\(\theta(t)\)</span> is a step function or a Heaviside function</p></li>
+</ul>
+<p><a class="reference external" href="https://docs.sympy.org/latest/modules/functions/special.html">We can find more information about these functions here</a>.</p>
+</section>
+<section id="first-order-system-equation">
+<h2>First-order system equation<a class="headerlink" href="#first-order-system-equation" title="Link to this heading">¶</a></h2>
+<p>A first-order system:</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">G</span> <span class="o">=</span> <span class="mi">1</span> <span class="o">/</span> <span class="p">(</span><span class="n">tau</span><span class="o">*</span><span class="n">s</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span>
+<span class="n">mprint</span><span class="p">(</span><span class="s1">&#39;G(s)=</span><span class="se">\\</span><span class="s1">frac{C(s)}{R(s)}=&#39;</span><span class="p">,</span> <span class="n">latex</span><span class="p">(</span><span class="n">G</span><span class="p">))</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_latex math notranslate nohighlight">
+\[\displaystyle G(s)=\frac{C(s)}{R(s)}=\frac{1}{s \tau + 1}\]</div>
+</div>
+</div>
+<p>Here <span class="math notranslate nohighlight">\(R(s)\)</span> and <span class="math notranslate nohighlight">\(C(s)\)</span> are the input and output functions in <span class="math notranslate nohighlight">\(s\)</span>-domain, respectively. In time-domain, they become <span class="math notranslate nohighlight">\(r(t)\)</span> and <span class="math notranslate nohighlight">\(c(t)\)</span>, respectively. The first order coefficient ( <span class="math notranslate nohighlight">\(\tau\)</span> ) is better known as the time constant.</p>
+</section>
+<section id="unit-impulse-response">
+<h2>Unit-impulse response<a class="headerlink" href="#unit-impulse-response" title="Link to this heading">¶</a></h2>
+<p>What we do here:</p>
+<ul class="simple">
+<li><p>define the input, which is a unit impulse function (Dirac Delta function)</p></li>
+</ul>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">r</span> <span class="o">=</span> <span class="n">DiracDelta</span><span class="p">(</span><span class="n">t</span><span class="p">)</span>
+<span class="n">mprint</span><span class="p">(</span><span class="s1">&#39;r(t)=&#39;</span><span class="p">,</span> <span class="n">latex</span><span class="p">(</span><span class="n">r</span><span class="p">))</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_latex math notranslate nohighlight">
+\[\displaystyle r(t)=\delta\left(t\right)\]</div>
+</div>
+</div>
+<ul class="simple">
+<li><p>compute its Laplace form</p></li>
+</ul>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">R</span> <span class="o">=</span> <span class="n">laplace</span><span class="p">(</span><span class="n">r</span><span class="p">)</span>
+<span class="n">mprint</span><span class="p">(</span><span class="s1">&#39;R(s)=&#39;</span><span class="p">,</span> <span class="n">latex</span><span class="p">(</span><span class="n">R</span><span class="p">))</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_latex math notranslate nohighlight">
+\[\displaystyle R(s)=1\]</div>
+</div>
+</div>
+<ul class="simple">
+<li><p>apply the input to the sytem and obtain the output</p></li>
+</ul>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">C</span> <span class="o">=</span> <span class="n">G</span><span class="o">*</span><span class="n">R</span>
+<span class="n">mprint</span><span class="p">(</span><span class="s1">&#39;C(s)=&#39;</span><span class="p">,</span> <span class="n">latex</span><span class="p">(</span><span class="n">C</span><span class="p">))</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_latex math notranslate nohighlight">
+\[\displaystyle C(s)=\frac{1}{s \tau + 1}\]</div>
+</div>
+</div>
+<ul class="simple">
+<li><p>compute the inverse Laplace of the output</p></li>
+</ul>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">c</span> <span class="o">=</span> <span class="n">ilaplace</span><span class="p">(</span><span class="n">C</span><span class="p">)</span>
+<span class="n">mprint</span><span class="p">(</span><span class="s1">&#39;c(t)=&#39;</span><span class="p">,</span> <span class="n">latex</span><span class="p">(</span><span class="n">c</span><span class="p">))</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_latex math notranslate nohighlight">
+\[\displaystyle c(t)=\frac{e^{- \frac{t}{\tau}} \theta\left(t\right)}{\tau}\]</div>
+</div>
+</div>
+<p>For plotting the response, let us set <span class="math notranslate nohighlight">\(\tau = 1\)</span>.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">tau_</span> <span class="o">=</span> <span class="mi">1</span>
+<span class="n">c1</span> <span class="o">=</span> <span class="n">c</span><span class="o">.</span><span class="n">subs</span><span class="p">(</span><span class="n">tau</span><span class="p">,</span> <span class="n">tau_</span><span class="p">)</span>
+
+<span class="n">p1</span> <span class="o">=</span> <span class="n">plot</span><span class="p">(</span><span class="n">c1</span><span class="p">,</span> <span class="p">(</span><span class="n">t</span><span class="p">,</span> <span class="mi">0</span> <span class="p">,</span> <span class="mi">7</span><span class="p">),</span> <span class="n">ylim</span><span class="o">=</span><span class="p">[</span><span class="o">-</span><span class="mf">0.5</span><span class="p">,</span> <span class="mi">2</span><span class="p">],</span> <span class="n">size</span><span class="o">=</span><span class="p">(</span><span class="mi">4</span><span class="p">,</span> <span class="mf">2.5</span><span class="p">),</span> <span class="n">ylabel</span><span class="o">=</span><span class="s1">&#39;$c(t)$&#39;</span><span class="p">,</span> <span class="n">show</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">legend</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="n">p2</span> <span class="o">=</span> <span class="n">plot</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="o">/</span><span class="n">tau_</span><span class="o">**</span><span class="mi">2</span><span class="o">*</span><span class="n">t</span> <span class="o">+</span> <span class="mi">1</span><span class="o">/</span><span class="n">tau_</span><span class="p">,</span> <span class="p">(</span><span class="n">t</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span> <span class="p">,</span> <span class="mi">7</span><span class="p">),</span> <span class="n">show</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">legend</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="n">p1</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">label</span> <span class="o">=</span> <span class="s1">&#39;$c(t)=&#39;</span><span class="o">+</span><span class="n">latex</span><span class="p">(</span><span class="n">c1</span><span class="p">)</span><span class="o">+</span><span class="s1">&#39;$&#39;</span>
+<span class="n">p2</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">label</span> <span class="o">=</span> <span class="s2">&quot;gradient at $t=0$, $</span><span class="se">\\</span><span class="s2">dot</span><span class="si">{c}</span><span class="s2">(0)=-1$&quot;</span>
+<span class="n">p1</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">p2</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+
+<span class="n">p1</span><span class="o">.</span><span class="n">show</span><span class="p">()</span> 
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<img alt="_images/9eadbcb2d7dd33d1876671b9e290ec5e68749cbf755bd94ed255c62ff5cad413.png" src="_images/9eadbcb2d7dd33d1876671b9e290ec5e68749cbf755bd94ed255c62ff5cad413.png" />
+</div>
+</div>
+<p>Two interesting informations that we can extract from the response plot above are:</p>
+<ul class="simple">
+<li><p>output value at <span class="math notranslate nohighlight">\(t=0\)</span> or <span class="math notranslate nohighlight">\(\lim_{t \to 0} c(t)\)</span></p></li>
+</ul>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">limit</span><span class="p">(</span><span class="n">c</span><span class="p">,</span> <span class="n">t</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span> <span class="c1"># c(0)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_latex math notranslate nohighlight">
+\[\displaystyle \frac{1}{\tau}\]</div>
+</div>
+</div>
+<ul class="simple">
+<li><p>output gradient at <span class="math notranslate nohighlight">\(t=0\)</span> or <span class="math notranslate nohighlight">\(\lim_{t \to 0}\frac{\mathtt{d}c}{\mathtt{d}t}\)</span></p></li>
+</ul>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">limit</span><span class="p">(</span><span class="n">diff</span><span class="p">(</span><span class="n">c</span><span class="p">,</span> <span class="n">t</span><span class="p">),</span> <span class="n">t</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span> <span class="c1"># output gradient at t = 0</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_latex math notranslate nohighlight">
+\[\displaystyle - \frac{1}{\tau^{2}}\]</div>
+</div>
+</div>
+<p>Thus we can summarize, for unit-impulse output <span class="math notranslate nohighlight">\(c(t)\)</span>:<br />
+$<span class="math notranslate nohighlight">\(c(0) = \frac{1}{\tau}\)</span><span class="math notranslate nohighlight">\( and \)</span><span class="math notranslate nohighlight">\(\dot{c}(0) = -\frac{1}{\tau^2}\)</span>$</p>
+</section>
+<section id="unit-step-response">
+<h2>Unit-step response<a class="headerlink" href="#unit-step-response" title="Link to this heading">¶</a></h2>
+<p>What we do here:</p>
+<ul class="simple">
+<li><p>define the input, which is a unit step function (Heaviside function)</p></li>
+</ul>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">t</span>   <span class="o">=</span> <span class="n">symbols</span><span class="p">(</span><span class="s1">&#39;t&#39;</span><span class="p">,</span> <span class="n">real</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">positive</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+<span class="n">r</span> <span class="o">=</span> <span class="n">Heaviside</span><span class="p">(</span><span class="n">t</span><span class="p">)</span>
+<span class="n">mprint</span><span class="p">(</span><span class="s1">&#39;r(t)=&#39;</span><span class="p">,</span> <span class="n">latex</span><span class="p">(</span><span class="n">r</span><span class="p">))</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_latex math notranslate nohighlight">
+\[\displaystyle r(t)=1\]</div>
+</div>
+</div>
+<ul class="simple">
+<li><p>compute its Laplace form</p></li>
+</ul>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">R</span> <span class="o">=</span> <span class="n">laplace</span><span class="p">(</span><span class="n">r</span><span class="p">)</span>
+<span class="n">mprint</span><span class="p">(</span><span class="s1">&#39;R(s)=&#39;</span><span class="p">,</span> <span class="n">latex</span><span class="p">(</span><span class="n">R</span><span class="p">))</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_latex math notranslate nohighlight">
+\[\displaystyle R(s)=\frac{1}{s}\]</div>
+</div>
+</div>
+<ul class="simple">
+<li><p>apply the input to the sytem and obtain the output</p></li>
+</ul>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">C</span> <span class="o">=</span> <span class="n">G</span><span class="o">*</span><span class="n">R</span>
+<span class="n">mprint</span><span class="p">(</span><span class="s1">&#39;C(s)=&#39;</span><span class="p">,</span> <span class="n">latex</span><span class="p">(</span><span class="n">C</span><span class="p">))</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_latex math notranslate nohighlight">
+\[\displaystyle C(s)=\frac{1}{s \left(s \tau + 1\right)}\]</div>
+</div>
+</div>
+<ul class="simple">
+<li><p>compute the inverse Laplace of the output</p></li>
+</ul>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">c</span> <span class="o">=</span> <span class="n">ilaplace</span><span class="p">(</span><span class="n">C</span><span class="p">)</span>
+<span class="n">mprint</span><span class="p">(</span><span class="s1">&#39;c(t)=&#39;</span><span class="p">,</span> <span class="n">latex</span><span class="p">(</span><span class="n">c</span><span class="p">))</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_latex math notranslate nohighlight">
+\[\displaystyle c(t)=1 - e^{- \frac{t}{\tau}}\]</div>
+</div>
+</div>
+<p>For plotting, let us set <span class="math notranslate nohighlight">\(\tau = 1\)</span>.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">tau_</span> <span class="o">=</span> <span class="mi">1</span>
+<span class="n">c1</span> <span class="o">=</span> <span class="n">collect</span><span class="p">(</span><span class="n">c</span><span class="o">.</span><span class="n">subs</span><span class="p">(</span><span class="n">tau</span><span class="p">,</span> <span class="n">tau_</span><span class="p">),</span> <span class="n">Heaviside</span><span class="p">(</span><span class="n">t</span><span class="p">))</span>
+<span class="n">mprint</span><span class="p">(</span><span class="s2">&quot;c(t)=&quot;</span><span class="p">,</span> <span class="n">latex</span><span class="p">(</span><span class="n">c1</span><span class="p">))</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_latex math notranslate nohighlight">
+\[\displaystyle c(t)=1 - e^{- t}\]</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">tend</span> <span class="o">=</span> <span class="mi">6</span>
+<span class="n">p1</span> <span class="o">=</span> <span class="n">plot</span><span class="p">(</span><span class="n">c1</span><span class="p">,</span>                   <span class="p">(</span><span class="n">t</span><span class="p">,</span>  <span class="mi">0</span><span class="p">,</span>   <span class="n">tend</span><span class="p">),</span> <span class="n">ylim</span><span class="o">=</span><span class="p">[</span><span class="o">-</span><span class="mf">0.2</span><span class="p">,</span> <span class="mf">1.1</span><span class="p">],</span> <span class="n">size</span><span class="o">=</span><span class="p">(</span><span class="mi">4</span><span class="p">,</span> <span class="mf">2.5</span><span class="p">),</span> <span class="n">ylabel</span><span class="o">=</span><span class="s1">&#39;$c(t)$&#39;</span><span class="p">,</span> <span class="n">show</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+<span class="n">p2</span> <span class="o">=</span> <span class="n">plot_implicit</span><span class="p">(</span><span class="n">Eq</span><span class="p">(</span><span class="n">t</span><span class="p">,</span> <span class="n">tau_</span><span class="p">),</span> <span class="p">(</span><span class="n">t</span><span class="p">,</span> <span class="o">-</span><span class="mf">0.1</span><span class="p">,</span> <span class="n">tend</span><span class="p">),</span> <span class="n">line_color</span><span class="o">=</span><span class="s1">&#39;r&#39;</span><span class="p">,</span><span class="n">show</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>  <span class="c1"># vertical line at t = tau</span>
+<span class="n">p3</span> <span class="o">=</span> <span class="n">plot</span><span class="p">(</span><span class="n">c1</span><span class="o">.</span><span class="n">subs</span><span class="p">(</span><span class="n">t</span><span class="p">,</span> <span class="n">tau_</span><span class="p">),</span>     <span class="p">(</span><span class="n">t</span><span class="p">,</span> <span class="o">-</span><span class="mf">0.3</span><span class="p">,</span> <span class="n">tend</span><span class="p">),</span> <span class="n">line_color</span><span class="o">=</span><span class="s1">&#39;r&#39;</span><span class="p">,</span> <span class="n">show</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span> <span class="c1"># horizontal line at c(tau)</span>
+<span class="n">p4</span> <span class="o">=</span> <span class="n">plot</span><span class="p">(</span><span class="n">tau_</span><span class="o">*</span><span class="n">t</span><span class="p">,</span>               <span class="p">(</span><span class="n">t</span><span class="p">,</span> <span class="o">-</span><span class="mf">0.3</span><span class="p">,</span> <span class="n">tend</span><span class="p">),</span> <span class="n">line_color</span><span class="o">=</span><span class="s1">&#39;k&#39;</span><span class="p">,</span> <span class="n">show</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span> <span class="c1"># gradient at t = 0</span>
+<span class="n">p1</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">p2</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+<span class="n">p1</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">p3</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+<span class="n">p1</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">p4</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+<span class="n">p1</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<img alt="_images/636186319c6dd9a25c0c729e2e383782f3fedcb56dff272440b6765bcbea6e02.png" src="_images/636186319c6dd9a25c0c729e2e383782f3fedcb56dff272440b6765bcbea6e02.png" />
+</div>
+</div>
+<p>The figure above shows that at <span class="math notranslate nohighlight">\(t = \tau\)</span>, <span class="math notranslate nohighlight">\(c(\tau)\)</span> is at <span class="math notranslate nohighlight">\(63.21 \%\)</span> of <span class="math notranslate nohighlight">\(c_{ss}\)</span></p>
+<ul class="simple">
+<li><p>output value at <span class="math notranslate nohighlight">\(t=\tau\)</span> or <span class="math notranslate nohighlight">\(c(\tau)\)</span></p></li>
+</ul>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">c1</span><span class="o">.</span><span class="n">subs</span><span class="p">(</span><span class="n">t</span><span class="p">,</span><span class="n">tau</span><span class="p">)</span> <span class="c1"># c(t = tau)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_latex math notranslate nohighlight">
+\[\displaystyle 1 - e^{- \tau}\]</div>
+</div>
+</div>
+<ul class="simple">
+<li><p>output gradient at <span class="math notranslate nohighlight">\(t=0\)</span> or <span class="math notranslate nohighlight">\(\lim_{t \to 0} \frac{\mathtt{d}c}{\mathtt{d}t}\)</span></p></li>
+</ul>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">limit</span><span class="p">(</span><span class="n">diff</span><span class="p">(</span><span class="n">c</span><span class="p">,</span> <span class="n">t</span><span class="p">),</span> <span class="n">t</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span><span class="o">.</span><span class="n">evalf</span><span class="p">()</span> <span class="c1"># gradient at t = 0</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_latex math notranslate nohighlight">
+\[\displaystyle \frac{1}{\tau}\]</div>
+</div>
+</div>
+</section>
+<section id="unit-ramp-response">
+<h2>Unit-ramp response<a class="headerlink" href="#unit-ramp-response" title="Link to this heading">¶</a></h2>
+<p>What we do here:</p>
+<ul class="simple">
+<li><p>define the input, which is a unit ramp function</p></li>
+</ul>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">r</span> <span class="o">=</span> <span class="n">t</span> <span class="o">*</span> <span class="n">Heaviside</span><span class="p">(</span><span class="n">t</span><span class="p">)</span>
+<span class="n">mprint</span><span class="p">(</span><span class="s1">&#39;r(t)=&#39;</span><span class="p">,</span> <span class="n">latex</span><span class="p">(</span><span class="n">r</span><span class="p">))</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_latex math notranslate nohighlight">
+\[\displaystyle r(t)=t\]</div>
+</div>
+</div>
+<ul class="simple">
+<li><p>compute its Laplace form</p></li>
+</ul>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">R</span> <span class="o">=</span> <span class="n">laplace</span><span class="p">(</span><span class="n">r</span><span class="p">)</span>
+<span class="n">mprint</span><span class="p">(</span><span class="s1">&#39;R(s)=&#39;</span><span class="p">,</span> <span class="n">latex</span><span class="p">(</span><span class="n">R</span><span class="p">))</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_latex math notranslate nohighlight">
+\[\displaystyle R(s)=\frac{1}{s^{2}}\]</div>
+</div>
+</div>
+<ul class="simple">
+<li><p>apply the input to the sytem and obtain the output</p></li>
+</ul>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">C</span> <span class="o">=</span> <span class="n">G</span><span class="o">*</span><span class="n">R</span>
+<span class="n">mprint</span><span class="p">(</span><span class="s1">&#39;C(s)=&#39;</span><span class="p">,</span> <span class="n">latex</span><span class="p">(</span><span class="n">C</span><span class="p">))</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_latex math notranslate nohighlight">
+\[\displaystyle C(s)=\frac{1}{s^{2} \left(s \tau + 1\right)}\]</div>
+</div>
+</div>
+<ul class="simple">
+<li><p>compute the inverse Laplace of the output</p></li>
+</ul>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">c</span> <span class="o">=</span> <span class="n">collect</span><span class="p">(</span><span class="n">ilaplace</span><span class="p">(</span><span class="n">C</span><span class="p">),</span> <span class="n">Heaviside</span><span class="p">(</span><span class="n">t</span><span class="p">))</span>
+<span class="n">mprint</span><span class="p">(</span><span class="s1">&#39;c(t)=&#39;</span><span class="p">,</span> <span class="n">latex</span><span class="p">(</span><span class="n">c</span><span class="p">))</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_latex math notranslate nohighlight">
+\[\displaystyle c(t)=t - \tau + \tau e^{- \frac{t}{\tau}}\]</div>
+</div>
+</div>
+<p>For plotting, let us set <span class="math notranslate nohighlight">\(\tau = 1\)</span>.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">tau_</span> <span class="o">=</span> <span class="mi">1</span>
+<span class="n">c1</span> <span class="o">=</span> <span class="n">collect</span><span class="p">(</span><span class="n">c</span><span class="o">.</span><span class="n">subs</span><span class="p">(</span><span class="n">tau</span><span class="p">,</span> <span class="n">tau_</span><span class="p">),</span> <span class="n">Heaviside</span><span class="p">(</span><span class="n">t</span><span class="p">))</span>
+<span class="n">mprint</span><span class="p">(</span><span class="s2">&quot;c(t)=&quot;</span><span class="p">,</span> <span class="n">latex</span><span class="p">(</span><span class="n">c1</span><span class="p">))</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_latex math notranslate nohighlight">
+\[\displaystyle c(t)=t - 1 + e^{- t}\]</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">tend</span> <span class="o">=</span> <span class="mi">5</span>
+<span class="n">p1</span> <span class="o">=</span> <span class="n">plot</span><span class="p">(</span><span class="n">c1</span><span class="p">,</span> <span class="p">(</span><span class="n">t</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="n">tend</span><span class="p">),</span> <span class="n">ylim</span><span class="o">=</span><span class="p">[</span><span class="o">-</span><span class="mi">0</span><span class="p">,</span> <span class="mi">5</span><span class="p">],</span> <span class="n">size</span><span class="o">=</span><span class="p">(</span><span class="mf">2.5</span><span class="p">,</span> <span class="mf">2.5</span><span class="p">),</span> <span class="n">show</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">legend</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="n">p2</span> <span class="o">=</span> <span class="n">plot</span><span class="p">(</span><span class="n">r</span><span class="p">,</span>  <span class="p">(</span><span class="n">t</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="n">tend</span><span class="p">),</span> <span class="n">line_color</span><span class="o">=</span><span class="s1">&#39;r&#39;</span><span class="p">,</span> <span class="n">show</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">legend</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>  
+<span class="n">p1</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">label</span> <span class="o">=</span> <span class="s1">&#39;$r(t)$&#39;</span>
+<span class="n">p2</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">label</span> <span class="o">=</span> <span class="s1">&#39;$c(t)$&#39;</span>
+<span class="n">p1</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">p2</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+<span class="n">p1</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<img alt="_images/ea4a5641c805b0d25db57e3549115a431fc966a866102772dd92aed8527c89de.png" src="_images/ea4a5641c805b0d25db57e3549115a431fc966a866102772dd92aed8527c89de.png" />
+</div>
+</div>
+<p>As we can see from the response plot above, there is a constant difference between the input and the output (<strong>vertical distance between red line and blue line</strong>). This constant difference can ba expressed as:</p>
+<div class="math notranslate nohighlight">
+\[\Delta = \lim_{s \to 0}  s\big(R(s)-C(s) \big) = \lim_{s \to 0} s \big(R(s)-GR(s) \big) = \lim_{s \to 0} sR(s) \big(1-G(s) \big) \]</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">delta</span> <span class="o">=</span> <span class="n">limit</span><span class="p">(</span><span class="n">s</span><span class="o">*</span><span class="n">laplace</span><span class="p">(</span><span class="n">r</span><span class="p">)</span> <span class="o">*</span> <span class="p">(</span><span class="mi">1</span> <span class="o">-</span> <span class="n">G</span><span class="p">),</span> <span class="n">s</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
+<span class="n">mprint</span><span class="p">(</span><span class="s1">&#39;</span><span class="se">\\</span><span class="s1">Delta=&#39;</span><span class="p">,</span> <span class="n">latex</span><span class="p">(</span><span class="n">delta</span><span class="p">))</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_latex math notranslate nohighlight">
+\[\displaystyle \Delta=\tau\]</div>
+</div>
+</div>
+</section>
+</section>
+
+    <script type="text/x-thebe-config">
+    {
+        requestKernel: true,
+        binderOptions: {
+            repo: "binder-examples/jupyter-stacks-datascience",
+            ref: "master",
+        },
+        codeMirrorConfig: {
+            theme: "abcdef",
+            mode: "py.3.12.4"
+        },
+        kernelOptions: {
+            name: "py.3.12.4",
+            path: "./."
+        },
+        predefinedOutput: true
+    }
+    </script>
+    <script>kernelName = 'py.3.12.4'</script>
+
+            <div class="clearer"></div>
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="Main">
+        <div class="sphinxsidebarwrapper">
+            <p class="logo"><a href="intro.html">
+              <img class="logo" src="_static/logo.png" alt="Logo of Project name not set"/>
+            </a></p>
+  <div>
+    <h3><a href="intro.html">Table of Contents</a></h3>
+    <ul>
+<li><a class="reference internal" href="#">First-Order Systems</a><ul>
+<li><a class="reference internal" href="#required-imports">Required imports</a></li>
+<li><a class="reference internal" href="#preparations">Preparations</a></li>
+<li><a class="reference internal" href="#special-functions-in-sympy">Special functions in SymPy</a></li>
+<li><a class="reference internal" href="#first-order-system-equation">First-order system equation</a></li>
+<li><a class="reference internal" href="#unit-impulse-response">Unit-impulse response</a></li>
+<li><a class="reference internal" href="#unit-step-response">Unit-step response</a></li>
+<li><a class="reference internal" href="#unit-ramp-response">Unit-ramp response</a></li>
+</ul>
+</li>
+</ul>
+
+  </div>
+  <div>
+    <h4>Previous topic</h4>
+    <p class="topless"><a href="rectilinear.html"
+                          title="previous chapter">System Modeling: Rectilinear System</a></p>
+  </div>
+  <div>
+    <h4>Next topic</h4>
+    <p class="topless"><a href="second-order.html"
+                          title="next chapter">Second-Order System</a></p>
+  </div>
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="_sources/first-order.ipynb"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<search id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</search>
+<script>document.getElementById('searchbox').style.display = "block"</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="Related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="second-order.html" title="Second-Order System"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="rectilinear.html" title="System Modeling: Rectilinear System"
+             >previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="intro.html">Control Systems with Sympy</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">First-Order Systems</a></li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+    &#169; Copyright 2025.
+      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 7.4.7.
+    </div>
+  </body>
+</html>

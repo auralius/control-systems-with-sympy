@@ -1,0 +1,580 @@
+<!DOCTYPE html>
+
+<html lang="en" data-content_root="./">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>System Modeling: Rectilinear System &#8212; Control Systems with Sympy</title>
+    <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=fa44fd50" />
+    <link rel="stylesheet" type="text/css" href="_static/traditional.css?v=608ddc6c" />
+    <link rel="stylesheet" type="text/css" href="_static/togglebutton.css?v=13237357" />
+    <link rel="stylesheet" type="text/css" href="_static/copybutton.css?v=76b2166b" />
+    <link rel="stylesheet" type="text/css" href="_static/mystnb.4510f1fc1dee50b3e5859aac5469c37c29e427902b24a333a5f9fcb2f0b3ac41.css?v=be8a1c11" />
+    <link rel="stylesheet" type="text/css" href="_static/sphinx-thebe.css?v=4fa983c6" />
+    <link rel="stylesheet" type="text/css" href="_static/sphinx-design.min.css?v=95c83b7e" />
+    <script src="_static/documentation_options.js?v=9eb32ce0"></script>
+    <script src="_static/doctools.js?v=9a2dae69"></script>
+    <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="_static/clipboard.min.js?v=a7894cd8"></script>
+    <script src="_static/copybutton.js?v=f281be69"></script>
+    <script src="_static/scripts/sphinx-book-theme.js?v=887ef09a"></script>
+    <script>let toggleHintShow = 'Click to show';</script>
+    <script>let toggleHintHide = 'Click to hide';</script>
+    <script>let toggleOpenOnPrint = 'true';</script>
+    <script src="_static/togglebutton.js?v=4a39c7ea"></script>
+    <script>var togglebuttonSelector = '.toggle, .admonition.dropdown';</script>
+    <script src="_static/design-tabs.js?v=f930bc37"></script>
+    <script>const THEBE_JS_URL = "https://unpkg.com/thebe@0.8.2/lib/index.js"; const thebe_selector = ".thebe,.cell"; const thebe_selector_input = "pre"; const thebe_selector_output = ".output, .cell_output"</script>
+    <script async="async" src="_static/sphinx-thebe.js?v=c100c467"></script>
+    <script>var togglebuttonSelector = '.toggle, .admonition.dropdown';</script>
+    <script>const THEBE_JS_URL = "https://unpkg.com/thebe@0.8.2/lib/index.js"; const thebe_selector = ".thebe,.cell"; const thebe_selector_input = "pre"; const thebe_selector_output = ".output, .cell_output"</script>
+    <script>window.MathJax = {"HTML-CSS": {"matchFontHeight": true, "scale": 50}, "options": {"processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
+    <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="First-Order Systems" href="first-order.html" />
+    <link rel="prev" title="System Modeling: Flyball Governor" href="fly-ball-governor.html" /> 
+  </head><body>
+    <div class="related" role="navigation" aria-label="Related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="first-order.html" title="First-Order Systems"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="fly-ball-governor.html" title="System Modeling: Flyball Governor"
+             accesskey="P">previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="intro.html">Control Systems with Sympy</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">System Modeling: Rectilinear System</a></li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <section class="tex2jax_ignore mathjax_ignore" id="system-modeling-rectilinear-system">
+<h1>System Modeling: Rectilinear System<a class="headerlink" href="#system-modeling-rectilinear-system" title="Link to this heading">¶</a></h1>
+<p>In this Python notebook, we are going to make a general method for rectilinear system modeling. Our method uses directed graph where vertex represents mass and edge represents spring or damper. From the graph, we can then generate two adjacency matrices:  for the springs and for the dampers. These matrices are then used by the Lagrange-Euler method to generate the system equations.</p>
+<p><img alt="" src="_images/adjency.png" /></p>
+<p>The model will be presented in three forms:</p>
+<ul class="simple">
+<li><p>ODEs</p></li>
+<li><p>Laplace equations</p></li>
+<li><p>State space</p></li>
+</ul>
+<section id="preparations">
+<h2>Preparations<a class="headerlink" href="#preparations" title="Link to this heading">¶</a></h2>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">IPython.display</span> <span class="kn">import</span> <span class="n">display</span><span class="p">,</span> <span class="n">Markdown</span>
+
+<span class="kn">from</span> <span class="nn">sympy</span> <span class="kn">import</span> <span class="o">*</span>
+<span class="kn">from</span> <span class="nn">sympy.physics.vector</span> <span class="kn">import</span> <span class="n">dynamicsymbols</span>
+<span class="kn">from</span> <span class="nn">sympy.solvers.ode.systems</span> <span class="kn">import</span> <span class="n">linear_ode_to_matrix</span>
+<span class="kn">from</span> <span class="nn">sympy.interactive.printing</span> <span class="kn">import</span> <span class="n">init_printing</span>
+
+<span class="kn">from</span> <span class="nn">mathprint</span> <span class="kn">import</span> <span class="o">*</span>
+
+<span class="c1"># https://stackoverflow.com/questions/49145059/how-to-change-printed-representation-of-functions-derivative-in-sympy</span>
+<span class="n">latexReplaceRules</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="c1"># r&#39;{\left(t \right)}&#39;:r&#39; &#39;,</span>
+    <span class="sa">r</span><span class="s1">&#39;\frac</span><span class="si">{d}</span><span class="s1">{d t}&#39;</span><span class="p">:</span><span class="sa">r</span><span class="s1">&#39;\dot&#39;</span><span class="p">,</span>
+    <span class="sa">r</span><span class="s1">&#39;\frac{d^</span><span class="si">{2}</span><span class="s1">}{d t^</span><span class="si">{2}</span><span class="s1">}&#39;</span><span class="p">:</span><span class="sa">r</span><span class="s1">&#39;\ddot&#39;</span><span class="p">,</span>
+<span class="p">}</span>
+
+<span class="k">def</span> <span class="nf">latexNew</span><span class="p">(</span><span class="n">expr</span><span class="p">,</span><span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+    <span class="n">retStr</span> <span class="o">=</span> <span class="n">latex</span><span class="p">(</span><span class="n">expr</span><span class="p">,</span><span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+    <span class="k">for</span> <span class="n">_</span><span class="p">,</span><span class="n">__</span> <span class="ow">in</span> <span class="n">latexReplaceRules</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+        <span class="n">retStr</span> <span class="o">=</span> <span class="n">retStr</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="n">_</span><span class="p">,</span><span class="n">__</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">retStr</span>
+
+<span class="n">init_printing</span><span class="p">(</span><span class="n">use_unicode</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+<span class="n">init_printing</span><span class="p">(</span><span class="n">fontsize</span><span class="o">=</span><span class="s1">&#39;8pt&#39;</span><span class="p">,</span> <span class="n">latex_printer</span><span class="o">=</span><span class="n">latexNew</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+</section>
+<section id="lagrange-s-equations-of-a-rectilinear-system">
+<h2>Lagrange’s equations of a rectilinear system<a class="headerlink" href="#lagrange-s-equations-of-a-rectilinear-system" title="Link to this heading">¶</a></h2>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">mass_spring_damper</span><span class="p">(</span><span class="n">n</span><span class="p">,</span> <span class="n">M</span><span class="p">,</span> <span class="n">K</span><span class="p">,</span> <span class="n">B</span><span class="p">,</span> <span class="n">F</span><span class="p">,</span> <span class="n">x</span><span class="p">):</span>
+    <span class="k">if</span> <span class="n">n</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+        <span class="n">x</span> <span class="o">=</span> <span class="p">[</span><span class="n">x</span><span class="p">]</span>
+
+    <span class="c1"># the kinetic energy</span>
+    <span class="n">T</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">n</span><span class="p">):</span>
+        <span class="n">T</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="mi">1</span><span class="o">/</span><span class="mi">2</span><span class="o">*</span><span class="n">M</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">*</span> <span class="n">x</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">.</span><span class="n">diff</span><span class="p">()</span><span class="o">**</span><span class="mi">2</span><span class="p">)</span>
+    
+    <span class="c1"># the potential energy </span>
+    <span class="n">U</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="n">R</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">n</span><span class="p">):</span>
+        <span class="n">u</span> <span class="o">=</span> <span class="mi">0</span>   
+        <span class="n">r</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">n</span><span class="p">):</span> 
+            <span class="k">if</span> <span class="n">i</span> <span class="o">==</span> <span class="n">j</span><span class="p">:</span> 
+                <span class="n">u</span> <span class="o">=</span> <span class="n">u</span><span class="o">+</span><span class="mi">1</span><span class="o">/</span><span class="mi">2</span><span class="o">*</span><span class="n">K</span><span class="p">[</span><span class="n">i</span><span class="p">,</span><span class="n">j</span><span class="p">]</span><span class="o">*</span><span class="p">(</span><span class="n">x</span><span class="p">[</span><span class="n">i</span><span class="p">])</span><span class="o">**</span><span class="mi">2</span>
+                <span class="n">r</span> <span class="o">=</span> <span class="n">r</span><span class="o">+</span><span class="mi">1</span><span class="o">/</span><span class="mi">2</span><span class="o">*</span><span class="n">B</span><span class="p">[</span><span class="n">i</span><span class="p">,</span><span class="n">j</span><span class="p">]</span><span class="o">*</span><span class="n">x</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">.</span><span class="n">diff</span><span class="p">()</span><span class="o">**</span><span class="mi">2</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">u</span> <span class="o">=</span> <span class="n">u</span><span class="o">+</span><span class="mi">1</span><span class="o">/</span><span class="mi">2</span><span class="o">*</span><span class="n">K</span><span class="p">[</span><span class="n">i</span><span class="p">,</span><span class="n">j</span><span class="p">]</span><span class="o">*</span><span class="p">(</span><span class="n">x</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">-</span><span class="n">x</span><span class="p">[</span><span class="n">j</span><span class="p">])</span><span class="o">**</span><span class="mi">2</span>
+                <span class="n">r</span> <span class="o">=</span> <span class="n">r</span><span class="o">+</span><span class="mi">1</span><span class="o">/</span><span class="mi">2</span><span class="o">*</span><span class="n">B</span><span class="p">[</span><span class="n">i</span><span class="p">,</span><span class="n">j</span><span class="p">]</span><span class="o">*</span><span class="p">(</span><span class="n">x</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">.</span><span class="n">diff</span><span class="p">()</span><span class="o">-</span><span class="n">x</span><span class="p">[</span><span class="n">j</span><span class="p">]</span><span class="o">.</span><span class="n">diff</span><span class="p">())</span><span class="o">**</span><span class="mi">2</span>
+        <span class="n">U</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">u</span><span class="p">)</span>
+        <span class="n">R</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">r</span><span class="p">)</span>
+
+    <span class="c1"># compute the total</span>
+    <span class="n">U</span> <span class="o">=</span> <span class="nb">sum</span><span class="p">(</span><span class="n">U</span><span class="p">)</span> <span class="c1"># potential energy</span>
+    <span class="n">R</span> <span class="o">=</span> <span class="nb">sum</span><span class="p">(</span><span class="n">R</span><span class="p">)</span> <span class="c1"># dissipation energy</span>
+    <span class="n">T</span> <span class="o">=</span> <span class="nb">sum</span><span class="p">(</span><span class="n">T</span><span class="p">)</span> <span class="c1"># kinetic energy</span>
+
+    <span class="c1"># the lagrange method</span>
+    <span class="n">eq1</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">n</span><span class="p">):</span>
+        <span class="n">eq</span> <span class="o">=</span> <span class="n">diff</span><span class="p">(</span><span class="n">T</span><span class="p">,</span> <span class="n">x</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">.</span><span class="n">diff</span><span class="p">(),</span> <span class="n">Symbol</span><span class="p">(</span><span class="s1">&#39;t&#39;</span><span class="p">))</span> <span class="o">-</span> <span class="n">diff</span><span class="p">(</span><span class="n">T</span><span class="p">,</span> <span class="n">x</span><span class="p">[</span><span class="n">i</span><span class="p">])</span> <span class="o">+</span> <span class="n">diff</span><span class="p">(</span><span class="n">R</span><span class="p">,</span> <span class="n">x</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">.</span><span class="n">diff</span><span class="p">())</span> <span class="o">+</span> <span class="n">diff</span><span class="p">(</span><span class="n">U</span><span class="p">,</span> <span class="n">x</span><span class="p">[</span><span class="n">i</span><span class="p">])</span> <span class="o">-</span> <span class="n">F</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
+        <span class="n">eq</span> <span class="o">=</span> <span class="n">solve</span><span class="p">(</span><span class="n">eq</span><span class="p">,</span> <span class="n">x</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">.</span><span class="n">diff</span><span class="p">()</span><span class="o">.</span><span class="n">diff</span><span class="p">())[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="n">eq1</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">Eq</span><span class="p">(</span><span class="n">x</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">.</span><span class="n">diff</span><span class="p">()</span><span class="o">.</span><span class="n">diff</span><span class="p">(),</span> <span class="n">eq</span><span class="p">))</span>   
+
+    <span class="k">return</span> <span class="n">eq1</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">present_results</span><span class="p">(</span><span class="n">eq</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">t</span><span class="p">):</span>
+    <span class="n">n</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">eq</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">n</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+        <span class="n">x</span> <span class="o">=</span> <span class="p">[</span><span class="n">x</span><span class="p">]</span>
+
+    <span class="c1"># in ODE format (equation of motions):</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;--- System&#39;s equation of motion in ODEs ---</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
+    <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="nb">range</span> <span class="p">(</span><span class="n">n</span><span class="p">):</span>
+        <span class="n">mprint</span><span class="p">(</span><span class="n">latexNew</span><span class="p">(</span><span class="n">expand</span><span class="p">(</span><span class="n">eq</span><span class="p">[</span><span class="n">k</span><span class="p">])))</span>
+
+    <span class="c1"># in state space format:</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;</span><span class="se">\n</span><span class="s1">--- in state space format ---</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">)</span>
+    <span class="n">mprint</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\\</span><span class="s2">dot</span><span class="si">{X}</span><span class="s2">(t) = A X(t) + f&quot;</span><span class="p">)</span>
+    <span class="n">A</span><span class="p">,</span> <span class="n">f</span> <span class="o">=</span> <span class="n">linear_ode_to_matrix</span><span class="p">(</span><span class="n">eq</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">t</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span>
+
+    <span class="n">X</span> <span class="o">=</span> <span class="n">Matrix</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+    <span class="n">XDOT</span> <span class="o">=</span> <span class="n">Matrix</span><span class="p">([</span><span class="n">x</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">.</span><span class="n">diff</span><span class="p">()</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">n</span><span class="p">)])</span>
+    <span class="n">XDDOT</span> <span class="o">=</span> <span class="n">Matrix</span><span class="p">([</span><span class="n">x</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">.</span><span class="n">diff</span><span class="p">()</span><span class="o">.</span><span class="n">diff</span><span class="p">()</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">n</span><span class="p">)])</span>
+    
+    <span class="n">X_</span>    <span class="o">=</span> <span class="n">Matrix</span><span class="p">(</span><span class="n">BlockMatrix</span><span class="p">([[</span><span class="n">X</span><span class="p">],[</span><span class="n">XDOT</span><span class="p">]]))</span>
+    <span class="n">XDOT_</span> <span class="o">=</span> <span class="n">Matrix</span><span class="p">(</span><span class="n">BlockMatrix</span><span class="p">([[</span><span class="n">XDOT</span><span class="p">],[</span><span class="n">XDDOT</span><span class="p">]]))</span>
+    <span class="n">x_</span> <span class="o">=</span> <span class="n">dynamicsymbols</span><span class="p">(</span><span class="s1">&#39;x&#39;</span><span class="p">)</span>
+
+    <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;where:</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">)</span>
+    <span class="n">mprint</span><span class="p">(</span><span class="n">latexNew</span><span class="p">(</span><span class="n">Eq</span><span class="p">(</span><span class="n">Symbol</span><span class="p">(</span><span class="s1">&#39;A&#39;</span><span class="p">),</span> <span class="n">Matrix</span><span class="p">(</span><span class="n">BlockMatrix</span><span class="p">([[</span><span class="n">zeros</span><span class="p">(</span><span class="n">n</span><span class="p">),</span> <span class="n">Matrix</span><span class="p">(</span><span class="n">A</span><span class="p">[</span><span class="mi">0</span><span class="p">])],[</span><span class="n">Matrix</span><span class="p">(</span><span class="n">A</span><span class="p">[</span><span class="mi">2</span><span class="p">]),</span> <span class="n">Matrix</span><span class="p">(</span><span class="n">A</span><span class="p">[</span><span class="mi">1</span><span class="p">])]])),</span> <span class="n">evaluate</span><span class="o">=</span><span class="kc">False</span><span class="p">)),</span>
+           <span class="n">latexNew</span><span class="p">(</span><span class="n">Eq</span><span class="p">(</span><span class="n">Symbol</span><span class="p">(</span><span class="s1">&#39;f&#39;</span><span class="p">),</span> <span class="n">Matrix</span><span class="p">(</span><span class="n">BlockMatrix</span><span class="p">([[</span><span class="n">zeros</span><span class="p">(</span><span class="n">n</span><span class="p">,</span><span class="mi">1</span><span class="p">)],[</span><span class="n">f</span><span class="p">]])),</span> <span class="n">evaluate</span><span class="o">=</span><span class="n">false</span><span class="p">)))</span>
+    <span class="n">mprint</span><span class="p">(</span><span class="n">latexNew</span><span class="p">(</span><span class="n">Eq</span><span class="p">(</span><span class="n">x_</span><span class="o">.</span><span class="n">diff</span><span class="p">(),</span> <span class="n">X_</span><span class="p">,</span> <span class="n">evaluate</span><span class="o">=</span><span class="kc">False</span><span class="p">)),</span> 
+           <span class="n">latexNew</span><span class="p">(</span><span class="n">Eq</span><span class="p">(</span><span class="n">x_</span><span class="o">.</span><span class="n">diff</span><span class="p">()</span><span class="o">.</span><span class="n">diff</span><span class="p">(),</span> <span class="n">XDOT_</span><span class="p">,</span> <span class="n">evaluate</span><span class="o">=</span><span class="kc">False</span><span class="p">)))</span>
+</pre></div>
+</div>
+</div>
+</div>
+</section>
+<section id="solved-problem-sets">
+<h2>Solved problem sets<a class="headerlink" href="#solved-problem-sets" title="Link to this heading">¶</a></h2>
+<section id="problem-1">
+<h3>Problem 1<a class="headerlink" href="#problem-1" title="Link to this heading">¶</a></h3>
+<p><img alt="" src="_images/p1.png" /></p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># setup adjacent matrices for K and B:</span>
+<span class="n">t</span><span class="p">,</span> <span class="n">m</span><span class="p">,</span> <span class="n">b</span><span class="p">,</span> <span class="n">k</span><span class="p">,</span> <span class="n">F</span> <span class="o">=</span> <span class="n">symbols</span><span class="p">(</span><span class="s1">&#39;t m b k F&#39;</span><span class="p">)</span>
+<span class="n">x</span>  <span class="o">=</span> <span class="n">dynamicsymbols</span><span class="p">(</span><span class="s1">&#39;x&#39;</span><span class="p">)</span>
+
+<span class="n">ndof</span> <span class="o">=</span> <span class="mi">1</span>
+<span class="n">matK</span> <span class="o">=</span> <span class="n">Matrix</span><span class="p">([[</span><span class="n">k</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">]])</span>
+<span class="n">matB</span> <span class="o">=</span> <span class="n">Matrix</span><span class="p">([[</span><span class="n">b</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">]])</span>
+<span class="n">matM</span> <span class="o">=</span> <span class="n">Matrix</span><span class="p">([</span><span class="n">m</span><span class="p">])</span>
+<span class="n">matF</span> <span class="o">=</span> <span class="n">Matrix</span><span class="p">([</span><span class="n">F</span><span class="p">])</span>
+
+<span class="n">eq</span> <span class="o">=</span> <span class="n">mass_spring_damper</span><span class="p">(</span><span class="n">ndof</span><span class="p">,</span> <span class="n">matM</span><span class="p">,</span> <span class="n">matK</span><span class="p">,</span> <span class="n">matB</span><span class="p">,</span> <span class="n">matF</span><span class="p">,</span> <span class="n">x</span><span class="p">)</span>
+
+<span class="n">present_results</span><span class="p">(</span><span class="n">eq</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">t</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>--- System&#39;s equation of motion in ODEs ---
+</pre></div>
+</div>
+<div class="output text_latex math notranslate nohighlight">
+\[\displaystyle \ddot x{\left(t \right)} = \frac{F}{m} - \frac{b \dot x{\left(t \right)}}{m} - \frac{k x{\left(t \right)}}{m}\]</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>--- in state space format ---
+</pre></div>
+</div>
+<div class="output text_latex math notranslate nohighlight">
+\[\displaystyle \dot{X}(t) = A X(t) + f\]</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>where:
+</pre></div>
+</div>
+<div class="output text_latex math notranslate nohighlight">
+\[\begin{split}\displaystyle A = \left[\begin{matrix}0 &amp; 1\\- \frac{k}{m} &amp; - \frac{b}{m}\end{matrix}\right]f = \left[\begin{matrix}0\\\frac{F}{m}\end{matrix}\right]\end{split}\]</div>
+<div class="output text_latex math notranslate nohighlight">
+\[\begin{split}\displaystyle \dot x{\left(t \right)} = \left[\begin{matrix}x{\left(t \right)}\\\dot x{\left(t \right)}\end{matrix}\right]\ddot x{\left(t \right)} = \left[\begin{matrix}\dot x{\left(t \right)}\\\ddot x{\left(t \right)}\end{matrix}\right]\end{split}\]</div>
+</div>
+</div>
+</section>
+<hr class="docutils" />
+<section id="problem-2">
+<h3>Problem 2<a class="headerlink" href="#problem-2" title="Link to this heading">¶</a></h3>
+<p><img alt="" src="_images/p2.png" /></p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># setup adjacent matrices for K and B:</span>
+<span class="n">t</span><span class="p">,</span> <span class="n">g</span><span class="p">,</span> <span class="n">M1</span><span class="p">,</span> <span class="n">M2</span><span class="p">,</span> <span class="n">M3</span><span class="p">,</span> <span class="n">K</span><span class="p">,</span> <span class="n">B1</span><span class="p">,</span> <span class="n">B2</span><span class="p">,</span> <span class="n">fa</span> <span class="o">=</span> <span class="n">symbols</span><span class="p">(</span><span class="s1">&#39;t g M_1 M_2 M_3 K B_1 B_2 fa&#39;</span><span class="p">)</span>
+<span class="n">x</span>  <span class="o">=</span> <span class="n">dynamicsymbols</span><span class="p">(</span><span class="s1">&#39;x1 x2 x3&#39;</span><span class="p">)</span>
+
+<span class="n">ndof</span> <span class="o">=</span> <span class="mi">3</span>
+<span class="n">matK</span> <span class="o">=</span> <span class="n">Matrix</span><span class="p">([[</span><span class="n">K</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">],[</span><span class="mi">0</span><span class="p">,</span> <span class="n">K</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span> <span class="p">[</span><span class="n">K</span><span class="p">,</span> <span class="n">K</span><span class="p">,</span><span class="mi">0</span><span class="p">]])</span>
+<span class="n">matB</span> <span class="o">=</span> <span class="n">Matrix</span><span class="p">([[</span><span class="n">B1</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="n">B2</span><span class="p">,</span> <span class="mi">0</span><span class="p">]])</span>
+<span class="n">matM</span> <span class="o">=</span> <span class="n">Matrix</span><span class="p">([</span><span class="n">M1</span><span class="p">,</span> <span class="n">M2</span><span class="p">,</span> <span class="n">M3</span><span class="p">])</span>
+<span class="n">matF</span> <span class="o">=</span> <span class="n">Matrix</span><span class="p">([</span><span class="n">M1</span><span class="o">*</span><span class="n">g</span><span class="p">,</span> <span class="n">M2</span><span class="o">*</span><span class="n">g</span><span class="p">,</span> <span class="n">M3</span><span class="o">*</span><span class="n">g</span><span class="o">+</span><span class="n">fa</span><span class="p">])</span>
+
+<span class="n">eq</span> <span class="o">=</span> <span class="n">mass_spring_damper</span><span class="p">(</span><span class="n">ndof</span><span class="p">,</span> <span class="n">matM</span><span class="p">,</span> <span class="n">matK</span><span class="p">,</span> <span class="n">matB</span><span class="p">,</span> <span class="n">matF</span><span class="p">,</span> <span class="n">x</span><span class="p">)</span>
+
+<span class="n">present_results</span><span class="p">(</span><span class="n">eq</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">t</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>--- System&#39;s equation of motion in ODEs ---
+</pre></div>
+</div>
+<div class="output text_latex math notranslate nohighlight">
+\[\displaystyle \ddot x_{1}{\left(t \right)} = - \frac{B_{1} \dot x_{1}{\left(t \right)}}{M_{1}} - \frac{2.0 K x_{1}{\left(t \right)}}{M_{1}} + \frac{K x_{3}{\left(t \right)}}{M_{1}} + g\]</div>
+<div class="output text_latex math notranslate nohighlight">
+\[\displaystyle \ddot x_{2}{\left(t \right)} = - \frac{B_{2} \dot x_{2}{\left(t \right)}}{M_{2}} + \frac{B_{2} \dot x_{3}{\left(t \right)}}{M_{2}} - \frac{2.0 K x_{2}{\left(t \right)}}{M_{2}} + \frac{K x_{3}{\left(t \right)}}{M_{2}} + g\]</div>
+<div class="output text_latex math notranslate nohighlight">
+\[\displaystyle \ddot x_{3}{\left(t \right)} = \frac{B_{2} \dot x_{2}{\left(t \right)}}{M_{3}} - \frac{B_{2} \dot x_{3}{\left(t \right)}}{M_{3}} + \frac{K x_{1}{\left(t \right)}}{M_{3}} + \frac{K x_{2}{\left(t \right)}}{M_{3}} - \frac{2.0 K x_{3}{\left(t \right)}}{M_{3}} + g + \frac{fa}{M_{3}}\]</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>--- in state space format ---
+</pre></div>
+</div>
+<div class="output text_latex math notranslate nohighlight">
+\[\displaystyle \dot{X}(t) = A X(t) + f\]</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>where:
+</pre></div>
+</div>
+<div class="output text_latex math notranslate nohighlight">
+\[\begin{split}\displaystyle A = \left[\begin{matrix}0 &amp; 0 &amp; 0 &amp; 1 &amp; 0 &amp; 0\\0 &amp; 0 &amp; 0 &amp; 0 &amp; 1 &amp; 0\\0 &amp; 0 &amp; 0 &amp; 0 &amp; 0 &amp; 1\\- \frac{2.0 K}{M_{1}} &amp; 0 &amp; \frac{K}{M_{1}} &amp; - \frac{B_{1}}{M_{1}} &amp; 0 &amp; 0\\0 &amp; - \frac{2.0 K}{M_{2}} &amp; \frac{K}{M_{2}} &amp; 0 &amp; - \frac{B_{2}}{M_{2}} &amp; \frac{B_{2}}{M_{2}}\\\frac{K}{M_{3}} &amp; \frac{K}{M_{3}} &amp; - \frac{2.0 K}{M_{3}} &amp; 0 &amp; \frac{B_{2}}{M_{3}} &amp; - \frac{B_{2}}{M_{3}}\end{matrix}\right]f = \left[\begin{matrix}0\\0\\0\\g\\g\\\frac{M_{3} g + fa}{M_{3}}\end{matrix}\right]\end{split}\]</div>
+<div class="output text_latex math notranslate nohighlight">
+\[\begin{split}\displaystyle \dot x{\left(t \right)} = \left[\begin{matrix}x_{1}{\left(t \right)}\\x_{2}{\left(t \right)}\\x_{3}{\left(t \right)}\\\dot x_{1}{\left(t \right)}\\\dot x_{2}{\left(t \right)}\\\dot x_{3}{\left(t \right)}\end{matrix}\right]\ddot x{\left(t \right)} = \left[\begin{matrix}\dot x_{1}{\left(t \right)}\\\dot x_{2}{\left(t \right)}\\\dot x_{3}{\left(t \right)}\\\ddot x_{1}{\left(t \right)}\\\ddot x_{2}{\left(t \right)}\\\ddot x_{3}{\left(t \right)}\end{matrix}\right]\end{split}\]</div>
+</div>
+</div>
+</section>
+<hr class="docutils" />
+<section id="problem-3">
+<h3>Problem 3<a class="headerlink" href="#problem-3" title="Link to this heading">¶</a></h3>
+<p><img alt="" src="_images/p3.png" /></p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># setup adjacent matrices for K and B:</span>
+<span class="n">t</span><span class="p">,</span> <span class="n">m1</span><span class="p">,</span> <span class="n">m2</span><span class="p">,</span> <span class="n">m3</span><span class="p">,</span> <span class="n">k1</span><span class="p">,</span> <span class="n">k2</span><span class="p">,</span> <span class="n">k3</span> <span class="o">=</span> <span class="n">symbols</span><span class="p">(</span><span class="s1">&#39;t m1 m2 m3 k1 k2 k3&#39;</span><span class="p">)</span>
+<span class="n">x</span>  <span class="o">=</span> <span class="n">dynamicsymbols</span><span class="p">(</span><span class="s1">&#39;x1 x2 x3&#39;</span><span class="p">)</span>
+
+<span class="n">ndof</span> <span class="o">=</span> <span class="mi">3</span>
+<span class="n">matK</span> <span class="o">=</span> <span class="n">Matrix</span><span class="p">([[</span><span class="n">k1</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">],[</span><span class="n">k2</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="n">k3</span><span class="p">,</span><span class="mi">0</span><span class="p">]])</span>
+<span class="n">matB</span> <span class="o">=</span> <span class="n">Matrix</span><span class="p">([[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">]])</span>
+<span class="n">matM</span> <span class="o">=</span> <span class="n">Matrix</span><span class="p">([</span><span class="n">m1</span><span class="p">,</span> <span class="n">m2</span><span class="p">,</span> <span class="n">m3</span><span class="p">])</span>
+<span class="n">matF</span> <span class="o">=</span> <span class="n">Matrix</span><span class="p">([</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">])</span>
+
+<span class="n">eq</span> <span class="o">=</span> <span class="n">mass_spring_damper</span><span class="p">(</span><span class="n">ndof</span><span class="p">,</span> <span class="n">matM</span><span class="p">,</span> <span class="n">matK</span><span class="p">,</span> <span class="n">matB</span><span class="p">,</span> <span class="n">matF</span><span class="p">,</span> <span class="n">x</span><span class="p">)</span>
+
+<span class="n">present_results</span><span class="p">(</span><span class="n">eq</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">t</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>--- System&#39;s equation of motion in ODEs ---
+</pre></div>
+</div>
+<div class="output text_latex math notranslate nohighlight">
+\[\displaystyle \ddot x_{1}{\left(t \right)} = - \frac{k_{1} x_{1}{\left(t \right)}}{m_{1}} - \frac{k_{2} x_{1}{\left(t \right)}}{m_{1}} + \frac{k_{2} x_{2}{\left(t \right)}}{m_{1}}\]</div>
+<div class="output text_latex math notranslate nohighlight">
+\[\displaystyle \ddot x_{2}{\left(t \right)} = \frac{k_{2} x_{1}{\left(t \right)}}{m_{2}} - \frac{k_{2} x_{2}{\left(t \right)}}{m_{2}} - \frac{k_{3} x_{2}{\left(t \right)}}{m_{2}} + \frac{k_{3} x_{3}{\left(t \right)}}{m_{2}}\]</div>
+<div class="output text_latex math notranslate nohighlight">
+\[\displaystyle \ddot x_{3}{\left(t \right)} = \frac{k_{3} x_{2}{\left(t \right)}}{m_{3}} - \frac{k_{3} x_{3}{\left(t \right)}}{m_{3}}\]</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>--- in state space format ---
+</pre></div>
+</div>
+<div class="output text_latex math notranslate nohighlight">
+\[\displaystyle \dot{X}(t) = A X(t) + f\]</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>where:
+</pre></div>
+</div>
+<div class="output text_latex math notranslate nohighlight">
+\[\begin{split}\displaystyle A = \left[\begin{matrix}0 &amp; 0 &amp; 0 &amp; 1 &amp; 0 &amp; 0\\0 &amp; 0 &amp; 0 &amp; 0 &amp; 1 &amp; 0\\0 &amp; 0 &amp; 0 &amp; 0 &amp; 0 &amp; 1\\- \frac{k_{1}}{m_{1}} - \frac{k_{2}}{m_{1}} &amp; \frac{k_{2}}{m_{1}} &amp; 0 &amp; 0 &amp; 0 &amp; 0\\\frac{k_{2}}{m_{2}} &amp; - \frac{k_{2}}{m_{2}} - \frac{k_{3}}{m_{2}} &amp; \frac{k_{3}}{m_{2}} &amp; 0 &amp; 0 &amp; 0\\0 &amp; \frac{k_{3}}{m_{3}} &amp; - \frac{k_{3}}{m_{3}} &amp; 0 &amp; 0 &amp; 0\end{matrix}\right]f = \left[\begin{matrix}0\\0\\0\\0\\0\\0\end{matrix}\right]\end{split}\]</div>
+<div class="output text_latex math notranslate nohighlight">
+\[\begin{split}\displaystyle \dot x{\left(t \right)} = \left[\begin{matrix}x_{1}{\left(t \right)}\\x_{2}{\left(t \right)}\\x_{3}{\left(t \right)}\\\dot x_{1}{\left(t \right)}\\\dot x_{2}{\left(t \right)}\\\dot x_{3}{\left(t \right)}\end{matrix}\right]\ddot x{\left(t \right)} = \left[\begin{matrix}\dot x_{1}{\left(t \right)}\\\dot x_{2}{\left(t \right)}\\\dot x_{3}{\left(t \right)}\\\ddot x_{1}{\left(t \right)}\\\ddot x_{2}{\left(t \right)}\\\ddot x_{3}{\left(t \right)}\end{matrix}\right]\end{split}\]</div>
+</div>
+</div>
+</section>
+<hr class="docutils" />
+<section id="problem-4">
+<h3>Problem 4<a class="headerlink" href="#problem-4" title="Link to this heading">¶</a></h3>
+<p><img alt="" src="_images/p4.png" /></p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># setup adjacent matrices for K and B:</span>
+<span class="n">t</span><span class="p">,</span> <span class="n">f</span> <span class="o">=</span> <span class="n">symbols</span><span class="p">(</span><span class="s1">&#39;t f&#39;</span><span class="p">)</span>
+<span class="n">x</span>  <span class="o">=</span> <span class="n">dynamicsymbols</span><span class="p">(</span><span class="s1">&#39;x1 x2 x3&#39;</span><span class="p">)</span>
+
+<span class="n">ndof</span> <span class="o">=</span> <span class="mi">3</span>
+<span class="n">matK</span> <span class="o">=</span> <span class="n">Matrix</span><span class="p">([[</span><span class="mi">4</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span> <span class="p">[</span><span class="mi">4</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">5</span><span class="p">]])</span>
+<span class="n">matB</span> <span class="o">=</span> <span class="n">Matrix</span><span class="p">([[</span><span class="mi">2</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span> <span class="p">[</span><span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">0</span><span class="p">]])</span>
+<span class="n">matM</span> <span class="o">=</span> <span class="n">Matrix</span><span class="p">([</span><span class="mi">4</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">5</span><span class="p">])</span>
+<span class="n">matF</span> <span class="o">=</span> <span class="n">Matrix</span><span class="p">([</span><span class="mi">0</span><span class="p">,</span> <span class="n">f</span><span class="p">,</span> <span class="mi">0</span><span class="p">])</span>
+
+<span class="n">eq</span> <span class="o">=</span> <span class="n">mass_spring_damper</span><span class="p">(</span><span class="n">ndof</span><span class="p">,</span> <span class="n">matM</span><span class="p">,</span> <span class="n">matK</span><span class="p">,</span> <span class="n">matB</span><span class="p">,</span> <span class="n">matF</span><span class="p">,</span> <span class="n">x</span><span class="p">)</span>
+
+<span class="n">present_results</span><span class="p">(</span><span class="n">eq</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">t</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>--- System&#39;s equation of motion in ODEs ---
+</pre></div>
+</div>
+<div class="output text_latex math notranslate nohighlight">
+\[\displaystyle \ddot x_{1}{\left(t \right)} = - 2.0 x_{1}{\left(t \right)} + x_{2}{\left(t \right)} - \dot x_{1}{\left(t \right)} + 0.5 \dot x_{3}{\left(t \right)}\]</div>
+<div class="output text_latex math notranslate nohighlight">
+\[\displaystyle \ddot x_{2}{\left(t \right)} = 0.2 f + 0.8 x_{1}{\left(t \right)} - 0.8 x_{2}{\left(t \right)} - 0.6 \dot x_{2}{\left(t \right)} + 0.6 \dot x_{3}{\left(t \right)}\]</div>
+<div class="output text_latex math notranslate nohighlight">
+\[\displaystyle \ddot x_{3}{\left(t \right)} = - x_{3}{\left(t \right)} + 0.4 \dot x_{1}{\left(t \right)} + 0.6 \dot x_{2}{\left(t \right)} - \dot x_{3}{\left(t \right)}\]</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>--- in state space format ---
+</pre></div>
+</div>
+<div class="output text_latex math notranslate nohighlight">
+\[\displaystyle \dot{X}(t) = A X(t) + f\]</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>where:
+</pre></div>
+</div>
+<div class="output text_latex math notranslate nohighlight">
+\[\begin{split}\displaystyle A = \left[\begin{matrix}0 &amp; 0 &amp; 0 &amp; 1 &amp; 0 &amp; 0\\0 &amp; 0 &amp; 0 &amp; 0 &amp; 1 &amp; 0\\0 &amp; 0 &amp; 0 &amp; 0 &amp; 0 &amp; 1\\-2.0 &amp; 1 &amp; 0 &amp; -1 &amp; 0 &amp; 0.5\\0.8 &amp; -0.8 &amp; 0 &amp; 0 &amp; -0.6 &amp; 0.6\\0 &amp; 0 &amp; -1 &amp; 0.4 &amp; 0.6 &amp; -1\end{matrix}\right]f = \left[\begin{matrix}0\\0\\0\\0\\0.2 f\\0\end{matrix}\right]\end{split}\]</div>
+<div class="output text_latex math notranslate nohighlight">
+\[\begin{split}\displaystyle \dot x{\left(t \right)} = \left[\begin{matrix}x_{1}{\left(t \right)}\\x_{2}{\left(t \right)}\\x_{3}{\left(t \right)}\\\dot x_{1}{\left(t \right)}\\\dot x_{2}{\left(t \right)}\\\dot x_{3}{\left(t \right)}\end{matrix}\right]\ddot x{\left(t \right)} = \left[\begin{matrix}\dot x_{1}{\left(t \right)}\\\dot x_{2}{\left(t \right)}\\\dot x_{3}{\left(t \right)}\\\ddot x_{1}{\left(t \right)}\\\ddot x_{2}{\left(t \right)}\\\ddot x_{3}{\left(t \right)}\end{matrix}\right]\end{split}\]</div>
+</div>
+</div>
+</section>
+<hr class="docutils" />
+<section id="problem-5">
+<h3>Problem 5<a class="headerlink" href="#problem-5" title="Link to this heading">¶</a></h3>
+<p><img alt="" src="_images/p5.png" /></p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># setup adjacent matrices for K and B:</span>
+<span class="n">t</span><span class="p">,</span> <span class="n">Fy</span><span class="p">,</span> <span class="n">m1</span><span class="p">,</span> <span class="n">m2</span><span class="p">,</span> <span class="n">k1</span><span class="p">,</span> <span class="n">k2</span><span class="p">,</span> <span class="n">b1</span><span class="p">,</span> <span class="n">b2</span> <span class="o">=</span> <span class="n">symbols</span><span class="p">(</span><span class="s1">&#39;t Fy m1 m2 k1 k2 b1 b2&#39;</span><span class="p">)</span>
+<span class="n">x</span>  <span class="o">=</span> <span class="n">dynamicsymbols</span><span class="p">(</span><span class="s1">&#39;x1 x2&#39;</span><span class="p">)</span>
+
+<span class="n">ndof</span> <span class="o">=</span> <span class="mi">2</span>
+<span class="n">matK</span> <span class="o">=</span> <span class="n">Matrix</span><span class="p">([[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">],[</span><span class="n">k1</span><span class="p">,</span> <span class="n">k2</span><span class="p">]])</span>
+<span class="n">matB</span> <span class="o">=</span> <span class="n">Matrix</span><span class="p">([[</span><span class="n">b1</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="n">b2</span><span class="p">]])</span>
+<span class="n">matM</span> <span class="o">=</span> <span class="n">Matrix</span><span class="p">([</span><span class="n">m1</span><span class="p">,</span> <span class="n">m2</span><span class="p">])</span>
+<span class="n">matF</span> <span class="o">=</span> <span class="n">Matrix</span><span class="p">([</span><span class="n">Fy</span><span class="p">,</span> <span class="mi">0</span><span class="p">])</span>
+
+<span class="n">eq</span> <span class="o">=</span> <span class="n">mass_spring_damper</span><span class="p">(</span><span class="n">ndof</span><span class="p">,</span> <span class="n">matM</span><span class="p">,</span> <span class="n">matK</span><span class="p">,</span> <span class="n">matB</span><span class="p">,</span> <span class="n">matF</span><span class="p">,</span> <span class="n">x</span><span class="p">)</span>
+
+<span class="n">present_results</span><span class="p">(</span><span class="n">eq</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">t</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>--- System&#39;s equation of motion in ODEs ---
+</pre></div>
+</div>
+<div class="output text_latex math notranslate nohighlight">
+\[\displaystyle \ddot x_{1}{\left(t \right)} = \frac{Fy}{m_{1}} - \frac{b_{1} \dot x_{1}{\left(t \right)}}{m_{1}} - \frac{k_{1} x_{1}{\left(t \right)}}{m_{1}} + \frac{k_{1} x_{2}{\left(t \right)}}{m_{1}}\]</div>
+<div class="output text_latex math notranslate nohighlight">
+\[\displaystyle \ddot x_{2}{\left(t \right)} = - \frac{b_{2} \dot x_{2}{\left(t \right)}}{m_{2}} + \frac{k_{1} x_{1}{\left(t \right)}}{m_{2}} - \frac{k_{1} x_{2}{\left(t \right)}}{m_{2}} - \frac{k_{2} x_{2}{\left(t \right)}}{m_{2}}\]</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>--- in state space format ---
+</pre></div>
+</div>
+<div class="output text_latex math notranslate nohighlight">
+\[\displaystyle \dot{X}(t) = A X(t) + f\]</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>where:
+</pre></div>
+</div>
+<div class="output text_latex math notranslate nohighlight">
+\[\begin{split}\displaystyle A = \left[\begin{matrix}0 &amp; 0 &amp; 1 &amp; 0\\0 &amp; 0 &amp; 0 &amp; 1\\- \frac{k_{1}}{m_{1}} &amp; \frac{k_{1}}{m_{1}} &amp; - \frac{b_{1}}{m_{1}} &amp; 0\\\frac{k_{1}}{m_{2}} &amp; - \frac{k_{1}}{m_{2}} - \frac{k_{2}}{m_{2}} &amp; 0 &amp; - \frac{b_{2}}{m_{2}}\end{matrix}\right]f = \left[\begin{matrix}0\\0\\\frac{Fy}{m_{1}}\\0\end{matrix}\right]\end{split}\]</div>
+<div class="output text_latex math notranslate nohighlight">
+\[\begin{split}\displaystyle \dot x{\left(t \right)} = \left[\begin{matrix}x_{1}{\left(t \right)}\\x_{2}{\left(t \right)}\\\dot x_{1}{\left(t \right)}\\\dot x_{2}{\left(t \right)}\end{matrix}\right]\ddot x{\left(t \right)} = \left[\begin{matrix}\dot x_{1}{\left(t \right)}\\\dot x_{2}{\left(t \right)}\\\ddot x_{1}{\left(t \right)}\\\ddot x_{2}{\left(t \right)}\end{matrix}\right]\end{split}\]</div>
+</div>
+</div>
+</section>
+<hr class="docutils" />
+<section id="problem-6">
+<h3>Problem 6<a class="headerlink" href="#problem-6" title="Link to this heading">¶</a></h3>
+<p><img alt="" src="_images/p6.png" /></p>
+<p>https://link.springer.com/article/10.1007/s11831-021-09583-w</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># setup adjacent matrices for K and B:</span>
+<span class="n">t</span><span class="p">,</span> <span class="n">m1</span><span class="p">,</span> <span class="n">m2</span><span class="p">,</span> <span class="n">m3</span><span class="p">,</span> <span class="n">m4</span><span class="p">,</span> <span class="n">m5</span><span class="p">,</span> <span class="n">m6</span><span class="p">,</span> <span class="n">k1</span><span class="p">,</span> <span class="n">k2</span><span class="p">,</span> <span class="n">k3</span><span class="p">,</span> <span class="n">k4</span><span class="p">,</span> <span class="n">k5</span><span class="p">,</span> <span class="n">k6</span><span class="p">,</span> <span class="n">k7</span><span class="p">,</span> <span class="n">k8</span><span class="p">,</span> <span class="n">k9</span> <span class="o">=</span> <span class="n">symbols</span><span class="p">(</span><span class="s1">&#39;t m1 m2 m3 m4 m5 m6 k1 k2 k3 k4 k5 k6 k7 k8 k9&#39;</span><span class="p">)</span>
+<span class="n">x</span>  <span class="o">=</span> <span class="n">dynamicsymbols</span><span class="p">(</span><span class="s1">&#39;x1 x2 x3 x4 x5 x6&#39;</span><span class="p">)</span>
+
+<span class="n">ndof</span> <span class="o">=</span> <span class="mi">6</span>
+
+<span class="n">matK</span> <span class="o">=</span> <span class="n">Matrix</span><span class="p">([[</span><span class="n">k1</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span>  <span class="mi">0</span><span class="p">,</span>  <span class="mi">0</span> <span class="p">,</span> <span class="mi">0</span><span class="p">,</span>  <span class="mi">0</span><span class="p">],</span>
+               <span class="p">[</span><span class="n">k3</span><span class="p">,</span> <span class="n">k2</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span>  <span class="mi">0</span><span class="p">,</span>  <span class="mi">0</span><span class="p">,</span>  <span class="mi">0</span><span class="p">],</span>
+               <span class="p">[</span><span class="mi">0</span><span class="p">,</span>  <span class="n">k4</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span>  <span class="mi">0</span><span class="p">,</span>  <span class="mi">0</span><span class="p">,</span>  <span class="mi">0</span><span class="p">],</span>
+               <span class="p">[</span><span class="mi">0</span><span class="p">,</span>  <span class="mi">0</span><span class="p">,</span>  <span class="n">k5</span><span class="p">,</span> <span class="n">k6</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span>  <span class="mi">0</span><span class="p">],</span>
+               <span class="p">[</span><span class="mi">0</span><span class="p">,</span>  <span class="mi">0</span><span class="p">,</span>  <span class="mi">0</span><span class="p">,</span>  <span class="n">k7</span><span class="p">,</span> <span class="n">k8</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span>
+               <span class="p">[</span><span class="mi">0</span><span class="p">,</span>  <span class="mi">0</span><span class="p">,</span>  <span class="mi">0</span><span class="p">,</span>  <span class="mi">0</span><span class="p">,</span>  <span class="n">k9</span><span class="p">,</span> <span class="mi">0</span><span class="p">]])</span>
+
+<span class="n">matB</span> <span class="o">=</span> <span class="n">zeros</span><span class="p">(</span><span class="n">ndof</span><span class="p">,</span> <span class="n">ndof</span><span class="p">)</span>
+<span class="n">matM</span> <span class="o">=</span> <span class="n">Matrix</span><span class="p">([</span><span class="n">m1</span><span class="p">,</span> <span class="n">m2</span><span class="p">,</span> <span class="n">m3</span><span class="p">,</span> <span class="n">m4</span><span class="p">,</span> <span class="n">m5</span><span class="p">,</span> <span class="n">m6</span><span class="p">])</span>
+<span class="n">matF</span> <span class="o">=</span> <span class="n">zeros</span><span class="p">(</span><span class="n">ndof</span><span class="p">)</span>
+
+<span class="n">eq</span> <span class="o">=</span> <span class="n">mass_spring_damper</span><span class="p">(</span><span class="n">ndof</span><span class="p">,</span> <span class="n">matM</span><span class="p">,</span> <span class="n">matK</span><span class="p">,</span> <span class="n">matB</span><span class="p">,</span> <span class="n">matF</span><span class="p">,</span> <span class="n">x</span><span class="p">)</span>
+
+<span class="n">present_results</span><span class="p">(</span><span class="n">eq</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">t</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>--- System&#39;s equation of motion in ODEs ---
+</pre></div>
+</div>
+<div class="output text_latex math notranslate nohighlight">
+\[\displaystyle \ddot x_{1}{\left(t \right)} = - \frac{k_{1} x_{1}{\left(t \right)}}{m_{1}} - \frac{k_{3} x_{1}{\left(t \right)}}{m_{1}} + \frac{k_{3} x_{2}{\left(t \right)}}{m_{1}}\]</div>
+<div class="output text_latex math notranslate nohighlight">
+\[\displaystyle \ddot x_{2}{\left(t \right)} = - \frac{k_{2} x_{2}{\left(t \right)}}{m_{2}} + \frac{k_{3} x_{1}{\left(t \right)}}{m_{2}} - \frac{k_{3} x_{2}{\left(t \right)}}{m_{2}} - \frac{k_{4} x_{2}{\left(t \right)}}{m_{2}} + \frac{k_{4} x_{3}{\left(t \right)}}{m_{2}}\]</div>
+<div class="output text_latex math notranslate nohighlight">
+\[\displaystyle \ddot x_{3}{\left(t \right)} = \frac{k_{4} x_{2}{\left(t \right)}}{m_{3}} - \frac{k_{4} x_{3}{\left(t \right)}}{m_{3}} - \frac{k_{5} x_{3}{\left(t \right)}}{m_{3}} + \frac{k_{5} x_{4}{\left(t \right)}}{m_{3}}\]</div>
+<div class="output text_latex math notranslate nohighlight">
+\[\displaystyle \ddot x_{4}{\left(t \right)} = \frac{k_{5} x_{3}{\left(t \right)}}{m_{4}} - \frac{k_{5} x_{4}{\left(t \right)}}{m_{4}} - \frac{k_{6} x_{4}{\left(t \right)}}{m_{4}} - \frac{k_{7} x_{4}{\left(t \right)}}{m_{4}} + \frac{k_{7} x_{5}{\left(t \right)}}{m_{4}}\]</div>
+<div class="output text_latex math notranslate nohighlight">
+\[\displaystyle \ddot x_{5}{\left(t \right)} = \frac{k_{7} x_{4}{\left(t \right)}}{m_{5}} - \frac{k_{7} x_{5}{\left(t \right)}}{m_{5}} - \frac{k_{8} x_{5}{\left(t \right)}}{m_{5}} - \frac{k_{9} x_{5}{\left(t \right)}}{m_{5}} + \frac{k_{9} x_{6}{\left(t \right)}}{m_{5}}\]</div>
+<div class="output text_latex math notranslate nohighlight">
+\[\displaystyle \ddot x_{6}{\left(t \right)} = \frac{k_{9} x_{5}{\left(t \right)}}{m_{6}} - \frac{k_{9} x_{6}{\left(t \right)}}{m_{6}}\]</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>--- in state space format ---
+</pre></div>
+</div>
+<div class="output text_latex math notranslate nohighlight">
+\[\displaystyle \dot{X}(t) = A X(t) + f\]</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>where:
+</pre></div>
+</div>
+<div class="output text_latex math notranslate nohighlight">
+\[\begin{split}\displaystyle A = \left[\begin{array}{cccccccccccc}0 &amp; 0 &amp; 0 &amp; 0 &amp; 0 &amp; 0 &amp; 1 &amp; 0 &amp; 0 &amp; 0 &amp; 0 &amp; 0\\0 &amp; 0 &amp; 0 &amp; 0 &amp; 0 &amp; 0 &amp; 0 &amp; 1 &amp; 0 &amp; 0 &amp; 0 &amp; 0\\0 &amp; 0 &amp; 0 &amp; 0 &amp; 0 &amp; 0 &amp; 0 &amp; 0 &amp; 1 &amp; 0 &amp; 0 &amp; 0\\0 &amp; 0 &amp; 0 &amp; 0 &amp; 0 &amp; 0 &amp; 0 &amp; 0 &amp; 0 &amp; 1 &amp; 0 &amp; 0\\0 &amp; 0 &amp; 0 &amp; 0 &amp; 0 &amp; 0 &amp; 0 &amp; 0 &amp; 0 &amp; 0 &amp; 1 &amp; 0\\0 &amp; 0 &amp; 0 &amp; 0 &amp; 0 &amp; 0 &amp; 0 &amp; 0 &amp; 0 &amp; 0 &amp; 0 &amp; 1\\- \frac{k_{1}}{m_{1}} - \frac{k_{3}}{m_{1}} &amp; \frac{k_{3}}{m_{1}} &amp; 0 &amp; 0 &amp; 0 &amp; 0 &amp; 0 &amp; 0 &amp; 0 &amp; 0 &amp; 0 &amp; 0\\\frac{k_{3}}{m_{2}} &amp; - \frac{k_{2}}{m_{2}} - \frac{k_{3}}{m_{2}} - \frac{k_{4}}{m_{2}} &amp; \frac{k_{4}}{m_{2}} &amp; 0 &amp; 0 &amp; 0 &amp; 0 &amp; 0 &amp; 0 &amp; 0 &amp; 0 &amp; 0\\0 &amp; \frac{k_{4}}{m_{3}} &amp; - \frac{k_{4}}{m_{3}} - \frac{k_{5}}{m_{3}} &amp; \frac{k_{5}}{m_{3}} &amp; 0 &amp; 0 &amp; 0 &amp; 0 &amp; 0 &amp; 0 &amp; 0 &amp; 0\\0 &amp; 0 &amp; \frac{k_{5}}{m_{4}} &amp; - \frac{k_{5}}{m_{4}} - \frac{k_{6}}{m_{4}} - \frac{k_{7}}{m_{4}} &amp; \frac{k_{7}}{m_{4}} &amp; 0 &amp; 0 &amp; 0 &amp; 0 &amp; 0 &amp; 0 &amp; 0\\0 &amp; 0 &amp; 0 &amp; \frac{k_{7}}{m_{5}} &amp; - \frac{k_{7}}{m_{5}} - \frac{k_{8}}{m_{5}} - \frac{k_{9}}{m_{5}} &amp; \frac{k_{9}}{m_{5}} &amp; 0 &amp; 0 &amp; 0 &amp; 0 &amp; 0 &amp; 0\\0 &amp; 0 &amp; 0 &amp; 0 &amp; \frac{k_{9}}{m_{6}} &amp; - \frac{k_{9}}{m_{6}} &amp; 0 &amp; 0 &amp; 0 &amp; 0 &amp; 0 &amp; 0\end{array}\right]f = \left[\begin{matrix}0\\0\\0\\0\\0\\0\\0\\0\\0\\0\\0\\0\end{matrix}\right]\end{split}\]</div>
+<div class="output text_latex math notranslate nohighlight">
+\[\begin{split}\displaystyle \dot x{\left(t \right)} = \left[\begin{matrix}x_{1}{\left(t \right)}\\x_{2}{\left(t \right)}\\x_{3}{\left(t \right)}\\x_{4}{\left(t \right)}\\x_{5}{\left(t \right)}\\x_{6}{\left(t \right)}\\\dot x_{1}{\left(t \right)}\\\dot x_{2}{\left(t \right)}\\\dot x_{3}{\left(t \right)}\\\dot x_{4}{\left(t \right)}\\\dot x_{5}{\left(t \right)}\\\dot x_{6}{\left(t \right)}\end{matrix}\right]\ddot x{\left(t \right)} = \left[\begin{matrix}\dot x_{1}{\left(t \right)}\\\dot x_{2}{\left(t \right)}\\\dot x_{3}{\left(t \right)}\\\dot x_{4}{\left(t \right)}\\\dot x_{5}{\left(t \right)}\\\dot x_{6}{\left(t \right)}\\\ddot x_{1}{\left(t \right)}\\\ddot x_{2}{\left(t \right)}\\\ddot x_{3}{\left(t \right)}\\\ddot x_{4}{\left(t \right)}\\\ddot x_{5}{\left(t \right)}\\\ddot x_{6}{\left(t \right)}\end{matrix}\right]\end{split}\]</div>
+</div>
+</div>
+</section>
+</section>
+</section>
+
+    <script type="text/x-thebe-config">
+    {
+        requestKernel: true,
+        binderOptions: {
+            repo: "binder-examples/jupyter-stacks-datascience",
+            ref: "master",
+        },
+        codeMirrorConfig: {
+            theme: "abcdef",
+            mode: "python"
+        },
+        kernelOptions: {
+            name: "python3",
+            path: "./."
+        },
+        predefinedOutput: true
+    }
+    </script>
+    <script>kernelName = 'python3'</script>
+
+            <div class="clearer"></div>
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="Main">
+        <div class="sphinxsidebarwrapper">
+            <p class="logo"><a href="intro.html">
+              <img class="logo" src="_static/logo.png" alt="Logo of Project name not set"/>
+            </a></p>
+  <div>
+    <h3><a href="intro.html">Table of Contents</a></h3>
+    <ul>
+<li><a class="reference internal" href="#">System Modeling: Rectilinear System</a><ul>
+<li><a class="reference internal" href="#preparations">Preparations</a></li>
+<li><a class="reference internal" href="#lagrange-s-equations-of-a-rectilinear-system">Lagrange’s equations of a rectilinear system</a></li>
+<li><a class="reference internal" href="#solved-problem-sets">Solved problem sets</a><ul>
+<li><a class="reference internal" href="#problem-1">Problem 1</a></li>
+<li><a class="reference internal" href="#problem-2">Problem 2</a></li>
+<li><a class="reference internal" href="#problem-3">Problem 3</a></li>
+<li><a class="reference internal" href="#problem-4">Problem 4</a></li>
+<li><a class="reference internal" href="#problem-5">Problem 5</a></li>
+<li><a class="reference internal" href="#problem-6">Problem 6</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+  </div>
+  <div>
+    <h4>Previous topic</h4>
+    <p class="topless"><a href="fly-ball-governor.html"
+                          title="previous chapter">System Modeling: Flyball Governor</a></p>
+  </div>
+  <div>
+    <h4>Next topic</h4>
+    <p class="topless"><a href="first-order.html"
+                          title="next chapter">First-Order Systems</a></p>
+  </div>
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="_sources/rectilinear.ipynb"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<search id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</search>
+<script>document.getElementById('searchbox').style.display = "block"</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="Related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="first-order.html" title="First-Order Systems"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="fly-ball-governor.html" title="System Modeling: Flyball Governor"
+             >previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="intro.html">Control Systems with Sympy</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">System Modeling: Rectilinear System</a></li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+    &#169; Copyright 2025.
+      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 7.4.7.
+    </div>
+  </body>
+</html>
