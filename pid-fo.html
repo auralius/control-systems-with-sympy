@@ -5,7 +5,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>First-order system and PID-control &#8212; Control Systems with Sympy</title>
+    <title>PID Control of a First Order System &#8212; Control Systems with Sympy</title>
     <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=fa44fd50" />
     <link rel="stylesheet" type="text/css" href="_static/traditional.css?v=608ddc6c" />
     <link rel="stylesheet" type="text/css" href="_static/togglebutton.css?v=13237357" />
@@ -33,7 +33,7 @@
     <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
-    <link rel="next" title="Digital PID Control - Part 1" href="digital-pid.html" />
+    <link rel="next" title="PID-Control (with Derivative Filter) in State Space Format" href="pid-ss.html" />
     <link rel="prev" title="Gain Margin and Phase Margin" href="bode-margins.html" /> 
   </head><body>
     <div class="related" role="navigation" aria-label="Related">
@@ -43,13 +43,13 @@
           <a href="genindex.html" title="General Index"
              accesskey="I">index</a></li>
         <li class="right" >
-          <a href="digital-pid.html" title="Digital PID Control - Part 1"
+          <a href="pid-ss.html" title="PID-Control (with Derivative Filter) in State Space Format"
              accesskey="N">next</a> |</li>
         <li class="right" >
           <a href="bode-margins.html" title="Gain Margin and Phase Margin"
              accesskey="P">previous</a> |</li>
         <li class="nav-item nav-item-0"><a href="intro.html">Control Systems with Sympy</a> &#187;</li>
-        <li class="nav-item nav-item-this"><a href="">First-order system and PID-control</a></li> 
+        <li class="nav-item nav-item-this"><a href="">PID Control of a First Order System</a></li> 
       </ul>
     </div>  
 
@@ -58,11 +58,17 @@
         <div class="bodywrapper">
           <div class="body" role="main">
             
-  <section class="tex2jax_ignore mathjax_ignore" id="first-order-system-and-pid-control">
-<h1>First-order system and PID-control<a class="headerlink" href="#first-order-system-and-pid-control" title="Link to this heading">¶</a></h1>
+  <section class="tex2jax_ignore mathjax_ignore" id="pid-control-of-a-first-order-system">
+<h1>PID Control of a First Order System<a class="headerlink" href="#pid-control-of-a-first-order-system" title="Link to this heading">¶</a></h1>
 <section id="preparations">
 <h2>Preparations<a class="headerlink" href="#preparations" title="Link to this heading">¶</a></h2>
-<div class="cell docutils container">
+<p>Here we import all necessary libraries.</p>
+<div class="cell tag_hide-input docutils container">
+<details class="hide above-input">
+<summary aria-label="Toggle hidden content">
+<span class="collapsed">Show code cell source</span>
+<span class="expanded">Hide code cell source</span>
+</summary>
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>    <span class="kn">from</span> <span class="nn">IPython.core.display</span> <span class="kn">import</span> <span class="n">HTML</span>
     <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
@@ -81,7 +87,10 @@
 </pre></div>
 </div>
 </div>
+</details>
 </div>
+<p>These are some variables that we are going to use:</p>
+<p><span class="math notranslate nohighlight">\(t, s, \tau, \omega, \omega_n, \zeta\)</span></p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">sympy.physics.control.lti</span> <span class="kn">import</span> <span class="n">TransferFunction</span>
@@ -98,6 +107,7 @@
 </div>
 </div>
 </div>
+<p>Let us define some helper functions.</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">laplace</span><span class="p">(</span><span class="n">f</span><span class="p">):</span>
@@ -118,6 +128,27 @@
 <section id="system-and-the-control-equations">
 <h2>System and the control equations<a class="headerlink" href="#system-and-the-control-equations" title="Link to this heading">¶</a></h2>
 <p><img alt="" src="_images/p13.png" /></p>
+<p>The diagram above corresponds to a unity-feedback loop with</p>
+<div class="math notranslate nohighlight">
+\[
+G(s)=K_p+\frac{K_i}{s}+K_d
+\]</div>
+<p>and plant</p>
+<div class="math notranslate nohighlight">
+\[
+H(s)=\frac{1}{\tau s+1}.
+\]</div>
+<p>Thus, the closed-loop transfer function is</p>
+<div class="math notranslate nohighlight">
+\[
+\frac{C(s)}{R(s)}
+=
+\frac{\left(K_p+\frac{K_i}{s}+K_ds\right)\frac{1}{\tau s+1}}
+{1+\left(K_p+\frac{K_i}{s}+K_ds\right)\frac{1}{\tau s+1}}
+=
+\frac{K_d s^2+K_p s+K_i}
+{(\tau+K_d)s^2+(1+K_p)s+K_i}
+\]</div>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">H</span> <span class="o">=</span> <span class="mi">1</span> <span class="o">/</span> <span class="p">(</span><span class="n">tau</span><span class="o">*</span><span class="n">s</span><span class="o">+</span><span class="mi">1</span><span class="p">)</span>
@@ -234,7 +265,12 @@ New pole location:</p>
 \[\displaystyle \boxed{c_{ss} = \frac{K_{p}}{K_{p} + 1}}\]</div>
 </div>
 </div>
-<div class="cell docutils container">
+<div class="cell tag_hide-input docutils container">
+<details class="hide above-input">
+<summary aria-label="Toggle hidden content">
+<span class="collapsed">Show code cell source</span>
+<span class="expanded">Hide code cell source</span>
+</summary>
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">p</span> <span class="o">=</span> <span class="p">[</span><span class="n">plot</span><span class="p">(</span><span class="n">cp</span><span class="o">.</span><span class="n">subs</span><span class="p">(([</span><span class="n">tau</span><span class="p">,</span> <span class="n">tau_</span><span class="p">],</span> <span class="p">[</span><span class="n">Kp</span><span class="p">,</span> <span class="n">Kp_</span><span class="p">[</span><span class="n">j</span><span class="p">]])),</span> <span class="p">(</span><span class="n">t</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">5</span><span class="p">),</span> <span class="n">size</span><span class="o">=</span><span class="p">(</span><span class="mi">5</span><span class="p">,</span> <span class="mf">2.5</span><span class="p">),</span> <span class="n">ylabel</span><span class="o">=</span><span class="s1">&#39;$c(t)$&#39;</span><span class="p">,</span> <span class="n">show</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">legend</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span> <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">Kp_</span><span class="p">))]</span>
 
@@ -247,6 +283,7 @@ New pole location:</p>
 </pre></div>
 </div>
 </div>
+</details>
 <div class="cell_output docutils container">
 <img alt="_images/20c83d98fb7d5d63d07a954de87099cdd67e2f806035307d8b2f281bb2c45b98.png" src="_images/20c83d98fb7d5d63d07a954de87099cdd67e2f806035307d8b2f281bb2c45b98.png" />
 </div>
@@ -302,7 +339,7 @@ New pole location:</p>
 <section id="id2">
 <h3>Step response<a class="headerlink" href="#id2" title="Link to this heading">¶</a></h3>
 <p>We simply perform an inverse Laplace operation to <span class="math notranslate nohighlight">\(C(s)\)</span> and obtain <span class="math notranslate nohighlight">\(c(t)\)</span> as the result. Additionally, we will also compute the steady state-value for the output (<span class="math notranslate nohighlight">\(c_{ss}\)</span>).</p>
-<p>A phenomenon that can be observed in a derivative control is the “kick” that happens when a step input is applied to the controlled system. Because of the kick, system output does not start from zero.</p>
+<p>A phenomenon that can be observed in a derivative control is the <strong>“kick”</strong> that happens when a step input is applied to the controlled system. Because of the kick, system output does not start from zero.</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">cpd</span>   <span class="o">=</span> <span class="n">logcombine</span><span class="p">(</span><span class="n">ilaplace</span><span class="p">(</span><span class="n">Qpd</span> <span class="o">*</span> <span class="mi">1</span><span class="o">/</span><span class="n">s</span><span class="p">))</span>
@@ -334,7 +371,12 @@ New pole location:</p>
 </div>
 </div>
 </div>
-<div class="cell docutils container">
+<div class="cell tag_hide-input docutils container">
+<details class="hide above-input">
+<summary aria-label="Toggle hidden content">
+<span class="collapsed">Show code cell source</span>
+<span class="expanded">Hide code cell source</span>
+</summary>
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">p</span> <span class="o">=</span> <span class="p">[</span><span class="n">plot</span><span class="p">(</span><span class="n">cpd</span><span class="o">.</span><span class="n">subs</span><span class="p">(([</span><span class="n">tau</span><span class="p">,</span> <span class="n">tau_</span><span class="p">],</span> <span class="p">[</span><span class="n">Kp</span><span class="p">,</span> <span class="n">Kp_</span><span class="p">],[</span><span class="n">Kd</span><span class="p">,</span> <span class="n">Kd_</span><span class="p">[</span><span class="n">j</span><span class="p">]])),</span> <span class="p">(</span><span class="n">t</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mf">.5</span><span class="p">),</span> <span class="n">size</span><span class="o">=</span><span class="p">(</span><span class="mi">5</span><span class="p">,</span> <span class="mf">2.5</span><span class="p">),</span> <span class="n">ylabel</span><span class="o">=</span><span class="s1">&#39;$c(t)$&#39;</span><span class="p">,</span> <span class="n">show</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">legend</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">axis_center</span><span class="o">=</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">])</span> <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">Kd_</span><span class="p">))]</span>
 
@@ -351,6 +393,7 @@ New pole location:</p>
 </pre></div>
 </div>
 </div>
+</details>
 <div class="cell_output docutils container">
 <img alt="_images/94e62a753e91bdbca9625ca948bcefde152c05a14cfc292aaa5073e27c1a9182.png" src="_images/94e62a753e91bdbca9625ca948bcefde152c05a14cfc292aaa5073e27c1a9182.png" />
 </div>
@@ -436,7 +479,12 @@ New pole location:</p>
 </div>
 </div>
 </div>
-<div class="cell docutils container">
+<div class="cell tag_hide-input docutils container">
+<details class="hide above-input">
+<summary aria-label="Toggle hidden content">
+<span class="collapsed">Show code cell source</span>
+<span class="expanded">Hide code cell source</span>
+</summary>
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">p</span> <span class="o">=</span> <span class="p">[</span><span class="n">plot</span><span class="p">(</span><span class="n">cpi</span><span class="o">.</span><span class="n">subs</span><span class="p">(([</span><span class="n">tau</span><span class="p">,</span> <span class="n">tau_</span><span class="p">],</span> <span class="p">[</span><span class="n">Kp</span><span class="p">,</span> <span class="n">Kp_</span><span class="p">],[</span><span class="n">Ki</span><span class="p">,</span> <span class="n">Ki_</span><span class="p">[</span><span class="n">j</span><span class="p">]])),</span> <span class="p">(</span><span class="n">t</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">),</span> <span class="n">size</span><span class="o">=</span><span class="p">(</span><span class="mi">5</span><span class="p">,</span> <span class="mf">2.5</span><span class="p">),</span> <span class="n">ylabel</span><span class="o">=</span><span class="s1">&#39;$c(t)$&#39;</span><span class="p">,</span> <span class="n">show</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">legend</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span> <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">Ki_</span><span class="p">))]</span>
 
@@ -452,6 +500,7 @@ New pole location:</p>
 </pre></div>
 </div>
 </div>
+</details>
 <div class="cell_output docutils container">
 <img alt="_images/108ad764a1168ac493d87ff1a88a402262ecab01934709eb0d9a0ec531c63f5a.png" src="_images/108ad764a1168ac493d87ff1a88a402262ecab01934709eb0d9a0ec531c63f5a.png" />
 </div>
@@ -465,21 +514,21 @@ New pole location:</p>
 <span class="n">zerospid</span> <span class="o">=</span> <span class="n">f</span><span class="o">.</span><span class="n">zeros</span><span class="p">()</span>
 <span class="n">polespid</span> <span class="o">=</span> <span class="n">f</span><span class="o">.</span><span class="n">poles</span><span class="p">()</span>
 
-<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;closed-loop zeros:&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Closed-loop zeros:&quot;</span><span class="p">)</span>
 <span class="n">mprint</span><span class="p">(</span><span class="n">latex</span><span class="p">(</span><span class="n">zerospid</span><span class="p">))</span>
        
-<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;closed-loop poles:&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Closed-loop poles:&quot;</span><span class="p">)</span>
 <span class="n">mprint</span><span class="p">(</span><span class="n">latex</span><span class="p">(</span><span class="n">polespid</span><span class="p">))</span>
 </pre></div>
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>closed-loop zeros:
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Closed-loop zeros:
 </pre></div>
 </div>
 <div class="output text_latex math notranslate nohighlight">
 \[\displaystyle \left[ - \frac{K_{p}}{2 K_{d}} - \frac{\sqrt{- 4 K_{d} K_{i} + K_{p}^{2}}}{2 K_{d}}, \  - \frac{K_{p}}{2 K_{d}} + \frac{\sqrt{- 4 K_{d} K_{i} + K_{p}^{2}}}{2 K_{d}}\right]\]</div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>closed-loop poles:
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Closed-loop poles:
 </pre></div>
 </div>
 <div class="output text_latex math notranslate nohighlight">
@@ -511,7 +560,12 @@ New pole location:</p>
 </section>
 <section id="summary">
 <h2>Summary<a class="headerlink" href="#summary" title="Link to this heading">¶</a></h2>
-<div class="cell tag_full-width docutils container">
+<div class="cell tag_full-width tag_hide-input docutils container">
+<details class="hide above-input">
+<summary aria-label="Toggle hidden content">
+<span class="collapsed">Show code cell source</span>
+<span class="expanded">Hide code cell source</span>
+</summary>
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">pandas</span> <span class="kn">import</span> <span class="n">DataFrame</span><span class="p">,</span> <span class="n">set_option</span>
 <span class="kn">from</span> <span class="nn">IPython.display</span> <span class="kn">import</span> <span class="n">Markdown</span><span class="p">,</span> <span class="n">display</span>
@@ -544,6 +598,7 @@ New pole location:</p>
 </pre></div>
 </div>
 </div>
+</details>
 </div>
 <section id="initial-and-steady-state-output-for-unit-step-input">
 <h3>Initial and steady-state output for unit-step input<a class="headerlink" href="#initial-and-steady-state-output-for-unit-step-input" title="Link to this heading">¶</a></h3>
@@ -656,7 +711,7 @@ New pole location:</p>
   <div>
     <h3><a href="intro.html">Table of Contents</a></h3>
     <ul>
-<li><a class="reference internal" href="#">First-order system and PID-control</a><ul>
+<li><a class="reference internal" href="#">PID Control of a First Order System</a><ul>
 <li><a class="reference internal" href="#preparations">Preparations</a></li>
 <li><a class="reference internal" href="#system-and-the-control-equations">System and the control equations</a></li>
 <li><a class="reference internal" href="#first-order-system-with-p-control">First order system with P-control</a><ul>
@@ -692,8 +747,8 @@ New pole location:</p>
   </div>
   <div>
     <h4>Next topic</h4>
-    <p class="topless"><a href="digital-pid.html"
-                          title="next chapter">Digital PID Control - Part 1</a></p>
+    <p class="topless"><a href="pid-ss.html"
+                          title="next chapter">PID-Control (with Derivative Filter) in State Space Format</a></p>
   </div>
   <div role="note" aria-label="source link">
     <h3>This Page</h3>
@@ -723,13 +778,13 @@ New pole location:</p>
           <a href="genindex.html" title="General Index"
              >index</a></li>
         <li class="right" >
-          <a href="digital-pid.html" title="Digital PID Control - Part 1"
+          <a href="pid-ss.html" title="PID-Control (with Derivative Filter) in State Space Format"
              >next</a> |</li>
         <li class="right" >
           <a href="bode-margins.html" title="Gain Margin and Phase Margin"
              >previous</a> |</li>
         <li class="nav-item nav-item-0"><a href="intro.html">Control Systems with Sympy</a> &#187;</li>
-        <li class="nav-item nav-item-this"><a href="">First-order system and PID-control</a></li> 
+        <li class="nav-item nav-item-this"><a href="">PID Control of a First Order System</a></li> 
       </ul>
     </div>
     <div class="footer" role="contentinfo">

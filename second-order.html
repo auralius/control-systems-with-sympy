@@ -62,7 +62,13 @@
 <h1>Second-Order System<a class="headerlink" href="#second-order-system" title="Link to this heading">¶</a></h1>
 <section id="required-imports">
 <h2>Required imports<a class="headerlink" href="#required-imports" title="Link to this heading">¶</a></h2>
-<div class="cell docutils container">
+<p>Here, we define all necessary imports.</p>
+<div class="cell tag_hide-input docutils container">
+<details class="hide above-input">
+<summary aria-label="Toggle hidden content">
+<span class="collapsed">Show code cell source</span>
+<span class="expanded">Hide code cell source</span>
+</summary>
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">IPython.core.display</span> <span class="kn">import</span> <span class="n">HTML</span>
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
@@ -81,6 +87,7 @@
 </pre></div>
 </div>
 </div>
+</details>
 </div>
 </section>
 <section id="preparations">
@@ -252,7 +259,12 @@ We also need to define specific prpoperties of the variables.</p>
 </div>
 </div>
 </div>
-<div class="cell docutils container">
+<div class="cell tag_hide-input docutils container">
+<details class="hide above-input">
+<summary aria-label="Toggle hidden content">
+<span class="collapsed">Show code cell source</span>
+<span class="expanded">Hide code cell source</span>
+</summary>
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">p1</span> <span class="o">=</span> <span class="n">plot</span><span class="p">(</span><span class="n">c1</span><span class="o">.</span><span class="n">subs</span><span class="p">(([</span><span class="n">omega_n</span><span class="p">,</span> <span class="n">omega_n_</span><span class="p">],[</span><span class="n">zeta</span><span class="p">,</span> <span class="n">zeta_</span><span class="p">])),</span> <span class="p">(</span><span class="n">t</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">11</span><span class="p">),</span> <span class="n">size</span><span class="o">=</span><span class="p">(</span><span class="mi">4</span><span class="p">,</span> <span class="mf">2.5</span><span class="p">),</span> <span class="n">ylabel</span><span class="o">=</span><span class="s1">&#39;$c(t)$&#39;</span><span class="p">,</span> <span class="n">show</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">legend</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 <span class="n">p2</span> <span class="o">=</span> <span class="n">plot</span><span class="p">(</span><span class="n">c2</span><span class="o">.</span><span class="n">subs</span><span class="p">(([</span><span class="n">omega_n</span><span class="p">,</span> <span class="n">omega_n_</span><span class="p">],[</span><span class="n">zeta</span><span class="p">,</span> <span class="n">zeta_</span><span class="p">])),</span> <span class="p">(</span><span class="n">t</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">11</span><span class="p">),</span> <span class="n">show</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">legend</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
@@ -272,6 +284,7 @@ We also need to define specific prpoperties of the variables.</p>
 </pre></div>
 </div>
 </div>
+</details>
 <div class="cell_output docutils container">
 <img alt="_images/6d6775f036a89607b23928884862f42ee7c03027a14b9da6c26c0dd998c4966d.png" src="_images/6d6775f036a89607b23928884862f42ee7c03027a14b9da6c26c0dd998c4966d.png" />
 </div>
@@ -362,7 +375,12 @@ We also need to define specific prpoperties of the variables.</p>
 \[\displaystyle c_3(t)=\frac{e^{- \omega_{n} t \zeta}}{\sqrt{1 - \zeta^{2}}}\]</div>
 </div>
 </div>
-<div class="cell docutils container">
+<div class="cell tag_hide-input docutils container">
+<details class="hide above-input">
+<summary aria-label="Toggle hidden content">
+<span class="collapsed">Show code cell source</span>
+<span class="expanded">Hide code cell source</span>
+</summary>
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">tspan</span> <span class="o">=</span> <span class="p">(</span><span class="n">t</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">11</span><span class="p">)</span>
 
@@ -381,6 +399,7 @@ We also need to define specific prpoperties of the variables.</p>
 </pre></div>
 </div>
 </div>
+</details>
 <div class="cell_output docutils container">
 <img alt="_images/83277e111697c0cb7ef16ca6b84c2bef88a441f0dc37feb1bf62cbaa25b27290.png" src="_images/83277e111697c0cb7ef16ca6b84c2bef88a441f0dc37feb1bf62cbaa25b27290.png" />
 </div>
@@ -496,7 +515,12 @@ We also need to define specific prpoperties of the variables.</p>
 <li><p>changes system’s transient behaviour</p></li>
 </ul>
 <p>The first point is quite straight forward. Thus, we will explore more on the second point.</p>
-<div class="cell docutils container">
+<div class="cell tag_hide-input docutils container">
+<details class="hide above-input">
+<summary aria-label="Toggle hidden content">
+<span class="collapsed">Show code cell source</span>
+<span class="expanded">Hide code cell source</span>
+</summary>
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">tspan</span> <span class="o">=</span> <span class="p">(</span><span class="n">t</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">20</span><span class="p">)</span>
 <span class="n">zetas</span> <span class="o">=</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mf">0.1</span><span class="p">,</span> <span class="mf">0.2</span><span class="p">,</span> <span class="mf">0.4</span><span class="p">,</span> <span class="mf">0.7</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">]</span>
@@ -518,6 +542,7 @@ We also need to define specific prpoperties of the variables.</p>
 </pre></div>
 </div>
 </div>
+</details>
 <div class="cell_output docutils container">
 <img alt="_images/803f7cd0751cf2bc74a4daf71c49c00fff4468cbdef6db98e272c406ddaa8ab8.png" src="_images/803f7cd0751cf2bc74a4daf71c49c00fff4468cbdef6db98e272c406ddaa8ab8.png" />
 </div>
@@ -525,7 +550,12 @@ We also need to define specific prpoperties of the variables.</p>
 </section>
 <section id="summary">
 <h2>Summary<a class="headerlink" href="#summary" title="Link to this heading">¶</a></h2>
-<div class="cell docutils container">
+<div class="cell tag_hide-input docutils container">
+<details class="hide above-input">
+<summary aria-label="Toggle hidden content">
+<span class="collapsed">Show code cell source</span>
+<span class="expanded">Hide code cell source</span>
+</summary>
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">pandas</span> <span class="kn">import</span> <span class="n">DataFrame</span>
 <span class="kn">from</span> <span class="nn">IPython.display</span> <span class="kn">import</span> <span class="n">Markdown</span>
@@ -549,6 +579,7 @@ We also need to define specific prpoperties of the variables.</p>
 </pre></div>
 </div>
 </div>
+</details>
 <div class="cell_output docutils container">
 <table class="docutils align-default">
 <thead>

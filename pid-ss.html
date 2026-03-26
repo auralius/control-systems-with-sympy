@@ -1,0 +1,347 @@
+<!DOCTYPE html>
+
+<html lang="en" data-content_root="./">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>PID-Control (with Derivative Filter) in State Space Format &#8212; Control Systems with Sympy</title>
+    <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=fa44fd50" />
+    <link rel="stylesheet" type="text/css" href="_static/traditional.css?v=608ddc6c" />
+    <link rel="stylesheet" type="text/css" href="_static/togglebutton.css?v=13237357" />
+    <link rel="stylesheet" type="text/css" href="_static/copybutton.css?v=76b2166b" />
+    <link rel="stylesheet" type="text/css" href="_static/mystnb.4510f1fc1dee50b3e5859aac5469c37c29e427902b24a333a5f9fcb2f0b3ac41.css?v=be8a1c11" />
+    <link rel="stylesheet" type="text/css" href="_static/sphinx-thebe.css?v=4fa983c6" />
+    <link rel="stylesheet" type="text/css" href="_static/sphinx-design.min.css?v=95c83b7e" />
+    <script src="_static/documentation_options.js?v=9eb32ce0"></script>
+    <script src="_static/doctools.js?v=9a2dae69"></script>
+    <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="_static/clipboard.min.js?v=a7894cd8"></script>
+    <script src="_static/copybutton.js?v=f281be69"></script>
+    <script src="_static/scripts/sphinx-book-theme.js?v=887ef09a"></script>
+    <script>let toggleHintShow = 'Click to show';</script>
+    <script>let toggleHintHide = 'Click to hide';</script>
+    <script>let toggleOpenOnPrint = 'true';</script>
+    <script src="_static/togglebutton.js?v=4a39c7ea"></script>
+    <script>var togglebuttonSelector = '.toggle, .admonition.dropdown';</script>
+    <script src="_static/design-tabs.js?v=f930bc37"></script>
+    <script>const THEBE_JS_URL = "https://unpkg.com/thebe@0.8.2/lib/index.js"; const thebe_selector = ".thebe,.cell"; const thebe_selector_input = "pre"; const thebe_selector_output = ".output, .cell_output"</script>
+    <script async="async" src="_static/sphinx-thebe.js?v=c100c467"></script>
+    <script>var togglebuttonSelector = '.toggle, .admonition.dropdown';</script>
+    <script>const THEBE_JS_URL = "https://unpkg.com/thebe@0.8.2/lib/index.js"; const thebe_selector = ".thebe,.cell"; const thebe_selector_input = "pre"; const thebe_selector_output = ".output, .cell_output"</script>
+    <script>window.MathJax = {"HTML-CSS": {"matchFontHeight": true, "scale": 50}, "options": {"processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
+    <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Digital PID Control - Part 1" href="digital-pid.html" />
+    <link rel="prev" title="PID Control of a Second Order System" href="pid-so.html" /> 
+  </head><body>
+    <div class="related" role="navigation" aria-label="Related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="digital-pid.html" title="Digital PID Control - Part 1"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="pid-so.html" title="PID Control of a Second Order System"
+             accesskey="P">previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="intro.html">Control Systems with Sympy</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">PID-Control (with Derivative Filter) in State Space Format</a></li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <section class="tex2jax_ignore mathjax_ignore" id="pid-control-with-derivative-filter-in-state-space-format">
+<h1>PID-Control (with Derivative Filter) in State Space Format<a class="headerlink" href="#pid-control-with-derivative-filter-in-state-space-format" title="Link to this heading">¶</a></h1>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>    <span class="kn">from</span> <span class="nn">IPython.core.display</span> <span class="kn">import</span> <span class="n">HTML</span>
+    <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+    
+    <span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">rcParams</span><span class="o">.</span><span class="n">update</span><span class="p">({</span>
+        <span class="s2">&quot;text.usetex&quot;</span><span class="p">:</span> <span class="kc">True</span><span class="p">,</span>
+        <span class="s2">&quot;font.family&quot;</span><span class="p">:</span> <span class="s2">&quot;Helvetica&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;font.size&quot;</span><span class="p">:</span> <span class="mi">10</span><span class="p">,</span>
+    <span class="p">})</span>
+    
+    <span class="kn">from</span> <span class="nn">sympy</span> <span class="kn">import</span> <span class="o">*</span>
+    <span class="kn">from</span> <span class="nn">sympy.plotting</span> <span class="kn">import</span> <span class="n">plot</span>
+    
+    <span class="kn">from</span> <span class="nn">mathprint</span> <span class="kn">import</span> <span class="o">*</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">Kp</span><span class="p">,</span> <span class="n">Ki</span><span class="p">,</span> <span class="n">Kd</span> <span class="o">=</span> <span class="n">symbols</span><span class="p">(</span><span class="s1">&#39;K_p K_i K_d&#39;</span><span class="p">,</span> <span class="n">positive</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+<span class="n">Ts</span><span class="p">,</span> <span class="n">N</span> <span class="o">=</span> <span class="n">symbols</span><span class="p">(</span><span class="s1">&#39;T_s N&#39;</span><span class="p">,</span> <span class="n">positive</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="n">s</span> <span class="o">=</span> <span class="n">symbols</span><span class="p">(</span><span class="s1">&#39;s&#39;</span><span class="p">,</span> <span class="nb">complex</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+<span class="n">E</span><span class="p">,</span> <span class="n">e</span><span class="p">,</span> <span class="n">U</span><span class="p">,</span> <span class="n">u</span> <span class="o">=</span> <span class="n">symbols</span><span class="p">(</span><span class="s1">&#39;E e U u&#39;</span><span class="p">)</span>
+<span class="n">X1</span><span class="p">,</span> <span class="n">X2</span><span class="p">,</span> <span class="n">x1</span><span class="p">,</span> <span class="n">x2</span> <span class="o">=</span> <span class="n">symbols</span><span class="p">(</span><span class="s1">&#39;X_1 X_2 x_1 x_2&#39;</span><span class="p">)</span>
+<span class="n">x1_dot</span> <span class="o">=</span> <span class="n">Symbol</span><span class="p">(</span><span class="sa">r</span><span class="s1">&#39;\dot</span><span class="si">{x_1}</span><span class="s1">&#39;</span><span class="p">)</span>
+<span class="n">x2_dot</span> <span class="o">=</span> <span class="n">Symbol</span><span class="p">(</span><span class="sa">r</span><span class="s1">&#39;\dot</span><span class="si">{x_2}</span><span class="s1">&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">laplace</span><span class="p">(</span><span class="n">f</span><span class="p">):</span>
+    <span class="n">F</span> <span class="o">=</span> <span class="n">laplace_transform</span><span class="p">(</span><span class="n">f</span><span class="p">,</span> <span class="n">t</span><span class="p">,</span> <span class="n">s</span><span class="p">,</span> <span class="n">noconds</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">F</span>
+
+<span class="k">def</span> <span class="nf">ilaplace</span><span class="p">(</span><span class="n">F</span><span class="p">):</span>
+    <span class="n">f</span> <span class="o">=</span> <span class="n">inverse_laplace_transform</span><span class="p">(</span><span class="n">F</span><span class="p">,</span> <span class="n">s</span><span class="p">,</span> <span class="n">t</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">f</span>
+
+<span class="k">def</span> <span class="nf">frac_to_tf</span><span class="p">(</span><span class="n">frac</span><span class="p">):</span>
+    <span class="k">return</span> <span class="n">TransferFunction</span><span class="p">(</span><span class="n">fraction</span><span class="p">(</span><span class="n">frac</span><span class="p">)[</span><span class="mi">0</span><span class="p">],</span> <span class="n">fraction</span><span class="p">(</span><span class="n">frac</span><span class="p">)[</span><span class="mi">1</span><span class="p">],</span> <span class="n">s</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+<hr class="docutils" />
+<p>PID-control equation, <span class="math notranslate nohighlight">\(E(s)\)</span> is the error in a Laplace form:</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">P</span> <span class="o">=</span> <span class="n">Kp</span> <span class="o">*</span> <span class="n">E</span>
+<span class="n">I</span> <span class="o">=</span> <span class="n">Ki</span> <span class="o">*</span> <span class="n">E</span> <span class="o">/</span> <span class="n">s</span>
+<span class="n">D</span> <span class="o">=</span> <span class="n">Kd</span> <span class="o">*</span> <span class="n">N</span> <span class="o">*</span> <span class="n">s</span> <span class="o">/</span> <span class="p">(</span><span class="n">s</span> <span class="o">+</span> <span class="n">N</span><span class="p">)</span> <span class="o">*</span> <span class="n">E</span> 
+<span class="n">U</span> <span class="o">=</span> <span class="n">P</span> <span class="o">+</span> <span class="n">I</span> <span class="o">+</span> <span class="n">D</span>
+
+<span class="n">mprint</span><span class="p">(</span><span class="s2">&quot;U(s)= &quot;</span><span class="p">,</span> <span class="n">latex</span><span class="p">(</span><span class="n">U</span><span class="p">))</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_latex math notranslate nohighlight">
+\[\displaystyle U(s)= \frac{E K_{d} N s}{N + s} + \frac{E K_{i}}{s} + E K_{p}\]</div>
+</div>
+</div>
+<p>where:</p>
+<ul class="simple">
+<li><p><span class="math notranslate nohighlight">\(K_p\)</span> is the proportional gain</p></li>
+<li><p><span class="math notranslate nohighlight">\(K_i\)</span> is the integral gain</p></li>
+<li><p><span class="math notranslate nohighlight">\(K_d\)</span> is the derivative gain</p></li>
+<li><p><span class="math notranslate nohighlight">\(N\)</span> is the filter coefficient</p></li>
+<li><p><span class="math notranslate nohighlight">\(e(t)\)</span> or <span class="math notranslate nohighlight">\(E(s)\)</span> is the input to the controller, which is the error between the target and the actual output of the system</p></li>
+<li><p><span class="math notranslate nohighlight">\(u(t)\)</span> or <span class="math notranslate nohighlight">\(U(s)\)</span> is the computed control signal that will be sent to the system</p></li>
+</ul>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">U</span> <span class="o">=</span> <span class="n">apart</span><span class="p">(</span><span class="n">U</span><span class="p">,</span> <span class="n">s</span><span class="p">)</span>
+<span class="n">mprint</span><span class="p">(</span><span class="s2">&quot;U(s)= &quot;</span><span class="p">,</span> <span class="n">latex</span><span class="p">(</span><span class="n">U</span><span class="p">))</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_latex math notranslate nohighlight">
+\[\displaystyle U(s)= - \frac{E K_{d} N^{2}}{N + s} + E K_{d} N + \frac{E K_{i}}{s} + E K_{p}\]</div>
+</div>
+</div>
+<hr class="docutils" />
+<p>Define <span class="math notranslate nohighlight">\(X_1(s)\)</span> and <span class="math notranslate nohighlight">\(X_2(s)\)</span>:</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">eq1</span> <span class="o">=</span> <span class="n">Eq</span><span class="p">(</span><span class="n">X1</span><span class="p">,</span> <span class="n">E</span><span class="o">/</span><span class="n">s</span><span class="p">)</span>
+<span class="n">mprint</span><span class="p">(</span><span class="n">latex</span><span class="p">(</span><span class="n">eq1</span><span class="p">))</span>
+
+<span class="n">eq2</span> <span class="o">=</span> <span class="n">Eq</span><span class="p">(</span><span class="n">X2</span><span class="p">,</span> <span class="n">N</span><span class="o">/</span><span class="p">(</span><span class="n">s</span><span class="o">+</span><span class="n">N</span><span class="p">)</span><span class="o">*</span><span class="n">E</span><span class="p">)</span>
+<span class="n">mprint</span><span class="p">(</span><span class="n">latex</span><span class="p">(</span><span class="n">eq2</span><span class="p">))</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_latex math notranslate nohighlight">
+\[\displaystyle X_{1} = \frac{E}{s}\]</div>
+<div class="output text_latex math notranslate nohighlight">
+\[\displaystyle X_{2} = \frac{E N}{N + s}\]</div>
+</div>
+</div>
+<p>Substitute <span class="math notranslate nohighlight">\(X_1\)</span> and <span class="math notranslate nohighlight">\(X_2\)</span> into <span class="math notranslate nohighlight">\(U\)</span>:</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">U</span> <span class="o">=</span> <span class="n">U</span><span class="o">.</span><span class="n">subs</span><span class="p">(((</span><span class="n">eq1</span><span class="o">.</span><span class="n">rhs</span><span class="p">,</span> <span class="n">eq1</span><span class="o">.</span><span class="n">lhs</span><span class="p">),</span> <span class="p">(</span><span class="n">eq2</span><span class="o">.</span><span class="n">rhs</span><span class="p">,</span> <span class="n">eq2</span><span class="o">.</span><span class="n">lhs</span><span class="p">)))</span>
+<span class="n">mprintb</span><span class="p">(</span><span class="s2">&quot;U=&quot;</span><span class="p">,</span> <span class="n">latex</span><span class="p">(</span><span class="n">U</span><span class="p">))</span>
+
+<span class="n">U</span> <span class="o">=</span> <span class="n">collect</span><span class="p">(</span><span class="n">U</span><span class="p">,</span> <span class="p">[</span><span class="n">Kd</span><span class="p">,</span> <span class="n">N</span><span class="p">])</span>
+<span class="n">mprintb</span><span class="p">(</span><span class="s2">&quot;U=&quot;</span><span class="p">,</span> <span class="n">latex</span><span class="p">(</span><span class="n">U</span><span class="p">))</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_latex math notranslate nohighlight">
+\[\displaystyle \boxed{U=E K_{d} N + E K_{p} - K_{d} N X_{2} + K_{i} X_{1}}\]</div>
+<div class="output text_latex math notranslate nohighlight">
+\[\displaystyle \boxed{U=E K_{p} + K_{d} \left(E N - N X_{2}\right) + K_{i} X_{1}}\]</div>
+</div>
+</div>
+<hr class="docutils" />
+<p>Next, we need to express <span class="math notranslate nohighlight">\(\dot{x}_1\)</span> and <span class="math notranslate nohighlight">\(\dot{x}_2\)</span>.</p>
+<p>Multiply both sides of <span class="math notranslate nohighlight">\(X1\)</span> with <span class="math notranslate nohighlight">\(s\)</span> and bring to time domain:</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">eq1</span> <span class="o">=</span> <span class="n">expand</span><span class="p">(</span><span class="n">Eq</span><span class="p">(</span><span class="n">eq1</span><span class="o">.</span><span class="n">lhs</span><span class="o">*</span><span class="n">s</span><span class="p">,</span> <span class="n">eq1</span><span class="o">.</span><span class="n">rhs</span><span class="o">*</span><span class="n">s</span><span class="p">))</span>
+<span class="n">mprint</span><span class="p">(</span><span class="n">latex</span><span class="p">(</span><span class="n">eq1</span><span class="p">))</span>
+<span class="n">eq1</span> <span class="o">=</span> <span class="n">eq1</span><span class="o">.</span><span class="n">subs</span><span class="p">(</span><span class="n">X1</span><span class="o">*</span><span class="n">s</span><span class="p">,</span> <span class="n">x1_dot</span><span class="p">)</span><span class="o">.</span><span class="n">subs</span><span class="p">(</span><span class="n">E</span><span class="p">,</span> <span class="n">e</span><span class="p">)</span>
+<span class="n">mprintb</span><span class="p">(</span><span class="n">latex</span><span class="p">(</span><span class="n">eq1</span><span class="p">))</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_latex math notranslate nohighlight">
+\[\displaystyle X_{1} s = E\]</div>
+<div class="output text_latex math notranslate nohighlight">
+\[\displaystyle \boxed{\dot{x_1} = e}\]</div>
+</div>
+</div>
+<p>Multiply both sides of <span class="math notranslate nohighlight">\(X2\)</span> with <span class="math notranslate nohighlight">\(N+s\)</span> and bring to time domain:</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">eq2</span> <span class="o">=</span> <span class="n">expand</span><span class="p">(</span><span class="n">Eq</span><span class="p">(</span><span class="n">eq2</span><span class="o">.</span><span class="n">lhs</span><span class="o">*</span><span class="p">(</span><span class="n">s</span><span class="o">+</span><span class="n">N</span><span class="p">),</span> <span class="n">eq2</span><span class="o">.</span><span class="n">rhs</span><span class="o">*</span><span class="p">(</span><span class="n">s</span><span class="o">+</span><span class="n">N</span><span class="p">)))</span>
+<span class="n">mprint</span><span class="p">(</span><span class="n">latex</span><span class="p">(</span><span class="n">eq2</span><span class="p">))</span>
+
+<span class="n">eq2</span> <span class="o">=</span> <span class="n">eq2</span><span class="o">.</span><span class="n">subs</span><span class="p">(</span><span class="n">X2</span><span class="o">*</span><span class="n">s</span><span class="p">,</span> <span class="n">x2_dot</span><span class="p">)</span><span class="o">.</span><span class="n">subs</span><span class="p">(</span><span class="n">X2</span><span class="p">,</span> <span class="n">x2</span><span class="p">)</span><span class="o">.</span><span class="n">subs</span><span class="p">(</span><span class="n">E</span><span class="p">,</span><span class="n">e</span><span class="p">)</span>
+<span class="n">mprint</span><span class="p">(</span><span class="n">latex</span><span class="p">(</span><span class="n">eq2</span><span class="p">))</span>
+
+<span class="n">eq2</span> <span class="o">=</span> <span class="n">Eq</span><span class="p">(</span><span class="n">x2_dot</span><span class="p">,</span> <span class="n">solve</span><span class="p">(</span><span class="n">eq2</span><span class="p">,</span> <span class="n">x2_dot</span><span class="p">)[</span><span class="mi">0</span><span class="p">])</span>
+<span class="n">mprintb</span><span class="p">(</span><span class="n">latex</span><span class="p">(</span><span class="n">eq2</span><span class="p">))</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_latex math notranslate nohighlight">
+\[\displaystyle N X_{2} + X_{2} s = E N\]</div>
+<div class="output text_latex math notranslate nohighlight">
+\[\displaystyle N x_{2} + \dot{x_2} = N e\]</div>
+<div class="output text_latex math notranslate nohighlight">
+\[\displaystyle \boxed{\dot{x_2} = N \left(e - x_{2}\right)}\]</div>
+</div>
+</div>
+<p>Finally, substitute the state definitions into <span class="math notranslate nohighlight">\(U\)</span>, then move from Laplace-domain variables <span class="math notranslate nohighlight">\(\left(X_1, X_2, E\right)\)</span> to time-domain variables <span class="math notranslate nohighlight">\(\left(x_1, x_2, e\right)\)</span>.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">u</span> <span class="o">=</span> <span class="n">U</span><span class="o">.</span><span class="n">subs</span><span class="p">(((</span><span class="n">eq1</span><span class="o">.</span><span class="n">rhs</span><span class="p">,</span> <span class="n">eq1</span><span class="o">.</span><span class="n">lhs</span><span class="p">),</span> <span class="p">(</span><span class="n">eq2</span><span class="o">.</span><span class="n">rhs</span><span class="p">,</span> <span class="n">eq2</span><span class="o">.</span><span class="n">lhs</span><span class="p">)))</span><span class="o">.</span><span class="n">subs</span><span class="p">(((</span><span class="n">X1</span><span class="p">,</span> <span class="n">x1</span><span class="p">),</span> <span class="p">(</span><span class="n">X2</span><span class="p">,</span> <span class="n">x2</span><span class="p">),</span> <span class="p">(</span><span class="n">E</span><span class="p">,</span> <span class="n">e</span><span class="p">)))</span>
+<span class="n">mprintb</span><span class="p">(</span><span class="s2">&quot;u(t)=&quot;</span><span class="p">,</span> <span class="n">latex</span><span class="p">(</span><span class="n">u</span><span class="p">))</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_latex math notranslate nohighlight">
+\[\displaystyle \boxed{u(t)=K_{d} \left(N e - N x_{2}\right) + K_{i} x_{1} + K_{p} e}\]</div>
+</div>
+</div>
+<hr class="docutils" />
+<p>Therefore, the PID-control state space can be expressed as:</p>
+<div class="math notranslate nohighlight">
+\[\boxed{\dot{x}=A x+B e, \quad u=C x+D e}\]</div>
+<p>with:</p>
+<div class="math notranslate nohighlight">
+\[\begin{split}
+\boxed{
+A=\left[\begin{array}{cc}
+0 &amp; 0 \\
+0 &amp; -N
+\end{array}\right], \quad B=\left[\begin{array}{c}
+1 \\
+N
+\end{array}\right], \quad C=\left[\begin{array}{ll}
+K_i &amp; -K_d N
+\end{array}\right], \quad D=\left[K_p+K_d N\right]}
+\end{split}\]</div>
+<p><img alt="" src="_images/p22.png" /></p>
+</section>
+
+    <script type="text/x-thebe-config">
+    {
+        requestKernel: true,
+        binderOptions: {
+            repo: "binder-examples/jupyter-stacks-datascience",
+            ref: "master",
+        },
+        codeMirrorConfig: {
+            theme: "abcdef",
+            mode: "python"
+        },
+        kernelOptions: {
+            name: "python3",
+            path: "./."
+        },
+        predefinedOutput: true
+    }
+    </script>
+    <script>kernelName = 'python3'</script>
+
+            <div class="clearer"></div>
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="Main">
+        <div class="sphinxsidebarwrapper">
+            <p class="logo"><a href="intro.html">
+              <img class="logo" src="_static/logo.png" alt="Logo of Project name not set"/>
+            </a></p>
+  <div>
+    <h4>Previous topic</h4>
+    <p class="topless"><a href="pid-so.html"
+                          title="previous chapter">PID Control of a Second Order System</a></p>
+  </div>
+  <div>
+    <h4>Next topic</h4>
+    <p class="topless"><a href="digital-pid.html"
+                          title="next chapter">Digital PID Control - Part 1</a></p>
+  </div>
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="_sources/pid-ss.ipynb"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<search id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</search>
+<script>document.getElementById('searchbox').style.display = "block"</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="Related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="digital-pid.html" title="Digital PID Control - Part 1"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="pid-so.html" title="PID Control of a Second Order System"
+             >previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="intro.html">Control Systems with Sympy</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">PID-Control (with Derivative Filter) in State Space Format</a></li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+    &#169; Copyright 2025.
+      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 7.4.7.
+    </div>
+  </body>
+</html>
