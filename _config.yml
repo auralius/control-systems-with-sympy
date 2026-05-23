@@ -1,0 +1,45 @@
+# Book settings
+# Learn more at https://jupyterbook.org/customize/config.html
+
+title: Control Systems with Sympy
+author: Auralius Manurung - Universitas Telkom
+logo: ./images/logo.png
+copyright: "2026" 
+
+# Force re-execution of notebooks on each build.
+# See https://jupyterbook.org/content/execute.html
+execute:
+  execute_notebooks: force
+  timeout: 1000
+
+# Information about where the book exists on the web
+repository:
+  url: https://github.com/auralius/control-systems-with-sympy  # Online location of your book
+  branch: master  # Which branch of the repository should be used when creating links (optional)
+
+# Add GitHub buttons to your book
+# See https://jupyterbook.org/customize/config.html#add-a-link-to-your-repository
+html:
+  use_issues_button: true
+  use_repository_button: true
+  use_edit_page_button: true
+
+parse:
+  myst_enable_extensions:
+    # don't forget to list any other extensions you want enabled,
+    # including those that are enabled by default!
+    - amsmath
+    - dollarmath
+    
+sphinx:
+  config:
+    nb_render_markdown_format: myst
+    mathjax_config: 
+      "HTML-CSS": { 
+        matchFontHeight: true, 
+        scale: 50 
+      }
+
+launch_buttons:
+  binderhub_url: "https://mybinder.org"
+  notebook_interface: "jupyterlab"

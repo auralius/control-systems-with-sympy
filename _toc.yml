@@ -1,0 +1,22 @@
+# Table of contents
+# Learn more at https://jupyterbook.org/customize/toc.html
+
+format: jb-book
+root: intro
+chapters:
+- file: block-diagram
+- file: fly-ball-governor
+- file: rectilinear
+- file: first-order
+- file: second-order
+- file: routh-hurwitz
+- file: root-locus
+- file: bode-plot
+- file: bode-margins
+- file: pid-fo
+- file: pid-so
+- file: pid-ss
+- file: digital-pid
+- file: digital-pid-2
+- file: digital-filter
+- file: misc-problem-sets

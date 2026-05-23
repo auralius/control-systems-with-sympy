@@ -1,0 +1,9 @@
+jupyter-book
+matplotlib
+numpy
+sympy
+pandas
+scipy
+matplotlib
+ipywidgets
+jupyterlab
