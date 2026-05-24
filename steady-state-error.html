@@ -8,7 +8,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>&lt;no title&gt; &#8212; Control Systems with Sympy</title>
+    <title>Steady State Error &#8212; Control Systems with Sympy</title>
   
   
   
@@ -34,7 +34,7 @@
     <link rel="stylesheet" type="text/css" href="_static/styles/sphinx-book-theme.css?v=a3416100" />
     <link rel="stylesheet" type="text/css" href="_static/togglebutton.css?v=13237357" />
     <link rel="stylesheet" type="text/css" href="_static/copybutton.css?v=76b2166b" />
-    <link rel="stylesheet" type="text/css" href="_static/mystnb.4510f1fc1dee50b3e5859aac5469c37c29e427902b24a333a5f9fcb2f0b3ac41.css" />
+    <link rel="stylesheet" type="text/css" href="_static/mystnb.4510f1fc1dee50b3e5859aac5469c37c29e427902b24a333a5f9fcb2f0b3ac41.css?v=be8a1c11" />
     <link rel="stylesheet" type="text/css" href="_static/sphinx-thebe.css?v=4fa983c6" />
     <link rel="stylesheet" type="text/css" href="_static/sphinx-design.min.css?v=95c83b7e" />
   
@@ -170,24 +170,40 @@
                 </a>
             </li>
         </ul>
-        <ul class="nav bd-sidenav">
+        <p aria-level="2" class="caption" role="heading"><span class="caption-text">Modeling and Time-Domain Analysis</span></p>
+<ul class="nav bd-sidenav">
 <li class="toctree-l1"><a class="reference internal" href="block-diagram.html">Block Diagram</a></li>
 <li class="toctree-l1"><a class="reference internal" href="fly-ball-governor.html">System Modeling: Flyball Governor</a></li>
 <li class="toctree-l1"><a class="reference internal" href="rectilinear.html">System modeling: rectilinear system</a></li>
 <li class="toctree-l1"><a class="reference internal" href="first-order.html">First-order systems</a></li>
 <li class="toctree-l1"><a class="reference internal" href="second-order.html">Second-Order System</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Classical Control Analysis</span></p>
+<ul class="nav bd-sidenav">
 <li class="toctree-l1"><a class="reference internal" href="routh-hurwitz.html">Routh-Hurwitz Stability Criterion</a></li>
 <li class="toctree-l1"><a class="reference internal" href="root-locus.html">The Root-Locus Method</a></li>
 <li class="toctree-l1"><a class="reference internal" href="bode-plot.html">Asymptotic Bode</a></li>
 <li class="toctree-l1"><a class="reference internal" href="bode-margins.html">Gain Margin and Phase Margin</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">PID Control</span></p>
+<ul class="nav bd-sidenav">
 <li class="toctree-l1"><a class="reference internal" href="pid-fo.html">PID Control of a First Order System</a></li>
-<li class="toctree-l1"><a class="reference internal" href="pid-fo-interactive.html">[HTML/JavaScript] Interactive PID-Controlled Second-Order Plant</a></li>
 <li class="toctree-l1"><a class="reference internal" href="pid-so.html">PID Control of a Second Order System</a></li>
-<li class="toctree-l1"><a class="reference internal" href="pid-so-interactive.html"># [HTML/JavaScript] Interactive PID-Controlled Second-Order Plant</a></li>
 <li class="toctree-l1"><a class="reference internal" href="pid-ss.html">PID-Control (with Derivative Filter) in State Space Format</a></li>
 <li class="toctree-l1"><a class="reference internal" href="digital-pid.html">Digital PID Control - Part 1</a></li>
 <li class="toctree-l1"><a class="reference internal" href="digital-pid-2.html">Digital PID Control - Part 2</a></li>
 <li class="toctree-l1"><a class="reference internal" href="digital-filter.html">Digital Low-Pass Filter</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Interactive Sessions</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1 has-children"><a class="reference internal" href="interactives.html">Interactive Sessions with HTML/JavaScript</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2"><a class="reference internal" href="pid-fo-interactive.html">[HTML/JavaScript] Interactive PID-Controlled Second-Order Plant</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pid-so-interactive.html">[HTML/JavaScript] Interactive PID-Controlled Second-Order Plant</a></li>
+</ul>
+</details></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Miscellaneous</span></p>
+<ul class="nav bd-sidenav">
 <li class="toctree-l1"><a class="reference internal" href="misc-problem-sets.html">Solved Various Problem Sets</a></li>
 </ul>
 
@@ -437,7 +453,7 @@
               
 
 <div id="jb-print-docs-body" class="onlyprint">
-    <h1><no title></h1>
+    <h1>Steady State Error</h1>
     <!-- Table of contents -->
     <div id="print-main-content">
         <div id="jb-print-toc">
@@ -446,9 +462,12 @@
                 <h2> Contents </h2>
             </div>
             <nav aria-label="Page">
-                <ul class="simple visible nav section-nav flex-column">
+                <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#system-types">System Types</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#step-input">Step Input</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#ramp-input">Ramp Input</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#parabolic-input">Parabolic Input</a></li>
 </ul>
-
             </nav>
         </div>
     </div>
@@ -459,32 +478,145 @@
 <div id="searchbox"></div>
                 <article class="bd-article">
                   
-  <div class="cell docutils container">
+  <section class="tex2jax_ignore mathjax_ignore" id="steady-state-error">
+<h1>Steady State Error<a class="headerlink" href="#steady-state-error" title="Link to this heading">#</a></h1>
+<div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">sympy</span> <span class="kn">import</span> <span class="n">limit_seq</span><span class="p">,</span> <span class="n">Sum</span><span class="p">,</span> <span class="n">Product</span><span class="p">,</span> <span class="n">oo</span>
-<span class="kn">from</span> <span class="nn">sympy.abc</span> <span class="kn">import</span> <span class="n">K</span><span class="p">,</span> <span class="n">p</span><span class="p">,</span> <span class="n">z</span><span class="p">,</span> <span class="n">s</span><span class="p">,</span> <span class="n">n</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">IPython.core.display</span> <span class="kn">import</span> <span class="n">HTML</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+
+<span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">rcParams</span><span class="o">.</span><span class="n">update</span><span class="p">({</span>
+    <span class="s2">&quot;text.usetex&quot;</span><span class="p">:</span> <span class="kc">True</span><span class="p">,</span>
+    <span class="s2">&quot;font.family&quot;</span><span class="p">:</span> <span class="s2">&quot;serif&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;font.size&quot;</span><span class="p">:</span> <span class="mi">10</span><span class="p">,</span>
+<span class="p">})</span>
+
+<span class="kn">from</span> <span class="nn">sympy</span> <span class="kn">import</span> <span class="o">*</span>
+<span class="kn">from</span> <span class="nn">sympy.plotting</span> <span class="kn">import</span> <span class="n">plot</span>
+
+<span class="kn">from</span> <span class="nn">mathprint</span> <span class="kn">import</span> <span class="o">*</span>
 </pre></div>
 </div>
 </div>
 </div>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">G</span> <span class="o">=</span>  <span class="n">Product</span><span class="p">(</span><span class="n">s</span><span class="o">+</span><span class="n">p</span><span class="p">,</span> <span class="p">(</span><span class="n">p</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="n">n</span><span class="p">))</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">t</span> <span class="o">=</span> <span class="n">symbols</span><span class="p">(</span><span class="s1">&#39;t&#39;</span><span class="p">,</span> <span class="n">real</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="n">s</span> <span class="o">=</span> <span class="n">symbols</span><span class="p">(</span><span class="s1">&#39;s&#39;</span><span class="p">,</span> <span class="nb">complex</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="n">G</span><span class="p">,</span> <span class="n">H</span><span class="p">,</span> <span class="n">R</span><span class="p">,</span> <span class="n">E</span><span class="p">,</span> <span class="n">C</span><span class="p">,</span> <span class="n">Ess</span> <span class="o">=</span> <span class="n">symbols</span><span class="p">(</span><span class="s1">&#39;G H R E C E_ss&#39;</span><span class="p">,</span> <span class="nb">complex</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="n">K</span> <span class="o">=</span> <span class="n">symbols</span><span class="p">(</span><span class="s2">&quot;K&quot;</span><span class="p">,</span> <span class="n">positive</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
 </div>
+<p>Define a system <span class="math notranslate nohighlight">\(G(s)\)</span> with a feedback <span class="math notranslate nohighlight">\(H(s)\)</span>. The input is <span class="math notranslate nohighlight">\(r(t)\)</span> and the output is <span class="math notranslate nohighlight">\(c(t)\)</span>.</p>
+<p><img alt="" src="_images/p23a.png" /></p>
+<p>Define the error:</p>
+<p><span class="math notranslate nohighlight">\(e(t) = r(t) - c(t)\)</span></p>
+<p>and the steady state error:</p>
+<p><span class="math notranslate nohighlight">\(e_{ss} = \lim\limits_{t \to \infty} e(t)\)</span></p>
+<p>With final value theorem:</p>
+<p><span class="math notranslate nohighlight">\(e_{ss} = \lim\limits_{s \to 0} sE(s)\)</span></p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">G</span><span class="o">.</span><span class="n">subs</span><span class="p">(</span><span class="n">n</span><span class="p">,</span><span class="mi">2</span><span class="p">)</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">eq1</span> <span class="o">=</span> <span class="n">Eq</span><span class="p">(</span><span class="n">E</span><span class="p">,</span> <span class="n">R</span> <span class="o">-</span> <span class="n">H</span><span class="o">*</span><span class="n">C</span><span class="p">)</span>
+<span class="n">eq2</span> <span class="o">=</span> <span class="n">Eq</span><span class="p">(</span><span class="n">C</span><span class="p">,</span> <span class="n">G</span><span class="o">*</span><span class="n">E</span><span class="p">)</span>
+
+<span class="n">sol</span> <span class="o">=</span> <span class="n">solve</span><span class="p">((</span><span class="n">eq1</span><span class="p">,</span> <span class="n">eq2</span><span class="p">),</span> <span class="p">(</span><span class="n">E</span><span class="p">,</span> <span class="n">C</span><span class="p">))</span>
+
+<span class="n">mprint</span><span class="p">(</span><span class="s2">&quot;E = &quot;</span><span class="p">,</span> <span class="n">latex</span><span class="p">(</span><span class="n">sol</span><span class="p">[</span><span class="n">E</span><span class="p">]))</span>
+<span class="n">mprint</span><span class="p">(</span><span class="s2">&quot;C = &quot;</span><span class="p">,</span> <span class="n">latex</span><span class="p">(</span><span class="n">sol</span><span class="p">[</span><span class="n">C</span><span class="p">]))</span>
 </pre></div>
 </div>
 </div>
 <div class="cell_output docutils container">
 <div class="output text_latex math notranslate nohighlight">
-\[\displaystyle \prod_{p=0}^{2} \left(p + s\right)\]</div>
+\[\displaystyle E = \frac{R}{G H + 1}\]</div>
+<div class="output text_latex math notranslate nohighlight">
+\[\displaystyle C = \frac{G R}{G H + 1}\]</div>
 </div>
 </div>
+<p>In classical control theory, steady-state error is commonly evaluated using three standard test inputs: the <strong>step input</strong>, the <strong>ramp input</strong>, and the <strong>parabolic input</strong>.</p>
+<section id="system-types">
+<h2>System Types<a class="headerlink" href="#system-types" title="Link to this heading">#</a></h2>
+<p>Define system type as the number of pure integrators in the open-loop transfer function <span class="math notranslate nohighlight">\(KG(s)H(s)\)</span>.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">GH_type0</span> <span class="o">=</span> <span class="n">K</span>
+<span class="n">GH_type1</span> <span class="o">=</span> <span class="n">K</span><span class="o">/</span><span class="n">s</span>
+<span class="n">GH_type2</span> <span class="o">=</span> <span class="n">K</span><span class="o">/</span><span class="n">s</span><span class="o">**</span><span class="mi">2</span>
+
+<span class="n">mprint</span><span class="p">(</span><span class="s2">&quot;GH_</span><span class="si">{type0}</span><span class="s2"> = &quot;</span><span class="p">,</span> <span class="n">latex</span><span class="p">(</span><span class="n">GH_type0</span><span class="p">))</span>
+<span class="n">mprint</span><span class="p">(</span><span class="s2">&quot;GH_</span><span class="si">{type1}</span><span class="s2"> = &quot;</span><span class="p">,</span> <span class="n">latex</span><span class="p">(</span><span class="n">GH_type1</span><span class="p">))</span>
+<span class="n">mprint</span><span class="p">(</span><span class="s2">&quot;GH_</span><span class="si">{type2}</span><span class="s2"> = &quot;</span><span class="p">,</span> <span class="n">latex</span><span class="p">(</span><span class="n">GH_type2</span><span class="p">))</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_latex math notranslate nohighlight">
+\[\displaystyle GH_{type0} = K\]</div>
+<div class="output text_latex math notranslate nohighlight">
+\[\displaystyle GH_{type1} = \frac{K}{s}\]</div>
+<div class="output text_latex math notranslate nohighlight">
+\[\displaystyle GH_{type2} = \frac{K}{s^{2}}\]</div>
+</div>
+</div>
+</section>
+<section id="step-input">
+<h2>Step Input<a class="headerlink" href="#step-input" title="Link to this heading">#</a></h2>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">eq3</span> <span class="o">=</span> <span class="n">Subs</span><span class="p">(</span><span class="n">eq1</span><span class="p">,</span> <span class="n">R</span><span class="p">,</span> <span class="mi">1</span><span class="o">/</span><span class="n">s</span><span class="p">)</span><span class="o">.</span><span class="n">evalf</span><span class="p">()</span>
+<span class="n">mprint</span><span class="p">(</span><span class="n">latex</span><span class="p">(</span><span class="n">eq3</span><span class="p">))</span>
+
+<span class="n">sol</span> <span class="o">=</span> <span class="n">solve</span><span class="p">((</span><span class="n">eq3</span><span class="p">,</span> <span class="n">eq2</span><span class="p">),</span> <span class="p">(</span><span class="n">E</span><span class="p">,</span> <span class="n">C</span><span class="p">))</span>
+<span class="n">mprint</span><span class="p">(</span><span class="s2">&quot;E = &quot;</span><span class="p">,</span> <span class="n">latex</span><span class="p">(</span><span class="n">sol</span><span class="p">[</span><span class="n">E</span><span class="p">]))</span>
+
+<span class="n">lim</span> <span class="o">=</span> <span class="n">limit</span><span class="p">(</span><span class="n">s</span><span class="o">*</span><span class="n">sol</span><span class="p">[</span><span class="n">E</span><span class="p">],</span> <span class="n">s</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
+<span class="n">mprint</span><span class="p">(</span><span class="s2">&quot;E_</span><span class="si">{ss}</span><span class="s2"> = &quot;</span><span class="p">,</span> <span class="n">latex</span><span class="p">(</span><span class="n">lim</span><span class="p">))</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_latex math notranslate nohighlight">
+\[\displaystyle E = - C H + \frac{1}{s}\]</div>
+<div class="output text_latex math notranslate nohighlight">
+\[\displaystyle E = \frac{1}{G H s + s}\]</div>
+<div class="output text_latex math notranslate nohighlight">
+\[\displaystyle E_{ss} = \frac{1}{G H + 1}\]</div>
+</div>
+</div>
+</section>
+<section id="ramp-input">
+<h2>Ramp Input<a class="headerlink" href="#ramp-input" title="Link to this heading">#</a></h2>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">K</span> <span class="o">=</span> <span class="n">symbols</span><span class="p">(</span><span class="s2">&quot;K&quot;</span><span class="p">,</span> <span class="n">positive</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+<span class="c1"># Type 0</span>
+<span class="n">GH_type0</span> <span class="o">=</span> <span class="n">K</span>
+
+<span class="n">E_type0</span> <span class="o">=</span> <span class="mi">1</span><span class="o">/</span><span class="p">(</span><span class="n">s</span><span class="o">**</span><span class="mi">2</span> <span class="o">*</span> <span class="p">(</span><span class="mi">1</span> <span class="o">+</span> <span class="n">GH_type0</span><span class="p">))</span>
+<span class="n">ess_type0</span> <span class="o">=</span> <span class="n">limit</span><span class="p">(</span><span class="n">s</span><span class="o">*</span><span class="n">E_type0</span><span class="p">,</span> <span class="n">s</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
+
+<span class="n">mprint</span><span class="p">(</span><span class="s2">&quot;E_</span><span class="si">{type0}</span><span class="s2">(s) = &quot;</span><span class="p">,</span> <span class="n">latex</span><span class="p">(</span><span class="n">E_type0</span><span class="p">))</span>
+<span class="n">mprint</span><span class="p">(</span><span class="s2">&quot;e_{ss,type0} = &quot;</span><span class="p">,</span> <span class="n">latex</span><span class="p">(</span><span class="n">ess_type0</span><span class="p">))</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_latex math notranslate nohighlight">
+\[\displaystyle E_{type0}(s) = \frac{1}{s^{2} \left(K + 1\right)}\]</div>
+<div class="output text_latex math notranslate nohighlight">
+\[\displaystyle e_{ss,type0} = \infty\]</div>
+</div>
+</div>
+</section>
+<section id="parabolic-input">
+<h2>Parabolic Input<a class="headerlink" href="#parabolic-input" title="Link to this heading">#</a></h2>
+</section>
+</section>
 
     <script type="text/x-thebe-config">
     {
@@ -532,9 +664,12 @@
     <i class="fa-solid fa-list"></i> Contents
   </div>
   <nav class="bd-toc-nav page-toc">
-    <ul class="simple visible nav section-nav flex-column">
+    <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#system-types">System Types</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#step-input">Step Input</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#ramp-input">Ramp Input</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#parabolic-input">Parabolic Input</a></li>
 </ul>
-
   </nav></div>
 
 </div></div>
