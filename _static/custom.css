@@ -1,0 +1,16 @@
+/* Make wide tables scroll instead of being cut */
+.bd-content table {
+    display: block;
+    overflow-x: auto;
+    white-space: nowrap;
+}
+
+/* Make the first column tighter */
+.bd-content table th:first-child,
+.bd-content table td:first-child {
+    width: 70px;
+    min-width: 70px;
+    max-width: 70px;
+    text-align: center;
+    font-weight: bold;
+}

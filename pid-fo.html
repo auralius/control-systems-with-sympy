@@ -37,6 +37,7 @@
     <link rel="stylesheet" type="text/css" href="_static/mystnb.4510f1fc1dee50b3e5859aac5469c37c29e427902b24a333a5f9fcb2f0b3ac41.css?v=be8a1c11" />
     <link rel="stylesheet" type="text/css" href="_static/sphinx-thebe.css?v=4fa983c6" />
     <link rel="stylesheet" type="text/css" href="_static/sphinx-design.min.css?v=95c83b7e" />
+    <link rel="stylesheet" type="text/css" href="_static/custom.css?v=b5bdeb62" />
   
   <!-- So that users can add custom icons -->
   <script src="_static/scripts/fontawesome.js?digest=8878045cc6db502f8baf"></script>
@@ -479,12 +480,18 @@
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#first-order-system-with-pi-control">First-order system with PI-control</a><ul class="nav section-nav flex-column">
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id3">Closed-loop poles and zeros</a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id4">Step response</a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#first-order-system-with-pid-control">First-order system with PID-control</a></li>
 </ul>
 </li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#first-order-system-with-pid-control">First-order system with PID-control</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id5">Closed-loop poles and zeros</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id6">Step response</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#compact-engineering-form">Compact Engineering Form</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#summary">Summary</a><ul class="nav section-nav flex-column">
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#initial-and-steady-state-output-for-unit-step-input">Initial and steady-state output for unit-step input</a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#zeros-and-poles">Zeros and poles</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#resulting-second-order-system">Resulting second order system</a></li>
 </ul>
 </li>
 </ul>
@@ -946,8 +953,11 @@ New pole location:</p>
 </div>
 </div>
 </section>
+</section>
 <section id="first-order-system-with-pid-control">
-<h3>First-order system with PID-control<a class="headerlink" href="#first-order-system-with-pid-control" title="Link to this heading">#</a></h3>
+<h2>First-order system with PID-control<a class="headerlink" href="#first-order-system-with-pid-control" title="Link to this heading">#</a></h2>
+<section id="id5">
+<h3>Closed-loop poles and zeros<a class="headerlink" href="#id5" title="Link to this heading">#</a></h3>
 <div class="cell tag_full-width docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">f</span> <span class="o">=</span> <span class="n">frac_to_tf</span><span class="p">(</span><span class="n">Q</span><span class="p">)</span>
@@ -975,6 +985,9 @@ New pole location:</p>
 \[\displaystyle \left[ - \frac{K_{p} + 1}{2 \left(K_{d} + \tau\right)} - \frac{\sqrt{- 4 K_{d} K_{i} - 4 K_{i} \tau + K_{p}^{2} + 2 K_{p} + 1}}{2 \left(K_{d} + \tau\right)}, \  - \frac{K_{p} + 1}{2 \left(K_{d} + \tau\right)} + \frac{\sqrt{- 4 K_{d} K_{i} - 4 K_{i} \tau + K_{p}^{2} + 2 K_{p} + 1}}{2 \left(K_{d} + \tau\right)}\right]\]</div>
 </div>
 </div>
+</section>
+<section id="id6">
+<h3>Step response<a class="headerlink" href="#id6" title="Link to this heading">#</a></h3>
 <div class="cell tag_full-width docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">cpid</span>   <span class="o">=</span> <span class="n">logcombine</span><span class="p">(</span><span class="n">ilaplace</span><span class="p">(</span><span class="n">Q</span> <span class="o">*</span> <span class="mi">1</span><span class="o">/</span><span class="n">s</span><span class="p">))</span>
@@ -997,6 +1010,88 @@ New pole location:</p>
 </div>
 </div>
 </section>
+</section>
+<section id="compact-engineering-form">
+<h2>Compact Engineering Form<a class="headerlink" href="#compact-engineering-form" title="Link to this heading">#</a></h2>
+<p>Unfortunately, there is no consistently clean automatic SymPy path from a messy <code class="docutils literal notranslate"><span class="pre">ilaplace()</span></code> result to the compact engineering form</p>
+<div class="math notranslate nohighlight">
+\[
+c(t)=c_{DC}+e^{-\sigma t}
+\left(
+A\cos(\omega_d t)+B\sin(\omega_d t)
+\right).
+\]</div>
+<p>Therefore, instead of forcing SymPy to rearrange the expression automatically, we will start from the complete solution for PID control of a first-order system and decompose it manually into three parts:</p>
+<div class="math notranslate nohighlight">
+\[
+c(t)=c_1(t)+c_2(t)c_3(t),
+\]</div>
+<p>where <span class="math notranslate nohighlight">\(c_1(t)\)</span> is the DC component, <span class="math notranslate nohighlight">\(c_2(t)\)</span> is the sinusoidal component, and <span class="math notranslate nohighlight">\(c_3(t)\)</span> is the exponential decay envelope.</p>
+<div class="cell tag_full-width docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">A0</span> <span class="o">=</span> <span class="n">Kd</span> <span class="o">+</span> <span class="n">tau</span>
+<span class="n">B0</span> <span class="o">=</span> <span class="n">Kp</span> <span class="o">+</span> <span class="mi">1</span>
+<span class="n">C0</span> <span class="o">=</span> <span class="n">Ki</span>
+
+<span class="n">D</span> <span class="o">=</span> <span class="mi">4</span><span class="o">*</span><span class="n">A0</span><span class="o">*</span><span class="n">C0</span> <span class="o">-</span> <span class="n">B0</span><span class="o">**</span><span class="mi">2</span>
+
+<span class="n">sigma</span> <span class="o">=</span> <span class="n">B0</span><span class="o">/</span><span class="p">(</span><span class="mi">2</span><span class="o">*</span><span class="n">A0</span><span class="p">)</span>
+<span class="n">omega_d</span> <span class="o">=</span> <span class="n">sqrt</span><span class="p">(</span><span class="n">D</span><span class="p">)</span><span class="o">/</span><span class="p">(</span><span class="mi">2</span><span class="o">*</span><span class="n">A0</span><span class="p">)</span>
+
+<span class="n">A</span> <span class="o">=</span> <span class="o">-</span><span class="n">tau</span><span class="o">/</span><span class="n">A0</span>
+<span class="n">B</span> <span class="o">=</span> <span class="p">(</span><span class="n">tau</span><span class="o">*</span><span class="n">B0</span> <span class="o">-</span> <span class="mi">2</span><span class="o">*</span><span class="n">A0</span><span class="p">)</span><span class="o">/</span><span class="p">(</span><span class="n">A0</span><span class="o">*</span><span class="n">sqrt</span><span class="p">(</span><span class="n">D</span><span class="p">))</span>
+
+<span class="n">cpid_compact</span> <span class="o">=</span> <span class="mi">1</span> <span class="o">+</span> <span class="n">exp</span><span class="p">(</span><span class="o">-</span><span class="n">sigma</span><span class="o">*</span><span class="n">t</span><span class="p">)</span><span class="o">*</span><span class="p">(</span><span class="n">A</span><span class="o">*</span><span class="n">cos</span><span class="p">(</span><span class="n">omega_d</span><span class="o">*</span><span class="n">t</span><span class="p">)</span> <span class="o">+</span> <span class="n">B</span><span class="o">*</span><span class="n">sin</span><span class="p">(</span><span class="n">omega_d</span><span class="o">*</span><span class="n">t</span><span class="p">))</span>
+
+<span class="n">mprint</span><span class="p">(</span><span class="sa">r</span><span class="s2">&quot;\sigma = &quot;</span><span class="p">,</span> <span class="n">latex</span><span class="p">(</span><span class="n">sigma</span><span class="p">))</span>
+<span class="n">mprint</span><span class="p">(</span><span class="sa">r</span><span class="s2">&quot;\omega_d = &quot;</span><span class="p">,</span> <span class="n">latex</span><span class="p">(</span><span class="n">omega_d</span><span class="p">))</span>
+<span class="n">mprint</span><span class="p">(</span><span class="sa">r</span><span class="s2">&quot;A = &quot;</span><span class="p">,</span> <span class="n">latex</span><span class="p">(</span><span class="n">A</span><span class="p">))</span>
+<span class="n">mprint</span><span class="p">(</span><span class="sa">r</span><span class="s2">&quot;B = &quot;</span><span class="p">,</span> <span class="n">latex</span><span class="p">(</span><span class="n">B</span><span class="p">))</span>
+<span class="n">mprintb</span><span class="p">(</span><span class="s2">&quot;c(t) = &quot;</span><span class="p">,</span> <span class="n">latex</span><span class="p">(</span><span class="n">cpid_compact</span><span class="p">))</span>
+
+<span class="n">check</span> <span class="o">=</span>     <span class="p">(</span><span class="n">cpid</span> <span class="o">-</span> <span class="n">cpid_compact</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;check = &quot;</span><span class="p">,</span> <span class="n">check</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_latex math notranslate nohighlight">
+\[\displaystyle \sigma = \frac{K_{p} + 1}{2 K_{d} + 2 \tau}\]</div>
+<div class="output text_latex math notranslate nohighlight">
+\[\displaystyle \omega_d = \frac{\sqrt{K_{i} \left(4 K_{d} + 4 \tau\right) - \left(K_{p} + 1\right)^{2}}}{2 K_{d} + 2 \tau}\]</div>
+<div class="output text_latex math notranslate nohighlight">
+\[\displaystyle A = - \frac{\tau}{K_{d} + \tau}\]</div>
+<div class="output text_latex math notranslate nohighlight">
+\[\displaystyle B = \frac{- 2 K_{d} + \tau \left(K_{p} + 1\right) - 2 \tau}{\left(K_{d} + \tau\right) \sqrt{K_{i} \left(4 K_{d} + 4 \tau\right) - \left(K_{p} + 1\right)^{2}}}\]</div>
+<div class="output text_latex math notranslate nohighlight">
+\[\displaystyle \boxed{c(t) = \left(- \frac{\tau \cos{\left(\frac{t \sqrt{K_{i} \left(4 K_{d} + 4 \tau\right) - \left(K_{p} + 1\right)^{2}}}{2 K_{d} + 2 \tau} \right)}}{K_{d} + \tau} + \frac{\left(- 2 K_{d} + \tau \left(K_{p} + 1\right) - 2 \tau\right) \sin{\left(\frac{t \sqrt{K_{i} \left(4 K_{d} + 4 \tau\right) - \left(K_{p} + 1\right)^{2}}}{2 K_{d} + 2 \tau} \right)}}{\left(K_{d} + \tau\right) \sqrt{K_{i} \left(4 K_{d} + 4 \tau\right) - \left(K_{p} + 1\right)^{2}}}\right) e^{- \frac{t \left(K_{p} + 1\right)}{2 K_{d} + 2 \tau}} + 1}\]</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>check =  -tau*exp(-t*(K_p + 1)/(2*(K_d + tau)))*cos(t*sqrt(K_d*K_i + K_i*tau - K_p**2/4 - K_p/2 - 1/4)/(K_d + tau))/(K_d + tau) + 2*(K_d + tau)*(tau*(K_p + 1)/(2*(K_d + tau)**2) - 1/(K_d + tau))*exp(-t*(K_p + 1)/(2*(K_d + tau)))*sin(t*sqrt(4*K_d*K_i + 4*K_i*tau - K_p**2 - 2*K_p - 1)/(2*(K_d + tau)))/sqrt(4*K_d*K_i + 4*K_i*tau - K_p**2 - 2*K_p - 1) - (-tau*cos(t*sqrt(K_i*(4*K_d + 4*tau) - (K_p + 1)**2)/(2*K_d + 2*tau))/(K_d + tau) + (-2*K_d + tau*(K_p + 1) - 2*tau)*sin(t*sqrt(K_i*(4*K_d + 4*tau) - (K_p + 1)**2)/(2*K_d + 2*tau))/((K_d + tau)*sqrt(K_i*(4*K_d + 4*tau) - (K_p + 1)**2)))*exp(-t*(K_p + 1)/(2*K_d + 2*tau))
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell tag_full-width docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">c_lst</span> <span class="o">=</span> <span class="n">Add</span><span class="o">.</span><span class="n">make_args</span><span class="p">(</span><span class="n">cpid_compact</span><span class="p">)</span> <span class="c1"># separate cn</span>
+<span class="n">c1</span> <span class="o">=</span> <span class="n">c_lst</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+<span class="n">c2</span> <span class="o">=</span> <span class="n">numer</span><span class="p">(</span><span class="n">c_lst</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
+<span class="n">c3</span> <span class="o">=</span> <span class="mi">1</span> <span class="o">/</span> <span class="n">denom</span><span class="p">(</span><span class="n">c_lst</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
+
+<span class="n">mprintb</span><span class="p">(</span><span class="s1">&#39;c_</span><span class="si">{1}</span><span class="s1">(t)=&#39;</span><span class="p">,</span> <span class="n">latex</span><span class="p">(</span><span class="n">c1</span><span class="p">))</span>
+<span class="n">mprintb</span><span class="p">(</span><span class="s1">&#39;c_</span><span class="si">{2}</span><span class="s1">(t)=&#39;</span><span class="p">,</span> <span class="n">latex</span><span class="p">(</span><span class="n">c2</span><span class="p">))</span>
+<span class="n">mprintb</span><span class="p">(</span><span class="s1">&#39;c_</span><span class="si">{3}</span><span class="s1">(t)=&#39;</span><span class="p">,</span> <span class="n">latex</span><span class="p">(</span><span class="n">c3</span><span class="p">))</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_latex math notranslate nohighlight">
+\[\displaystyle \boxed{c_{1}(t)=1}\]</div>
+<div class="output text_latex math notranslate nohighlight">
+\[\displaystyle \boxed{c_{2}(t)=- \frac{\tau \cos{\left(\frac{t \sqrt{K_{i} \left(4 K_{d} + 4 \tau\right) - \left(K_{p} + 1\right)^{2}}}{2 K_{d} + 2 \tau} \right)}}{K_{d} + \tau} + \frac{\left(- 2 K_{d} + \tau \left(K_{p} + 1\right) - 2 \tau\right) \sin{\left(\frac{t \sqrt{K_{i} \left(4 K_{d} + 4 \tau\right) - \left(K_{p} + 1\right)^{2}}}{2 K_{d} + 2 \tau} \right)}}{\left(K_{d} + \tau\right) \sqrt{K_{i} \left(4 K_{d} + 4 \tau\right) - \left(K_{p} + 1\right)^{2}}}}\]</div>
+<div class="output text_latex math notranslate nohighlight">
+\[\displaystyle \boxed{c_{3}(t)=e^{- \frac{t \left(K_{p} + 1\right)}{2 K_{d} + 2 \tau}}}\]</div>
+</div>
+</div>
 </section>
 <section id="summary">
 <h2>Summary<a class="headerlink" href="#summary" title="Link to this heading">#</a></h2>
@@ -1130,6 +1225,45 @@ New pole location:</p>
 </div>
 </div>
 </section>
+<section id="resulting-second-order-system">
+<h3>Resulting second order system<a class="headerlink" href="#resulting-second-order-system" title="Link to this heading">#</a></h3>
+<div class="cell tag_hide-input tag_full-width docutils container">
+<details class="hide above-input">
+<summary aria-label="Toggle hidden content">
+<span class="collapsed">Show code cell source</span>
+<span class="expanded">Hide code cell source</span>
+</summary>
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">mprintb</span><span class="p">(</span><span class="s2">&quot;c(t) = &quot;</span><span class="p">,</span> <span class="n">latex</span><span class="p">(</span><span class="n">cpid_compact</span><span class="p">))</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;--- or ---&quot;</span><span class="p">)</span>
+
+<span class="n">mprint</span><span class="p">(</span><span class="s1">&#39;c(t)=c_1(t)+c_2(t)c_3(t)&#39;</span><span class="p">)</span>
+
+<span class="n">mprintb</span><span class="p">(</span><span class="s1">&#39;c_</span><span class="si">{1}</span><span class="s1">(t)=&#39;</span><span class="p">,</span> <span class="n">latex</span><span class="p">(</span><span class="n">c1</span><span class="p">))</span>
+<span class="n">mprintb</span><span class="p">(</span><span class="s1">&#39;c_</span><span class="si">{2}</span><span class="s1">(t)=&#39;</span><span class="p">,</span> <span class="n">latex</span><span class="p">(</span><span class="n">c2</span><span class="p">))</span>
+<span class="n">mprintb</span><span class="p">(</span><span class="s1">&#39;c_</span><span class="si">{3}</span><span class="s1">(t)=&#39;</span><span class="p">,</span> <span class="n">latex</span><span class="p">(</span><span class="n">c3</span><span class="p">))</span>
+</pre></div>
+</div>
+</div>
+</details>
+<div class="cell_output docutils container">
+<div class="output text_latex math notranslate nohighlight">
+\[\displaystyle \boxed{c(t) = \left(- \frac{\tau \cos{\left(\frac{t \sqrt{K_{i} \left(4 K_{d} + 4 \tau\right) - \left(K_{p} + 1\right)^{2}}}{2 K_{d} + 2 \tau} \right)}}{K_{d} + \tau} + \frac{\left(- 2 K_{d} + \tau \left(K_{p} + 1\right) - 2 \tau\right) \sin{\left(\frac{t \sqrt{K_{i} \left(4 K_{d} + 4 \tau\right) - \left(K_{p} + 1\right)^{2}}}{2 K_{d} + 2 \tau} \right)}}{\left(K_{d} + \tau\right) \sqrt{K_{i} \left(4 K_{d} + 4 \tau\right) - \left(K_{p} + 1\right)^{2}}}\right) e^{- \frac{t \left(K_{p} + 1\right)}{2 K_{d} + 2 \tau}} + 1}\]</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>--- or ---
+</pre></div>
+</div>
+<div class="output text_latex math notranslate nohighlight">
+\[\displaystyle c(t)=c_1(t)+c_2(t)c_3(t)\]</div>
+<div class="output text_latex math notranslate nohighlight">
+\[\displaystyle \boxed{c_{1}(t)=1}\]</div>
+<div class="output text_latex math notranslate nohighlight">
+\[\displaystyle \boxed{c_{2}(t)=- \frac{\tau \cos{\left(\frac{t \sqrt{K_{i} \left(4 K_{d} + 4 \tau\right) - \left(K_{p} + 1\right)^{2}}}{2 K_{d} + 2 \tau} \right)}}{K_{d} + \tau} + \frac{\left(- 2 K_{d} + \tau \left(K_{p} + 1\right) - 2 \tau\right) \sin{\left(\frac{t \sqrt{K_{i} \left(4 K_{d} + 4 \tau\right) - \left(K_{p} + 1\right)^{2}}}{2 K_{d} + 2 \tau} \right)}}{\left(K_{d} + \tau\right) \sqrt{K_{i} \left(4 K_{d} + 4 \tau\right) - \left(K_{p} + 1\right)^{2}}}}\]</div>
+<div class="output text_latex math notranslate nohighlight">
+\[\displaystyle \boxed{c_{3}(t)=e^{- \frac{t \left(K_{p} + 1\right)}{2 K_{d} + 2 \tau}}}\]</div>
+</div>
+</div>
+</section>
 </section>
 </section>
 
@@ -1213,12 +1347,18 @@ New pole location:</p>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#first-order-system-with-pi-control">First-order system with PI-control</a><ul class="nav section-nav flex-column">
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id3">Closed-loop poles and zeros</a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id4">Step response</a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#first-order-system-with-pid-control">First-order system with PID-control</a></li>
 </ul>
 </li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#first-order-system-with-pid-control">First-order system with PID-control</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id5">Closed-loop poles and zeros</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id6">Step response</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#compact-engineering-form">Compact Engineering Form</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#summary">Summary</a><ul class="nav section-nav flex-column">
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#initial-and-steady-state-output-for-unit-step-input">Initial and steady-state output for unit-step input</a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#zeros-and-poles">Zeros and poles</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#resulting-second-order-system">Resulting second order system</a></li>
 </ul>
 </li>
 </ul>
