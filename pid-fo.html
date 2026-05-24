@@ -1049,7 +1049,7 @@ c(t)=c_1(t)+c_2(t)c_3(t),
 <span class="n">mprint</span><span class="p">(</span><span class="sa">r</span><span class="s2">&quot;B = &quot;</span><span class="p">,</span> <span class="n">latex</span><span class="p">(</span><span class="n">B</span><span class="p">))</span>
 <span class="n">mprintb</span><span class="p">(</span><span class="s2">&quot;c(t) = &quot;</span><span class="p">,</span> <span class="n">latex</span><span class="p">(</span><span class="n">cpid_compact</span><span class="p">))</span>
 
-<span class="n">check</span> <span class="o">=</span>     <span class="p">(</span><span class="n">cpid</span> <span class="o">-</span> <span class="n">cpid_compact</span><span class="p">)</span>
+<span class="n">check</span> <span class="o">=</span> <span class="n">simplify</span><span class="p">(</span><span class="n">cpid</span> <span class="o">-</span> <span class="n">cpid_compact</span><span class="p">)</span>
 <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;check = &quot;</span><span class="p">,</span> <span class="n">check</span><span class="p">)</span>
 </pre></div>
 </div>
@@ -1065,7 +1065,7 @@ c(t)=c_1(t)+c_2(t)c_3(t),
 \[\displaystyle B = \frac{- 2 K_{d} + \tau \left(K_{p} + 1\right) - 2 \tau}{\left(K_{d} + \tau\right) \sqrt{K_{i} \left(4 K_{d} + 4 \tau\right) - \left(K_{p} + 1\right)^{2}}}\]</div>
 <div class="output text_latex math notranslate nohighlight">
 \[\displaystyle \boxed{c(t) = \left(- \frac{\tau \cos{\left(\frac{t \sqrt{K_{i} \left(4 K_{d} + 4 \tau\right) - \left(K_{p} + 1\right)^{2}}}{2 K_{d} + 2 \tau} \right)}}{K_{d} + \tau} + \frac{\left(- 2 K_{d} + \tau \left(K_{p} + 1\right) - 2 \tau\right) \sin{\left(\frac{t \sqrt{K_{i} \left(4 K_{d} + 4 \tau\right) - \left(K_{p} + 1\right)^{2}}}{2 K_{d} + 2 \tau} \right)}}{\left(K_{d} + \tau\right) \sqrt{K_{i} \left(4 K_{d} + 4 \tau\right) - \left(K_{p} + 1\right)^{2}}}\right) e^{- \frac{t \left(K_{p} + 1\right)}{2 K_{d} + 2 \tau}} + 1}\]</div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>check =  -tau*exp(-t*(K_p + 1)/(2*(K_d + tau)))*cos(t*sqrt(K_d*K_i + K_i*tau - K_p**2/4 - K_p/2 - 1/4)/(K_d + tau))/(K_d + tau) + 2*(K_d + tau)*(tau*(K_p + 1)/(2*(K_d + tau)**2) - 1/(K_d + tau))*exp(-t*(K_p + 1)/(2*(K_d + tau)))*sin(t*sqrt(4*K_d*K_i + 4*K_i*tau - K_p**2 - 2*K_p - 1)/(2*(K_d + tau)))/sqrt(4*K_d*K_i + 4*K_i*tau - K_p**2 - 2*K_p - 1) - (-tau*cos(t*sqrt(K_i*(4*K_d + 4*tau) - (K_p + 1)**2)/(2*K_d + 2*tau))/(K_d + tau) + (-2*K_d + tau*(K_p + 1) - 2*tau)*sin(t*sqrt(K_i*(4*K_d + 4*tau) - (K_p + 1)**2)/(2*K_d + 2*tau))/((K_d + tau)*sqrt(K_i*(4*K_d + 4*tau) - (K_p + 1)**2)))*exp(-t*(K_p + 1)/(2*K_d + 2*tau))
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>check =  0
 </pre></div>
 </div>
 </div>
