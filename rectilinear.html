@@ -8,7 +8,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>System modeling: rectilinear system &#8212; Control Systems with Sympy</title>
+    <title>System Modeling: Rectilinear System &#8212; Control Systems with Sympy</title>
   
   
   
@@ -175,7 +175,7 @@
 <ul class="current nav bd-sidenav">
 <li class="toctree-l1"><a class="reference internal" href="block-diagram.html">Block Diagram</a></li>
 <li class="toctree-l1"><a class="reference internal" href="fly-ball-governor.html">System Modeling: Flyball Governor</a></li>
-<li class="toctree-l1 current active"><a class="current reference internal" href="#">System modeling: rectilinear system</a></li>
+<li class="toctree-l1 current active"><a class="current reference internal" href="#">System Modeling: Rectilinear System</a></li>
 <li class="toctree-l1"><a class="reference internal" href="first-order.html">First-order systems</a></li>
 <li class="toctree-l1"><a class="reference internal" href="second-order.html">Second-Order System</a></li>
 <li class="toctree-l1"><a class="reference internal" href="steady-state-error.html">Tracking Accuracy of a Feedback system</a></li>
@@ -455,7 +455,7 @@
               
 
 <div id="jb-print-docs-body" class="onlyprint">
-    <h1>System modeling: rectilinear system</h1>
+    <h1>System Modeling: Rectilinear System</h1>
     <!-- Table of contents -->
     <div id="print-main-content">
         <div id="jb-print-toc">
@@ -476,6 +476,7 @@
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#problem-6">Problem 6</a></li>
 </ul>
 </li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#references">References</a></li>
 </ul>
             </nav>
         </div>
@@ -488,7 +489,7 @@
                 <article class="bd-article">
                   
   <section class="tex2jax_ignore mathjax_ignore" id="system-modeling-rectilinear-system">
-<h1>System modeling: rectilinear system<a class="headerlink" href="#system-modeling-rectilinear-system" title="Link to this heading">#</a></h1>
+<h1>System Modeling: Rectilinear System<a class="headerlink" href="#system-modeling-rectilinear-system" title="Link to this heading">#</a></h1>
 <p>In this Python notebook, we are going to make a general method for rectilinear system modeling. Our method uses directed graph where vertex represents mass and edge represents spring or damper. From the graph, we can then generate two adjacency matrices:  for the springs and for the dampers. These matrices are then used by the Lagrange-Euler method to generate the system equations.</p>
 <p><img alt="" src="_images/adjency.png" /></p>
 <p>The model will be presented in three forms:</p>
@@ -728,6 +729,9 @@
 <div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>--- System&#39;s equation of motion in ODEs ---
 </pre></div>
 </div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>
+</pre></div>
+</div>
 <div class="output text_latex math notranslate nohighlight">
 \[\displaystyle \ddot x_{1}{\left(t \right)} = - \frac{k_{1} x_{1}{\left(t \right)}}{m_{1}} - \frac{k_{2} x_{1}{\left(t \right)}}{m_{1}} + \frac{k_{2} x_{2}{\left(t \right)}}{m_{1}}\]</div>
 <div class="output text_latex math notranslate nohighlight">
@@ -903,6 +907,10 @@
 </div>
 </section>
 </section>
+<section id="references">
+<h2>References<a class="headerlink" href="#references" title="Link to this heading">#</a></h2>
+<p><a class="reference external" href="https://www.ecs.csun.edu/~nhuttho/me584/Chapter%203%20Mechanical%20Systems_part2.pdf">CSUN ME584 Lagrange’s Equation</a></p>
+</section>
 </section>
 
     <script type="text/x-thebe-config">
@@ -981,6 +989,7 @@
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#problem-6">Problem 6</a></li>
 </ul>
 </li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#references">References</a></li>
 </ul>
   </nav></div>
 
