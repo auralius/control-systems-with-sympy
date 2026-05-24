@@ -23,6 +23,8 @@ html:
   use_issues_button: true
   use_repository_button: true
   use_edit_page_button: true
+  extra_css:
+    - _static/custom.css
 
 parse:
   myst_enable_extensions:

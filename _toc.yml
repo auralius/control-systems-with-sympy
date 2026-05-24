@@ -3,20 +3,40 @@
 
 format: jb-book
 root: intro
-chapters:
-- file: block-diagram
-- file: fly-ball-governor
-- file: rectilinear
-- file: first-order
-- file: second-order
-- file: routh-hurwitz
-- file: root-locus
-- file: bode-plot
-- file: bode-margins
-- file: pid-fo
-- file: pid-so
-- file: pid-ss
-- file: digital-pid
-- file: digital-pid-2
-- file: digital-filter
-- file: misc-problem-sets
+
+parts:
+  - caption: Modeling and Time-Domain Analysis
+    chapters:
+      - file: block-diagram
+      - file: fly-ball-governor
+      - file: rectilinear
+      - file: first-order
+      - file: second-order
+      - file: steady-state-error
+
+  - caption: Classical Control Analysis
+    chapters:
+      - file: routh-hurwitz
+      - file: root-locus
+      - file: bode-plot
+      - file: bode-margins
+
+  - caption: PID Control
+    chapters:
+      - file: pid-fo
+      - file: pid-so
+      - file: pid-ss
+      - file: digital-pid
+      - file: digital-pid-2
+      - file: digital-filter
+
+  - caption: Interactive Sessions
+    chapters:
+      - file: interactives
+        sections:
+          - file: pid-fo-interactive
+          - file: pid-so-interactive
+
+  - caption: Miscellaneous
+    chapters:
+      - file: misc-problem-sets
