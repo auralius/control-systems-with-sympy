@@ -8,7 +8,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>Steady State Error &#8212; Control Systems with Sympy</title>
+    <title>Tracking Accuracy of a Feedback system &#8212; Control Systems with Sympy</title>
   
   
   
@@ -34,7 +34,7 @@
     <link rel="stylesheet" type="text/css" href="_static/styles/sphinx-book-theme.css?v=a3416100" />
     <link rel="stylesheet" type="text/css" href="_static/togglebutton.css?v=13237357" />
     <link rel="stylesheet" type="text/css" href="_static/copybutton.css?v=76b2166b" />
-    <link rel="stylesheet" type="text/css" href="_static/mystnb.4510f1fc1dee50b3e5859aac5469c37c29e427902b24a333a5f9fcb2f0b3ac41.css?v=be8a1c11" />
+    <link rel="stylesheet" type="text/css" href="_static/mystnb.4510f1fc1dee50b3e5859aac5469c37c29e427902b24a333a5f9fcb2f0b3ac41.css" />
     <link rel="stylesheet" type="text/css" href="_static/sphinx-thebe.css?v=4fa983c6" />
     <link rel="stylesheet" type="text/css" href="_static/sphinx-design.min.css?v=95c83b7e" />
   
@@ -65,6 +65,8 @@
     <script>DOCUMENTATION_OPTIONS.pagename = 'steady-state-error';</script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Routh-Hurwitz Stability Criterion" href="routh-hurwitz.html" />
+    <link rel="prev" title="Second-Order System" href="second-order.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
   <meta name="docsearch:version" content="" />
@@ -115,8 +117,6 @@
     <div class="bd-container__inner bd-page-width">
       
       
-      
-        
       
       <dialog id="pst-primary-sidebar-modal"></dialog>
       <div id="pst-primary-sidebar" class="bd-sidebar-primary bd-sidebar">
@@ -171,12 +171,13 @@
             </li>
         </ul>
         <p aria-level="2" class="caption" role="heading"><span class="caption-text">Modeling and Time-Domain Analysis</span></p>
-<ul class="nav bd-sidenav">
+<ul class="current nav bd-sidenav">
 <li class="toctree-l1"><a class="reference internal" href="block-diagram.html">Block Diagram</a></li>
 <li class="toctree-l1"><a class="reference internal" href="fly-ball-governor.html">System Modeling: Flyball Governor</a></li>
 <li class="toctree-l1"><a class="reference internal" href="rectilinear.html">System modeling: rectilinear system</a></li>
 <li class="toctree-l1"><a class="reference internal" href="first-order.html">First-order systems</a></li>
 <li class="toctree-l1"><a class="reference internal" href="second-order.html">Second-Order System</a></li>
+<li class="toctree-l1 current active"><a class="current reference internal" href="#">Tracking Accuracy of a Feedback system</a></li>
 </ul>
 <p aria-level="2" class="caption" role="heading"><span class="caption-text">Classical Control Analysis</span></p>
 <ul class="nav bd-sidenav">
@@ -453,7 +454,7 @@
               
 
 <div id="jb-print-docs-body" class="onlyprint">
-    <h1>Steady State Error</h1>
+    <h1>Tracking Accuracy of a Feedback system</h1>
     <!-- Table of contents -->
     <div id="print-main-content">
         <div id="jb-print-toc">
@@ -467,6 +468,7 @@
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#step-input">Step Input</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#ramp-input">Ramp Input</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#parabolic-input">Parabolic Input</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#summary">Summary</a></li>
 </ul>
             </nav>
         </div>
@@ -478,9 +480,15 @@
 <div id="searchbox"></div>
                 <article class="bd-article">
                   
-  <section class="tex2jax_ignore mathjax_ignore" id="steady-state-error">
-<h1>Steady State Error<a class="headerlink" href="#steady-state-error" title="Link to this heading">#</a></h1>
-<div class="cell docutils container">
+  <section class="tex2jax_ignore mathjax_ignore" id="tracking-accuracy-of-a-feedback-system">
+<h1>Tracking Accuracy of a Feedback system<a class="headerlink" href="#tracking-accuracy-of-a-feedback-system" title="Link to this heading">#</a></h1>
+<p>At this stage, we do not specify a particular controller. Instead, we analyze the steady-state error from the open-loop transfer function <span class="math notranslate nohighlight">\(G(s)H(s)\)</span>.</p>
+<div class="cell tag_hide-input docutils container">
+<details class="hide above-input">
+<summary aria-label="Toggle hidden content">
+<span class="collapsed">Show code cell source</span>
+<span class="expanded">Hide code cell source</span>
+</summary>
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">IPython.core.display</span> <span class="kn">import</span> <span class="n">HTML</span>
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
@@ -499,16 +507,24 @@
 </pre></div>
 </div>
 </div>
+</details>
 </div>
-<div class="cell docutils container">
+<div class="cell tag_hide-input docutils container">
+<details class="hide above-input">
+<summary aria-label="Toggle hidden content">
+<span class="collapsed">Show code cell source</span>
+<span class="expanded">Hide code cell source</span>
+</summary>
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">t</span> <span class="o">=</span> <span class="n">symbols</span><span class="p">(</span><span class="s1">&#39;t&#39;</span><span class="p">,</span> <span class="n">real</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 <span class="n">s</span> <span class="o">=</span> <span class="n">symbols</span><span class="p">(</span><span class="s1">&#39;s&#39;</span><span class="p">,</span> <span class="nb">complex</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="n">a</span><span class="p">,</span> <span class="n">b</span> <span class="o">=</span> <span class="n">symbols</span><span class="p">(</span><span class="s1">&#39;a b&#39;</span><span class="p">,</span> <span class="n">real</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">positive</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 <span class="n">G</span><span class="p">,</span> <span class="n">H</span><span class="p">,</span> <span class="n">R</span><span class="p">,</span> <span class="n">E</span><span class="p">,</span> <span class="n">C</span><span class="p">,</span> <span class="n">Ess</span> <span class="o">=</span> <span class="n">symbols</span><span class="p">(</span><span class="s1">&#39;G H R E C E_ss&#39;</span><span class="p">,</span> <span class="nb">complex</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 <span class="n">K</span> <span class="o">=</span> <span class="n">symbols</span><span class="p">(</span><span class="s2">&quot;K&quot;</span><span class="p">,</span> <span class="n">positive</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
+</details>
 </div>
 <p>Define a system <span class="math notranslate nohighlight">\(G(s)\)</span> with a feedback <span class="math notranslate nohighlight">\(H(s)\)</span>. The input is <span class="math notranslate nohighlight">\(r(t)\)</span> and the output is <span class="math notranslate nohighlight">\(c(t)\)</span>.</p>
 <p><img alt="" src="_images/p23a.png" /></p>
@@ -540,12 +556,12 @@
 <p>In classical control theory, steady-state error is commonly evaluated using three standard test inputs: the <strong>step input</strong>, the <strong>ramp input</strong>, and the <strong>parabolic input</strong>.</p>
 <section id="system-types">
 <h2>System Types<a class="headerlink" href="#system-types" title="Link to this heading">#</a></h2>
-<p>Define system type as the number of pure integrators in the open-loop transfer function <span class="math notranslate nohighlight">\(KG(s)H(s)\)</span>.</p>
+<p>Define system type as the number of pure integrators in the open-loop transfer function <span class="math notranslate nohighlight">\(G(s)H(s)\)</span>. The open-loop system is assumed to be stable with one real pole in LHP.</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">GH_type0</span> <span class="o">=</span> <span class="n">K</span>
-<span class="n">GH_type1</span> <span class="o">=</span> <span class="n">K</span><span class="o">/</span><span class="n">s</span>
-<span class="n">GH_type2</span> <span class="o">=</span> <span class="n">K</span><span class="o">/</span><span class="n">s</span><span class="o">**</span><span class="mi">2</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">GH_type0</span> <span class="o">=</span> <span class="n">K</span><span class="o">/</span><span class="p">(</span><span class="n">s</span> <span class="o">+</span> <span class="n">a</span><span class="p">)</span>
+<span class="n">GH_type1</span> <span class="o">=</span> <span class="n">K</span><span class="o">/</span><span class="p">(</span><span class="n">s</span><span class="o">*</span><span class="p">(</span><span class="n">s</span> <span class="o">+</span> <span class="n">a</span><span class="p">))</span>
+<span class="n">GH_type2</span> <span class="o">=</span> <span class="n">K</span><span class="o">/</span><span class="p">(</span><span class="n">s</span><span class="o">**</span><span class="mi">2</span><span class="o">*</span><span class="p">(</span><span class="n">s</span> <span class="o">+</span> <span class="n">a</span><span class="p">))</span>
 
 <span class="n">mprint</span><span class="p">(</span><span class="s2">&quot;GH_</span><span class="si">{type0}</span><span class="s2"> = &quot;</span><span class="p">,</span> <span class="n">latex</span><span class="p">(</span><span class="n">GH_type0</span><span class="p">))</span>
 <span class="n">mprint</span><span class="p">(</span><span class="s2">&quot;GH_</span><span class="si">{type1}</span><span class="s2"> = &quot;</span><span class="p">,</span> <span class="n">latex</span><span class="p">(</span><span class="n">GH_type1</span><span class="p">))</span>
@@ -555,11 +571,11 @@
 </div>
 <div class="cell_output docutils container">
 <div class="output text_latex math notranslate nohighlight">
-\[\displaystyle GH_{type0} = K\]</div>
+\[\displaystyle GH_{type0} = \frac{K}{a + s}\]</div>
 <div class="output text_latex math notranslate nohighlight">
-\[\displaystyle GH_{type1} = \frac{K}{s}\]</div>
+\[\displaystyle GH_{type1} = \frac{K}{s \left(a + s\right)}\]</div>
 <div class="output text_latex math notranslate nohighlight">
-\[\displaystyle GH_{type2} = \frac{K}{s^{2}}\]</div>
+\[\displaystyle GH_{type2} = \frac{K}{s^{2} \left(a + s\right)}\]</div>
 </div>
 </div>
 </section>
@@ -567,24 +583,53 @@
 <h2>Step Input<a class="headerlink" href="#step-input" title="Link to this heading">#</a></h2>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">eq3</span> <span class="o">=</span> <span class="n">Subs</span><span class="p">(</span><span class="n">eq1</span><span class="p">,</span> <span class="n">R</span><span class="p">,</span> <span class="mi">1</span><span class="o">/</span><span class="n">s</span><span class="p">)</span><span class="o">.</span><span class="n">evalf</span><span class="p">()</span>
-<span class="n">mprint</span><span class="p">(</span><span class="n">latex</span><span class="p">(</span><span class="n">eq3</span><span class="p">))</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">E_type0</span> <span class="o">=</span> <span class="n">together</span><span class="p">(</span><span class="n">sol</span><span class="p">[</span><span class="n">E</span><span class="p">]</span><span class="o">.</span><span class="n">subs</span><span class="p">(</span><span class="n">G</span><span class="o">*</span><span class="n">H</span><span class="p">,</span> <span class="n">GH_type0</span><span class="p">)</span><span class="o">.</span><span class="n">subs</span><span class="p">(</span><span class="n">R</span><span class="p">,</span> <span class="mi">1</span><span class="o">/</span><span class="n">s</span><span class="p">))</span>
+<span class="n">ess_step_type0</span> <span class="o">=</span> <span class="n">together</span><span class="p">(</span><span class="n">limit</span><span class="p">(</span><span class="n">s</span><span class="o">*</span><span class="n">E_type0</span><span class="p">,</span> <span class="n">s</span><span class="p">,</span> <span class="mi">0</span><span class="p">))</span>
 
-<span class="n">sol</span> <span class="o">=</span> <span class="n">solve</span><span class="p">((</span><span class="n">eq3</span><span class="p">,</span> <span class="n">eq2</span><span class="p">),</span> <span class="p">(</span><span class="n">E</span><span class="p">,</span> <span class="n">C</span><span class="p">))</span>
-<span class="n">mprint</span><span class="p">(</span><span class="s2">&quot;E = &quot;</span><span class="p">,</span> <span class="n">latex</span><span class="p">(</span><span class="n">sol</span><span class="p">[</span><span class="n">E</span><span class="p">]))</span>
-
-<span class="n">lim</span> <span class="o">=</span> <span class="n">limit</span><span class="p">(</span><span class="n">s</span><span class="o">*</span><span class="n">sol</span><span class="p">[</span><span class="n">E</span><span class="p">],</span> <span class="n">s</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
-<span class="n">mprint</span><span class="p">(</span><span class="s2">&quot;E_</span><span class="si">{ss}</span><span class="s2"> = &quot;</span><span class="p">,</span> <span class="n">latex</span><span class="p">(</span><span class="n">lim</span><span class="p">))</span>
+<span class="n">mprint</span><span class="p">(</span><span class="s2">&quot;E_</span><span class="si">{type0}</span><span class="s2">(s) = &quot;</span><span class="p">,</span> <span class="n">latex</span><span class="p">(</span><span class="n">E_type0</span><span class="p">))</span>
+<span class="n">mprint</span><span class="p">(</span><span class="s2">&quot;e_{ss,type0} = &quot;</span><span class="p">,</span> <span class="n">latex</span><span class="p">(</span><span class="n">ess_step_type0</span><span class="p">))</span>
 </pre></div>
 </div>
 </div>
 <div class="cell_output docutils container">
 <div class="output text_latex math notranslate nohighlight">
-\[\displaystyle E = - C H + \frac{1}{s}\]</div>
+\[\displaystyle E_{type0}(s) = \frac{a + s}{s \left(K + a + s\right)}\]</div>
 <div class="output text_latex math notranslate nohighlight">
-\[\displaystyle E = \frac{1}{G H s + s}\]</div>
+\[\displaystyle e_{ss,type0} = \frac{a}{K + a}\]</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">E_type1</span> <span class="o">=</span> <span class="n">together</span><span class="p">(</span><span class="n">sol</span><span class="p">[</span><span class="n">E</span><span class="p">]</span><span class="o">.</span><span class="n">subs</span><span class="p">(</span><span class="n">G</span><span class="o">*</span><span class="n">H</span><span class="p">,</span> <span class="n">GH_type1</span><span class="p">)</span><span class="o">.</span><span class="n">subs</span><span class="p">(</span><span class="n">R</span><span class="p">,</span> <span class="mi">1</span><span class="o">/</span><span class="n">s</span><span class="p">))</span>
+<span class="n">ess_step_type1</span> <span class="o">=</span> <span class="n">together</span><span class="p">(</span><span class="n">limit</span><span class="p">(</span><span class="n">s</span><span class="o">*</span><span class="n">E_type1</span><span class="p">,</span> <span class="n">s</span><span class="p">,</span> <span class="mi">0</span><span class="p">))</span>
+
+<span class="n">mprint</span><span class="p">(</span><span class="s2">&quot;E_</span><span class="si">{type1}</span><span class="s2">(s) = &quot;</span><span class="p">,</span> <span class="n">latex</span><span class="p">(</span><span class="n">E_type1</span><span class="p">))</span>
+<span class="n">mprint</span><span class="p">(</span><span class="s2">&quot;e_{ss,type1} = &quot;</span><span class="p">,</span> <span class="n">latex</span><span class="p">(</span><span class="n">ess_step_type1</span><span class="p">))</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
 <div class="output text_latex math notranslate nohighlight">
-\[\displaystyle E_{ss} = \frac{1}{G H + 1}\]</div>
+\[\displaystyle E_{type1}(s) = \frac{a + s}{K + s \left(a + s\right)}\]</div>
+<div class="output text_latex math notranslate nohighlight">
+\[\displaystyle e_{ss,type1} = 0\]</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">E_type2</span> <span class="o">=</span> <span class="n">together</span><span class="p">(</span><span class="n">sol</span><span class="p">[</span><span class="n">E</span><span class="p">]</span><span class="o">.</span><span class="n">subs</span><span class="p">(</span><span class="n">G</span><span class="o">*</span><span class="n">H</span><span class="p">,</span> <span class="n">GH_type2</span><span class="p">)</span><span class="o">.</span><span class="n">subs</span><span class="p">(</span><span class="n">R</span><span class="p">,</span> <span class="mi">1</span><span class="o">/</span><span class="n">s</span><span class="p">))</span>
+<span class="n">ess_step_type2</span> <span class="o">=</span> <span class="n">together</span><span class="p">(</span><span class="n">limit</span><span class="p">(</span><span class="n">s</span><span class="o">*</span><span class="n">E_type2</span><span class="p">,</span> <span class="n">s</span><span class="p">,</span> <span class="mi">0</span><span class="p">))</span>
+
+<span class="n">mprint</span><span class="p">(</span><span class="s2">&quot;E_</span><span class="si">{type2}</span><span class="s2">(s) = &quot;</span><span class="p">,</span> <span class="n">latex</span><span class="p">(</span><span class="n">E_type2</span><span class="p">))</span>
+<span class="n">mprint</span><span class="p">(</span><span class="s2">&quot;e_{ss,type2} = &quot;</span><span class="p">,</span> <span class="n">latex</span><span class="p">(</span><span class="n">ess_step_type2</span><span class="p">))</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_latex math notranslate nohighlight">
+\[\displaystyle E_{type2}(s) = \frac{s \left(a + s\right)}{K + s^{2} \left(a + s\right)}\]</div>
+<div class="output text_latex math notranslate nohighlight">
+\[\displaystyle e_{ss,type2} = 0\]</div>
 </div>
 </div>
 </section>
@@ -592,29 +637,173 @@
 <h2>Ramp Input<a class="headerlink" href="#ramp-input" title="Link to this heading">#</a></h2>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">K</span> <span class="o">=</span> <span class="n">symbols</span><span class="p">(</span><span class="s2">&quot;K&quot;</span><span class="p">,</span> <span class="n">positive</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-
-<span class="c1"># Type 0</span>
-<span class="n">GH_type0</span> <span class="o">=</span> <span class="n">K</span>
-
-<span class="n">E_type0</span> <span class="o">=</span> <span class="mi">1</span><span class="o">/</span><span class="p">(</span><span class="n">s</span><span class="o">**</span><span class="mi">2</span> <span class="o">*</span> <span class="p">(</span><span class="mi">1</span> <span class="o">+</span> <span class="n">GH_type0</span><span class="p">))</span>
-<span class="n">ess_type0</span> <span class="o">=</span> <span class="n">limit</span><span class="p">(</span><span class="n">s</span><span class="o">*</span><span class="n">E_type0</span><span class="p">,</span> <span class="n">s</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">E_type0</span> <span class="o">=</span> <span class="n">together</span><span class="p">(</span><span class="n">sol</span><span class="p">[</span><span class="n">E</span><span class="p">]</span><span class="o">.</span><span class="n">subs</span><span class="p">(</span><span class="n">G</span><span class="o">*</span><span class="n">H</span><span class="p">,</span> <span class="n">GH_type0</span><span class="p">)</span><span class="o">.</span><span class="n">subs</span><span class="p">(</span><span class="n">R</span><span class="p">,</span> <span class="mi">1</span><span class="o">/</span><span class="p">(</span><span class="n">s</span><span class="o">**</span><span class="mi">2</span><span class="p">)))</span>
+<span class="n">ess_ramp_type0</span> <span class="o">=</span> <span class="n">together</span><span class="p">(</span><span class="n">limit</span><span class="p">(</span><span class="n">s</span><span class="o">*</span><span class="n">E_type0</span><span class="p">,</span> <span class="n">s</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="nb">dir</span><span class="o">=</span><span class="s2">&quot;+&quot;</span><span class="p">))</span>
 
 <span class="n">mprint</span><span class="p">(</span><span class="s2">&quot;E_</span><span class="si">{type0}</span><span class="s2">(s) = &quot;</span><span class="p">,</span> <span class="n">latex</span><span class="p">(</span><span class="n">E_type0</span><span class="p">))</span>
-<span class="n">mprint</span><span class="p">(</span><span class="s2">&quot;e_{ss,type0} = &quot;</span><span class="p">,</span> <span class="n">latex</span><span class="p">(</span><span class="n">ess_type0</span><span class="p">))</span>
+<span class="n">mprint</span><span class="p">(</span><span class="s2">&quot;e_{ss,type0} = &quot;</span><span class="p">,</span> <span class="n">latex</span><span class="p">(</span><span class="n">ess_ramp_type0</span><span class="p">))</span>
 </pre></div>
 </div>
 </div>
 <div class="cell_output docutils container">
 <div class="output text_latex math notranslate nohighlight">
-\[\displaystyle E_{type0}(s) = \frac{1}{s^{2} \left(K + 1\right)}\]</div>
+\[\displaystyle E_{type0}(s) = \frac{a + s}{s^{2} \left(K + a + s\right)}\]</div>
 <div class="output text_latex math notranslate nohighlight">
 \[\displaystyle e_{ss,type0} = \infty\]</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">E_type1</span> <span class="o">=</span> <span class="n">together</span><span class="p">(</span><span class="n">sol</span><span class="p">[</span><span class="n">E</span><span class="p">]</span><span class="o">.</span><span class="n">subs</span><span class="p">(</span><span class="n">G</span><span class="o">*</span><span class="n">H</span><span class="p">,</span> <span class="n">GH_type1</span><span class="p">)</span><span class="o">.</span><span class="n">subs</span><span class="p">(</span><span class="n">R</span><span class="p">,</span> <span class="mi">1</span><span class="o">/</span><span class="p">(</span><span class="n">s</span><span class="o">**</span><span class="mi">2</span><span class="p">)))</span>
+<span class="n">ess_ramp_type1</span> <span class="o">=</span> <span class="n">together</span><span class="p">(</span><span class="n">limit</span><span class="p">(</span><span class="n">s</span><span class="o">*</span><span class="n">E_type1</span><span class="p">,</span> <span class="n">s</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="nb">dir</span><span class="o">=</span><span class="s2">&quot;+&quot;</span><span class="p">))</span>
+
+<span class="n">mprint</span><span class="p">(</span><span class="s2">&quot;E_</span><span class="si">{type1}</span><span class="s2">(s) = &quot;</span><span class="p">,</span> <span class="n">latex</span><span class="p">(</span><span class="n">E_type1</span><span class="p">))</span>
+<span class="n">mprint</span><span class="p">(</span><span class="s2">&quot;e_{ss,type1} = &quot;</span><span class="p">,</span> <span class="n">latex</span><span class="p">(</span><span class="n">ess_ramp_type1</span><span class="p">))</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_latex math notranslate nohighlight">
+\[\displaystyle E_{type1}(s) = \frac{a + s}{s \left(K + s \left(a + s\right)\right)}\]</div>
+<div class="output text_latex math notranslate nohighlight">
+\[\displaystyle e_{ss,type1} = \frac{a}{K}\]</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">E_type2</span> <span class="o">=</span> <span class="n">together</span><span class="p">(</span><span class="n">sol</span><span class="p">[</span><span class="n">E</span><span class="p">]</span><span class="o">.</span><span class="n">subs</span><span class="p">(</span><span class="n">G</span><span class="o">*</span><span class="n">H</span><span class="p">,</span> <span class="n">GH_type2</span><span class="p">)</span><span class="o">.</span><span class="n">subs</span><span class="p">(</span><span class="n">R</span><span class="p">,</span> <span class="mi">1</span><span class="o">/</span><span class="p">(</span><span class="n">s</span><span class="o">**</span><span class="mi">2</span><span class="p">)))</span>
+<span class="n">ess_ramp_type2</span> <span class="o">=</span> <span class="n">together</span><span class="p">(</span><span class="n">limit</span><span class="p">(</span><span class="n">s</span><span class="o">*</span><span class="n">E_type2</span><span class="p">,</span> <span class="n">s</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="nb">dir</span><span class="o">=</span><span class="s2">&quot;+&quot;</span><span class="p">))</span>
+
+<span class="n">mprint</span><span class="p">(</span><span class="s2">&quot;E_</span><span class="si">{type2}</span><span class="s2">(s) = &quot;</span><span class="p">,</span> <span class="n">latex</span><span class="p">(</span><span class="n">E_type2</span><span class="p">))</span>
+<span class="n">mprint</span><span class="p">(</span><span class="s2">&quot;e_{ss,type2} = &quot;</span><span class="p">,</span> <span class="n">latex</span><span class="p">(</span><span class="n">ess_ramp_type2</span><span class="p">))</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_latex math notranslate nohighlight">
+\[\displaystyle E_{type2}(s) = \frac{a + s}{K + s^{2} \left(a + s\right)}\]</div>
+<div class="output text_latex math notranslate nohighlight">
+\[\displaystyle e_{ss,type2} = 0\]</div>
 </div>
 </div>
 </section>
 <section id="parabolic-input">
 <h2>Parabolic Input<a class="headerlink" href="#parabolic-input" title="Link to this heading">#</a></h2>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">E_type0</span> <span class="o">=</span> <span class="n">together</span><span class="p">(</span><span class="n">sol</span><span class="p">[</span><span class="n">E</span><span class="p">]</span><span class="o">.</span><span class="n">subs</span><span class="p">(</span><span class="n">G</span><span class="o">*</span><span class="n">H</span><span class="p">,</span> <span class="n">GH_type0</span><span class="p">)</span><span class="o">.</span><span class="n">subs</span><span class="p">(</span><span class="n">R</span><span class="p">,</span> <span class="mi">1</span><span class="o">/</span><span class="p">(</span><span class="n">s</span><span class="o">**</span><span class="mi">3</span><span class="p">)))</span>
+<span class="n">ess_parabolic_type0</span> <span class="o">=</span> <span class="n">together</span><span class="p">(</span><span class="n">limit</span><span class="p">(</span><span class="n">s</span><span class="o">*</span><span class="n">E_type0</span><span class="p">,</span> <span class="n">s</span><span class="p">,</span> <span class="mi">0</span><span class="p">))</span>
+
+<span class="n">mprint</span><span class="p">(</span><span class="s2">&quot;E_</span><span class="si">{type0}</span><span class="s2">(s) = &quot;</span><span class="p">,</span> <span class="n">latex</span><span class="p">(</span><span class="n">E_type0</span><span class="p">))</span>
+<span class="n">mprint</span><span class="p">(</span><span class="s2">&quot;e_{ss,type0} = &quot;</span><span class="p">,</span> <span class="n">latex</span><span class="p">(</span><span class="n">ess_parabolic_type0</span><span class="p">))</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_latex math notranslate nohighlight">
+\[\displaystyle E_{type0}(s) = \frac{a + s}{s^{3} \left(K + a + s\right)}\]</div>
+<div class="output text_latex math notranslate nohighlight">
+\[\displaystyle e_{ss,type0} = \infty\]</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">E_type1</span> <span class="o">=</span> <span class="n">together</span><span class="p">(</span><span class="n">sol</span><span class="p">[</span><span class="n">E</span><span class="p">]</span><span class="o">.</span><span class="n">subs</span><span class="p">(</span><span class="n">G</span><span class="o">*</span><span class="n">H</span><span class="p">,</span> <span class="n">GH_type1</span><span class="p">)</span><span class="o">.</span><span class="n">subs</span><span class="p">(</span><span class="n">R</span><span class="p">,</span> <span class="mi">1</span><span class="o">/</span><span class="p">(</span><span class="n">s</span><span class="o">**</span><span class="mi">3</span><span class="p">)))</span>
+<span class="n">ess_parabolic_type1</span> <span class="o">=</span> <span class="n">together</span><span class="p">(</span><span class="n">limit</span><span class="p">(</span><span class="n">s</span><span class="o">*</span><span class="n">E_type1</span><span class="p">,</span> <span class="n">s</span><span class="p">,</span> <span class="mi">0</span><span class="p">))</span>
+
+<span class="n">mprint</span><span class="p">(</span><span class="s2">&quot;E_</span><span class="si">{type1}</span><span class="s2">(s) = &quot;</span><span class="p">,</span> <span class="n">latex</span><span class="p">(</span><span class="n">E_type1</span><span class="p">))</span>
+<span class="n">mprint</span><span class="p">(</span><span class="s2">&quot;e_{ss,type1} = &quot;</span><span class="p">,</span> <span class="n">latex</span><span class="p">(</span><span class="n">ess_parabolic_type1</span><span class="p">))</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_latex math notranslate nohighlight">
+\[\displaystyle E_{type1}(s) = \frac{a + s}{s^{2} \left(K + s \left(a + s\right)\right)}\]</div>
+<div class="output text_latex math notranslate nohighlight">
+\[\displaystyle e_{ss,type1} = \infty\]</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">E_type2</span> <span class="o">=</span> <span class="n">together</span><span class="p">(</span><span class="n">sol</span><span class="p">[</span><span class="n">E</span><span class="p">]</span><span class="o">.</span><span class="n">subs</span><span class="p">(</span><span class="n">G</span><span class="o">*</span><span class="n">H</span><span class="p">,</span> <span class="n">GH_type2</span><span class="p">)</span><span class="o">.</span><span class="n">subs</span><span class="p">(</span><span class="n">R</span><span class="p">,</span> <span class="mi">1</span><span class="o">/</span><span class="p">(</span><span class="n">s</span><span class="o">**</span><span class="mi">3</span><span class="p">)))</span>
+<span class="n">ess_parabolic_type2</span> <span class="o">=</span> <span class="n">together</span><span class="p">(</span><span class="n">limit</span><span class="p">(</span><span class="n">s</span><span class="o">*</span><span class="n">E_type2</span><span class="p">,</span> <span class="n">s</span><span class="p">,</span> <span class="mi">0</span><span class="p">))</span>
+
+<span class="n">mprint</span><span class="p">(</span><span class="s2">&quot;E_</span><span class="si">{type2}</span><span class="s2">(s) = &quot;</span><span class="p">,</span> <span class="n">latex</span><span class="p">(</span><span class="n">E_type2</span><span class="p">))</span>
+<span class="n">mprint</span><span class="p">(</span><span class="s2">&quot;e_{ss,type2} = &quot;</span><span class="p">,</span> <span class="n">latex</span><span class="p">(</span><span class="n">ess_parabolic_type2</span><span class="p">))</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_latex math notranslate nohighlight">
+\[\displaystyle E_{type2}(s) = \frac{a + s}{s \left(K + s^{2} \left(a + s\right)\right)}\]</div>
+<div class="output text_latex math notranslate nohighlight">
+\[\displaystyle e_{ss,type2} = \frac{a}{K}\]</div>
+</div>
+</div>
+</section>
+<section id="summary">
+<h2>Summary<a class="headerlink" href="#summary" title="Link to this heading">#</a></h2>
+<div class="cell tag_hide-input docutils container">
+<details class="hide above-input">
+<summary aria-label="Toggle hidden content">
+<span class="collapsed">Show code cell source</span>
+<span class="expanded">Hide code cell source</span>
+</summary>
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">pandas</span> <span class="kn">import</span> <span class="n">DataFrame</span>
+<span class="kn">from</span> <span class="nn">IPython.display</span> <span class="kn">import</span> <span class="n">Markdown</span>
+
+<span class="k">def</span> <span class="nf">makelatex</span><span class="p">(</span><span class="n">args</span><span class="p">):</span>
+    <span class="k">return</span> <span class="p">[</span><span class="s2">&quot;$</span><span class="se">\\</span><span class="s2">Large </span><span class="si">{}</span><span class="s2">$&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">latex</span><span class="p">(</span><span class="n">a</span><span class="p">))</span> <span class="k">for</span> <span class="n">a</span> <span class="ow">in</span> <span class="n">args</span><span class="p">]</span>
+
+<span class="n">legends</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;Step&quot;</span><span class="p">,</span> <span class="s2">&quot;Ramp&quot;</span><span class="p">,</span> <span class="s2">&quot;Parabolic&quot;</span><span class="p">]</span>
+<span class="n">type0</span> <span class="o">=</span> <span class="p">[</span><span class="n">ess_step_type0</span><span class="p">,</span> <span class="n">ess_ramp_type0</span><span class="p">,</span> <span class="n">ess_parabolic_type0</span><span class="p">]</span>
+<span class="n">type1</span> <span class="o">=</span> <span class="p">[</span><span class="n">ess_step_type1</span><span class="p">,</span> <span class="n">ess_ramp_type1</span><span class="p">,</span>
+        <span class="n">ess_parabolic_type1</span><span class="p">]</span>
+<span class="n">type2</span> <span class="o">=</span> <span class="p">[</span><span class="n">ess_step_type2</span><span class="p">,</span> <span class="n">ess_ramp_type2</span><span class="p">,</span>
+        <span class="n">ess_parabolic_type2</span><span class="p">]</span>
+
+<span class="n">dic</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;Input&#39;</span><span class="p">:</span> <span class="n">legends</span><span class="p">,</span> 
+       <span class="s1">&#39;Type 0&#39;</span><span class="p">:</span> <span class="n">makelatex</span><span class="p">(</span><span class="n">type0</span><span class="p">),</span>
+       <span class="s1">&#39;Type 1&#39;</span><span class="p">:</span> <span class="n">makelatex</span><span class="p">(</span><span class="n">type1</span><span class="p">),</span>
+       <span class="s1">&#39;Type 2&#39;</span><span class="p">:</span> <span class="n">makelatex</span><span class="p">(</span><span class="n">type2</span><span class="p">)}</span>
+
+<span class="n">df</span> <span class="o">=</span> <span class="n">DataFrame</span><span class="p">(</span><span class="n">dic</span><span class="p">)</span>
+<span class="n">Markdown</span><span class="p">(</span><span class="n">df</span><span class="o">.</span><span class="n">to_markdown</span><span class="p">(</span><span class="n">index</span><span class="o">=</span><span class="kc">False</span><span class="p">))</span>
+</pre></div>
+</div>
+</div>
+</details>
+<div class="cell_output docutils container">
+<div class="pst-scrollable-table-container"><table class="table">
+<thead>
+<tr class="row-odd"><th class="head text-left"><p>Input</p></th>
+<th class="head text-left"><p>Type 0</p></th>
+<th class="head text-left"><p>Type 1</p></th>
+<th class="head text-left"><p>Type 2</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td class="text-left"><p>Step</p></td>
+<td class="text-left"><p><span class="math notranslate nohighlight">\(\Large \frac{a}{K + a}\)</span></p></td>
+<td class="text-left"><p><span class="math notranslate nohighlight">\(\Large 0\)</span></p></td>
+<td class="text-left"><p><span class="math notranslate nohighlight">\(\Large 0\)</span></p></td>
+</tr>
+<tr class="row-odd"><td class="text-left"><p>Ramp</p></td>
+<td class="text-left"><p><span class="math notranslate nohighlight">\(\Large \infty\)</span></p></td>
+<td class="text-left"><p><span class="math notranslate nohighlight">\(\Large \frac{a}{K}\)</span></p></td>
+<td class="text-left"><p><span class="math notranslate nohighlight">\(\Large 0\)</span></p></td>
+</tr>
+<tr class="row-even"><td class="text-left"><p>Parabolic</p></td>
+<td class="text-left"><p><span class="math notranslate nohighlight">\(\Large \infty\)</span></p></td>
+<td class="text-left"><p><span class="math notranslate nohighlight">\(\Large \infty\)</span></p></td>
+<td class="text-left"><p><span class="math notranslate nohighlight">\(\Large \frac{a}{K}\)</span></p></td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</div>
 </section>
 </section>
 
@@ -648,6 +837,24 @@
                 <footer class="prev-next-footer d-print-none">
                   
 <div class="prev-next-area">
+    <a class="left-prev"
+       href="second-order.html"
+       title="previous page">
+      <i class="fa-solid fa-angle-left"></i>
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">previous</p>
+        <p class="prev-next-title">Second-Order System</p>
+      </div>
+    </a>
+    <a class="right-next"
+       href="routh-hurwitz.html"
+       title="next page">
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">next</p>
+        <p class="prev-next-title">Routh-Hurwitz Stability Criterion</p>
+      </div>
+      <i class="fa-solid fa-angle-right"></i>
+    </a>
 </div>
                 </footer>
               
@@ -669,6 +876,7 @@
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#step-input">Step Input</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#ramp-input">Ramp Input</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#parabolic-input">Parabolic Input</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#summary">Summary</a></li>
 </ul>
   </nav></div>
 
