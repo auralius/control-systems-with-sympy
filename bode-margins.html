@@ -67,7 +67,7 @@
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
     <link rel="next" title="PID Control of a First Order System" href="pid-fo.html" />
-    <link rel="prev" title="Asymptotic Bode" href="bode-plot.html" />
+    <link rel="prev" title="The Bode Plots" href="bode-plot.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
   <meta name="docsearch:version" content="" />
@@ -175,7 +175,7 @@
 <ul class="nav bd-sidenav">
 <li class="toctree-l1"><a class="reference internal" href="block-diagram.html">Block Diagram</a></li>
 <li class="toctree-l1"><a class="reference internal" href="fly-ball-governor.html">System Modeling: Flyball Governor</a></li>
-<li class="toctree-l1"><a class="reference internal" href="rectilinear.html">System modeling: rectilinear system</a></li>
+<li class="toctree-l1"><a class="reference internal" href="rectilinear.html">System Modeling: Rectilinear System</a></li>
 <li class="toctree-l1"><a class="reference internal" href="first-order.html">First-order systems</a></li>
 <li class="toctree-l1"><a class="reference internal" href="second-order.html">Second-Order System</a></li>
 <li class="toctree-l1"><a class="reference internal" href="steady-state-error.html">Tracking Accuracy of a Feedback system</a></li>
@@ -184,7 +184,7 @@
 <ul class="current nav bd-sidenav">
 <li class="toctree-l1"><a class="reference internal" href="routh-hurwitz.html">Routh-Hurwitz Stability Criterion</a></li>
 <li class="toctree-l1"><a class="reference internal" href="root-locus.html">The Root-Locus Method</a></li>
-<li class="toctree-l1"><a class="reference internal" href="bode-plot.html">Asymptotic Bode</a></li>
+<li class="toctree-l1"><a class="reference internal" href="bode-plot.html">The Bode Plots</a></li>
 <li class="toctree-l1 current active"><a class="current reference internal" href="#">Gain Margin and Phase Margin</a></li>
 </ul>
 <p aria-level="2" class="caption" role="heading"><span class="caption-text">PID Control</span></p>
@@ -467,8 +467,8 @@
                 <ul class="visible nav section-nav flex-column">
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#preparations">Preparations</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#example-1">Example 1</a><ul class="nav section-nav flex-column">
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#the-magnitude-equation">The magnitude equation:</a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#the-phase-equation">The phase equation:</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#the-magnitude-equation-m-omega-g-j-omega">The magnitude equation <span class="math notranslate nohighlight">\(M(\omega)=|G(j \omega)|\)</span>:</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#the-phase-equation-phi-omega-angle-g-j-omega">The phase equation <span class="math notranslate nohighlight">\(\phi(\omega) = \angle(G(j \omega))\)</span>:</a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#cross-over-frequencies">Cross-over frequencies</a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#bode-plot">Bode plot</a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#gain-cross-over-frequency">Gain cross-over frequency</a></li>
@@ -520,10 +520,13 @@ We also need to define specific prpoperties of the variables.</p>
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">sympy.abc</span> <span class="kn">import</span> <span class="n">s</span><span class="p">,</span> <span class="n">epsilon</span><span class="p">,</span> <span class="n">k</span>
 
-<span class="n">t</span>        <span class="o">=</span> <span class="n">symbols</span><span class="p">(</span><span class="s1">&#39;t&#39;</span>       <span class="p">,</span> <span class="n">real</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-<span class="n">omega</span>    <span class="o">=</span> <span class="n">symbols</span><span class="p">(</span><span class="s1">&#39;omega&#39;</span>   <span class="p">,</span> <span class="n">positive</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="n">t</span>        <span class="o">=</span> <span class="n">symbols</span><span class="p">(</span><span class="s1">&#39;t&#39;</span>       <span class="p">,</span> <span class="n">real</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">positive</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="n">omega</span>    <span class="o">=</span> <span class="n">symbols</span><span class="p">(</span><span class="s1">&#39;omega&#39;</span>   <span class="p">,</span> <span class="n">real</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">positive</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 <span class="n">zeta</span>     <span class="o">=</span> <span class="n">symbols</span><span class="p">(</span><span class="s1">&#39;zeta&#39;</span>    <span class="p">,</span> <span class="n">real</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-<span class="n">omega_n</span>  <span class="o">=</span> <span class="n">symbols</span><span class="p">(</span><span class="s1">&#39;omega_n&#39;</span> <span class="p">,</span> <span class="n">positive</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="n">omega_n</span>  <span class="o">=</span> <span class="n">symbols</span><span class="p">(</span><span class="s1">&#39;omega_n&#39;</span> <span class="p">,</span> <span class="n">real</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">positive</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+<span class="c1"># Define the positive reals domain: (0, infinity)</span>
+<span class="n">positive_reals</span> <span class="o">=</span> <span class="n">Interval</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">oo</span><span class="p">,</span> <span class="n">left_open</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
@@ -558,14 +561,14 @@ We also need to define specific prpoperties of the variables.</p>
 \[\displaystyle G(j \omega)=\frac{0.5 i \omega + 1.3}{- i \omega^{3} - 1.2 \omega^{2} + 1.6 i \omega}\]</div>
 </div>
 </div>
-<section id="the-magnitude-equation">
-<h3>The magnitude equation:<a class="headerlink" href="#the-magnitude-equation" title="Link to this heading">#</a></h3>
+<section id="the-magnitude-equation-m-omega-g-j-omega">
+<h3>The magnitude equation <span class="math notranslate nohighlight">\(M(\omega)=|G(j \omega)|\)</span>:<a class="headerlink" href="#the-magnitude-equation-m-omega-g-j-omega" title="Link to this heading">#</a></h3>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">M</span> <span class="o">=</span> <span class="n">Abs</span><span class="p">(</span><span class="n">Gjw</span><span class="p">)</span>
 <span class="n">mprint</span><span class="p">(</span><span class="s2">&quot;M=&quot;</span><span class="p">,</span> <span class="n">latex</span><span class="p">(</span><span class="n">M</span><span class="p">))</span>
 
-<span class="n">Mdb</span> <span class="o">=</span> <span class="mi">20</span><span class="o">*</span><span class="n">log</span><span class="p">(</span><span class="n">M</span><span class="p">,</span><span class="mi">10</span><span class="p">)</span>
+<span class="n">Mdb</span> <span class="o">=</span> <span class="mi">20</span><span class="o">*</span><span class="n">log</span><span class="p">(</span><span class="n">M</span><span class="p">,</span> <span class="mi">10</span><span class="p">)</span>
 <span class="n">mprint</span><span class="p">(</span><span class="s2">&quot;M_</span><span class="si">{dB}</span><span class="s2"> = &quot;</span><span class="p">,</span> <span class="n">latex</span><span class="p">(</span><span class="n">Mdb</span><span class="p">))</span>
 </pre></div>
 </div>
@@ -578,8 +581,8 @@ We also need to define specific prpoperties of the variables.</p>
 </div>
 </div>
 </section>
-<section id="the-phase-equation">
-<h3>The phase equation:<a class="headerlink" href="#the-phase-equation" title="Link to this heading">#</a></h3>
+<section id="the-phase-equation-phi-omega-angle-g-j-omega">
+<h3>The phase equation <span class="math notranslate nohighlight">\(\phi(\omega) = \angle(G(j \omega))\)</span>:<a class="headerlink" href="#the-phase-equation-phi-omega-angle-g-j-omega" title="Link to this heading">#</a></h3>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">Phi</span> <span class="o">=</span> <span class="n">simplify</span><span class="p">(</span><span class="n">atan</span><span class="p">(</span><span class="n">im</span><span class="p">(</span><span class="n">Gjw</span><span class="p">)</span><span class="o">/</span><span class="n">re</span><span class="p">(</span><span class="n">Gjw</span><span class="p">)))</span>
@@ -595,6 +598,12 @@ We also need to define specific prpoperties of the variables.</p>
 </section>
 <section id="cross-over-frequencies">
 <h3>Cross-over frequencies<a class="headerlink" href="#cross-over-frequencies" title="Link to this heading">#</a></h3>
+<p><strong>Gain Crossover Frequency</strong> (<span class="math notranslate nohighlight">\(\omega_{gc}\)</span>) : The frequency where the open-loop gain magnitude is exactly <span class="math notranslate nohighlight">\(0\text{ dB}\)</span> (or a linear gain of 1).</p>
+<p>Condition: <span class="math notranslate nohighlight">\(M\boxed{\left(\omega_{g c}\right)=1}\)</span> or <span class="math notranslate nohighlight">\(\boxed{M_{dB}\left(\omega_{g c}\right)=0}\)</span></p>
+<p><strong>Phase Crossover Frequency</strong> (<span class="math notranslate nohighlight">\(\omega_{pc}\)</span>) : The frequency where the open-loop phase angle is exactly <span class="math notranslate nohighlight">\(-180^\circ\)</span>.</p>
+<p>Condition: <span class="math notranslate nohighlight">\(\boxed{\phi\left(\omega_{p c}\right)=-180^{\circ}}\)</span> or <span class="math notranslate nohighlight">\(\boxed{\phi \left(\omega_{p c}\right)=-\pi}\)</span></p>
+<p><strong>Gain Margin (GM)</strong> : the amount of additional gain that can be introduced into the loop before the system becomes unstable.</p>
+<p><strong>Phase Margin (PM)</strong> : the amount of additional phase lag (delay) that can be introduced into the system before it becomes unstable.</p>
 </section>
 <section id="bode-plot">
 <h3>Bode plot<a class="headerlink" href="#bode-plot" title="Link to this heading">#</a></h3>
@@ -619,14 +628,14 @@ We also need to define specific prpoperties of the variables.</p>
 <p>Find <span class="math notranslate nohighlight">\(\omega\)</span> where the magnitude is zero dB. <strong>Take the positive value</strong>.</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">w_gain</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">solveset</span><span class="p">(</span><span class="n">Eq</span><span class="p">(</span><span class="n">Mdb</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span> <span class="n">omega</span><span class="p">,</span> <span class="n">domain</span><span class="o">=</span><span class="n">S</span><span class="o">.</span><span class="n">Reals</span><span class="p">))</span>
-<span class="n">mprint</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\\</span><span class="s2">omega_</span><span class="si">{gain}</span><span class="s2">=&quot;</span><span class="p">,</span> <span class="n">latex</span><span class="p">(</span><span class="n">w_gain</span><span class="p">))</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">w_gain</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">solveset</span><span class="p">(</span><span class="n">Eq</span><span class="p">(</span><span class="n">Mdb</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span> <span class="n">omega</span><span class="p">,</span> <span class="n">domain</span><span class="o">=</span><span class="n">positive_reals</span><span class="p">))</span>
+<span class="n">mprint</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\\</span><span class="s2">omega_</span><span class="si">{gc}</span><span class="s2">=&quot;</span><span class="p">,</span> <span class="n">latex</span><span class="p">(</span><span class="n">w_gain</span><span class="p">))</span>
 </pre></div>
 </div>
 </div>
 <div class="cell_output docutils container">
 <div class="output text_latex math notranslate nohighlight">
-\[\displaystyle \omega_{gain}=\left[ -1.03642323216522, \  1.03642323216522\right]\]</div>
+\[\displaystyle \omega_{gc}=\left[ 1.03642323216522\right]\]</div>
 </div>
 </div>
 </section>
@@ -635,23 +644,23 @@ We also need to define specific prpoperties of the variables.</p>
 <p>Find <span class="math notranslate nohighlight">\(\omega\)</span> where the phase is <span class="math notranslate nohighlight">\(n\pi\)</span>, where <span class="math notranslate nohighlight">\(n\)</span> is integer numbers (negative, zero, and positive). From the plot, we know we must check 0. <strong>Take the positive value</strong>.</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">w_phase</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">solveset</span><span class="p">(</span><span class="n">Eq</span><span class="p">(</span><span class="n">Phi</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span> <span class="n">omega</span><span class="p">,</span> <span class="n">domain</span><span class="o">=</span><span class="n">S</span><span class="o">.</span><span class="n">Reals</span><span class="p">))</span>
-<span class="n">mprint</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\\</span><span class="s2">omega_</span><span class="si">{phase}</span><span class="s2">=&quot;</span><span class="p">,</span> <span class="n">latex</span><span class="p">(</span><span class="n">w_phase</span><span class="p">))</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">w_phase</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">solveset</span><span class="p">(</span><span class="n">Eq</span><span class="p">(</span><span class="n">Phi</span><span class="p">,</span> <span class="o">-</span><span class="n">pi</span><span class="p">),</span> <span class="n">omega</span><span class="p">,</span> <span class="n">positive_reals</span><span class="p">))</span>
+<span class="n">mprint</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\\</span><span class="s2">omega_</span><span class="si">{pc}</span><span class="s2">=&quot;</span><span class="p">,</span> <span class="n">latex</span><span class="p">(</span><span class="n">w_phase</span><span class="p">))</span>
 </pre></div>
 </div>
 </div>
 <div class="cell_output docutils container">
 <div class="output text_latex math notranslate nohighlight">
-\[\displaystyle \omega_{phase}=\left[ -1.72378321474267, \  1.72378321474267\right]\]</div>
+\[\displaystyle \omega_{pc}=\left[ 1.72378321474267\right]\]</div>
 </div>
 </div>
 </section>
 <section id="gain-margin">
 <h3>Gain margin<a class="headerlink" href="#gain-margin" title="Link to this heading">#</a></h3>
-<p><span class="math notranslate nohighlight">\(M_{dB}\)</span> when <span class="math notranslate nohighlight">\(\omega = \omega_{phase}\)</span></p>
+<p>Definition: <span class="math notranslate nohighlight">\(M_{\text{dB}}\)</span> when <span class="math notranslate nohighlight">\(\omega = \omega_{pc}\)</span></p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">GM</span> <span class="o">=</span> <span class="nb">abs</span><span class="p">(</span><span class="n">Mdb</span><span class="o">.</span><span class="n">subs</span><span class="p">(</span><span class="n">omega</span><span class="p">,</span> <span class="n">w_phase</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span><span class="o">.</span><span class="n">evalf</span><span class="p">())</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">GM</span> <span class="o">=</span> <span class="nb">abs</span><span class="p">(</span><span class="n">Mdb</span><span class="o">.</span><span class="n">subs</span><span class="p">(</span><span class="n">omega</span><span class="p">,</span> <span class="n">w_phase</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span><span class="o">.</span><span class="n">evalf</span><span class="p">())</span>
 <span class="n">GM</span>
 </pre></div>
 </div>
@@ -664,10 +673,10 @@ We also need to define specific prpoperties of the variables.</p>
 </section>
 <section id="phase-margin">
 <h3>Phase margin<a class="headerlink" href="#phase-margin" title="Link to this heading">#</a></h3>
-<p><span class="math notranslate nohighlight">\(\phi\)</span> when <span class="math notranslate nohighlight">\(\omega = \omega_{gain}\)</span></p>
+<p>Definition: <span class="math notranslate nohighlight">\(\phi\)</span> when <span class="math notranslate nohighlight">\(\omega = \omega_{gc}\)</span></p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">PM</span> <span class="o">=</span> <span class="nb">abs</span><span class="p">(</span><span class="n">mp</span><span class="o">.</span><span class="n">degrees</span><span class="p">(</span><span class="n">Phi</span><span class="o">.</span><span class="n">subs</span><span class="p">(</span><span class="n">omega</span><span class="p">,</span> <span class="n">w_gain</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span><span class="o">.</span><span class="n">evalf</span><span class="p">()))</span> <span class="c1"># in  degrees</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">PM</span> <span class="o">=</span> <span class="nb">abs</span><span class="p">(</span><span class="n">mp</span><span class="o">.</span><span class="n">degrees</span><span class="p">(</span><span class="n">Phi</span><span class="o">.</span><span class="n">subs</span><span class="p">(</span><span class="n">omega</span><span class="p">,</span> <span class="n">w_gain</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span><span class="o">.</span><span class="n">evalf</span><span class="p">()))</span> <span class="c1"># in  degrees</span>
 <span class="n">PM</span>
 </pre></div>
 </div>
@@ -758,16 +767,16 @@ We also need to define specific prpoperties of the variables.</p>
         },
         codeMirrorConfig: {
             theme: "abcdef",
-            mode: "python"
+            mode: "py.3.12.4"
         },
         kernelOptions: {
-            name: "python3",
+            name: "py.3.12.4",
             path: "./."
         },
         predefinedOutput: true
     }
     </script>
-    <script>kernelName = 'python3'</script>
+    <script>kernelName = 'py.3.12.4'</script>
 
                 </article>
               
@@ -785,7 +794,7 @@ We also need to define specific prpoperties of the variables.</p>
       <i class="fa-solid fa-angle-left"></i>
       <div class="prev-next-info">
         <p class="prev-next-subtitle">previous</p>
-        <p class="prev-next-title">Asymptotic Bode</p>
+        <p class="prev-next-title">The Bode Plots</p>
       </div>
     </a>
     <a class="right-next"
@@ -816,8 +825,8 @@ We also need to define specific prpoperties of the variables.</p>
     <ul class="visible nav section-nav flex-column">
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#preparations">Preparations</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#example-1">Example 1</a><ul class="nav section-nav flex-column">
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#the-magnitude-equation">The magnitude equation:</a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#the-phase-equation">The phase equation:</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#the-magnitude-equation-m-omega-g-j-omega">The magnitude equation <span class="math notranslate nohighlight">\(M(\omega)=|G(j \omega)|\)</span>:</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#the-phase-equation-phi-omega-angle-g-j-omega">The phase equation <span class="math notranslate nohighlight">\(\phi(\omega) = \angle(G(j \omega))\)</span>:</a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#cross-over-frequencies">Cross-over frequencies</a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#bode-plot">Bode plot</a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#gain-cross-over-frequency">Gain cross-over frequency</a></li>

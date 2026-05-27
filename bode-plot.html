@@ -8,7 +8,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>Asymptotic Bode &#8212; Control Systems with Sympy</title>
+    <title>The Bode Plots &#8212; Control Systems with Sympy</title>
   
   
   
@@ -175,7 +175,7 @@
 <ul class="nav bd-sidenav">
 <li class="toctree-l1"><a class="reference internal" href="block-diagram.html">Block Diagram</a></li>
 <li class="toctree-l1"><a class="reference internal" href="fly-ball-governor.html">System Modeling: Flyball Governor</a></li>
-<li class="toctree-l1"><a class="reference internal" href="rectilinear.html">System modeling: rectilinear system</a></li>
+<li class="toctree-l1"><a class="reference internal" href="rectilinear.html">System Modeling: Rectilinear System</a></li>
 <li class="toctree-l1"><a class="reference internal" href="first-order.html">First-order systems</a></li>
 <li class="toctree-l1"><a class="reference internal" href="second-order.html">Second-Order System</a></li>
 <li class="toctree-l1"><a class="reference internal" href="steady-state-error.html">Tracking Accuracy of a Feedback system</a></li>
@@ -184,7 +184,7 @@
 <ul class="current nav bd-sidenav">
 <li class="toctree-l1"><a class="reference internal" href="routh-hurwitz.html">Routh-Hurwitz Stability Criterion</a></li>
 <li class="toctree-l1"><a class="reference internal" href="root-locus.html">The Root-Locus Method</a></li>
-<li class="toctree-l1 current active"><a class="current reference internal" href="#">Asymptotic Bode</a></li>
+<li class="toctree-l1 current active"><a class="current reference internal" href="#">The Bode Plots</a></li>
 <li class="toctree-l1"><a class="reference internal" href="bode-margins.html">Gain Margin and Phase Margin</a></li>
 </ul>
 <p aria-level="2" class="caption" role="heading"><span class="caption-text">PID Control</span></p>
@@ -455,7 +455,7 @@
               
 
 <div id="jb-print-docs-body" class="onlyprint">
-    <h1>Asymptotic Bode</h1>
+    <h1>The Bode Plots</h1>
     <!-- Table of contents -->
     <div id="print-main-content">
         <div id="jb-print-toc">
@@ -466,13 +466,16 @@
             <nav aria-label="Page">
                 <ul class="visible nav section-nav flex-column">
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#preparations">Preparations</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#asymptotic-bode-plots-of-low-order-transfer-functions">Asymptotic Bode Plots of Low-Order Transfer Functions</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#case-1-a-pole-at-the-origin-of-the-s-plane">Case 1: A pole at the origin of the s-plane</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#case-2-a-zero-at-the-origin-of-the-s-plane">Case 2: A zero at the origin of the s-plane</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#case-3-a-single-real-pole">Case 3: A single real pole</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#case-4-a-single-real-zero">Case 4: A single real zero</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#case-5-complex-conjugate-pole-pair">Case 5: Complex Conjugate Pole Pair</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#case-6-complex-conjugate-zero-pair">Case 6: Complex Conjugate Zero Pair</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#bode-plots-with-symbolic-math">Bode Plots with Symbolic Math</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#asymptotic-bode-plots-of-low-order-transfer-functions">Asymptotic Bode Plots of Low-Order Transfer Functions</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#case-1-a-pole-at-the-origin-of-the-s-plane">Case 1: A pole at the origin of the s-plane</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#case-2-a-zero-at-the-origin-of-the-s-plane">Case 2: A zero at the origin of the s-plane</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#case-3-a-single-real-pole">Case 3: A single real pole</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#case-4-a-single-real-zero">Case 4: A single real zero</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#case-5-complex-conjugate-pole-pair">Case 5: Complex Conjugate Pole Pair</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#case-6-complex-conjugate-zero-pair">Case 6: Complex Conjugate Zero Pair</a></li>
+</ul>
+</li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#summary">Summary</a><ul class="nav section-nav flex-column">
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#asymptotic-bode-as-piecewise-functions">Asymptotic Bode as piecewise functions</a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#resonance-peaks">Resonance peaks</a></li>
@@ -489,15 +492,21 @@
 <div id="searchbox"></div>
                 <article class="bd-article">
                   
-  <section class="tex2jax_ignore mathjax_ignore" id="asymptotic-bode">
-<h1>Asymptotic Bode<a class="headerlink" href="#asymptotic-bode" title="Link to this heading">#</a></h1>
-<p>Goal:</p>
+  <section class="tex2jax_ignore mathjax_ignore" id="the-bode-plots">
+<h1>The Bode Plots<a class="headerlink" href="#the-bode-plots" title="Link to this heading">#</a></h1>
+<p>Our goals:</p>
 <ul class="simple">
-<li><p>Express the frequency response of a system defined by a transfer function as piecewise linear funtions.</p></li>
+<li><p>Draw the Bode plots with symbolic math.</p></li>
+<li><p>Explore the asymptotic Bode plots that is found in general control text books and express theses text-book steps into more generalized piecewise linear funtions.</p></li>
 </ul>
 <section id="preparations">
 <h2>Preparations<a class="headerlink" href="#preparations" title="Link to this heading">#</a></h2>
-<div class="cell docutils container">
+<div class="cell tag_hide-input docutils container">
+<details class="hide above-input">
+<summary aria-label="Toggle hidden content">
+<span class="collapsed">Show code cell source</span>
+<span class="expanded">Hide code cell source</span>
+</summary>
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 
@@ -509,12 +518,13 @@
 <span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
 <span class="n">plt</span><span class="o">.</span><span class="n">rcParams</span><span class="o">.</span><span class="n">update</span><span class="p">({</span>
     <span class="s2">&quot;text.usetex&quot;</span><span class="p">:</span> <span class="kc">True</span><span class="p">,</span>
-    <span class="s2">&quot;font.family&quot;</span><span class="p">:</span> <span class="s2">&quot;Helvetica&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;font.family&quot;</span><span class="p">:</span> <span class="s2">&quot;serif&quot;</span><span class="p">,</span>
     <span class="s2">&quot;font.size&quot;</span><span class="p">:</span> <span class="mi">10</span><span class="p">,</span>
 <span class="p">})</span>
 </pre></div>
 </div>
 </div>
+</details>
 </div>
 <p>Define variables that we are going to use repetitively.
 We also need to define specific prpoperties of the variables.</p>
@@ -531,24 +541,100 @@ We also need to define specific prpoperties of the variables.</p>
 </div>
 </div>
 </section>
-<section id="asymptotic-bode-plots-of-low-order-transfer-functions">
-<h2>Asymptotic Bode Plots of Low-Order Transfer Functions<a class="headerlink" href="#asymptotic-bode-plots-of-low-order-transfer-functions" title="Link to this heading">#</a></h2>
-<p>These are the fundamental steps that we must do to plot the frequence response (Bode plot) of a system defined by a transfer function <span class="math notranslate nohighlight">\(H(s)\)</span>:</p>
+<section id="bode-plots-with-symbolic-math">
+<h2>Bode Plots with Symbolic Math<a class="headerlink" href="#bode-plots-with-symbolic-math" title="Link to this heading">#</a></h2>
+<p>The Bode plots consist of two plots, the magnitude plot and the phase plot. To obtain these two plots, we substitute <span class="math notranslate nohighlight">\(s=j \omega\)</span> to the transfer function <span class="math notranslate nohighlight">\(G(s)\)</span> that we want to investigate.</p>
+<p>Let us take the following transfer function as an example.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">G</span> <span class="o">=</span> <span class="p">(</span><span class="mf">0.5</span><span class="o">*</span><span class="n">s</span> <span class="o">+</span> <span class="mf">1.3</span><span class="p">)</span> <span class="o">/</span> <span class="p">(</span><span class="n">s</span><span class="o">**</span><span class="mi">3</span> <span class="o">+</span> <span class="mf">1.2</span><span class="o">*</span><span class="n">s</span><span class="o">**</span><span class="mi">2</span> <span class="o">+</span> <span class="mf">1.6</span><span class="o">*</span><span class="n">s</span><span class="p">)</span>
+<span class="n">mprint</span><span class="p">(</span><span class="s2">&quot;G(s)=&quot;</span><span class="p">,</span> <span class="n">latex</span><span class="p">(</span><span class="n">G</span><span class="p">))</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_latex math notranslate nohighlight">
+\[\displaystyle G(s)=\frac{0.5 s + 1.3}{s^{3} + 1.2 s^{2} + 1.6 s}\]</div>
+</div>
+</div>
+<p>By substituting <span class="math notranslate nohighlight">\(s = j \omega\)</span>, we obtain:</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">Gjw</span> <span class="o">=</span> <span class="n">G</span><span class="o">.</span><span class="n">subs</span><span class="p">(</span><span class="n">s</span><span class="p">,</span> <span class="n">I</span><span class="o">*</span><span class="n">omega</span><span class="p">)</span>
+<span class="n">mprint</span><span class="p">(</span><span class="s2">&quot;G(j</span><span class="se">\\</span><span class="s2">omega)=&quot;</span><span class="p">,</span> <span class="n">latex</span><span class="p">(</span><span class="n">Gjw</span><span class="p">))</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_latex math notranslate nohighlight">
+\[\displaystyle G(j\omega)=\frac{0.5 i \omega + 1.3}{- i \omega^{3} - 1.2 \omega^{2} + 1.6 i \omega}\]</div>
+</div>
+</div>
+<p>Next, we extract the magnitude and the phase equations. The magnitude equation is <span class="math notranslate nohighlight">\(M(\omega)\)</span>:</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">M</span> <span class="o">=</span> <span class="n">Abs</span><span class="p">(</span><span class="n">Gjw</span><span class="p">)</span>
+<span class="n">mprint</span><span class="p">(</span><span class="s2">&quot;M=&quot;</span><span class="p">,</span> <span class="n">latex</span><span class="p">(</span><span class="n">M</span><span class="p">))</span>
+
+<span class="n">Mdb</span> <span class="o">=</span> <span class="mi">20</span><span class="o">*</span><span class="n">log</span><span class="p">(</span><span class="n">M</span><span class="p">,</span><span class="mi">10</span><span class="p">)</span>
+<span class="n">mprint</span><span class="p">(</span><span class="s2">&quot;M_</span><span class="si">{dB}</span><span class="s2"> = &quot;</span><span class="p">,</span> <span class="n">latex</span><span class="p">(</span><span class="n">Mdb</span><span class="p">))</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_latex math notranslate nohighlight">
+\[\displaystyle M=\frac{0.8125 \sqrt{0.14792899408284 \omega^{2} + 1}}{\sqrt{0.390625 \omega^{6} - 0.6875 \omega^{4} + \omega^{2}}}\]</div>
+<div class="output text_latex math notranslate nohighlight">
+\[\displaystyle M_{dB} = \frac{20 \log{\left(\frac{0.8125 \sqrt{0.14792899408284 \omega^{2} + 1}}{\sqrt{0.390625 \omega^{6} - 0.6875 \omega^{4} + \omega^{2}}} \right)}}{\log{\left(10 \right)}}\]</div>
+</div>
+</div>
+<p>The phase equation is <span class="math notranslate nohighlight">\(\phi(\omega)\)</span>:</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">Phi</span> <span class="o">=</span> <span class="n">simplify</span><span class="p">(</span><span class="n">atan</span><span class="p">(</span><span class="n">im</span><span class="p">(</span><span class="n">Gjw</span><span class="p">)</span><span class="o">/</span><span class="n">re</span><span class="p">(</span><span class="n">Gjw</span><span class="p">)))</span>
+<span class="n">mprint</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\\</span><span class="s2">phi = &quot;</span><span class="p">,</span> <span class="n">latex</span><span class="p">(</span><span class="n">Phi</span><span class="p">))</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_latex math notranslate nohighlight">
+\[\displaystyle \phi = \operatorname{atan}{\left(\frac{2.08 - 0.7 \omega^{2}}{\omega \left(0.5 \omega^{2} + 0.76\right)} \right)}\]</div>
+</div>
+</div>
+<p>Finally, we plot the two plots seperately.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">mag</span> <span class="o">=</span> <span class="n">plot</span><span class="p">(</span><span class="n">Mdb</span><span class="p">,</span> <span class="p">(</span><span class="n">omega</span><span class="p">,</span> <span class="mf">0.1</span> <span class="p">,</span> <span class="mi">100</span><span class="p">),</span> <span class="n">size</span><span class="o">=</span><span class="p">(</span><span class="mi">8</span><span class="p">,</span> <span class="mi">3</span><span class="p">),</span> <span class="n">show</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">title</span><span class="o">=</span><span class="s1">&#39;$ M_</span><span class="si">{dB}</span><span class="s1"> $&#39;</span><span class="p">,</span> <span class="n">xscale</span><span class="o">=</span><span class="s1">&#39;log&#39;</span><span class="p">)</span>
+<span class="n">mag</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+
+<span class="n">pha</span> <span class="o">=</span> <span class="n">plot</span><span class="p">(</span><span class="n">Phi</span><span class="p">,</span> <span class="p">(</span><span class="n">omega</span><span class="p">,</span> <span class="mf">0.1</span> <span class="p">,</span> <span class="mi">100</span><span class="p">),</span> <span class="n">size</span><span class="o">=</span><span class="p">(</span><span class="mi">8</span><span class="p">,</span> <span class="mi">3</span><span class="p">),</span> <span class="n">title</span><span class="o">=</span><span class="s1">&#39;$ </span><span class="se">\\</span><span class="s1">phi $&#39;</span><span class="p">,</span> <span class="n">show</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>  <span class="n">xscale</span><span class="o">=</span><span class="s1">&#39;log&#39;</span><span class="p">)</span>
+<span class="n">pha</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<img alt="_images/6a918d56f1f0f1a96e92c73c5ca47ff88718716c5b91f0b2dccd744b77814470.png" src="_images/6a918d56f1f0f1a96e92c73c5ca47ff88718716c5b91f0b2dccd744b77814470.png" />
+<img alt="_images/2de4c92e3b00b715f4f62964c7196a2d19aec718f222bb1a4c2738e9bfbed0ad.png" src="_images/2de4c92e3b00b715f4f62964c7196a2d19aec718f222bb1a4c2738e9bfbed0ad.png" />
+</div>
+</div>
+<p>In summary, these are the fundamental steps that we must do to plot the frequence response (Bode plot) of a system defined by a transfer function <span class="math notranslate nohighlight">\(G(s)\)</span>:</p>
 <ul class="simple">
-<li><p>Do substitution: <span class="math notranslate nohighlight">\(s = j \omega\)</span></p></li>
-<li><p>Compute <span class="math notranslate nohighlight">\(H( j \omega )\)</span></p></li>
-<li><p>The result is a complex number:</p>
+<li><p>Do substitution: <span class="math notranslate nohighlight">\(s = j \omega\)</span> to <span class="math notranslate nohighlight">\(G(s)\)</span></p></li>
+<li><p>Compute <span class="math notranslate nohighlight">\(G( j \omega )\)</span></p></li>
+<li><p>The result is a complex function:</p>
 <ul>
-<li><p>Extract the magnitude: <span class="math notranslate nohighlight">\( M = \big| H(j \omega) \big| \)</span></p></li>
+<li><p>Extract the magnitude function: <span class="math notranslate nohighlight">\( M = \big| G(j \omega) \big| \)</span></p></li>
 <li><p>Convert the magnitude into dB: <span class="math notranslate nohighlight">\( M_{dB} = 20 \log_{10} M  \)</span></p></li>
-<li><p>Extract the the phase: <span class="math notranslate nohighlight">\( \phi = \angle H(j \omega) \)</span></p></li>
+<li><p>Extract the the phase function: <span class="math notranslate nohighlight">\( \phi = \angle G(j \omega) \)</span></p></li>
 </ul>
 </li>
 </ul>
-<p>It is very easy to execute those steps by using a computer. On the other hand, when we simply want to sketch the Bode plot without using a computer, we can use the asymptotic method to draw the approximated version of the Bode plot.</p>
 </section>
+<section id="asymptotic-bode-plots-of-low-order-transfer-functions">
+<h2>Asymptotic Bode Plots of Low-Order Transfer Functions<a class="headerlink" href="#asymptotic-bode-plots-of-low-order-transfer-functions" title="Link to this heading">#</a></h2>
+<p>It is very easy to execute those steps by using a computer. On the other hand, when we simply want to sketch the Bode plot without using a computer, we can use the asymptotic method to draw the approximated version of the Bode plot.</p>
 <section id="case-1-a-pole-at-the-origin-of-the-s-plane">
-<h2>Case 1: A pole at the origin of the s-plane<a class="headerlink" href="#case-1-a-pole-at-the-origin-of-the-s-plane" title="Link to this heading">#</a></h2>
+<h3>Case 1: A pole at the origin of the s-plane<a class="headerlink" href="#case-1-a-pole-at-the-origin-of-the-s-plane" title="Link to this heading">#</a></h3>
 <p>Let us start by first defining the transfer function:</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
@@ -599,7 +685,7 @@ We also need to define specific prpoperties of the variables.</p>
 </div>
 </details>
 <div class="cell_output docutils container">
-<img alt="_images/2aaf9144938336d6b5caf808eabed6622f3a533f6755568c275bc626f296e1c0.png" src="_images/2aaf9144938336d6b5caf808eabed6622f3a533f6755568c275bc626f296e1c0.png" />
+<img alt="_images/6a133ba36169d1b511f52fc62138611592d65062d3a15d6cde7d067bf01bcd62.png" src="_images/6a133ba36169d1b511f52fc62138611592d65062d3a15d6cde7d067bf01bcd62.png" />
 </div>
 </div>
 <p><strong>Phase plot:</strong></p>
@@ -617,12 +703,12 @@ We also need to define specific prpoperties of the variables.</p>
 </div>
 </details>
 <div class="cell_output docutils container">
-<img alt="_images/8dc352e088a343cb6b932e13c2719016b14e517b492890c6fa17bfc3f1eff0d1.png" src="_images/8dc352e088a343cb6b932e13c2719016b14e517b492890c6fa17bfc3f1eff0d1.png" />
+<img alt="_images/0bdf9a5aca65957ff389b7ead4fc030d75290a5ccd31c72b6452e15ea0294ec2.png" src="_images/0bdf9a5aca65957ff389b7ead4fc030d75290a5ccd31c72b6452e15ea0294ec2.png" />
 </div>
 </div>
 </section>
 <section id="case-2-a-zero-at-the-origin-of-the-s-plane">
-<h2>Case 2: A zero at the origin of the s-plane<a class="headerlink" href="#case-2-a-zero-at-the-origin-of-the-s-plane" title="Link to this heading">#</a></h2>
+<h3>Case 2: A zero at the origin of the s-plane<a class="headerlink" href="#case-2-a-zero-at-the-origin-of-the-s-plane" title="Link to this heading">#</a></h3>
 <p>Let us start by first defining the transfer function:</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
@@ -673,7 +759,7 @@ We also need to define specific prpoperties of the variables.</p>
 </div>
 </details>
 <div class="cell_output docutils container">
-<img alt="_images/0039480639105640ccc260f2cd411f7d5f33d5c75afe8abab8f5362490a58a18.png" src="_images/0039480639105640ccc260f2cd411f7d5f33d5c75afe8abab8f5362490a58a18.png" />
+<img alt="_images/9216308386d5f8f9628cda429ce4fb3eb21203a5bee6f98b9a3434472982b0da.png" src="_images/9216308386d5f8f9628cda429ce4fb3eb21203a5bee6f98b9a3434472982b0da.png" />
 </div>
 </div>
 <p><strong>Phase plot:</strong></p>
@@ -691,12 +777,12 @@ We also need to define specific prpoperties of the variables.</p>
 </div>
 </details>
 <div class="cell_output docutils container">
-<img alt="_images/e00ed22de6e13f7512d4b38041b0b3fc28b81c46d5198b0f61632be9efed0336.png" src="_images/e00ed22de6e13f7512d4b38041b0b3fc28b81c46d5198b0f61632be9efed0336.png" />
+<img alt="_images/3651b309a295b4a7182c743890bd12bdaa6b71c9f03d8f452436b7792003c6ec.png" src="_images/3651b309a295b4a7182c743890bd12bdaa6b71c9f03d8f452436b7792003c6ec.png" />
 </div>
 </div>
 </section>
 <section id="case-3-a-single-real-pole">
-<h2>Case 3: A single real pole<a class="headerlink" href="#case-3-a-single-real-pole" title="Link to this heading">#</a></h2>
+<h3>Case 3: A single real pole<a class="headerlink" href="#case-3-a-single-real-pole" title="Link to this heading">#</a></h3>
 <p>Let us start by first defining the transfer function:</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
@@ -772,7 +858,7 @@ We also need to define specific prpoperties of the variables.</p>
 </div>
 </details>
 <div class="cell_output docutils container">
-<img alt="_images/c738659b29af0c1da96f605bf6c0fed7ad82a626f70c3b598ada3889a1192c87.png" src="_images/c738659b29af0c1da96f605bf6c0fed7ad82a626f70c3b598ada3889a1192c87.png" />
+<img alt="_images/8a47aa55a34ae6c665445f35b926b154d1fceb52a0eb99bb3533a1d9da758e7e.png" src="_images/8a47aa55a34ae6c665445f35b926b154d1fceb52a0eb99bb3533a1d9da758e7e.png" />
 </div>
 </div>
 <p><strong>Phase plot:</strong></p>
@@ -807,12 +893,12 @@ We also need to define specific prpoperties of the variables.</p>
 </div>
 </details>
 <div class="cell_output docutils container">
-<img alt="_images/3065685ccf8ab10db5d0e8762804d69e9a87e5a867d20be340bd893eabad7364.png" src="_images/3065685ccf8ab10db5d0e8762804d69e9a87e5a867d20be340bd893eabad7364.png" />
+<img alt="_images/1d2a3dd377dd6434bfcff6bf39970a87089d7d8561aba2423702c6f0a429fa11.png" src="_images/1d2a3dd377dd6434bfcff6bf39970a87089d7d8561aba2423702c6f0a429fa11.png" />
 </div>
 </div>
 </section>
 <section id="case-4-a-single-real-zero">
-<h2>Case 4: A single real zero<a class="headerlink" href="#case-4-a-single-real-zero" title="Link to this heading">#</a></h2>
+<h3>Case 4: A single real zero<a class="headerlink" href="#case-4-a-single-real-zero" title="Link to this heading">#</a></h3>
 <p>Let us start by first defining the transfer function:</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
@@ -881,7 +967,7 @@ We also need to define specific prpoperties of the variables.</p>
 </div>
 </details>
 <div class="cell_output docutils container">
-<img alt="_images/4194803b2de4d19947fdf76d3b2befb5f0f93f2d0fd558de670da57ec3414a23.png" src="_images/4194803b2de4d19947fdf76d3b2befb5f0f93f2d0fd558de670da57ec3414a23.png" />
+<img alt="_images/33cc476d9442e54c792f210bd9d407de6dc0f82b126220c367f9fea65e2a9395.png" src="_images/33cc476d9442e54c792f210bd9d407de6dc0f82b126220c367f9fea65e2a9395.png" />
 </div>
 </div>
 <p><strong>Phase plot:</strong></p>
@@ -916,12 +1002,12 @@ We also need to define specific prpoperties of the variables.</p>
 </div>
 </details>
 <div class="cell_output docutils container">
-<img alt="_images/42b9b87d0a5a2c0fd50bee8f96ee451949c98b786536a81377c536a79983e5dd.png" src="_images/42b9b87d0a5a2c0fd50bee8f96ee451949c98b786536a81377c536a79983e5dd.png" />
+<img alt="_images/fc31cf4a9ae4192a817218e781d536e65dffdc6c4f871ef637eb80fc5c70f71c.png" src="_images/fc31cf4a9ae4192a817218e781d536e65dffdc6c4f871ef637eb80fc5c70f71c.png" />
 </div>
 </div>
 </section>
 <section id="case-5-complex-conjugate-pole-pair">
-<h2>Case 5: Complex Conjugate Pole Pair<a class="headerlink" href="#case-5-complex-conjugate-pole-pair" title="Link to this heading">#</a></h2>
+<h3>Case 5: Complex Conjugate Pole Pair<a class="headerlink" href="#case-5-complex-conjugate-pole-pair" title="Link to this heading">#</a></h3>
 <p>Let us start by first defining the transfer function:</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
@@ -1043,7 +1129,7 @@ We also need to define specific prpoperties of the variables.</p>
 </div>
 </details>
 <div class="cell_output docutils container">
-<img alt="_images/94143c2aad31a6fd3094ea30a6eccf949378c00ad61cd4f99bed2542ed8da30b.png" src="_images/94143c2aad31a6fd3094ea30a6eccf949378c00ad61cd4f99bed2542ed8da30b.png" />
+<img alt="_images/32af13d6be1bc3b952e0d8fbcc3f21fc839cf547109aa9ddbffd180b23eeaa83.png" src="_images/32af13d6be1bc3b952e0d8fbcc3f21fc839cf547109aa9ddbffd180b23eeaa83.png" />
 </div>
 </div>
 <p>The general shape of the asymptotic magnitude plot is not affected by <span class="math notranslate nohighlight">\(\zeta\)</span>.</p>
@@ -1128,12 +1214,12 @@ We also need to define specific prpoperties of the variables.</p>
 </div>
 </details>
 <div class="cell_output docutils container">
-<img alt="_images/20c954db5470688266fe1fe7623571d265f7442397308b0ac6e979e58b801515.png" src="_images/20c954db5470688266fe1fe7623571d265f7442397308b0ac6e979e58b801515.png" />
+<img alt="_images/4c8b2d97008e679b65056e5f9f62da7fb35468995333b351963eda2159fae06a.png" src="_images/4c8b2d97008e679b65056e5f9f62da7fb35468995333b351963eda2159fae06a.png" />
 </div>
 </div>
 </section>
 <section id="case-6-complex-conjugate-zero-pair">
-<h2>Case 6: Complex Conjugate Zero Pair<a class="headerlink" href="#case-6-complex-conjugate-zero-pair" title="Link to this heading">#</a></h2>
+<h3>Case 6: Complex Conjugate Zero Pair<a class="headerlink" href="#case-6-complex-conjugate-zero-pair" title="Link to this heading">#</a></h3>
 <p>Let us start by first defining the transfer function:</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
@@ -1241,7 +1327,7 @@ We also need to define specific prpoperties of the variables.</p>
 </div>
 </details>
 <div class="cell_output docutils container">
-<img alt="_images/d857f3552b25d75e5223481fe1a7ae25a14a77d089588a0e6727e6bb999b1182.png" src="_images/d857f3552b25d75e5223481fe1a7ae25a14a77d089588a0e6727e6bb999b1182.png" />
+<img alt="_images/d33c0999f8b5bddbeb60d7ac8b0ea2186e42fc02def46a375410ed53b7c3ccc0.png" src="_images/d33c0999f8b5bddbeb60d7ac8b0ea2186e42fc02def46a375410ed53b7c3ccc0.png" />
 </div>
 </div>
 <p>The general shape of the asymptotic magnitude plot is not affected by <span class="math notranslate nohighlight">\(\zeta\)</span>.</p>
@@ -1327,9 +1413,10 @@ We also need to define specific prpoperties of the variables.</p>
 </div>
 </details>
 <div class="cell_output docutils container">
-<img alt="_images/d786e42d0f33673bc425c6d69fbea81a780f82fc7cdb3bb706a2f6ef1c1bdf4a.png" src="_images/d786e42d0f33673bc425c6d69fbea81a780f82fc7cdb3bb706a2f6ef1c1bdf4a.png" />
+<img alt="_images/f60a3dc8a8552c9d74bf914d001cea2df65a8369acdaf5dab73c37a746d04e01.png" src="_images/f60a3dc8a8552c9d74bf914d001cea2df65a8369acdaf5dab73c37a746d04e01.png" />
 </div>
 </div>
+</section>
 </section>
 <section id="summary">
 <h2>Summary<a class="headerlink" href="#summary" title="Link to this heading">#</a></h2>
@@ -1525,13 +1612,16 @@ We also need to define specific prpoperties of the variables.</p>
   <nav class="bd-toc-nav page-toc">
     <ul class="visible nav section-nav flex-column">
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#preparations">Preparations</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#asymptotic-bode-plots-of-low-order-transfer-functions">Asymptotic Bode Plots of Low-Order Transfer Functions</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#case-1-a-pole-at-the-origin-of-the-s-plane">Case 1: A pole at the origin of the s-plane</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#case-2-a-zero-at-the-origin-of-the-s-plane">Case 2: A zero at the origin of the s-plane</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#case-3-a-single-real-pole">Case 3: A single real pole</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#case-4-a-single-real-zero">Case 4: A single real zero</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#case-5-complex-conjugate-pole-pair">Case 5: Complex Conjugate Pole Pair</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#case-6-complex-conjugate-zero-pair">Case 6: Complex Conjugate Zero Pair</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#bode-plots-with-symbolic-math">Bode Plots with Symbolic Math</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#asymptotic-bode-plots-of-low-order-transfer-functions">Asymptotic Bode Plots of Low-Order Transfer Functions</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#case-1-a-pole-at-the-origin-of-the-s-plane">Case 1: A pole at the origin of the s-plane</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#case-2-a-zero-at-the-origin-of-the-s-plane">Case 2: A zero at the origin of the s-plane</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#case-3-a-single-real-pole">Case 3: A single real pole</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#case-4-a-single-real-zero">Case 4: A single real zero</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#case-5-complex-conjugate-pole-pair">Case 5: Complex Conjugate Pole Pair</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#case-6-complex-conjugate-zero-pair">Case 6: Complex Conjugate Zero Pair</a></li>
+</ul>
+</li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#summary">Summary</a><ul class="nav section-nav flex-column">
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#asymptotic-bode-as-piecewise-functions">Asymptotic Bode as piecewise functions</a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#resonance-peaks">Resonance peaks</a></li>
