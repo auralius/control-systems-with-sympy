@@ -1,0 +1,38 @@
+Traceback (most recent call last):
+  File "/home/auralius/miniconda3/envs/py.3.12.4/lib/python3.12/site-packages/jupyter_cache/executors/utils.py", line 58, in single_nb_execution
+    executenb(
+  File "/home/auralius/miniconda3/envs/py.3.12.4/lib/python3.12/site-packages/nbclient/client.py", line 1319, in execute
+    return NotebookClient(nb=nb, resources=resources, km=km, **kwargs).execute()
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/auralius/miniconda3/envs/py.3.12.4/lib/python3.12/site-packages/jupyter_core/utils/__init__.py", line 165, in wrapped
+    return loop.run_until_complete(inner)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/auralius/miniconda3/envs/py.3.12.4/lib/python3.12/asyncio/base_events.py", line 687, in run_until_complete
+    return future.result()
+           ^^^^^^^^^^^^^^^
+  File "/home/auralius/miniconda3/envs/py.3.12.4/lib/python3.12/site-packages/nbclient/client.py", line 709, in async_execute
+    await self.async_execute_cell(
+  File "/home/auralius/miniconda3/envs/py.3.12.4/lib/python3.12/site-packages/nbclient/client.py", line 1062, in async_execute_cell
+    await self._check_raise_for_error(cell, cell_index, exec_reply)
+  File "/home/auralius/miniconda3/envs/py.3.12.4/lib/python3.12/site-packages/nbclient/client.py", line 918, in _check_raise_for_error
+    raise CellExecutionError.from_cell_and_msg(cell, exec_reply_content)
+nbclient.exceptions.CellExecutionError: An error occurred while executing the following cell:
+------------------
+series.__doc__ = "Series connection: multiply transfer functions in cascade."
+parallels.__doc__ = "Parallel connection: sum transfer functions connected in parallel."
+negative_feedbacks.__doc__ = "Negative feedback: compute G/(1 + G*H) for one or more feedback paths."
+positive_feedbacks.__doc__ = "Positive feedback: compute G/(1 - G*H) for one or more feedback paths."
+
+series, parallels, negative_feedbacks, positive_feedbacks
+------------------
+
+
+[0;31m---------------------------------------------------------------------------[0m
+[0;31mNameError[0m                                 Traceback (most recent call last)
+Cell [0;32mIn[2], line 1[0m
+[0;32m----> 1[0m [43mseries[49m[38;5;241m.[39m[38;5;18m__doc__[39m [38;5;241m=[39m [38;5;124m"[39m[38;5;124mSeries connection: multiply transfer functions in cascade.[39m[38;5;124m"[39m
+[1;32m      2[0m parallels[38;5;241m.[39m[38;5;18m__doc__[39m [38;5;241m=[39m [38;5;124m"[39m[38;5;124mParallel connection: sum transfer functions connected in parallel.[39m[38;5;124m"[39m
+[1;32m      3[0m negative_feedbacks[38;5;241m.[39m[38;5;18m__doc__[39m [38;5;241m=[39m [38;5;124m"[39m[38;5;124mNegative feedback: compute G/(1 + G*H) for one or more feedback paths.[39m[38;5;124m"[39m
+
+[0;31mNameError[0m: name 'series' is not defined
+
