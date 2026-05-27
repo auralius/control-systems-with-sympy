@@ -468,6 +468,7 @@
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#series-parallel-and-feedback">Series, Parallel and Feedback</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#example-1">Example 1</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#example-2">Example 2</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#example-3">Example 3</a></li>
 </ul>
             </nav>
         </div>
@@ -499,30 +500,12 @@
 </div>
 </div>
 </div>
-<div class="cell docutils container">
-<div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">series</span><span class="o">.</span><span class="vm">__doc__</span> <span class="o">=</span> <span class="s2">&quot;Series connection: multiply transfer functions in cascade.&quot;</span>
-<span class="n">parallels</span><span class="o">.</span><span class="vm">__doc__</span> <span class="o">=</span> <span class="s2">&quot;Parallel connection: sum transfer functions connected in parallel.&quot;</span>
-<span class="n">negative_feedbacks</span><span class="o">.</span><span class="vm">__doc__</span> <span class="o">=</span> <span class="s2">&quot;Negative feedback: compute G/(1 + G*H) for one or more feedback paths.&quot;</span>
-<span class="n">positive_feedbacks</span><span class="o">.</span><span class="vm">__doc__</span> <span class="o">=</span> <span class="s2">&quot;Positive feedback: compute G/(1 - G*H) for one or more feedback paths.&quot;</span>
-
-<span class="n">series</span><span class="p">,</span> <span class="n">parallels</span><span class="p">,</span> <span class="n">negative_feedbacks</span><span class="p">,</span> <span class="n">positive_feedbacks</span>
-</pre></div>
-</div>
-</div>
-<div class="cell_output docutils container">
-<div class="output traceback highlight-ipythontb notranslate"><div class="highlight"><pre><span></span><span class="gt">---------------------------------------------------------------------------</span>
-<span class="ne">NameError</span><span class="g g-Whitespace">                                 </span>Traceback (most recent call last)
-<span class="n">Cell</span> <span class="n">In</span><span class="p">[</span><span class="mi">2</span><span class="p">],</span> <span class="n">line</span> <span class="mi">1</span>
-<span class="ne">----&gt; </span><span class="mi">1</span> <span class="n">series</span><span class="o">.</span><span class="vm">__doc__</span> <span class="o">=</span> <span class="s2">&quot;Series connection: multiply transfer functions in cascade.&quot;</span>
-<span class="g g-Whitespace">      </span><span class="mi">2</span> <span class="n">parallels</span><span class="o">.</span><span class="vm">__doc__</span> <span class="o">=</span> <span class="s2">&quot;Parallel connection: sum transfer functions connected in parallel.&quot;</span>
-<span class="g g-Whitespace">      </span><span class="mi">3</span> <span class="n">negative_feedbacks</span><span class="o">.</span><span class="vm">__doc__</span> <span class="o">=</span> <span class="s2">&quot;Negative feedback: compute G/(1 + G*H) for one or more feedback paths.&quot;</span>
-
-<span class="ne">NameError</span>: name &#39;series&#39; is not defined
-</pre></div>
-</div>
-</div>
-</div>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">series(...)</span></code> = Series connection: multiply transfer functions in cascade.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">parallels(...)</span></code> = Parallel connection: sum transfer functions connected in parallel.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">negative_feedbacks(...)</span></code> = Negative feedback: compute <span class="math notranslate nohighlight">\(G/(1 + GH)\)</span> for one or more feedback paths.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">positive_feedback(...)</span></code> = Positive feedback: compute <span class="math notranslate nohighlight">\(G/(1 - GH)\)</span> for one or more feedback paths.</p></li>
+</ul>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">series</span><span class="p">(</span><span class="o">*</span><span class="n">argv</span><span class="p">):</span>
@@ -602,6 +585,7 @@
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">G1</span><span class="p">,</span> <span class="n">G2</span><span class="p">,</span> <span class="n">G3</span><span class="p">,</span> <span class="n">G4</span>   <span class="o">=</span> <span class="n">symbols</span><span class="p">(</span><span class="s1">&#39;G1 G2 G3 G4&#39;</span><span class="p">)</span>
 <span class="n">E</span><span class="p">,</span> <span class="n">R</span><span class="p">,</span> <span class="n">C</span> <span class="o">=</span> <span class="n">symbols</span><span class="p">(</span><span class="s1">&#39;E R C&#39;</span><span class="p">)</span>
 <span class="n">e1</span><span class="p">,</span> <span class="n">e2</span><span class="p">,</span> <span class="n">y1</span><span class="p">,</span> <span class="n">y2</span><span class="p">,</span> <span class="n">y3</span> <span class="o">=</span> <span class="n">symbols</span><span class="p">(</span><span class="s1">&#39;e1 e2 y1 y2 y3&#39;</span><span class="p">)</span>
+<span class="n">s</span> <span class="o">=</span> <span class="n">symbols</span><span class="p">(</span><span class="s1">&#39;s&#39;</span><span class="p">)</span>
 
 <span class="n">eq1</span> <span class="o">=</span> <span class="n">Eq</span><span class="p">(</span><span class="n">R</span><span class="o">-</span><span class="n">C</span><span class="p">,</span> <span class="n">e1</span><span class="p">)</span>
 <span class="n">eq2</span> <span class="o">=</span> <span class="n">Eq</span><span class="p">(</span><span class="n">e1</span><span class="o">-</span><span class="n">H1</span><span class="o">*</span><span class="n">y2</span><span class="p">,</span> <span class="n">e2</span><span class="p">)</span>
@@ -635,6 +619,7 @@
 \[\displaystyle - G_{4} e_{2} + y_{3} = C\]</div>
 </div>
 </div>
+<p>Solve for the new intermediate variables:</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">ans</span> <span class="o">=</span> <span class="n">solve</span><span class="p">((</span><span class="n">eq1</span><span class="p">,</span> <span class="n">eq2</span><span class="p">,</span> <span class="n">eq3</span><span class="p">,</span> <span class="n">eq4</span><span class="p">,</span> <span class="n">eq5</span><span class="p">,</span> <span class="n">eq6</span><span class="p">),</span>  <span class="p">(</span><span class="n">C</span><span class="p">,</span> <span class="n">e1</span><span class="p">,</span> <span class="n">e2</span><span class="p">,</span> <span class="n">y1</span><span class="p">,</span> <span class="n">y2</span><span class="p">,</span> <span class="n">y3</span><span class="p">))</span>
@@ -658,7 +643,7 @@
 \[\displaystyle y_{3}=\frac{G_{1} G_{2} G_{3} R + G_{2} G_{3} G_{4} H_{2} R}{G_{1} G_{2} G_{3} + G_{1} G_{2} H_{1} + G_{2} G_{3} H_{2} + G_{2} G_{4} H_{1} H_{2} - G_{4} + 1}\]</div>
 </div>
 </div>
-<p>Now we take <span class="math notranslate nohighlight">\(C = \dots\)</span> and divide it by <span class="math notranslate nohighlight">\(R\)</span> to obtain <span class="math notranslate nohighlight">\(C/R\)</span>.</p>
+<p>Now we take <span class="math notranslate nohighlight">\(C = \dots\)</span> and divide it by <span class="math notranslate nohighlight">\(R\)</span> to obtain <span class="math notranslate nohighlight">\(C/R\)</span>:</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">tf</span> <span class="o">=</span> <span class="n">simplify</span><span class="p">(</span><span class="n">ans</span><span class="p">[</span><span class="n">C</span><span class="p">]</span><span class="o">/</span><span class="n">R</span><span class="p">)</span>
@@ -669,6 +654,96 @@
 <div class="cell_output docutils container">
 <div class="output text_latex math notranslate nohighlight">
 \[\displaystyle \boxed{\frac{C}{R} =\frac{G_{1} G_{2} G_{3} - G_{4}}{G_{1} G_{2} G_{3} + G_{1} G_{2} H_{1} + G_{2} G_{3} H_{2} + G_{2} G_{4} H_{1} H_{2} - G_{4} + 1}}\]</div>
+</div>
+</div>
+</section>
+<section id="example-3">
+<h2>Example 3<a class="headerlink" href="#example-3" title="Link to this heading">#</a></h2>
+<p><img alt="" src="_images/p25.png" /></p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">e1</span><span class="p">,</span> <span class="n">y1</span><span class="p">,</span> <span class="n">y2</span><span class="p">,</span> <span class="n">y3</span><span class="p">,</span> <span class="n">y4</span> <span class="o">=</span> <span class="n">symbols</span><span class="p">(</span><span class="s1">&#39;e1 y1 y2 y3 y4&#39;</span><span class="p">)</span>
+<span class="n">s</span> <span class="o">=</span> <span class="n">symbols</span><span class="p">(</span><span class="s1">&#39;s&#39;</span><span class="p">)</span>
+
+<span class="n">eq1</span> <span class="o">=</span> <span class="n">Eq</span><span class="p">(</span><span class="n">R</span><span class="o">-</span><span class="n">C</span><span class="o">-</span><span class="n">y1</span><span class="p">,</span> <span class="n">e1</span><span class="p">)</span>
+<span class="n">eq2</span> <span class="o">=</span> <span class="n">Eq</span><span class="p">(</span><span class="n">e1</span><span class="o">/</span><span class="n">s</span><span class="p">,</span> <span class="n">y2</span><span class="p">)</span>
+<span class="n">eq3</span> <span class="o">=</span> <span class="n">Eq</span><span class="p">(</span><span class="mi">3</span><span class="o">*</span><span class="n">e1</span><span class="p">,</span><span class="n">y3</span><span class="p">)</span>
+<span class="n">eq4</span> <span class="o">=</span> <span class="n">Eq</span><span class="p">(</span><span class="n">y2</span><span class="o">+</span><span class="n">y3</span><span class="o">-</span><span class="n">C</span><span class="p">,</span> <span class="n">y4</span><span class="p">)</span>
+<span class="n">eq5</span> <span class="o">=</span> <span class="n">Eq</span><span class="p">(</span><span class="mi">4</span><span class="o">*</span><span class="n">y4</span><span class="p">,</span> <span class="n">y1</span><span class="p">)</span>
+<span class="n">eq6</span> <span class="o">=</span> <span class="n">Eq</span><span class="p">(</span><span class="n">y4</span><span class="o">*</span><span class="mi">2</span><span class="o">*</span><span class="n">s</span><span class="p">,</span> <span class="n">C</span><span class="p">)</span>
+
+
+<span class="n">mprint</span><span class="p">(</span><span class="n">latex</span><span class="p">(</span><span class="n">eq1</span><span class="p">))</span>
+<span class="n">mprint</span><span class="p">(</span><span class="n">latex</span><span class="p">(</span><span class="n">eq2</span><span class="p">))</span> 
+<span class="n">mprint</span><span class="p">(</span><span class="n">latex</span><span class="p">(</span><span class="n">eq3</span><span class="p">))</span>
+<span class="n">mprint</span><span class="p">(</span><span class="n">latex</span><span class="p">(</span><span class="n">eq4</span><span class="p">))</span>
+<span class="n">mprint</span><span class="p">(</span><span class="n">latex</span><span class="p">(</span><span class="n">eq5</span><span class="p">))</span>
+<span class="n">mprint</span><span class="p">(</span><span class="n">latex</span><span class="p">(</span><span class="n">eq6</span><span class="p">))</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_latex math notranslate nohighlight">
+\[\displaystyle - C + R - y_{1} = e_{1}\]</div>
+<div class="output text_latex math notranslate nohighlight">
+\[\displaystyle \frac{e_{1}}{s} = y_{2}\]</div>
+<div class="output text_latex math notranslate nohighlight">
+\[\displaystyle 3 e_{1} = y_{3}\]</div>
+<div class="output text_latex math notranslate nohighlight">
+\[\displaystyle - C + y_{2} + y_{3} = y_{4}\]</div>
+<div class="output text_latex math notranslate nohighlight">
+\[\displaystyle 4 y_{4} = y_{1}\]</div>
+<div class="output text_latex math notranslate nohighlight">
+\[\displaystyle 2 s y_{4} = C\]</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">ans</span> <span class="o">=</span> <span class="n">solve</span><span class="p">((</span><span class="n">eq1</span><span class="p">,</span> <span class="n">eq2</span><span class="p">,</span> <span class="n">eq3</span><span class="p">,</span> <span class="n">eq4</span><span class="p">,</span> <span class="n">eq5</span><span class="p">,</span> <span class="n">eq6</span><span class="p">),</span>  <span class="p">(</span><span class="n">C</span><span class="p">,</span> <span class="n">e1</span><span class="p">,</span> <span class="n">y1</span><span class="p">,</span> <span class="n">y2</span><span class="p">,</span> <span class="n">y3</span><span class="p">,</span> <span class="n">y4</span><span class="p">))</span>
+<span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="n">ans</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
+    <span class="n">mprint</span><span class="p">(</span><span class="n">latex</span><span class="p">(</span><span class="n">k</span><span class="p">),</span> <span class="s1">&#39;=&#39;</span><span class="p">,</span> <span class="n">latex</span><span class="p">(</span><span class="n">ans</span><span class="p">[</span><span class="n">k</span><span class="p">]))</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_latex math notranslate nohighlight">
+\[\displaystyle C=\frac{6 R s^{2} + 2 R s}{8 s^{2} + 15 s + 4}\]</div>
+<div class="output text_latex math notranslate nohighlight">
+\[\displaystyle e_{1}=\frac{2 R s^{2} + R s}{8 s^{2} + 15 s + 4}\]</div>
+<div class="output text_latex math notranslate nohighlight">
+\[\displaystyle y_{1}=\frac{12 R s + 4 R}{8 s^{2} + 15 s + 4}\]</div>
+<div class="output text_latex math notranslate nohighlight">
+\[\displaystyle y_{2}=\frac{2 R s + R}{8 s^{2} + 15 s + 4}\]</div>
+<div class="output text_latex math notranslate nohighlight">
+\[\displaystyle y_{3}=\frac{6 R s^{2} + 3 R s}{8 s^{2} + 15 s + 4}\]</div>
+<div class="output text_latex math notranslate nohighlight">
+\[\displaystyle y_{4}=\frac{3 R s + R}{8 s^{2} + 15 s + 4}\]</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">G</span> <span class="o">=</span> <span class="n">simplify</span><span class="p">(</span><span class="n">ans</span><span class="p">[</span><span class="n">C</span><span class="p">]</span><span class="o">/</span><span class="n">R</span><span class="p">)</span>
+<span class="n">mprintb</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\\</span><span class="s2">frac</span><span class="si">{C}{R}</span><span class="s2"> =&quot;</span><span class="p">,</span> <span class="n">latex</span><span class="p">(</span><span class="n">G</span><span class="p">))</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_latex math notranslate nohighlight">
+\[\displaystyle \boxed{\frac{C}{R} =\frac{2 s \left(3 s + 1\right)}{8 s^{2} + 15 s + 4}}\]</div>
+</div>
+</div>
+<p>We can also try the graphical method by first converting the diagram into the following:</p>
+<p><img alt="" src="_images/p26.png" /></p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">G</span> <span class="o">=</span> <span class="n">simplify</span><span class="p">(</span><span class="n">negative_feedbacks</span><span class="p">(</span><span class="n">series</span><span class="p">(</span><span class="n">parallels</span><span class="p">(</span><span class="mi">1</span><span class="o">/</span><span class="n">s</span><span class="p">,</span> <span class="mi">3</span><span class="p">),</span> <span class="n">negative_feedbacks</span><span class="p">(</span><span class="mi">2</span><span class="o">*</span><span class="n">s</span><span class="p">,</span> <span class="mi">1</span><span class="p">)),</span> <span class="mi">4</span><span class="o">/</span><span class="p">(</span><span class="mi">2</span><span class="o">*</span><span class="n">s</span><span class="p">),</span> <span class="mi">1</span><span class="p">))</span>
+<span class="n">mprintb</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\\</span><span class="s2">frac</span><span class="si">{C}{R}</span><span class="s2"> =&quot;</span><span class="p">,</span> <span class="n">latex</span><span class="p">(</span><span class="n">G</span><span class="p">))</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_latex math notranslate nohighlight">
+\[\displaystyle \boxed{\frac{C}{R} =\frac{2 s \left(3 s + 1\right)}{8 s^{2} + 15 s + 4}}\]</div>
 </div>
 </div>
 </section>
@@ -742,6 +817,7 @@
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#series-parallel-and-feedback">Series, Parallel and Feedback</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#example-1">Example 1</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#example-2">Example 2</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#example-3">Example 3</a></li>
 </ul>
   </nav></div>
 
