@@ -8,7 +8,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>Digital Low-Pass Filter &#8212; Control Systems with Sympy</title>
+    <title>Digital High-Pass Filter &#8212; Control Systems with Sympy</title>
   
   
   
@@ -34,7 +34,7 @@
     <link rel="stylesheet" type="text/css" href="_static/styles/sphinx-book-theme.css?v=a3416100" />
     <link rel="stylesheet" type="text/css" href="_static/togglebutton.css?v=13237357" />
     <link rel="stylesheet" type="text/css" href="_static/copybutton.css?v=76b2166b" />
-    <link rel="stylesheet" type="text/css" href="_static/mystnb.4510f1fc1dee50b3e5859aac5469c37c29e427902b24a333a5f9fcb2f0b3ac41.css" />
+    <link rel="stylesheet" type="text/css" href="_static/mystnb.4510f1fc1dee50b3e5859aac5469c37c29e427902b24a333a5f9fcb2f0b3ac41.css?v=be8a1c11" />
     <link rel="stylesheet" type="text/css" href="_static/sphinx-thebe.css?v=4fa983c6" />
     <link rel="stylesheet" type="text/css" href="_static/sphinx-design.min.css?v=95c83b7e" />
     <link rel="stylesheet" type="text/css" href="_static/custom.css?v=b5bdeb62" />
@@ -63,11 +63,11 @@
     <script>const THEBE_JS_URL = "https://unpkg.com/thebe@0.8.2/lib/index.js"; const thebe_selector = ".thebe,.cell"; const thebe_selector_input = "pre"; const thebe_selector_output = ".output, .cell_output"</script>
     <script>window.MathJax = {"HTML-CSS": {"matchFontHeight": true, "scale": 50}, "options": {"processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
     <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
-    <script>DOCUMENTATION_OPTIONS.pagename = 'digital-filter';</script>
+    <script>DOCUMENTATION_OPTIONS.pagename = 'digital-filter-2';</script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
-    <link rel="next" title="Digital High-Pass Filter" href="digital-filter-2.html" />
-    <link rel="prev" title="Digital PID Control - Part 2" href="digital-pid-2.html" />
+    <link rel="next" title="Interactive Sessions with HTML/JavaScript" href="interactives.html" />
+    <link rel="prev" title="Digital Low-Pass Filter" href="digital-filter.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
   <meta name="docsearch:version" content="" />
@@ -194,8 +194,8 @@
 <li class="toctree-l1"><a class="reference internal" href="pid-ss.html">PID-Control (with Derivative Filter) in State Space Format</a></li>
 <li class="toctree-l1"><a class="reference internal" href="digital-pid.html">Digital PID Control - Part 1</a></li>
 <li class="toctree-l1"><a class="reference internal" href="digital-pid-2.html">Digital PID Control - Part 2</a></li>
-<li class="toctree-l1 current active"><a class="current reference internal" href="#">Digital Low-Pass Filter</a></li>
-<li class="toctree-l1"><a class="reference internal" href="digital-filter-2.html">Digital High-Pass Filter</a></li>
+<li class="toctree-l1"><a class="reference internal" href="digital-filter.html">Digital Low-Pass Filter</a></li>
+<li class="toctree-l1 current active"><a class="current reference internal" href="#">Digital High-Pass Filter</a></li>
 </ul>
 <p aria-level="2" class="caption" role="heading"><span class="caption-text">Interactive Sessions</span></p>
 <ul class="nav bd-sidenav">
@@ -267,7 +267,7 @@
       
       
       
-      <li><a href="https://mybinder.org/v2/gh/auralius/control-systems-with-sympy/master?urlpath=lab/tree/digital-filter.ipynb" target="_blank"
+      <li><a href="https://mybinder.org/v2/gh/auralius/control-systems-with-sympy/master?urlpath=lab/tree/digital-filter-2.ipynb" target="_blank"
    class="btn btn-sm dropdown-item"
    title="Launch on Binder"
    data-bs-placement="left" data-bs-toggle="tooltip"
@@ -285,7 +285,7 @@
       
       
       
-      <li><a href="https://colab.research.google.com/github/auralius/control-systems-with-sympy/blob/master/digital-filter.ipynb" target="_blank"
+      <li><a href="https://colab.research.google.com/github/auralius/control-systems-with-sympy/blob/master/digital-filter-2.ipynb" target="_blank"
    class="btn btn-sm dropdown-item"
    title="Launch on Colab"
    data-bs-placement="left" data-bs-toggle="tooltip"
@@ -333,7 +333,7 @@
       
       
       
-      <li><a href="https://github.com/auralius/control-systems-with-sympy/edit/master/digital-filter.ipynb" target="_blank"
+      <li><a href="https://github.com/auralius/control-systems-with-sympy/edit/master/digital-filter-2.ipynb" target="_blank"
    class="btn btn-sm btn-source-edit-button dropdown-item"
    title="Suggest edit"
    data-bs-placement="left" data-bs-toggle="tooltip"
@@ -350,7 +350,7 @@
       
       
       
-      <li><a href="https://github.com/auralius/control-systems-with-sympy/issues/new?title=Issue%20on%20page%20%2Fdigital-filter.html&body=Your%20issue%20content%20here." target="_blank"
+      <li><a href="https://github.com/auralius/control-systems-with-sympy/issues/new?title=Issue%20on%20page%20%2Fdigital-filter-2.html&body=Your%20issue%20content%20here." target="_blank"
    class="btn btn-sm btn-source-issues-button dropdown-item"
    title="Open an issue"
    data-bs-placement="left" data-bs-toggle="tooltip"
@@ -380,7 +380,7 @@
       
       
       
-      <li><a href="_sources/digital-filter.ipynb" target="_blank"
+      <li><a href="_sources/digital-filter-2.ipynb" target="_blank"
    class="btn btn-sm btn-download-source-button dropdown-item"
    title="Download source file"
    data-bs-placement="left" data-bs-toggle="tooltip"
@@ -456,7 +456,7 @@
               
 
 <div id="jb-print-docs-body" class="onlyprint">
-    <h1>Digital Low-Pass Filter</h1>
+    <h1>Digital High-Pass Filter</h1>
     <!-- Table of contents -->
     <div id="print-main-content">
         <div id="jb-print-toc">
@@ -467,12 +467,13 @@
             <nav aria-label="Page">
                 <ul class="visible nav section-nav flex-column">
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#required-imports">Required Imports</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#first-order-low-pass-filter">First-Order Low-Pass Filter</a><ul class="nav section-nav flex-column">
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#discretization-with-bilinear-transformation">Discretization with Bilinear Transformation</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#first-order-high-pass-filter">First-Order High-Pass Filter</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#the-complementary-form">The Complementary Form</a></li>
 </ul>
 </li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#second-order-low-pass-butterworth-filter">Second Order Low-Pass Butterworth Filter</a><ul class="nav section-nav flex-column">
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id1">Discretization with Bilinear Transformation</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#second-order-high-pass-butterworth-filter">Second Order High-Pass Butterworth Filter</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id1">The Complementary Form</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#standard-form">Standard Form</a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#implementation-in-simulink">Implementation in Simulink</a></li>
 </ul>
 </li>
@@ -487,13 +488,13 @@
 <div id="searchbox"></div>
                 <article class="bd-article">
                   
-  <section class="tex2jax_ignore mathjax_ignore" id="digital-low-pass-filter">
-<h1>Digital Low-Pass Filter<a class="headerlink" href="#digital-low-pass-filter" title="Link to this heading">#</a></h1>
+  <section class="tex2jax_ignore mathjax_ignore" id="digital-high-pass-filter">
+<h1>Digital High-Pass Filter<a class="headerlink" href="#digital-high-pass-filter" title="Link to this heading">#</a></h1>
 <p>In this section, we are going to do the following activities:</p>
 <ul class="simple">
-<li><p>discretize a continuous-time low-pass filter by using bilinear transform (trapezoidal or Tustin) method</p></li>
-<li><p>implement the discretized low-pass filter into MATLAB Simulink</p></li>
-<li><p>compare the results from the implemented discrete low-pass filter to the shipped discrete low-pass filter in MATLAB Simulink</p></li>
+<li><p>discretize a continuous-time high-pass filter by using bilinear transform (trapezoidal or Tustin) method</p></li>
+<li><p>implement the discretized high-pass filter into MATLAB Simulink</p></li>
+<li><p>compare the results from the implemented discrete high-pass filter to the shipped discrete high-pass filter in MATLAB Simulink</p></li>
 </ul>
 <section id="required-imports">
 <h2>Required Imports<a class="headerlink" href="#required-imports" title="Link to this heading">#</a></h2>
@@ -511,6 +512,7 @@
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">Ts</span><span class="p">,</span> <span class="n">tau</span> <span class="o">=</span> <span class="n">symbols</span><span class="p">(</span><span class="s1">&#39;T_s tau&#39;</span><span class="p">,</span> <span class="n">positive</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 <span class="n">s</span> <span class="o">=</span> <span class="n">symbols</span><span class="p">(</span><span class="s1">&#39;s&#39;</span><span class="p">,</span> <span class="nb">complex</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 <span class="n">z</span> <span class="o">=</span> <span class="n">symbols</span><span class="p">(</span><span class="s1">&#39;z&#39;</span><span class="p">)</span>
+<span class="n">omega</span>    <span class="o">=</span> <span class="n">symbols</span><span class="p">(</span><span class="s1">&#39;omega&#39;</span>   <span class="p">,</span> <span class="n">positive</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 <span class="n">wc</span> <span class="o">=</span> <span class="n">symbols</span><span class="p">(</span><span class="s1">&#39;omega_c&#39;</span><span class="p">,</span> <span class="n">positive</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 
 <span class="n">x</span><span class="p">,</span> <span class="n">y</span> <span class="o">=</span> <span class="n">symbols</span><span class="p">(</span><span class="s1">&#39;x y&#39;</span><span class="p">)</span>
@@ -522,20 +524,23 @@
 </div>
 </section>
 <hr class="docutils" />
-<section id="first-order-low-pass-filter">
-<h2>First-Order Low-Pass Filter<a class="headerlink" href="#first-order-low-pass-filter" title="Link to this heading">#</a></h2>
-<p>Transfer function of a first order lowpass filter (time-constant filter):</p>
+<section id="first-order-high-pass-filter">
+<h2>First-Order High-Pass Filter<a class="headerlink" href="#first-order-high-pass-filter" title="Link to this heading">#</a></h2>
+<section id="the-complementary-form">
+<h3>The Complementary Form<a class="headerlink" href="#the-complementary-form" title="Link to this heading">#</a></h3>
+<p>Transfer function of a first-order highpass filter as a complementary to  a first-order lowpass filter(time-constant filter):</p>
 <div class="math notranslate nohighlight">
-\[ H(s) = \frac{1}  {\tau s+1} \]</div>
+\[ H_{HP}(s) = 1 - H_{LP}\]</div>
+<div class="math notranslate nohighlight">
+\[ H(s) = 1 - \frac{1}  {\tau s+1} \]</div>
 <p>where <span class="math notranslate nohighlight">\(\tau\)</span> is the filter time constant (in seconds).</p>
-<section id="discretization-with-bilinear-transformation">
-<h3>Discretization with Bilinear Transformation<a class="headerlink" href="#discretization-with-bilinear-transformation" title="Link to this heading">#</a></h3>
+<p><strong>Discretization with Bilinear Transformation</strong></p>
 <p>Next, we transform <span class="math notranslate nohighlight">\(s\)</span> into <span class="math notranslate nohighlight">\(z\)</span> by applying the following substitution.</p>
 <div class="math notranslate nohighlight">
 \[ \frac{1}{s} \longleftarrow \frac{T_s}{2} \frac{z+1}{z-1} \]</div>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">H</span> <span class="o">=</span> <span class="mi">1</span> <span class="o">/</span> <span class="p">(</span><span class="n">tau</span><span class="o">*</span><span class="n">s</span><span class="o">+</span><span class="mi">1</span><span class="p">)</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">H</span> <span class="o">=</span> <span class="mi">1</span> <span class="o">-</span> <span class="mi">1</span> <span class="o">/</span> <span class="p">(</span><span class="n">tau</span><span class="o">*</span><span class="n">s</span><span class="o">+</span><span class="mi">1</span><span class="p">)</span>
 <span class="n">mprint</span><span class="p">(</span><span class="s1">&#39;H=&#39;</span><span class="p">,</span><span class="n">latex</span><span class="p">(</span><span class="n">H</span><span class="p">))</span>
 
 <span class="n">H</span> <span class="o">=</span> <span class="n">H</span><span class="o">.</span><span class="n">subs</span><span class="p">(</span><span class="mi">1</span><span class="o">/</span><span class="n">s</span><span class="p">,</span> <span class="n">Ts</span><span class="o">/</span><span class="mi">2</span> <span class="o">*</span> <span class="p">(</span><span class="n">z</span><span class="o">+</span><span class="mi">1</span><span class="p">)</span><span class="o">/</span><span class="p">(</span><span class="n">z</span><span class="o">-</span><span class="mi">1</span><span class="p">))</span>
@@ -545,9 +550,9 @@
 </div>
 <div class="cell_output docutils container">
 <div class="output text_latex math notranslate nohighlight">
-\[\displaystyle H=\frac{1}{s \tau + 1}\]</div>
+\[\displaystyle H=1 - \frac{1}{s \tau + 1}\]</div>
 <div class="output text_latex math notranslate nohighlight">
-\[\displaystyle H=\frac{1}{1 + \frac{2 \tau \left(z - 1\right)}{T_{s} \left(z + 1\right)}}\]</div>
+\[\displaystyle H=1 - \frac{1}{1 + \frac{2 \tau \left(z - 1\right)}{T_{s} \left(z + 1\right)}}\]</div>
 </div>
 </div>
 <p>Let us define <span class="math notranslate nohighlight">\(x\)</span> as the input to the filter and <span class="math notranslate nohighlight">\(y\)</span> as the output (filtered input).</p>
@@ -569,13 +574,13 @@
 </div>
 <div class="cell_output docutils container">
 <div class="output text_latex math notranslate nohighlight">
-\[\displaystyle y = \frac{x}{1 + \frac{2 \tau \left(z - 1\right)}{T_{s} \left(z + 1\right)}}\]</div>
+\[\displaystyle y = x \left(1 - \frac{1}{1 + \frac{2 \tau \left(z - 1\right)}{T_{s} \left(z + 1\right)}}\right)\]</div>
 <div class="output text_latex math notranslate nohighlight">
-\[\displaystyle y = \frac{T_{s} x \left(z + 1\right)}{T_{s} \left(z + 1\right) + 2 \tau \left(z - 1\right)}\]</div>
+\[\displaystyle y = \frac{2 \tau x \left(z - 1\right)}{T_{s} \left(z + 1\right) + 2 \tau \left(z - 1\right)}\]</div>
 <div class="output text_latex math notranslate nohighlight">
-\[\displaystyle T_{s} x \left(z + 1\right) = T_{s} y z + T_{s} y + 2 \tau y z - 2 \tau y\]</div>
+\[\displaystyle 2 \tau x \left(z - 1\right) = T_{s} y z + T_{s} y + 2 \tau y z - 2 \tau y\]</div>
 <div class="output text_latex math notranslate nohighlight">
-\[\displaystyle y + \frac{y}{z} + \frac{2 \tau y}{T_{s}} - \frac{2 \tau y}{T_{s} z} = x + \frac{x}{z}\]</div>
+\[\displaystyle y + \frac{y}{z} + \frac{2 \tau y}{T_{s}} - \frac{2 \tau y}{T_{s} z} = \frac{2 \tau x}{T_{s}} - \frac{2 \tau x}{T_{s} z}\]</div>
 </div>
 </div>
 <p>Apply the following substitutions:</p>
@@ -594,55 +599,63 @@
 </div>
 <div class="cell_output docutils container">
 <div class="output text_latex math notranslate nohighlight">
-\[\displaystyle \small y_{k} + y_{k-1} + \frac{2 \tau y_{k}}{T_{s}} - \frac{2 \tau y_{k-1}}{T_{s}} = x_{k} + x_{k-1}\]</div>
+\[\displaystyle \small y_{k} + y_{k-1} + \frac{2 \tau y_{k}}{T_{s}} - \frac{2 \tau y_{k-1}}{T_{s}} = \frac{2 \tau x_{k}}{T_{s}} - \frac{2 \tau x_{k-1}}{T_{s}}\]</div>
 </div>
 </div>
 <p>Finally, by grouping the variables, we obtain:</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">eq</span> <span class="o">=</span> <span class="n">Eq</span><span class="p">(</span><span class="n">collect</span><span class="p">(</span><span class="n">eq</span><span class="o">.</span><span class="n">rhs</span><span class="p">,</span> <span class="p">[</span><span class="n">x0</span><span class="p">,</span> <span class="n">x1</span><span class="p">,</span> <span class="n">x2</span><span class="p">,</span> <span class="n">x3</span><span class="p">]),</span> <span class="n">collect</span><span class="p">(</span><span class="n">eq</span><span class="o">.</span><span class="n">lhs</span><span class="p">,</span> <span class="p">[</span><span class="n">y0</span><span class="p">,</span> <span class="n">y1</span><span class="p">,</span> <span class="n">y2</span><span class="p">,</span> <span class="n">y3</span><span class="p">])</span> <span class="p">)</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">eq</span> <span class="o">=</span> <span class="n">Eq</span><span class="p">(</span><span class="n">collect</span><span class="p">(</span><span class="n">eq</span><span class="o">.</span><span class="n">rhs</span><span class="p">,</span> <span class="p">[</span><span class="mi">2</span><span class="p">,</span><span class="n">tau</span><span class="o">/</span><span class="n">Ts</span><span class="p">,</span> <span class="n">x0</span><span class="p">,</span> <span class="n">x1</span><span class="p">,</span> <span class="n">x2</span><span class="p">,</span> <span class="n">x3</span><span class="p">]),</span> <span class="n">collect</span><span class="p">(</span><span class="n">eq</span><span class="o">.</span><span class="n">lhs</span><span class="p">,</span> <span class="p">[</span><span class="n">y0</span><span class="p">,</span> <span class="n">y1</span><span class="p">,</span> <span class="n">y2</span><span class="p">,</span> <span class="n">y3</span><span class="p">])</span> <span class="p">)</span>
 <span class="n">mprintb</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\\</span><span class="s2">small &quot;</span><span class="p">,</span> <span class="n">latex</span><span class="p">(</span><span class="n">eq</span><span class="p">))</span>
 </pre></div>
 </div>
 </div>
 <div class="cell_output docutils container">
 <div class="output text_latex math notranslate nohighlight">
-\[\displaystyle \boxed{\small x_{k} + x_{k-1} = y_{k} \left(1 + \frac{2 \tau}{T_{s}}\right) + y_{k-1} \left(1 - \frac{2 \tau}{T_{s}}\right)}\]</div>
+\[\displaystyle \boxed{\small \frac{2 \tau x_{k}}{T_{s}} - \frac{2 \tau x_{k-1}}{T_{s}} = y_{k} \left(1 + \frac{2 \tau}{T_{s}}\right) + y_{k-1} \left(1 - \frac{2 \tau}{T_{s}}\right)}\]</div>
 </div>
 </div>
 </section>
 </section>
 <hr class="docutils" />
-<section id="second-order-low-pass-butterworth-filter">
-<h2>Second Order Low-Pass Butterworth Filter<a class="headerlink" href="#second-order-low-pass-butterworth-filter" title="Link to this heading">#</a></h2>
-<p>Transfer function of a second order lowpass filter (Butterworth):</p>
-<div class="math notranslate nohighlight">
-\[ H(s) = \frac{\omega_{c}^{2}}{\omega_{c}^{2} + \sqrt{2} \omega_{c} s + s^{2}} \]</div>
-<p>where <span class="math notranslate nohighlight">\(\omega_c\)</span> is the filter cut-off frequency (in Hz).</p>
+<section id="second-order-high-pass-butterworth-filter">
+<h2>Second Order High-Pass Butterworth Filter<a class="headerlink" href="#second-order-high-pass-butterworth-filter" title="Link to this heading">#</a></h2>
 <section id="id1">
-<h3>Discretization with Bilinear Transformation<a class="headerlink" href="#id1" title="Link to this heading">#</a></h3>
+<h3>The Complementary Form<a class="headerlink" href="#id1" title="Link to this heading">#</a></h3>
+<p>Transfer function of a second order highpass filter as a complementary to a second-order lowpass filter (Butterworth):</p>
+<div class="math notranslate nohighlight">
+\[ H_{HP}(s) = 1 - H_{LP}\]</div>
+<div class="math notranslate nohighlight">
+\[ H(s) = 1 - \frac{\omega_{c}^{2}}{\omega_{c}^{2} + \sqrt{2} \omega_{c} s + s^{2}} \]</div>
+<p>where <span class="math notranslate nohighlight">\(\omega_c\)</span> is the filter cut-off frequency (in Hz).</p>
+<p><strong>Discretization with Bilinear Transformation</strong></p>
 <p>Similiar to the previous section, here we also transform <span class="math notranslate nohighlight">\(s\)</span> into <span class="math notranslate nohighlight">\(z\)</span> by applying the following substitution.</p>
 <div class="math notranslate nohighlight">
 \[ \frac{1}{s} \longleftarrow \frac{T_s}{2} \frac{z+1}{z-1} \]</div>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">H</span> <span class="o">=</span> <span class="n">wc</span><span class="o">**</span><span class="mi">2</span> <span class="o">/</span> <span class="p">(</span><span class="n">wc</span><span class="o">**</span><span class="mi">2</span><span class="o">+</span><span class="n">sqrt</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span><span class="o">*</span><span class="n">s</span><span class="o">*</span><span class="n">wc</span><span class="o">+</span><span class="n">s</span><span class="o">**</span><span class="mi">2</span><span class="p">)</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">H</span> <span class="o">=</span> <span class="mi">1</span> <span class="o">-</span> <span class="n">wc</span><span class="o">**</span><span class="mi">2</span> <span class="o">/</span> <span class="p">(</span><span class="n">wc</span><span class="o">**</span><span class="mi">2</span><span class="o">+</span><span class="n">sqrt</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span><span class="o">*</span><span class="n">s</span><span class="o">*</span><span class="n">wc</span><span class="o">+</span><span class="n">s</span><span class="o">**</span><span class="mi">2</span><span class="p">)</span>
 <span class="n">mprint</span><span class="p">(</span><span class="s1">&#39;H=&#39;</span><span class="p">,</span><span class="n">latex</span><span class="p">(</span><span class="n">H</span><span class="p">))</span>
 
-<span class="n">H</span> <span class="o">=</span> <span class="n">H</span><span class="o">.</span><span class="n">subs</span><span class="p">(</span><span class="mi">1</span><span class="o">/</span><span class="n">s</span><span class="p">,</span> <span class="n">Ts</span><span class="o">/</span><span class="mi">2</span> <span class="o">*</span> <span class="p">(</span><span class="n">z</span><span class="o">+</span><span class="mi">1</span><span class="p">)</span><span class="o">/</span><span class="p">(</span><span class="n">z</span><span class="o">-</span><span class="mi">1</span><span class="p">))</span>
+<span class="n">H</span> <span class="o">=</span> <span class="n">simplify</span><span class="p">(</span><span class="mi">1</span> <span class="o">-</span> <span class="n">wc</span><span class="o">**</span><span class="mi">2</span> <span class="o">/</span> <span class="p">(</span><span class="n">wc</span><span class="o">**</span><span class="mi">2</span><span class="o">+</span><span class="n">sqrt</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span><span class="o">*</span><span class="n">s</span><span class="o">*</span><span class="n">wc</span><span class="o">+</span><span class="n">s</span><span class="o">**</span><span class="mi">2</span><span class="p">))</span>
+<span class="n">mprint</span><span class="p">(</span><span class="s1">&#39;H=&#39;</span><span class="p">,</span><span class="n">latex</span><span class="p">(</span><span class="n">H</span><span class="p">))</span>
+
+<span class="n">H</span> <span class="o">=</span> <span class="n">simplify</span><span class="p">(</span><span class="n">H</span><span class="o">.</span><span class="n">subs</span><span class="p">(</span><span class="mi">1</span><span class="o">/</span><span class="n">s</span><span class="p">,</span> <span class="n">Ts</span><span class="o">/</span><span class="mi">2</span> <span class="o">*</span> <span class="p">(</span><span class="n">z</span><span class="o">+</span><span class="mi">1</span><span class="p">)</span><span class="o">/</span><span class="p">(</span><span class="n">z</span><span class="o">-</span><span class="mi">1</span><span class="p">)))</span>
 <span class="n">mprint</span><span class="p">(</span><span class="s1">&#39;H=&#39;</span><span class="p">,</span><span class="n">latex</span><span class="p">(</span><span class="n">H</span><span class="p">))</span>
 </pre></div>
 </div>
 </div>
 <div class="cell_output docutils container">
 <div class="output text_latex math notranslate nohighlight">
-\[\displaystyle H=\frac{\omega_{c}^{2}}{\omega_{c}^{2} + \sqrt{2} \omega_{c} s + s^{2}}\]</div>
+\[\displaystyle H=- \frac{\omega_{c}^{2}}{\omega_{c}^{2} + \sqrt{2} \omega_{c} s + s^{2}} + 1\]</div>
 <div class="output text_latex math notranslate nohighlight">
-\[\displaystyle H=\frac{\omega_{c}^{2}}{\omega_{c}^{2} + \frac{2 \sqrt{2} \omega_{c} \left(z - 1\right)}{T_{s} \left(z + 1\right)} + \frac{4 \left(z - 1\right)^{2}}{T_{s}^{2} \left(z + 1\right)^{2}}}\]</div>
+\[\displaystyle H=\frac{s \left(\sqrt{2} \omega_{c} + s\right)}{\omega_{c}^{2} + \sqrt{2} \omega_{c} s + s^{2}}\]</div>
+<div class="output text_latex math notranslate nohighlight">
+\[\displaystyle H=\frac{2 \left(z - 1\right) \left(\sqrt{2} T_{s} \omega_{c} \left(z + 1\right) + 2 z - 2\right)}{T_{s}^{2} \omega_{c}^{2} \left(z + 1\right)^{2} + 2 \sqrt{2} T_{s} \omega_{c} \left(z - 1\right) \left(z + 1\right) + 4 \left(z - 1\right)^{2}}\]</div>
 </div>
 </div>
 <p>Let us define <span class="math notranslate nohighlight">\(x\)</span> as the input to the filter and <span class="math notranslate nohighlight">\(y\)</span> as the output (filtered input).</p>
-<div class="cell docutils container">
+<div class="cell tag_full-width docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">eq</span> <span class="o">=</span> <span class="n">Eq</span><span class="p">(</span><span class="n">y</span><span class="p">,</span> <span class="n">H</span> <span class="o">*</span> <span class="n">x</span><span class="p">)</span>
 <span class="n">mprint</span><span class="p">(</span><span class="n">latex</span><span class="p">(</span><span class="n">eq</span><span class="p">))</span>
@@ -660,13 +673,13 @@
 </div>
 <div class="cell_output docutils container">
 <div class="output text_latex math notranslate nohighlight">
-\[\displaystyle y = \frac{\omega_{c}^{2} x}{\omega_{c}^{2} + \frac{2 \sqrt{2} \omega_{c} \left(z - 1\right)}{T_{s} \left(z + 1\right)} + \frac{4 \left(z - 1\right)^{2}}{T_{s}^{2} \left(z + 1\right)^{2}}}\]</div>
+\[\displaystyle y = \frac{2 x \left(z - 1\right) \left(\sqrt{2} T_{s} \omega_{c} \left(z + 1\right) + 2 z - 2\right)}{T_{s}^{2} \omega_{c}^{2} \left(z + 1\right)^{2} + 2 \sqrt{2} T_{s} \omega_{c} \left(z - 1\right) \left(z + 1\right) + 4 \left(z - 1\right)^{2}}\]</div>
 <div class="output text_latex math notranslate nohighlight">
-\[\displaystyle y = \frac{T_{s}^{2} \omega_{c}^{2} x \left(z + 1\right)^{2}}{T_{s}^{2} \omega_{c}^{2} \left(z + 1\right)^{2} + 2 \sqrt{2} T_{s} \omega_{c} \left(z - 1\right) \left(z + 1\right) + 4 \left(z - 1\right)^{2}}\]</div>
+\[\displaystyle y = \frac{2 x \left(z - 1\right) \left(\sqrt{2} T_{s} \omega_{c} \left(z + 1\right) + 2 z - 2\right)}{T_{s}^{2} \omega_{c}^{2} \left(z + 1\right)^{2} + 2 \sqrt{2} T_{s} \omega_{c} \left(z - 1\right) \left(z + 1\right) + 4 \left(z - 1\right)^{2}}\]</div>
 <div class="output text_latex math notranslate nohighlight">
-\[\displaystyle T_{s}^{2} \omega_{c}^{2} x \left(z + 1\right)^{2} = T_{s}^{2} \omega_{c}^{2} y z^{2} + 2 T_{s}^{2} \omega_{c}^{2} y z + T_{s}^{2} \omega_{c}^{2} y + 2 \sqrt{2} T_{s} \omega_{c} y z^{2} - 2 \sqrt{2} T_{s} \omega_{c} y + 4 y z^{2} - 8 y z + 4 y\]</div>
+\[\displaystyle 2 x \left(z - 1\right) \left(\sqrt{2} T_{s} \omega_{c} \left(z + 1\right) + 2 z - 2\right) = T_{s}^{2} \omega_{c}^{2} y z^{2} + 2 T_{s}^{2} \omega_{c}^{2} y z + T_{s}^{2} \omega_{c}^{2} y + 2 \sqrt{2} T_{s} \omega_{c} y z^{2} - 2 \sqrt{2} T_{s} \omega_{c} y + 4 y z^{2} - 8 y z + 4 y\]</div>
 <div class="output text_latex math notranslate nohighlight">
-\[\displaystyle y + \frac{2 y}{z} + \frac{y}{z^{2}} + \frac{2 \sqrt{2} y}{T_{s} \omega_{c}} - \frac{2 \sqrt{2} y}{T_{s} \omega_{c} z^{2}} + \frac{4 y}{T_{s}^{2} \omega_{c}^{2}} - \frac{8 y}{T_{s}^{2} \omega_{c}^{2} z} + \frac{4 y}{T_{s}^{2} \omega_{c}^{2} z^{2}} = x + \frac{2 x}{z} + \frac{x}{z^{2}}\]</div>
+\[\displaystyle y + \frac{2 y}{z} + \frac{y}{z^{2}} + \frac{2 \sqrt{2} y}{T_{s} \omega_{c}} - \frac{2 \sqrt{2} y}{T_{s} \omega_{c} z^{2}} + \frac{4 y}{T_{s}^{2} \omega_{c}^{2}} - \frac{8 y}{T_{s}^{2} \omega_{c}^{2} z} + \frac{4 y}{T_{s}^{2} \omega_{c}^{2} z^{2}} = \frac{2 \sqrt{2} x}{T_{s} \omega_{c}} - \frac{2 \sqrt{2} x}{T_{s} \omega_{c} z^{2}} + \frac{4 x}{T_{s}^{2} \omega_{c}^{2}} - \frac{8 x}{T_{s}^{2} \omega_{c}^{2} z} + \frac{4 x}{T_{s}^{2} \omega_{c}^{2} z^{2}}\]</div>
 </div>
 </div>
 <p>Apply the following substitutions:</p>
@@ -687,7 +700,7 @@
 </div>
 <div class="cell_output docutils container">
 <div class="output text_latex math notranslate nohighlight">
-\[\displaystyle y_{k} + 2 y_{k-1} + y_{k-2} + \frac{2 \sqrt{2} y_{k}}{T_{s} \omega_{c}} - \frac{2 \sqrt{2} y_{k-2}}{T_{s} \omega_{c}} + \frac{4 y_{k}}{T_{s}^{2} \omega_{c}^{2}} - \frac{8 y_{k-1}}{T_{s}^{2} \omega_{c}^{2}} + \frac{4 y_{k-2}}{T_{s}^{2} \omega_{c}^{2}} = x_{k} + 2 x_{k-1} + x_{k-2}\]</div>
+\[\displaystyle y_{k} + 2 y_{k-1} + y_{k-2} + \frac{2 \sqrt{2} y_{k}}{T_{s} \omega_{c}} - \frac{2 \sqrt{2} y_{k-2}}{T_{s} \omega_{c}} + \frac{4 y_{k}}{T_{s}^{2} \omega_{c}^{2}} - \frac{8 y_{k-1}}{T_{s}^{2} \omega_{c}^{2}} + \frac{4 y_{k-2}}{T_{s}^{2} \omega_{c}^{2}} = \frac{2 \sqrt{2} x_{k}}{T_{s} \omega_{c}} - \frac{2 \sqrt{2} x_{k-2}}{T_{s} \omega_{c}} + \frac{4 x_{k}}{T_{s}^{2} \omega_{c}^{2}} - \frac{8 x_{k-1}}{T_{s}^{2} \omega_{c}^{2}} + \frac{4 x_{k-2}}{T_{s}^{2} \omega_{c}^{2}}\]</div>
 </div>
 </div>
 <p>Finally, by grouping the variables, we obtain:</p>
@@ -700,39 +713,237 @@
 </div>
 <div class="cell_output docutils container">
 <div class="output text_latex math notranslate nohighlight">
-\[\displaystyle \boxed{x_{k} + 2 x_{k-1} + x_{k-2} = y_{k} \left(1 + \frac{2 \sqrt{2}}{T_{s} \omega_{c}} + \frac{4}{T_{s}^{2} \omega_{c}^{2}}\right) + y_{k-1} \left(2 - \frac{8}{T_{s}^{2} \omega_{c}^{2}}\right) + y_{k-2} \left(1 - \frac{2 \sqrt{2}}{T_{s} \omega_{c}} + \frac{4}{T_{s}^{2} \omega_{c}^{2}}\right)}\]</div>
+\[\displaystyle \boxed{x_{k} \left(\frac{2 \sqrt{2}}{T_{s} \omega_{c}} + \frac{4}{T_{s}^{2} \omega_{c}^{2}}\right) + x_{k-2} \left(- \frac{2 \sqrt{2}}{T_{s} \omega_{c}} + \frac{4}{T_{s}^{2} \omega_{c}^{2}}\right) - \frac{8 x_{k-1}}{T_{s}^{2} \omega_{c}^{2}} = y_{k} \left(1 + \frac{2 \sqrt{2}}{T_{s} \omega_{c}} + \frac{4}{T_{s}^{2} \omega_{c}^{2}}\right) + y_{k-1} \left(2 - \frac{8}{T_{s}^{2} \omega_{c}^{2}}\right) + y_{k-2} \left(1 - \frac{2 \sqrt{2}}{T_{s} \omega_{c}} + \frac{4}{T_{s}^{2} \omega_{c}^{2}}\right)}\]</div>
+</div>
+</div>
+<p><strong>However, the complementary form does NOT have +40 dB/decade at <span class="math notranslate nohighlight">\(\omega=\omega_c\)</span>.</strong></p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">H</span> <span class="o">=</span> <span class="n">simplify</span><span class="p">(</span><span class="mi">1</span> <span class="o">-</span> <span class="n">wc</span><span class="o">**</span><span class="mi">2</span> <span class="o">/</span> <span class="p">(</span><span class="n">wc</span><span class="o">**</span><span class="mi">2</span><span class="o">+</span><span class="n">sqrt</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span><span class="o">*</span><span class="n">s</span><span class="o">*</span><span class="n">wc</span><span class="o">+</span><span class="n">s</span><span class="o">**</span><span class="mi">2</span><span class="p">))</span>
+<span class="n">Hjw</span> <span class="o">=</span> <span class="n">H</span><span class="o">.</span><span class="n">subs</span><span class="p">(</span><span class="n">s</span><span class="p">,</span> <span class="n">I</span><span class="o">*</span><span class="n">omega</span><span class="p">)</span>
+
+<span class="n">M</span> <span class="o">=</span> <span class="mi">20</span><span class="o">*</span><span class="n">log</span><span class="p">(</span><span class="nb">abs</span><span class="p">(</span><span class="n">Hjw</span><span class="p">))</span><span class="o">/</span><span class="n">log</span><span class="p">(</span><span class="mi">10</span><span class="p">)</span>
+<span class="n">mprint</span><span class="p">(</span><span class="s1">&#39;M(j</span><span class="se">\\</span><span class="s1">omega)=&#39;</span><span class="p">,</span> <span class="n">latex</span><span class="p">(</span><span class="n">M</span><span class="p">))</span>
+
+<span class="n">dM</span> <span class="o">=</span> <span class="n">simplify</span><span class="p">(</span><span class="n">diff</span><span class="p">(</span><span class="n">M</span><span class="p">,</span> <span class="n">omega</span><span class="p">))</span>
+<span class="n">mprint</span><span class="p">(</span><span class="s1">&#39;</span><span class="se">\\</span><span class="s1">frac</span><span class="si">{dM}</span><span class="s1">{d</span><span class="se">\\</span><span class="s1">omega}=&#39;</span><span class="p">,</span> <span class="n">latex</span><span class="p">(</span><span class="n">dM</span><span class="p">))</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_latex math notranslate nohighlight">
+\[\displaystyle M(j\omega)=\frac{20 \log{\left(\frac{\omega \sqrt{\omega^{2} + 2 \omega_{c}^{2}}}{\sqrt{\omega^{4} + \omega_{c}^{4}}} \right)}}{\log{\left(10 \right)}}\]</div>
+<div class="output text_latex math notranslate nohighlight">
+\[\displaystyle \frac{dM}{d\omega}=\frac{40 \omega_{c}^{2} \left(- \omega^{4} + \omega^{2} \omega_{c}^{2} + \omega_{c}^{4}\right)}{\omega \left(\omega^{6} + 2 \omega^{4} \omega_{c}^{2} + \omega^{2} \omega_{c}^{4} + 2 \omega_{c}^{6}\right) \log{\left(10 \right)}}\]</div>
+</div>
+</div>
+<p>When <span class="math notranslate nohighlight">\(\omega = \omega_c\)</span>:</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">limit</span><span class="p">(</span><span class="n">dM</span><span class="p">,</span> <span class="n">omega</span><span class="p">,</span> <span class="n">wc</span><span class="p">)</span><span class="o">.</span><span class="n">evalf</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_latex math notranslate nohighlight">
+\[\displaystyle \frac{2.89529654602168}{\omega_{c}}\]</div>
+</div>
+</div>
+<p>However, the unit here is <code class="docutils literal notranslate"><span class="pre">dB/(rad/s)</span></code>, not <code class="docutils literal notranslate"><span class="pre">dB/decade</span></code>.
+To obtain <code class="docutils literal notranslate"><span class="pre">dB/decade</span></code>:</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">Sdec</span> <span class="o">=</span> <span class="n">simplify</span><span class="p">(</span><span class="n">omega</span> <span class="o">*</span> <span class="n">log</span><span class="p">(</span><span class="mi">10</span><span class="p">)</span> <span class="o">*</span> <span class="n">dM</span><span class="p">)</span>
+<span class="n">Sdec</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_latex math notranslate nohighlight">
+\[\displaystyle \frac{40 \omega_{c}^{2} \left(- \omega^{4} + \omega^{2} \omega_{c}^{2} + \omega_{c}^{4}\right)}{\omega^{6} + 2 \omega^{4} \omega_{c}^{2} + \omega^{2} \omega_{c}^{4} + 2 \omega_{c}^{6}}\]</div>
+</div>
+</div>
+<div class="cell tag_hide-input docutils container">
+<details class="hide above-input">
+<summary aria-label="Toggle hidden content">
+<span class="collapsed">Show code cell source</span>
+<span class="expanded">Hide code cell source</span>
+</summary>
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">Sdec_wc1</span> <span class="o">=</span> <span class="n">simplify</span><span class="p">(</span><span class="n">Sdec</span><span class="o">.</span><span class="n">subs</span><span class="p">(</span><span class="n">wc</span><span class="p">,</span> <span class="mi">1</span><span class="p">))</span>
+
+<span class="n">mprint</span><span class="p">(</span>
+    <span class="sa">r</span><span class="s1">&#39;S_{\mathrm</span><span class="si">{dec}</span><span class="s1">}(\omega)\big|_{\omega_c=1}=&#39;</span><span class="p">,</span>
+    <span class="n">latex</span><span class="p">(</span><span class="n">Sdec_wc1</span><span class="p">)</span>
+<span class="p">)</span>
+
+<span class="n">p</span> <span class="o">=</span> <span class="n">plot</span><span class="p">(</span>
+    <span class="n">Sdec_wc1</span><span class="p">,</span>
+    <span class="p">(</span><span class="n">omega</span><span class="p">,</span> <span class="mf">0.1</span><span class="p">,</span> <span class="mi">100</span><span class="p">),</span>
+    <span class="n">size</span><span class="o">=</span><span class="p">(</span><span class="mi">5</span><span class="p">,</span> <span class="mi">2</span><span class="p">),</span>
+    <span class="n">show</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+    <span class="n">title</span><span class="o">=</span><span class="sa">r</span><span class="s1">&#39;$S_{\mathrm</span><span class="si">{dec}</span><span class="s1">}(\omega),\quad \omega_c=1$&#39;</span><span class="p">,</span>
+    <span class="n">xlabel</span><span class="o">=</span><span class="sa">r</span><span class="s1">&#39;$\omega$&#39;</span><span class="p">,</span>
+    <span class="n">ylabel</span><span class="o">=</span><span class="sa">r</span><span class="s1">&#39;dB/decade&#39;</span><span class="p">,</span>
+    <span class="n">xscale</span><span class="o">=</span><span class="s1">&#39;log&#39;</span>
+<span class="p">)</span>
+
+<span class="n">p</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+</details>
+<div class="cell_output docutils container">
+<div class="output text_latex math notranslate nohighlight">
+\[\displaystyle S_{\mathrm{dec}}(\omega)\big|_{\omega_c=1}=\frac{40 \left(- \omega^{4} + \omega^{2} + 1\right)}{\omega^{6} + 2 \omega^{4} + \omega^{2} + 2}\]</div>
+<img alt="_images/4f263eb0995ef83ec7edf3ad4ffc0ae76867a8a109370a7236eeee5988850b8c.png" src="_images/4f263eb0995ef83ec7edf3ad4ffc0ae76867a8a109370a7236eeee5988850b8c.png" />
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">Sdec_wc</span> <span class="o">=</span> <span class="n">simplify</span><span class="p">(</span><span class="n">Sdec</span><span class="o">.</span><span class="n">subs</span><span class="p">(</span><span class="n">omega</span><span class="p">,</span> <span class="n">wc</span><span class="p">))</span>
+<span class="n">Sdec_wc</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_latex math notranslate nohighlight">
+\[\displaystyle \frac{20}{3}\]</div>
+</div>
+</div>
+<p>Thus, it is only about 6.7 dB / decade!</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">Sdec_low</span> <span class="o">=</span> <span class="n">simplify</span><span class="p">(</span><span class="n">limit</span><span class="p">(</span><span class="n">Sdec</span><span class="p">,</span> <span class="n">omega</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="nb">dir</span><span class="o">=</span><span class="s1">&#39;+&#39;</span><span class="p">))</span>
+<span class="n">Sdec_high</span> <span class="o">=</span> <span class="n">simplify</span><span class="p">(</span><span class="n">limit</span><span class="p">(</span><span class="n">Sdec</span><span class="p">,</span> <span class="n">omega</span><span class="p">,</span> <span class="n">oo</span><span class="p">))</span>
+
+<span class="n">mprint</span><span class="p">(</span>
+    <span class="sa">r</span><span class="s1">&#39;\lim_{\omega\to0}S_{\mathrm</span><span class="si">{dec}</span><span class="s1">}(\omega)=&#39;</span><span class="p">,</span>
+    <span class="n">latex</span><span class="p">(</span><span class="n">Sdec_low</span><span class="p">)</span>
+<span class="p">)</span>
+
+<span class="n">mprint</span><span class="p">(</span>
+    <span class="sa">r</span><span class="s1">&#39;\lim_{\omega\to\infty}S_{\mathrm</span><span class="si">{dec}</span><span class="s1">}(\omega)=&#39;</span><span class="p">,</span>
+    <span class="n">latex</span><span class="p">(</span><span class="n">Sdec_high</span><span class="p">)</span>
+<span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_latex math notranslate nohighlight">
+\[\displaystyle \lim_{\omega\to0}S_{\mathrm{dec}}(\omega)=20\]</div>
+<div class="output text_latex math notranslate nohighlight">
+\[\displaystyle \lim_{\omega\to\infty}S_{\mathrm{dec}}(\omega)=0\]</div>
+</div>
+</div>
+<p>The complementary form has an asymptotic low-frequency slope of only +20 dB/decade, rather than the +40 dB/decade of a conventional second-order HPF. At the cutoff, its local slope is approximately +6.67 dB/decade.</p>
+</section>
+<section id="standard-form">
+<h3>Standard Form<a class="headerlink" href="#standard-form" title="Link to this heading">#</a></h3>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">H</span> <span class="o">=</span> <span class="n">s</span><span class="o">**</span><span class="mi">2</span> <span class="o">/</span> <span class="p">(</span><span class="n">wc</span><span class="o">**</span><span class="mi">2</span><span class="o">+</span><span class="n">sqrt</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span><span class="o">*</span><span class="n">s</span><span class="o">*</span><span class="n">wc</span><span class="o">+</span><span class="n">s</span><span class="o">**</span><span class="mi">2</span><span class="p">)</span>
+<span class="n">mprint</span><span class="p">(</span><span class="s1">&#39;H=&#39;</span><span class="p">,</span><span class="n">latex</span><span class="p">(</span><span class="n">H</span><span class="p">))</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_latex math notranslate nohighlight">
+\[\displaystyle H=\frac{s^{2}}{\omega_{c}^{2} + \sqrt{2} \omega_{c} s + s^{2}}\]</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">H</span> <span class="o">=</span> <span class="n">simplify</span><span class="p">(</span><span class="n">H</span><span class="o">.</span><span class="n">subs</span><span class="p">(</span><span class="mi">1</span><span class="o">/</span><span class="n">s</span><span class="p">,</span> <span class="n">Ts</span><span class="o">/</span><span class="mi">2</span> <span class="o">*</span> <span class="p">(</span><span class="n">z</span><span class="o">+</span><span class="mi">1</span><span class="p">)</span><span class="o">/</span><span class="p">(</span><span class="n">z</span><span class="o">-</span><span class="mi">1</span><span class="p">)))</span>
+<span class="n">mprint</span><span class="p">(</span><span class="s1">&#39;H=&#39;</span><span class="p">,</span><span class="n">latex</span><span class="p">(</span><span class="n">H</span><span class="p">))</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_latex math notranslate nohighlight">
+\[\displaystyle H=\frac{4 \left(z - 1\right)^{2}}{T_{s}^{2} \omega_{c}^{2} \left(z + 1\right)^{2} + 2 \sqrt{2} T_{s} \omega_{c} \left(z - 1\right) \left(z + 1\right) + 4 \left(z - 1\right)^{2}}\]</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">eq</span> <span class="o">=</span> <span class="n">Eq</span><span class="p">(</span><span class="n">y</span><span class="p">,</span> <span class="n">H</span> <span class="o">*</span> <span class="n">x</span><span class="p">)</span>
+<span class="n">mprint</span><span class="p">(</span><span class="n">latex</span><span class="p">(</span><span class="n">eq</span><span class="p">))</span>
+
+<span class="n">eq</span> <span class="o">=</span> <span class="n">simplify</span><span class="p">(</span><span class="n">eq</span><span class="p">)</span>
+<span class="n">mprint</span><span class="p">(</span><span class="n">latex</span><span class="p">(</span><span class="n">eq</span><span class="p">))</span>
+
+<span class="n">eq</span> <span class="o">=</span> <span class="n">Eq</span><span class="p">(</span><span class="n">numer</span><span class="p">(</span><span class="n">eq</span><span class="o">.</span><span class="n">rhs</span><span class="p">),</span> <span class="n">expand</span><span class="p">(</span><span class="n">eq</span><span class="o">.</span><span class="n">lhs</span> <span class="o">*</span> <span class="n">denom</span><span class="p">(</span><span class="n">eq</span><span class="o">.</span><span class="n">rhs</span><span class="p">)))</span>
+<span class="n">mprint</span><span class="p">(</span><span class="n">latex</span><span class="p">(</span><span class="n">eq</span><span class="p">))</span>
+
+<span class="n">eq</span> <span class="o">=</span><span class="n">expand</span><span class="p">(</span><span class="n">Eq</span><span class="p">(</span><span class="n">numer</span><span class="p">(</span><span class="n">eq</span><span class="o">.</span><span class="n">rhs</span><span class="p">)</span><span class="o">/</span><span class="n">z</span><span class="o">**</span><span class="mi">2</span><span class="o">/</span><span class="n">Ts</span><span class="o">**</span><span class="mi">2</span><span class="o">/</span><span class="n">wc</span><span class="o">**</span><span class="mi">2</span><span class="p">,</span> <span class="n">eq</span><span class="o">.</span><span class="n">lhs</span> <span class="o">*</span> <span class="n">denom</span><span class="p">(</span><span class="n">eq</span><span class="o">.</span><span class="n">rhs</span><span class="p">)</span><span class="o">/</span><span class="n">z</span><span class="o">**</span><span class="mi">2</span><span class="o">/</span><span class="n">Ts</span><span class="o">**</span><span class="mi">2</span><span class="o">/</span><span class="n">wc</span><span class="o">**</span><span class="mi">2</span><span class="p">))</span>
+<span class="n">mprint</span><span class="p">(</span><span class="n">latex</span><span class="p">(</span><span class="n">eq</span><span class="p">))</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_latex math notranslate nohighlight">
+\[\displaystyle y = \frac{4 x \left(z - 1\right)^{2}}{T_{s}^{2} \omega_{c}^{2} \left(z + 1\right)^{2} + 2 \sqrt{2} T_{s} \omega_{c} \left(z - 1\right) \left(z + 1\right) + 4 \left(z - 1\right)^{2}}\]</div>
+<div class="output text_latex math notranslate nohighlight">
+\[\displaystyle y = \frac{4 x \left(z - 1\right)^{2}}{T_{s}^{2} \omega_{c}^{2} \left(z + 1\right)^{2} + 2 \sqrt{2} T_{s} \omega_{c} \left(z - 1\right) \left(z + 1\right) + 4 \left(z - 1\right)^{2}}\]</div>
+<div class="output text_latex math notranslate nohighlight">
+\[\displaystyle 4 x \left(z - 1\right)^{2} = T_{s}^{2} \omega_{c}^{2} y z^{2} + 2 T_{s}^{2} \omega_{c}^{2} y z + T_{s}^{2} \omega_{c}^{2} y + 2 \sqrt{2} T_{s} \omega_{c} y z^{2} - 2 \sqrt{2} T_{s} \omega_{c} y + 4 y z^{2} - 8 y z + 4 y\]</div>
+<div class="output text_latex math notranslate nohighlight">
+\[\displaystyle y + \frac{2 y}{z} + \frac{y}{z^{2}} + \frac{2 \sqrt{2} y}{T_{s} \omega_{c}} - \frac{2 \sqrt{2} y}{T_{s} \omega_{c} z^{2}} + \frac{4 y}{T_{s}^{2} \omega_{c}^{2}} - \frac{8 y}{T_{s}^{2} \omega_{c}^{2} z} + \frac{4 y}{T_{s}^{2} \omega_{c}^{2} z^{2}} = \frac{4 x}{T_{s}^{2} \omega_{c}^{2}} - \frac{8 x}{T_{s}^{2} \omega_{c}^{2} z} + \frac{4 x}{T_{s}^{2} \omega_{c}^{2} z^{2}}\]</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">eq</span> <span class="o">=</span> <span class="n">eq</span><span class="o">.</span><span class="n">subs</span><span class="p">(</span><span class="n">x</span><span class="o">/</span><span class="n">z</span><span class="o">**</span><span class="mi">3</span><span class="p">,</span> <span class="n">x3</span><span class="p">)</span><span class="o">.</span><span class="n">subs</span><span class="p">(</span><span class="n">x</span><span class="o">/</span><span class="n">z</span><span class="o">**</span><span class="mi">2</span><span class="p">,</span> <span class="n">x2</span><span class="p">)</span><span class="o">.</span><span class="n">subs</span><span class="p">(</span><span class="n">x</span><span class="o">/</span><span class="n">z</span><span class="p">,</span> <span class="n">x1</span><span class="p">)</span><span class="o">.</span><span class="n">subs</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">x0</span><span class="p">)</span><span class="o">.</span><span class="n">subs</span><span class="p">(</span><span class="n">y</span><span class="o">/</span><span class="n">z</span><span class="o">**</span><span class="mi">3</span><span class="p">,</span> <span class="n">y3</span><span class="p">)</span><span class="o">.</span><span class="n">subs</span><span class="p">(</span><span class="n">y</span><span class="o">/</span><span class="n">z</span><span class="o">**</span><span class="mi">2</span><span class="p">,</span> <span class="n">y2</span><span class="p">)</span><span class="o">.</span><span class="n">subs</span><span class="p">(</span><span class="n">y</span><span class="o">/</span><span class="n">z</span><span class="p">,</span> <span class="n">y1</span><span class="p">)</span><span class="o">.</span><span class="n">subs</span><span class="p">(</span><span class="n">y</span><span class="p">,</span> <span class="n">y0</span><span class="p">)</span>
+<span class="n">mprint</span><span class="p">(</span><span class="n">latex</span><span class="p">(</span><span class="n">eq</span><span class="p">))</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_latex math notranslate nohighlight">
+\[\displaystyle y_{k} + 2 y_{k-1} + y_{k-2} + \frac{2 \sqrt{2} y_{k}}{T_{s} \omega_{c}} - \frac{2 \sqrt{2} y_{k-2}}{T_{s} \omega_{c}} + \frac{4 y_{k}}{T_{s}^{2} \omega_{c}^{2}} - \frac{8 y_{k-1}}{T_{s}^{2} \omega_{c}^{2}} + \frac{4 y_{k-2}}{T_{s}^{2} \omega_{c}^{2}} = \frac{4 x_{k}}{T_{s}^{2} \omega_{c}^{2}} - \frac{8 x_{k-1}}{T_{s}^{2} \omega_{c}^{2}} + \frac{4 x_{k-2}}{T_{s}^{2} \omega_{c}^{2}}\]</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">eq</span> <span class="o">=</span> <span class="n">Eq</span><span class="p">(</span><span class="n">collect</span><span class="p">(</span><span class="n">eq</span><span class="o">.</span><span class="n">rhs</span><span class="p">,</span> <span class="p">[</span><span class="n">x0</span><span class="p">,</span> <span class="n">x1</span><span class="p">,</span> <span class="n">x2</span><span class="p">,</span> <span class="n">x3</span><span class="p">]),</span> <span class="n">collect</span><span class="p">(</span><span class="n">eq</span><span class="o">.</span><span class="n">lhs</span><span class="p">,</span> <span class="p">[</span><span class="n">y0</span><span class="p">,</span> <span class="n">y1</span><span class="p">,</span> <span class="n">y2</span><span class="p">,</span> <span class="n">y3</span><span class="p">])</span> <span class="p">)</span>
+<span class="n">mprintb</span><span class="p">(</span><span class="n">latex</span><span class="p">(</span><span class="n">eq</span><span class="p">))</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_latex math notranslate nohighlight">
+\[\displaystyle \boxed{\frac{4 x_{k}}{T_{s}^{2} \omega_{c}^{2}} - \frac{8 x_{k-1}}{T_{s}^{2} \omega_{c}^{2}} + \frac{4 x_{k-2}}{T_{s}^{2} \omega_{c}^{2}} = y_{k} \left(1 + \frac{2 \sqrt{2}}{T_{s} \omega_{c}} + \frac{4}{T_{s}^{2} \omega_{c}^{2}}\right) + y_{k-1} \left(2 - \frac{8}{T_{s}^{2} \omega_{c}^{2}}\right) + y_{k-2} \left(1 - \frac{2 \sqrt{2}}{T_{s} \omega_{c}} + \frac{4}{T_{s}^{2} \omega_{c}^{2}}\right)}\]</div>
 </div>
 </div>
 </section>
 <section id="implementation-in-simulink">
 <h3>Implementation in Simulink<a class="headerlink" href="#implementation-in-simulink" title="Link to this heading">#</a></h3>
-<p><a class="reference download internal" download="" href="_downloads/77329c6b8f20cca30d0f73df4d89e864/lpfbuttter2nd.slx"><span class="xref download myst">Download the Simulink file here (R2024b).</span></a></p>
-<div class="highlight-octave notranslate"><div class="highlight"><pre><span></span><span class="k">function</span><span class="w"> </span>y<span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="nf">LPF</span><span class="p">(</span>y1, y2, x0, x1, x2, wc, Ts<span class="p">)</span>
-<span class="c">% y1 is y(k-1)</span>
-<span class="c">% y2 is y(k-2)</span>
-<span class="c">% x0 is x(k)</span>
-<span class="c">% x1 is x(k-1)</span>
-<span class="c">% x2 is x(k-2)</span>
+<div class="highlight-octave notranslate"><div class="highlight"><pre><span></span><span class="k">function</span><span class="w"> </span>y<span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="nf">HPF</span><span class="p">(</span>y1, y2, x0, x1, x2, wc, Ts<span class="p">)</span>
+<span class="c">% Second-order Butterworth high-pass filter</span>
+<span class="c">%</span>
+<span class="c">% y1 = y(k-1)</span>
+<span class="c">% y2 = y(k-2)</span>
+<span class="c">% x0 = x(k)</span>
+<span class="c">% x1 = x(k-1)</span>
+<span class="c">% x2 = x(k-2)</span>
+<span class="c">% wc = cutoff angular frequency [rad/s]</span>
+<span class="c">% Ts = sampling period [s]</span>
 
 <span class="n">sq22</span> <span class="p">=</span> <span class="mi">2</span><span class="o">*</span><span class="nb">sqrt</span><span class="p">(</span><span class="mi">2</span><span class="p">);</span>
 <span class="n">Tswc</span> <span class="p">=</span> <span class="n">Ts</span> <span class="o">*</span> <span class="n">wc</span><span class="p">;</span>
 
 <span class="n">A</span> <span class="p">=</span> <span class="mi">1</span> <span class="o">+</span> <span class="n">sq22</span><span class="o">/</span><span class="n">Tswc</span> <span class="o">+</span> <span class="mi">4</span><span class="o">/</span><span class="n">Tswc</span>^<span class="mi">2</span><span class="p">;</span>
-<span class="n">B</span> <span class="p">=</span> <span class="mi">2</span> <span class="o">-</span> <span class="mi">8</span><span class="o">/</span><span class="n">Tswc</span>^<span class="mi">2</span><span class="p">;</span>  
+<span class="n">B</span> <span class="p">=</span> <span class="mi">2</span> <span class="o">-</span> <span class="mi">8</span><span class="o">/</span><span class="n">Tswc</span>^<span class="mi">2</span><span class="p">;</span>
 <span class="n">C</span> <span class="p">=</span> <span class="mi">1</span> <span class="o">-</span> <span class="n">sq22</span><span class="o">/</span><span class="n">Tswc</span> <span class="o">+</span> <span class="mi">4</span><span class="o">/</span><span class="n">Tswc</span>^<span class="mi">2</span><span class="p">;</span>
+<span class="n">D</span> <span class="p">=</span> <span class="mi">4</span><span class="o">/</span><span class="n">Tswc</span>^<span class="mi">2</span><span class="p">;</span>
 
-<span class="n">y</span> <span class="p">=</span> <span class="p">(</span><span class="n">x0</span> <span class="o">+</span> <span class="mi">2</span><span class="o">*</span><span class="n">x1</span> <span class="o">+</span> <span class="n">x2</span> <span class="o">-</span> <span class="n">y1</span><span class="o">*</span><span class="n">B</span> <span class="o">-</span> <span class="n">y2</span><span class="o">*</span><span class="n">C</span> <span class="p">)</span> <span class="o">/</span> <span class="n">A</span><span class="p">;</span>
+<span class="n">y</span> <span class="p">=</span> <span class="p">(</span><span class="n">D</span><span class="o">*</span><span class="p">(</span><span class="n">x0</span> <span class="o">-</span> <span class="mi">2</span><span class="o">*</span><span class="n">x1</span> <span class="o">+</span> <span class="n">x2</span><span class="p">)</span> <span class="o">-</span> <span class="n">B</span><span class="o">*</span><span class="n">y1</span> <span class="o">-</span> <span class="n">C</span><span class="o">*</span><span class="n">y2</span><span class="p">)</span> <span class="o">/</span> <span class="n">A</span><span class="p">;</span>
+<span class="k">end</span>
 </pre></div>
 </div>
-<p><img alt="" src="_images/p17.png" /></p>
-<p>The complete Simulink test file is shown below:</p>
-<ul class="simple">
-<li><p>The top filter block is our filter block.</p></li>
-<li><p>The bottom filter block by MATLAB Simulink, which is <strong>the “Discrete Varying Lowpass” block from Control System Toolbox.</strong></p></li>
-</ul>
-<p><img alt="" src="_images/p20.png" /></p>
-<p>The comparison results are shown in the following figure. As we can see, our implementation is identical to Simulink implementation.</p>
-<p><img alt="" src="_images/p18.png" /></p>
+<p><a class="reference download internal" download="" href="_downloads/29352c125fd6bca32ddc9d56b5266d7e/hpfbuttter2nd.slx"><span class="xref download myst">Download Simulink file here.</span></a></p>
+<p><img alt="" src="_images/p27.png" /></p>
+<p><img alt="" src="_images/p28.png" /></p>
 </section>
 </section>
 </section>
@@ -768,20 +979,20 @@
                   
 <div class="prev-next-area">
     <a class="left-prev"
-       href="digital-pid-2.html"
+       href="digital-filter.html"
        title="previous page">
       <i class="fa-solid fa-angle-left"></i>
       <div class="prev-next-info">
         <p class="prev-next-subtitle">previous</p>
-        <p class="prev-next-title">Digital PID Control - Part 2</p>
+        <p class="prev-next-title">Digital Low-Pass Filter</p>
       </div>
     </a>
     <a class="right-next"
-       href="digital-filter-2.html"
+       href="interactives.html"
        title="next page">
       <div class="prev-next-info">
         <p class="prev-next-subtitle">next</p>
-        <p class="prev-next-title">Digital High-Pass Filter</p>
+        <p class="prev-next-title">Interactive Sessions with HTML/JavaScript</p>
       </div>
       <i class="fa-solid fa-angle-right"></i>
     </a>
@@ -803,12 +1014,13 @@
   <nav class="bd-toc-nav page-toc">
     <ul class="visible nav section-nav flex-column">
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#required-imports">Required Imports</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#first-order-low-pass-filter">First-Order Low-Pass Filter</a><ul class="nav section-nav flex-column">
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#discretization-with-bilinear-transformation">Discretization with Bilinear Transformation</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#first-order-high-pass-filter">First-Order High-Pass Filter</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#the-complementary-form">The Complementary Form</a></li>
 </ul>
 </li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#second-order-low-pass-butterworth-filter">Second Order Low-Pass Butterworth Filter</a><ul class="nav section-nav flex-column">
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id1">Discretization with Bilinear Transformation</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#second-order-high-pass-butterworth-filter">Second Order High-Pass Butterworth Filter</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id1">The Complementary Form</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#standard-form">Standard Form</a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#implementation-in-simulink">Implementation in Simulink</a></li>
 </ul>
 </li>
