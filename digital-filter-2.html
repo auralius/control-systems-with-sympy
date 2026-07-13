@@ -632,7 +632,7 @@
 <p>Similiar to the previous section, here we also transform <span class="math notranslate nohighlight">\(s\)</span> into <span class="math notranslate nohighlight">\(z\)</span> by applying the following substitution.</p>
 <div class="math notranslate nohighlight">
 \[ \frac{1}{s} \longleftarrow \frac{T_s}{2} \frac{z+1}{z-1} \]</div>
-<div class="cell docutils container">
+<div class="cell tag_full-width docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">H</span> <span class="o">=</span> <span class="mi">1</span> <span class="o">-</span> <span class="n">wc</span><span class="o">**</span><span class="mi">2</span> <span class="o">/</span> <span class="p">(</span><span class="n">wc</span><span class="o">**</span><span class="mi">2</span><span class="o">+</span><span class="n">sqrt</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span><span class="o">*</span><span class="n">s</span><span class="o">*</span><span class="n">wc</span><span class="o">+</span><span class="n">s</span><span class="o">**</span><span class="mi">2</span><span class="p">)</span>
 <span class="n">mprint</span><span class="p">(</span><span class="s1">&#39;H=&#39;</span><span class="p">,</span><span class="n">latex</span><span class="p">(</span><span class="n">H</span><span class="p">))</span>
@@ -691,7 +691,7 @@
 <li><p><span class="math notranslate nohighlight">\(x/z\)</span> becomes <span class="math notranslate nohighlight">\(x_{k-1}\)</span></p></li>
 <li><p><span class="math notranslate nohighlight">\(x/z^2\)</span> becomes <span class="math notranslate nohighlight">\(x_{k-2}\)</span></p></li>
 </ul>
-<div class="cell docutils container">
+<div class="cell tag_full-width docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">eq</span> <span class="o">=</span> <span class="n">eq</span><span class="o">.</span><span class="n">subs</span><span class="p">(</span><span class="n">x</span><span class="o">/</span><span class="n">z</span><span class="o">**</span><span class="mi">3</span><span class="p">,</span> <span class="n">x3</span><span class="p">)</span><span class="o">.</span><span class="n">subs</span><span class="p">(</span><span class="n">x</span><span class="o">/</span><span class="n">z</span><span class="o">**</span><span class="mi">2</span><span class="p">,</span> <span class="n">x2</span><span class="p">)</span><span class="o">.</span><span class="n">subs</span><span class="p">(</span><span class="n">x</span><span class="o">/</span><span class="n">z</span><span class="p">,</span> <span class="n">x1</span><span class="p">)</span><span class="o">.</span><span class="n">subs</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">x0</span><span class="p">)</span><span class="o">.</span><span class="n">subs</span><span class="p">(</span><span class="n">y</span><span class="o">/</span><span class="n">z</span><span class="o">**</span><span class="mi">3</span><span class="p">,</span> <span class="n">y3</span><span class="p">)</span><span class="o">.</span><span class="n">subs</span><span class="p">(</span><span class="n">y</span><span class="o">/</span><span class="n">z</span><span class="o">**</span><span class="mi">2</span><span class="p">,</span> <span class="n">y2</span><span class="p">)</span><span class="o">.</span><span class="n">subs</span><span class="p">(</span><span class="n">y</span><span class="o">/</span><span class="n">z</span><span class="p">,</span> <span class="n">y1</span><span class="p">)</span><span class="o">.</span><span class="n">subs</span><span class="p">(</span><span class="n">y</span><span class="p">,</span> <span class="n">y0</span><span class="p">)</span>
 <span class="n">mprint</span><span class="p">(</span><span class="n">latex</span><span class="p">(</span><span class="n">eq</span><span class="p">))</span>
@@ -704,7 +704,7 @@
 </div>
 </div>
 <p>Finally, by grouping the variables, we obtain:</p>
-<div class="cell docutils container">
+<div class="cell tag_full-width docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">eq</span> <span class="o">=</span> <span class="n">Eq</span><span class="p">(</span><span class="n">collect</span><span class="p">(</span><span class="n">eq</span><span class="o">.</span><span class="n">rhs</span><span class="p">,</span> <span class="p">[</span><span class="n">x0</span><span class="p">,</span> <span class="n">x1</span><span class="p">,</span> <span class="n">x2</span><span class="p">,</span> <span class="n">x3</span><span class="p">]),</span> <span class="n">collect</span><span class="p">(</span><span class="n">eq</span><span class="o">.</span><span class="n">lhs</span><span class="p">,</span> <span class="p">[</span><span class="n">y0</span><span class="p">,</span> <span class="n">y1</span><span class="p">,</span> <span class="n">y2</span><span class="p">,</span> <span class="n">y3</span><span class="p">])</span> <span class="p">)</span>
 <span class="n">mprintb</span><span class="p">(</span><span class="n">latex</span><span class="p">(</span><span class="n">eq</span><span class="p">))</span>
@@ -716,8 +716,13 @@
 \[\displaystyle \boxed{x_{k} \left(\frac{2 \sqrt{2}}{T_{s} \omega_{c}} + \frac{4}{T_{s}^{2} \omega_{c}^{2}}\right) + x_{k-2} \left(- \frac{2 \sqrt{2}}{T_{s} \omega_{c}} + \frac{4}{T_{s}^{2} \omega_{c}^{2}}\right) - \frac{8 x_{k-1}}{T_{s}^{2} \omega_{c}^{2}} = y_{k} \left(1 + \frac{2 \sqrt{2}}{T_{s} \omega_{c}} + \frac{4}{T_{s}^{2} \omega_{c}^{2}}\right) + y_{k-1} \left(2 - \frac{8}{T_{s}^{2} \omega_{c}^{2}}\right) + y_{k-2} \left(1 - \frac{2 \sqrt{2}}{T_{s} \omega_{c}} + \frac{4}{T_{s}^{2} \omega_{c}^{2}}\right)}\]</div>
 </div>
 </div>
-<p><strong>However, the complementary form does NOT have +40 dB/decade at <span class="math notranslate nohighlight">\(\omega=\omega_c\)</span>.</strong></p>
-<div class="cell docutils container">
+<p><strong>However, the complementary form does NOT have +40 dB/decade at <span class="math notranslate nohighlight">\(\omega=\omega_c\)</span>.</strong> We will show this through these steps:</p>
+<ul class="simple">
+<li><p>Substitute <span class="math notranslate nohighlight">\(j\omega\)</span> to <span class="math notranslate nohighlight">\(s\)</span> in <span class="math notranslate nohighlight">\(H(s)\)</span> and convert it to dB. We name is as <span class="math notranslate nohighlight">\(M(j\omega)\)</span>.</p></li>
+<li><p>Calculate <span class="math notranslate nohighlight">\(S=\frac{dM}{d\omega}\)</span></p></li>
+</ul>
+<p>These steps will give us the slope in <code class="docutils literal notranslate"><span class="pre">db/(rad/s)</span></code>.</p>
+<div class="cell tag_full-width docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">H</span> <span class="o">=</span> <span class="n">simplify</span><span class="p">(</span><span class="mi">1</span> <span class="o">-</span> <span class="n">wc</span><span class="o">**</span><span class="mi">2</span> <span class="o">/</span> <span class="p">(</span><span class="n">wc</span><span class="o">**</span><span class="mi">2</span><span class="o">+</span><span class="n">sqrt</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span><span class="o">*</span><span class="n">s</span><span class="o">*</span><span class="n">wc</span><span class="o">+</span><span class="n">s</span><span class="o">**</span><span class="mi">2</span><span class="p">))</span>
 <span class="n">Hjw</span> <span class="o">=</span> <span class="n">H</span><span class="o">.</span><span class="n">subs</span><span class="p">(</span><span class="n">s</span><span class="p">,</span> <span class="n">I</span><span class="o">*</span><span class="n">omega</span><span class="p">)</span>
@@ -726,7 +731,7 @@
 <span class="n">mprint</span><span class="p">(</span><span class="s1">&#39;M(j</span><span class="se">\\</span><span class="s1">omega)=&#39;</span><span class="p">,</span> <span class="n">latex</span><span class="p">(</span><span class="n">M</span><span class="p">))</span>
 
 <span class="n">dM</span> <span class="o">=</span> <span class="n">simplify</span><span class="p">(</span><span class="n">diff</span><span class="p">(</span><span class="n">M</span><span class="p">,</span> <span class="n">omega</span><span class="p">))</span>
-<span class="n">mprint</span><span class="p">(</span><span class="s1">&#39;</span><span class="se">\\</span><span class="s1">frac</span><span class="si">{dM}</span><span class="s1">{d</span><span class="se">\\</span><span class="s1">omega}=&#39;</span><span class="p">,</span> <span class="n">latex</span><span class="p">(</span><span class="n">dM</span><span class="p">))</span>
+<span class="n">mprint</span><span class="p">(</span><span class="s1">&#39;S(</span><span class="se">\\</span><span class="s1">omega)=</span><span class="se">\\</span><span class="s1">frac{dM(</span><span class="se">\\</span><span class="s1">omega)}{d</span><span class="se">\\</span><span class="s1">omega}=&#39;</span><span class="p">,</span> <span class="n">latex</span><span class="p">(</span><span class="n">dM</span><span class="p">))</span>
 </pre></div>
 </div>
 </div>
@@ -734,35 +739,24 @@
 <div class="output text_latex math notranslate nohighlight">
 \[\displaystyle M(j\omega)=\frac{20 \log{\left(\frac{\omega \sqrt{\omega^{2} + 2 \omega_{c}^{2}}}{\sqrt{\omega^{4} + \omega_{c}^{4}}} \right)}}{\log{\left(10 \right)}}\]</div>
 <div class="output text_latex math notranslate nohighlight">
-\[\displaystyle \frac{dM}{d\omega}=\frac{40 \omega_{c}^{2} \left(- \omega^{4} + \omega^{2} \omega_{c}^{2} + \omega_{c}^{4}\right)}{\omega \left(\omega^{6} + 2 \omega^{4} \omega_{c}^{2} + \omega^{2} \omega_{c}^{4} + 2 \omega_{c}^{6}\right) \log{\left(10 \right)}}\]</div>
-</div>
-</div>
-<p>When <span class="math notranslate nohighlight">\(\omega = \omega_c\)</span>:</p>
-<div class="cell docutils container">
-<div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">limit</span><span class="p">(</span><span class="n">dM</span><span class="p">,</span> <span class="n">omega</span><span class="p">,</span> <span class="n">wc</span><span class="p">)</span><span class="o">.</span><span class="n">evalf</span><span class="p">()</span>
-</pre></div>
-</div>
-</div>
-<div class="cell_output docutils container">
-<div class="output text_latex math notranslate nohighlight">
-\[\displaystyle \frac{2.89529654602168}{\omega_{c}}\]</div>
+\[\displaystyle S(\omega)=\frac{dM(\omega)}{d\omega}=\frac{40 \omega_{c}^{2} \left(- \omega^{4} + \omega^{2} \omega_{c}^{2} + \omega_{c}^{4}\right)}{\omega \left(\omega^{6} + 2 \omega^{4} \omega_{c}^{2} + \omega^{2} \omega_{c}^{4} + 2 \omega_{c}^{6}\right) \log{\left(10 \right)}}\]</div>
 </div>
 </div>
 <p>However, the unit here is <code class="docutils literal notranslate"><span class="pre">dB/(rad/s)</span></code>, not <code class="docutils literal notranslate"><span class="pre">dB/decade</span></code>.
 To obtain <code class="docutils literal notranslate"><span class="pre">dB/decade</span></code>:</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">Sdec</span> <span class="o">=</span> <span class="n">simplify</span><span class="p">(</span><span class="n">omega</span> <span class="o">*</span> <span class="n">log</span><span class="p">(</span><span class="mi">10</span><span class="p">)</span> <span class="o">*</span> <span class="n">dM</span><span class="p">)</span>
-<span class="n">Sdec</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">Sdb</span> <span class="o">=</span> <span class="n">simplify</span><span class="p">(</span><span class="n">omega</span> <span class="o">*</span> <span class="n">log</span><span class="p">(</span><span class="mi">10</span><span class="p">)</span> <span class="o">*</span> <span class="n">dM</span><span class="p">)</span>
+<span class="n">mprint</span><span class="p">(</span><span class="s2">&quot;S_</span><span class="si">{dB}</span><span class="s2">(</span><span class="se">\\</span><span class="s2">omega)=&quot;</span><span class="p">,</span> <span class="n">latex</span><span class="p">(</span><span class="n">Sdb</span><span class="p">))</span>
 </pre></div>
 </div>
 </div>
 <div class="cell_output docutils container">
 <div class="output text_latex math notranslate nohighlight">
-\[\displaystyle \frac{40 \omega_{c}^{2} \left(- \omega^{4} + \omega^{2} \omega_{c}^{2} + \omega_{c}^{4}\right)}{\omega^{6} + 2 \omega^{4} \omega_{c}^{2} + \omega^{2} \omega_{c}^{4} + 2 \omega_{c}^{6}}\]</div>
+\[\displaystyle S_{dB}(\omega)=\frac{40 \omega_{c}^{2} \left(- \omega^{4} + \omega^{2} \omega_{c}^{2} + \omega_{c}^{4}\right)}{\omega^{6} + 2 \omega^{4} \omega_{c}^{2} + \omega^{2} \omega_{c}^{4} + 2 \omega_{c}^{6}}\]</div>
 </div>
 </div>
+<p>Let us take <span class="math notranslate nohighlight">\(\omega_c=1\)</span> and plot the slope for arbitrary <span class="math notranslate nohighlight">\(\omega\)</span>.</p>
 <div class="cell tag_hide-input docutils container">
 <details class="hide above-input">
 <summary aria-label="Toggle hidden content">
@@ -770,19 +764,19 @@ To obtain <code class="docutils literal notranslate"><span class="pre">dB/decade
 <span class="expanded">Hide code cell source</span>
 </summary>
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">Sdec_wc1</span> <span class="o">=</span> <span class="n">simplify</span><span class="p">(</span><span class="n">Sdec</span><span class="o">.</span><span class="n">subs</span><span class="p">(</span><span class="n">wc</span><span class="p">,</span> <span class="mi">1</span><span class="p">))</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">Sdb_wc1</span> <span class="o">=</span> <span class="n">simplify</span><span class="p">(</span><span class="n">Sdb</span><span class="o">.</span><span class="n">subs</span><span class="p">(</span><span class="n">wc</span><span class="p">,</span> <span class="mi">1</span><span class="p">))</span>
 
 <span class="n">mprint</span><span class="p">(</span>
-    <span class="sa">r</span><span class="s1">&#39;S_{\mathrm</span><span class="si">{dec}</span><span class="s1">}(\omega)\big|_{\omega_c=1}=&#39;</span><span class="p">,</span>
-    <span class="n">latex</span><span class="p">(</span><span class="n">Sdec_wc1</span><span class="p">)</span>
+    <span class="sa">r</span><span class="s1">&#39;S_{\mathrm</span><span class="si">{dB}</span><span class="s1">}(\omega)\big|_{\omega_c=1}=&#39;</span><span class="p">,</span>
+    <span class="n">latex</span><span class="p">(</span><span class="n">Sdb_wc1</span><span class="p">)</span>
 <span class="p">)</span>
 
 <span class="n">p</span> <span class="o">=</span> <span class="n">plot</span><span class="p">(</span>
-    <span class="n">Sdec_wc1</span><span class="p">,</span>
+    <span class="n">Sdb_wc1</span><span class="p">,</span>
     <span class="p">(</span><span class="n">omega</span><span class="p">,</span> <span class="mf">0.1</span><span class="p">,</span> <span class="mi">100</span><span class="p">),</span>
     <span class="n">size</span><span class="o">=</span><span class="p">(</span><span class="mi">5</span><span class="p">,</span> <span class="mi">2</span><span class="p">),</span>
     <span class="n">show</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
-    <span class="n">title</span><span class="o">=</span><span class="sa">r</span><span class="s1">&#39;$S_{\mathrm</span><span class="si">{dec}</span><span class="s1">}(\omega),\quad \omega_c=1$&#39;</span><span class="p">,</span>
+    <span class="n">title</span><span class="o">=</span><span class="sa">r</span><span class="s1">&#39;$S_{\mathrm</span><span class="si">{dB}</span><span class="s1">}(\omega),\quad \omega_c=1$&#39;</span><span class="p">,</span>
     <span class="n">xlabel</span><span class="o">=</span><span class="sa">r</span><span class="s1">&#39;$\omega$&#39;</span><span class="p">,</span>
     <span class="n">ylabel</span><span class="o">=</span><span class="sa">r</span><span class="s1">&#39;dB/decade&#39;</span><span class="p">,</span>
     <span class="n">xscale</span><span class="o">=</span><span class="s1">&#39;log&#39;</span>
@@ -795,14 +789,14 @@ To obtain <code class="docutils literal notranslate"><span class="pre">dB/decade
 </details>
 <div class="cell_output docutils container">
 <div class="output text_latex math notranslate nohighlight">
-\[\displaystyle S_{\mathrm{dec}}(\omega)\big|_{\omega_c=1}=\frac{40 \left(- \omega^{4} + \omega^{2} + 1\right)}{\omega^{6} + 2 \omega^{4} + \omega^{2} + 2}\]</div>
-<img alt="_images/4f263eb0995ef83ec7edf3ad4ffc0ae76867a8a109370a7236eeee5988850b8c.png" src="_images/4f263eb0995ef83ec7edf3ad4ffc0ae76867a8a109370a7236eeee5988850b8c.png" />
+\[\displaystyle S_{\mathrm{dB}}(\omega)\big|_{\omega_c=1}=\frac{40 \left(- \omega^{4} + \omega^{2} + 1\right)}{\omega^{6} + 2 \omega^{4} + \omega^{2} + 2}\]</div>
+<img alt="_images/c90acde96016f1d1840978a987d41673ddc1bc34c29a0d709a45949a4e21f382.png" src="_images/c90acde96016f1d1840978a987d41673ddc1bc34c29a0d709a45949a4e21f382.png" />
 </div>
 </div>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">Sdec_wc</span> <span class="o">=</span> <span class="n">simplify</span><span class="p">(</span><span class="n">Sdec</span><span class="o">.</span><span class="n">subs</span><span class="p">(</span><span class="n">omega</span><span class="p">,</span> <span class="n">wc</span><span class="p">))</span>
-<span class="n">Sdec_wc</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">Sdb_wc</span> <span class="o">=</span> <span class="n">simplify</span><span class="p">(</span><span class="n">Sdb</span><span class="o">.</span><span class="n">subs</span><span class="p">(</span><span class="n">omega</span><span class="p">,</span> <span class="n">wc</span><span class="p">))</span>
+<span class="n">Sdb_wc</span>
 </pre></div>
 </div>
 </div>
@@ -811,45 +805,47 @@ To obtain <code class="docutils literal notranslate"><span class="pre">dB/decade
 \[\displaystyle \frac{20}{3}\]</div>
 </div>
 </div>
-<p>Thus, it is only about 6.7 dB / decade!</p>
+<p>Thus, it is only about <strong>6.7 dB / decade</strong>! We can assure this by checking maximum an minimum possible slopes, which is 0 dB / decade and 20 db / decade, respectively.</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">Sdec_low</span> <span class="o">=</span> <span class="n">simplify</span><span class="p">(</span><span class="n">limit</span><span class="p">(</span><span class="n">Sdec</span><span class="p">,</span> <span class="n">omega</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="nb">dir</span><span class="o">=</span><span class="s1">&#39;+&#39;</span><span class="p">))</span>
-<span class="n">Sdec_high</span> <span class="o">=</span> <span class="n">simplify</span><span class="p">(</span><span class="n">limit</span><span class="p">(</span><span class="n">Sdec</span><span class="p">,</span> <span class="n">omega</span><span class="p">,</span> <span class="n">oo</span><span class="p">))</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">Sdb_low</span> <span class="o">=</span> <span class="n">simplify</span><span class="p">(</span><span class="n">limit</span><span class="p">(</span><span class="n">Sdb</span><span class="p">,</span> <span class="n">omega</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="nb">dir</span><span class="o">=</span><span class="s1">&#39;+&#39;</span><span class="p">))</span>
+<span class="n">Sdb_high</span> <span class="o">=</span> <span class="n">simplify</span><span class="p">(</span><span class="n">limit</span><span class="p">(</span><span class="n">Sdb</span><span class="p">,</span> <span class="n">omega</span><span class="p">,</span> <span class="n">oo</span><span class="p">))</span>
 
 <span class="n">mprint</span><span class="p">(</span>
-    <span class="sa">r</span><span class="s1">&#39;\lim_{\omega\to0}S_{\mathrm</span><span class="si">{dec}</span><span class="s1">}(\omega)=&#39;</span><span class="p">,</span>
-    <span class="n">latex</span><span class="p">(</span><span class="n">Sdec_low</span><span class="p">)</span>
+    <span class="sa">r</span><span class="s1">&#39;\lim_{\omega\to0}S_{\mathrm</span><span class="si">{dB}</span><span class="s1">}(\omega)=&#39;</span><span class="p">,</span>
+    <span class="n">latex</span><span class="p">(</span><span class="n">Sdb_low</span><span class="p">)</span>
 <span class="p">)</span>
 
 <span class="n">mprint</span><span class="p">(</span>
-    <span class="sa">r</span><span class="s1">&#39;\lim_{\omega\to\infty}S_{\mathrm</span><span class="si">{dec}</span><span class="s1">}(\omega)=&#39;</span><span class="p">,</span>
-    <span class="n">latex</span><span class="p">(</span><span class="n">Sdec_high</span><span class="p">)</span>
+    <span class="sa">r</span><span class="s1">&#39;\lim_{\omega\to\infty}S_{\mathrm</span><span class="si">{dB}</span><span class="s1">}(\omega)=&#39;</span><span class="p">,</span>
+    <span class="n">latex</span><span class="p">(</span><span class="n">Sdb_high</span><span class="p">)</span>
 <span class="p">)</span>
 </pre></div>
 </div>
 </div>
 <div class="cell_output docutils container">
 <div class="output text_latex math notranslate nohighlight">
-\[\displaystyle \lim_{\omega\to0}S_{\mathrm{dec}}(\omega)=20\]</div>
+\[\displaystyle \lim_{\omega\to0}S_{\mathrm{dB}}(\omega)=20\]</div>
 <div class="output text_latex math notranslate nohighlight">
-\[\displaystyle \lim_{\omega\to\infty}S_{\mathrm{dec}}(\omega)=0\]</div>
+\[\displaystyle \lim_{\omega\to\infty}S_{\mathrm{dB}}(\omega)=0\]</div>
 </div>
 </div>
 <p>The complementary form has an asymptotic low-frequency slope of only +20 dB/decade, rather than the +40 dB/decade of a conventional second-order HPF. At the cutoff, its local slope is approximately +6.67 dB/decade.</p>
 </section>
 <section id="standard-form">
 <h3>Standard Form<a class="headerlink" href="#standard-form" title="Link to this heading">#</a></h3>
+<p>Since the complementary form only gives us 6.7dB / decade, while for a second order filter our target is 40 dB / decade, we must modify the filter equation slightly.</p>
+<p>Infact, this is the standard form of a secon-dorder Butterworth highpass filter.</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">H</span> <span class="o">=</span> <span class="n">s</span><span class="o">**</span><span class="mi">2</span> <span class="o">/</span> <span class="p">(</span><span class="n">wc</span><span class="o">**</span><span class="mi">2</span><span class="o">+</span><span class="n">sqrt</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span><span class="o">*</span><span class="n">s</span><span class="o">*</span><span class="n">wc</span><span class="o">+</span><span class="n">s</span><span class="o">**</span><span class="mi">2</span><span class="p">)</span>
-<span class="n">mprint</span><span class="p">(</span><span class="s1">&#39;H=&#39;</span><span class="p">,</span><span class="n">latex</span><span class="p">(</span><span class="n">H</span><span class="p">))</span>
+<span class="n">mprintb</span><span class="p">(</span><span class="s1">&#39;H=&#39;</span><span class="p">,</span><span class="n">latex</span><span class="p">(</span><span class="n">H</span><span class="p">))</span>
 </pre></div>
 </div>
 </div>
 <div class="cell_output docutils container">
 <div class="output text_latex math notranslate nohighlight">
-\[\displaystyle H=\frac{s^{2}}{\omega_{c}^{2} + \sqrt{2} \omega_{c} s + s^{2}}\]</div>
+\[\displaystyle \boxed{H=\frac{s^{2}}{\omega_{c}^{2} + \sqrt{2} \omega_{c} s + s^{2}}}\]</div>
 </div>
 </div>
 <div class="cell docutils container">
@@ -941,7 +937,7 @@ To obtain <code class="docutils literal notranslate"><span class="pre">dB/decade
 <span class="k">end</span>
 </pre></div>
 </div>
-<p><a class="reference download internal" download="" href="_downloads/29352c125fd6bca32ddc9d56b5266d7e/hpfbuttter2nd.slx"><span class="xref download myst">Download Simulink file here.</span></a></p>
+<p><a class="reference download internal" download="" href="_downloads/29352c125fd6bca32ddc9d56b5266d7e/hpfbuttter2nd.slx"><span class="xref download myst">Download Simulink file here (R2026a).</span></a></p>
 <p><img alt="" src="_images/p27.png" /></p>
 <p><img alt="" src="_images/p28.png" /></p>
 </section>
