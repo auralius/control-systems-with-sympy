@@ -29,6 +29,7 @@ parts:
       - file: digital-pid
       - file: digital-pid-2
       - file: digital-filter
+      - file: digital-filter-2
 
   - caption: Interactive Sessions
     chapters:
