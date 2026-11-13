@@ -1,0 +1,941 @@
+
+<!DOCTYPE html>
+
+
+<html lang="en" data-content_root="./" >
+
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>Ordinary Differential Equations and the Laplace Transform &#8212; Control Systems with Sympy</title>
+  
+  
+  
+  <script data-cfasync="false">
+    document.documentElement.dataset.mode = localStorage.getItem("mode") || "";
+    document.documentElement.dataset.theme = localStorage.getItem("theme") || "";
+  </script>
+  <!--
+    this give us a css class that will be invisible only if js is disabled
+  -->
+  <noscript>
+    <style>
+      .pst-js-only { display: none !important; }
+
+    </style>
+  </noscript>
+  
+  <!-- Loaded before other Sphinx assets -->
+  <link href="_static/styles/theme.css?digest=55c26ed414f5f8a31ebb" rel="stylesheet" />
+<link href="_static/styles/pydata-sphinx-theme.css?digest=55c26ed414f5f8a31ebb" rel="stylesheet" />
+
+    <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=03e43079" />
+    <link rel="stylesheet" type="text/css" href="_static/styles/sphinx-book-theme.css?v=3c74b3bc" />
+    <link rel="stylesheet" type="text/css" href="_static/togglebutton.css?v=9c3e77be" />
+    <link rel="stylesheet" type="text/css" href="_static/copybutton.css?v=76b2166b" />
+    <link rel="stylesheet" type="text/css" href="_static/mystnb.11b39860a7a0cbfd473a3ad8a317855267ff0bd372690045ca344a6b62be495e.css" />
+    <link rel="stylesheet" type="text/css" href="_static/sphinx-thebe.css?v=4fa983c6" />
+    <link rel="stylesheet" type="text/css" href="_static/sphinx-design.min.css?v=95c83b7e" />
+    <link rel="stylesheet" type="text/css" href="_static/custom.css?v=b5bdeb62" />
+  
+  <!-- So that users can add custom icons -->
+  <script defer src="_static/scripts/fontawesome.js?digest=55c26ed414f5f8a31ebb"></script>
+  <!-- Pre-loaded scripts that we'll load fully later -->
+  <link rel="preload" as="script" href="_static/scripts/bootstrap.js?digest=55c26ed414f5f8a31ebb" />
+<link rel="preload" as="script" href="_static/scripts/pydata-sphinx-theme.js?digest=55c26ed414f5f8a31ebb" />
+
+    <script src="_static/documentation_options.js?v=9eb32ce0"></script>
+    <script src="_static/doctools.js?v=fd6eb6e6"></script>
+    <script src="_static/sphinx_highlight.js?v=6ffebe34"></script>
+    <script src="_static/clipboard.min.js?v=a7894cd8"></script>
+    <script src="_static/copybutton.js?v=f281be69"></script>
+    <script src="_static/scripts/sphinx-book-theme.js?v=fab101a9"></script>
+    <script>let toggleHintShow = 'Click to show';</script>
+    <script>let toggleHintHide = 'Click to hide';</script>
+    <script>let toggleOpenOnPrint = 'true';</script>
+    <script src="_static/togglebutton.js?v=b8b12719"></script>
+    <script>var togglebuttonSelector = '.toggle, .admonition.dropdown';</script>
+    <script src="_static/design-tabs.js?v=f930bc37"></script>
+    <script>const THEBE_JS_URL = "https://unpkg.com/thebe@0.8.2/lib/index.js"; const thebe_selector = ".thebe,.cell"; const thebe_selector_input = "pre"; const thebe_selector_output = ".output, .cell_output"</script>
+    <script async="async" src="_static/sphinx-thebe.js?v=c100c467"></script>
+    <script>window.MathJax = {"HTML-CSS": {"matchFontHeight": true, "scale": 50}, "options": {"processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
+    <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@4/tex-mml-chtml.js"></script>
+    <script>DOCUMENTATION_OPTIONS.pagename = 'ode-laplace';</script>
+    <script>DOCUMENTATION_OPTIONS.search_as_you_type = false;</script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <meta name="docsearch:language" content="en"/>
+  <meta name="docsearch:version" content="" />
+  
+    
+    <script src="_static/searchtools.js"></script>
+    <script src="_static/language_data.js"></script>
+    <script src="searchindex.js"></script>
+  
+  </head>
+  <body data-default-mode="">
+  
+  
+  <div id="pst-skip-link" class="skip-link d-print-none"><a href="#main-content">Skip to main content</a></div>
+
+  
+  <div id="pst-scroll-pixel-helper"></div>
+  
+  <button type="button" class="btn rounded-pill" id="pst-back-to-top">
+    <i class="fa-solid fa-arrow-up"></i>Back to top</button>
+  
+  
+  
+  
+  <dialog id="pst-search-dialog">
+    
+<form class="bd-search d-flex align-items-center"
+      action="search.html"
+      method="get">
+  <i class="fa-solid fa-magnifying-glass"></i>
+  <input type="search"
+         class="form-control"
+         name="q"
+         placeholder="Search this book..."
+         aria-label="Search this book..."
+         autocomplete="off"
+         autocorrect="off"
+         autocapitalize="off"
+         spellcheck="false"/>
+  <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd>K</kbd></span>
+</form>
+  </dialog>
+
+  <div class="pst-async-banner-revealer d-none">
+  <aside id="bd-header-version-warning" class="d-none d-print-none" aria-label="Version warning"></aside>
+</div>
+
+  
+    <header id="pst-header" class="bd-header navbar navbar-expand-lg bd-navbar d-print-none">
+<div class="bd-header__inner bd-page-width">
+  <button class="pst-navbar-icon sidebar-toggle primary-toggle" aria-label="Site navigation">
+    <span class="fa-solid fa-bars"></span>
+  </button>
+  
+  
+  <div class="col-lg-9 navbar-header-items">
+    
+    
+    <div class="navbar-header-items__end">
+      
+        <div class="navbar-item navbar-persistent--container">
+          
+
+<button class="btn search-button-field search-button__button pst-js-only" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+ <i class="fa-solid fa-magnifying-glass"></i>
+ <span class="search-button__default-text">Search</span>
+ <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+</button>
+        </div>
+      
+      
+    </div>
+    
+  </div>
+  
+  
+    <div class="navbar-persistent--mobile">
+
+<button class="btn search-button-field search-button__button pst-js-only" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+ <i class="fa-solid fa-magnifying-glass"></i>
+ <span class="search-button__default-text">Search</span>
+ <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+</button>
+    </div>
+  
+
+  
+    <button class="pst-navbar-icon sidebar-toggle secondary-toggle" aria-label="On this page">
+      <span class="fa-solid fa-outdent"></span>
+    </button>
+  
+</div>
+
+    </header>
+  
+
+  <div class="bd-container">
+    <div class="bd-container__inner bd-page-width">
+      
+      
+      
+        
+      
+      <dialog id="pst-primary-sidebar-modal"></dialog>
+      <div id="pst-primary-sidebar" class="bd-sidebar-primary bd-sidebar">
+        
+
+  
+  <div class="sidebar-header-items sidebar-primary__section">
+    
+    
+    
+    
+  </div>
+  
+    <div class="sidebar-primary-items__start sidebar-primary__section">
+        <div class="sidebar-primary-item">
+
+  
+    
+  
+
+<a class="navbar-brand logo" href="intro.html">
+  
+  
+  
+  
+  
+    
+    
+      
+    
+    
+    <img src="_static/logo.png" class="logo__image only-light" alt="Control Systems with Sympy - Home"/>
+    <img src="_static/logo.png" class="logo__image only-dark pst-js-only" alt="Control Systems with Sympy - Home"/>
+  
+  
+</a></div>
+        <div class="sidebar-primary-item">
+
+<button class="btn search-button-field search-button__button pst-js-only" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+ <i class="fa-solid fa-magnifying-glass"></i>
+ <span class="search-button__default-text">Search</span>
+ <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+</button></div>
+        <div class="sidebar-primary-item"><nav class="bd-links bd-docs-nav" aria-label="Main">
+    <div class="bd-toc-item navbar-nav active">
+        
+        <ul class="nav bd-sidenav bd-sidenav__home-link">
+            <li class="toctree-l1">
+                <a class="reference internal" href="intro.html">
+                    WELCOME
+                </a>
+            </li>
+        </ul>
+        <p aria-level="2" class="caption" role="heading"><span class="caption-text">Modeling and Time-Domain Analysis</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="block-diagram.html">Block Diagram</a></li>
+<li class="toctree-l1"><a class="reference internal" href="fly-ball-governor.html">System Modeling: Flyball Governor</a></li>
+<li class="toctree-l1"><a class="reference internal" href="rectilinear.html">System Modeling: Rectilinear System</a></li>
+<li class="toctree-l1"><a class="reference internal" href="first-order.html">First-order systems</a></li>
+<li class="toctree-l1"><a class="reference internal" href="second-order.html">Second-Order System</a></li>
+<li class="toctree-l1"><a class="reference internal" href="steady-state-error.html">Tracking Accuracy of a Feedback system</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Classical Control Analysis</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="routh-hurwitz.html">Routh-Hurwitz Stability Criterion</a></li>
+<li class="toctree-l1"><a class="reference internal" href="root-locus.html">The Root-Locus Method</a></li>
+<li class="toctree-l1"><a class="reference internal" href="bode-plot.html">The Bode Plots</a></li>
+<li class="toctree-l1"><a class="reference internal" href="bode-margins.html">Gain Margin and Phase Margin</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">PID Control</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="pid-fo.html">PID Control of a First Order System</a></li>
+<li class="toctree-l1"><a class="reference internal" href="pid-so.html">PID Control of a Second Order System</a></li>
+<li class="toctree-l1"><a class="reference internal" href="pid-ss.html">PID-Control (with Derivative Filter) in State Space Format</a></li>
+<li class="toctree-l1"><a class="reference internal" href="digital-pid.html">Digital PID Control - Part 1</a></li>
+<li class="toctree-l1"><a class="reference internal" href="digital-pid-2.html">Digital PID Control - Part 2</a></li>
+<li class="toctree-l1"><a class="reference internal" href="digital-filter.html">Digital Low-Pass Filter</a></li>
+<li class="toctree-l1"><a class="reference internal" href="digital-filter-2.html">Digital High-Pass Filter</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Interactive Sessions</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1 has-children"><a class="reference internal" href="interactives.html">Interactive Sessions with HTML/JavaScript</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2"><a class="reference internal" href="pid-fo-interactive.html">[HTML/JavaScript] Interactive PID-Controlled Second-Order Plant</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pid-so-interactive.html">[HTML/JavaScript] Interactive PID-Controlled Second-Order Plant</a></li>
+</ul>
+</details></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Miscellaneous</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="misc-problem-sets.html">Solved Various Problem Sets</a></li>
+</ul>
+
+    </div>
+</nav></div>
+    </div>
+  
+  
+  <div class="sidebar-primary-items__end sidebar-primary__section">
+      <div class="sidebar-primary-item">
+<div id="ethical-ad-placement"
+      class="flat"
+      data-ea-publisher="readthedocs"
+      data-ea-type="readthedocs-sidebar"
+      data-ea-manual="true">
+</div></div>
+  </div>
+
+
+      </div>
+      
+      <main id="main-content" class="bd-main" role="main">
+        
+        
+
+<div class="sbt-scroll-pixel-helper"></div>
+
+          <div class="bd-content">
+            <div class="bd-article-container">
+              
+              <div class="bd-header-article d-print-none">
+<div class="header-article-items header-article__inner">
+  
+    <div class="header-article-items__start">
+      
+        <div class="header-article-item"><button class="sidebar-toggle primary-toggle btn btn-sm" title="Toggle primary sidebar" data-bs-placement="bottom" data-bs-toggle="tooltip">
+  <span class="fa-solid fa-bars"></span>
+</button></div>
+      
+    </div>
+  
+  
+    <div class="header-article-items__end">
+      
+        <div class="header-article-item">
+
+<div class="article-header-buttons">
+
+
+
+
+
+<div class="dropdown dropdown-launch-buttons">
+  <button class="btn dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false" aria-label="Launch interactive content">
+    <i class="fas fa-rocket"></i>
+  </button>
+  <ul class="dropdown-menu">
+      
+      
+      
+      <li><a href="https://mybinder.org/v2/gh/auralius/control-systems-with-sympy/master?urlpath=lab/tree/ode-laplace.ipynb" target="_blank"
+   class="btn btn-sm dropdown-item"
+   title="Launch on Binder"
+   data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  
+    <img alt="Binder logo" src="_static/images/logo_binder.svg">
+  </span>
+<span class="btn__text-container">Binder</span>
+</a>
+</li>
+      
+      
+      
+      
+      <li><a href="https://colab.research.google.com/github/auralius/control-systems-with-sympy/blob/master/ode-laplace.ipynb" target="_blank"
+   class="btn btn-sm dropdown-item"
+   title="Launch on Colab"
+   data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  
+    <img alt="Colab logo" src="_static/images/logo_colab.png">
+  </span>
+<span class="btn__text-container">Colab</span>
+</a>
+</li>
+      
+  </ul>
+</div>
+
+
+
+
+
+
+<div class="dropdown dropdown-source-buttons">
+  <button class="btn dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false" aria-label="Source repositories">
+    <i class="fab fa-github"></i>
+  </button>
+  <ul class="dropdown-menu">
+      
+      
+      
+      <li><a href="https://github.com/auralius/control-systems-with-sympy" target="_blank"
+   class="btn btn-sm btn-source-repository-button dropdown-item"
+   title="Source repository"
+   data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fab fa-github"></i>
+  </span>
+<span class="btn__text-container">Repository</span>
+</a>
+</li>
+      
+      
+      
+      
+      <li><a href="https://github.com/auralius/control-systems-with-sympy/edit/master/ode-laplace.ipynb" target="_blank"
+   class="btn btn-sm btn-source-edit-button dropdown-item"
+   title="Suggest edit"
+   data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-pencil-alt"></i>
+  </span>
+<span class="btn__text-container">Suggest edit</span>
+</a>
+</li>
+      
+      
+      
+      
+      <li><a href="https://github.com/auralius/control-systems-with-sympy/issues/new?title=Issue%20on%20page%20%2Fode-laplace.html&body=Your%20issue%20content%20here." target="_blank"
+   class="btn btn-sm btn-source-issues-button dropdown-item"
+   title="Open an issue"
+   data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-lightbulb"></i>
+  </span>
+<span class="btn__text-container">Open issue</span>
+</a>
+</li>
+      
+  </ul>
+</div>
+
+
+
+
+
+
+<div class="dropdown dropdown-download-buttons">
+  <button class="btn dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false" aria-label="Download this page">
+    <i class="fas fa-download"></i>
+  </button>
+  <ul class="dropdown-menu">
+      
+      
+      
+      <li><a href="_sources/ode-laplace.ipynb" target="_blank"
+   class="btn btn-sm btn-download-source-button dropdown-item"
+   title="Download source file"
+   data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-file"></i>
+  </span>
+<span class="btn__text-container">.ipynb</span>
+</a>
+</li>
+      
+      
+      
+      
+      <li>
+<button onclick="window.print()"
+  class="btn btn-sm btn-download-pdf-button dropdown-item"
+  title="Print to PDF"
+  data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-file-pdf"></i>
+  </span>
+<span class="btn__text-container">.pdf</span>
+</button>
+</li>
+      
+  </ul>
+</div>
+
+
+
+
+<button onclick="toggleFullScreen()"
+  class="btn btn-sm btn-fullscreen-button pst-navbar-icon"
+  title="Fullscreen mode"
+  data-bs-placement="bottom" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-expand"></i>
+  </span>
+
+</button>
+
+
+
+<button class="btn btn-sm nav-link pst-navbar-icon theme-switch-button pst-js-only" aria-label="Color mode" data-bs-title="Color mode"  data-bs-placement="bottom" data-bs-toggle="tooltip">
+  <i class="theme-switch fa-solid fa-sun                fa-lg" data-mode="light" title="Light"></i>
+  <i class="theme-switch fa-solid fa-moon               fa-lg" data-mode="dark"  title="Dark"></i>
+  <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg" data-mode="auto"  title="System Settings"></i>
+</button>
+
+
+<button class="btn btn-sm pst-navbar-icon search-button search-button__button pst-js-only" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="fa-solid fa-magnifying-glass fa-lg"></i>
+</button>
+<button class="sidebar-toggle secondary-toggle btn btn-sm pst-navbar-icon" title="Toggle secondary sidebar" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <span class="fa-solid fa-list"></span>
+</button>
+</div></div>
+      
+    </div>
+  
+</div>
+</div>
+              
+              
+
+<div id="jb-print-docs-body" class="onlyprint">
+    <h1>Ordinary Differential Equations and the Laplace Transform</h1>
+    <!-- Table of contents -->
+    <div id="print-main-content">
+        <div id="jb-print-toc">
+            
+            <div>
+                <h2> Contents </h2>
+            </div>
+            <nav aria-label="Page">
+                <ul class="pst-show_toc_level nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#linear-odes-with-constant-coefficients">1. Linear ODEs with Constant Coefficients</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#the-laplace-transform">2. The Laplace Transform</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#key-properties">3. Key Properties</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#linearity">Linearity</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#the-differentiation-property">The Differentiation Property</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#time-shift-and-convolution">Time-Shift and Convolution</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#solving-an-ode-via-the-laplace-transform">4. Solving an ODE via the Laplace Transform</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#transfer-functions-from-laplace">5. Transfer Functions from Laplace</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#initial-value-and-final-value-theorems">6. Initial Value and Final Value Theorems</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#what-s-next">What’s next</a></li>
+</ul>
+            </nav>
+        </div>
+    </div>
+</div>
+
+              
+                
+<div id="searchbox"></div>
+                <article class="bd-article">
+                  
+  <section class="tex2jax_ignore mathjax_ignore" id="ordinary-differential-equations-and-the-laplace-transform">
+<h1>Ordinary Differential Equations and the Laplace Transform<a class="headerlink" href="#ordinary-differential-equations-and-the-laplace-transform" title="Link to this heading">#</a></h1>
+<p>Every transfer function in this book, starting with <em>Block Diagram</em>, is
+built on one move: turning a linear ODE into an algebraic equation in
+<span class="math notranslate nohighlight">\(s\)</span>. This page makes that move explicit before relying on it — solving a
+constant-coefficient ODE directly, then again via the Laplace transform, and
+showing the two answers agree.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">sympy</span><span class="w"> </span><span class="kn">import</span> <span class="o">*</span>
+<span class="n">init_printing</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+</div>
+<section id="linear-odes-with-constant-coefficients">
+<h2>1. Linear ODEs with Constant Coefficients<a class="headerlink" href="#linear-odes-with-constant-coefficients" title="Link to this heading">#</a></h2>
+<p>Physical systems in this book (the rectilinear system, the flyball
+governor, …) are modeled by linear, constant-coefficient ODEs. SymPy’s
+<code class="docutils literal notranslate"><span class="pre">dsolve</span></code> solves these directly, symbolically, given initial conditions.</p>
+<p>Take the damped mass-spring system as a running example:</p>
+<div class="math notranslate nohighlight">
+\[
+\ddot{x} + 3\dot{x} + 2x = 0, \qquad x(0) = 1,\ \dot{x}(0) = 0
+\]</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">t</span> <span class="o">=</span> <span class="n">symbols</span><span class="p">(</span><span class="s1">'t'</span><span class="p">,</span> <span class="n">positive</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="n">x</span> <span class="o">=</span> <span class="n">Function</span><span class="p">(</span><span class="s1">'x'</span><span class="p">)</span>
+
+<span class="n">ode</span> <span class="o">=</span> <span class="n">Eq</span><span class="p">(</span><span class="n">x</span><span class="p">(</span><span class="n">t</span><span class="p">)</span><span class="o">.</span><span class="n">diff</span><span class="p">(</span><span class="n">t</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span> <span class="o">+</span> <span class="mi">3</span> <span class="o">*</span> <span class="n">x</span><span class="p">(</span><span class="n">t</span><span class="p">)</span><span class="o">.</span><span class="n">diff</span><span class="p">(</span><span class="n">t</span><span class="p">)</span> <span class="o">+</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">x</span><span class="p">(</span><span class="n">t</span><span class="p">),</span> <span class="mi">0</span><span class="p">)</span>
+<span class="n">ics</span> <span class="o">=</span> <span class="p">{</span><span class="n">x</span><span class="p">(</span><span class="mi">0</span><span class="p">):</span> <span class="mi">1</span><span class="p">,</span> <span class="n">x</span><span class="p">(</span><span class="n">t</span><span class="p">)</span><span class="o">.</span><span class="n">diff</span><span class="p">(</span><span class="n">t</span><span class="p">)</span><span class="o">.</span><span class="n">subs</span><span class="p">(</span><span class="n">t</span><span class="p">,</span> <span class="mi">0</span><span class="p">):</span> <span class="mi">0</span><span class="p">}</span>
+
+<span class="n">sol_dsolve</span> <span class="o">=</span> <span class="n">dsolve</span><span class="p">(</span><span class="n">ode</span><span class="p">,</span> <span class="n">x</span><span class="p">(</span><span class="n">t</span><span class="p">),</span> <span class="n">ics</span><span class="o">=</span><span class="n">ics</span><span class="p">)</span>
+<span class="n">sol_dsolve</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<img alt="_images/58ac4bc033ef146fd67b803ffd95529b654b71cae3cb37b79fe23134511bdcc2.png" src="_images/58ac4bc033ef146fd67b803ffd95529b654b71cae3cb37b79fe23134511bdcc2.png" />
+</div>
+</div>
+<p>Keep this result — Section 4 solves the <em>same</em> ODE through the
+Laplace transform instead, and the two should match exactly.</p>
+</section>
+<section id="the-laplace-transform">
+<h2>2. The Laplace Transform<a class="headerlink" href="#the-laplace-transform" title="Link to this heading">#</a></h2>
+<p>The (unilateral) Laplace transform of a time-domain function <span class="math notranslate nohighlight">\(f(t)\)</span>,
+defined for <span class="math notranslate nohighlight">\(t \geq 0\)</span>, is</p>
+<div class="math notranslate nohighlight">
+\[
+F(s) = \mathcal{L}\{f(t)\} = \int_0^\infty f(t)\, e^{-st}\, dt
+\]</div>
+<p>SymPy computes this integral symbolically for the standard signals used
+throughout the book.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">t</span><span class="p">,</span> <span class="n">s</span><span class="p">,</span> <span class="n">a</span><span class="p">,</span> <span class="n">omega</span> <span class="o">=</span> <span class="n">sp</span><span class="o">.</span><span class="n">symbols</span><span class="p">(</span><span class="s1">'t s a omega'</span><span class="p">,</span> <span class="n">positive</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="n">f</span> <span class="o">=</span> <span class="n">sp</span><span class="o">.</span><span class="n">Function</span><span class="p">(</span><span class="s1">'f'</span><span class="p">)</span>
+
+<span class="c1"># Unit step</span>
+<span class="n">step_L</span> <span class="o">=</span> <span class="n">sp</span><span class="o">.</span><span class="n">laplace_transform</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">t</span><span class="p">,</span> <span class="n">s</span><span class="p">,</span> <span class="n">noconds</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+<span class="c1"># Exponential decay</span>
+<span class="n">exp_L</span> <span class="o">=</span> <span class="n">sp</span><span class="o">.</span><span class="n">laplace_transform</span><span class="p">(</span><span class="n">sp</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="o">-</span><span class="n">a</span> <span class="o">*</span> <span class="n">t</span><span class="p">),</span> <span class="n">t</span><span class="p">,</span> <span class="n">s</span><span class="p">,</span> <span class="n">noconds</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+<span class="c1"># Sinusoid</span>
+<span class="n">sin_L</span> <span class="o">=</span> <span class="n">sp</span><span class="o">.</span><span class="n">laplace_transform</span><span class="p">(</span><span class="n">sp</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="n">omega</span> <span class="o">*</span> <span class="n">t</span><span class="p">),</span> <span class="n">t</span><span class="p">,</span> <span class="n">s</span><span class="p">,</span> <span class="n">noconds</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+<span class="n">step_L</span><span class="p">,</span> <span class="n">exp_L</span><span class="p">,</span> <span class="n">sin_L</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output traceback highlight-ipythontb notranslate"><div class="highlight"><pre><span></span><span class="gt">---------------------------------------------------------------------------</span>
+<span class="ne">NameError</span><span class="g g-Whitespace">                                 </span>Traceback (most recent call last)
+<span class="n">Cell</span> <span class="n">In</span><span class="p">[</span><span class="mi">3</span><span class="p">],</span> <span class="n">line</span> <span class="mi">1</span>
+<span class="ne">----&gt; </span><span class="mi">1</span> <span class="n">t</span><span class="p">,</span> <span class="n">s</span><span class="p">,</span> <span class="n">a</span><span class="p">,</span> <span class="n">omega</span> <span class="o">=</span> <span class="n">sp</span><span class="o">.</span><span class="n">symbols</span><span class="p">(</span><span class="s1">'t s a omega'</span><span class="p">,</span> <span class="n">positive</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="g g-Whitespace">      </span><span class="mi">2</span> <span class="n">f</span> <span class="o">=</span> <span class="n">sp</span><span class="o">.</span><span class="n">Function</span><span class="p">(</span><span class="s1">'f'</span><span class="p">)</span>
+<span class="g g-Whitespace">      </span><span class="mi">3</span> 
+<span class="g g-Whitespace">      </span><span class="mi">4</span> <span class="c1"># Unit step</span>
+
+<span class="ne">NameError</span>: name 'sp' is not defined
+</pre></div>
+</div>
+</div>
+</div>
+<p>These three transform pairs — step, exponential, sinusoid — are the
+building blocks behind essentially every input and every pole location
+used later in the book.</p>
+</section>
+<section id="key-properties">
+<h2>3. Key Properties<a class="headerlink" href="#key-properties" title="Link to this heading">#</a></h2>
+<section id="linearity">
+<h3>Linearity<a class="headerlink" href="#linearity" title="Link to this heading">#</a></h3>
+<div class="math notranslate nohighlight">
+\[
+\mathcal{L}\{af(t) + bg(t)\} = aF(s) + bG(s)
+\]</div>
+<p>Immediate from the integral definition, since integration is linear.</p>
+</section>
+<section id="the-differentiation-property">
+<h3>The Differentiation Property<a class="headerlink" href="#the-differentiation-property" title="Link to this heading">#</a></h3>
+<p>This is the property that makes transfer functions possible:</p>
+<div class="math notranslate nohighlight">
+\[
+\mathcal{L}\{\dot{f}(t)\} = sF(s) - f(0)
+\]</div>
+<div class="math notranslate nohighlight">
+\[
+\mathcal{L}\{\ddot{f}(t)\} = s^2F(s) - sf(0) - \dot{f}(0)
+\]</div>
+<p>Every derivative in an ODE becomes a power of <span class="math notranslate nohighlight">\(s\)</span> — under <strong>zero initial
+conditions</strong>, <span class="math notranslate nohighlight">\(\dot{f}(t) \to sF(s)\)</span> exactly, which is why “<span class="math notranslate nohighlight">\(s\)</span>” is so
+often described as standing in for “<span class="math notranslate nohighlight">\(d/dt\)</span>” in this book’s earlier
+chapters.</p>
+<p>Let’s verify this symbolically for a generic function.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">f_t</span> <span class="o">=</span> <span class="n">sp</span><span class="o">.</span><span class="n">Function</span><span class="p">(</span><span class="s1">'f'</span><span class="p">)(</span><span class="n">t</span><span class="p">)</span>
+<span class="n">f0</span> <span class="o">=</span> <span class="n">sp</span><span class="o">.</span><span class="n">symbols</span><span class="p">(</span><span class="s1">'f0'</span><span class="p">)</span>  <span class="c1"># f(0)</span>
+
+<span class="c1"># SymPy's laplace_transform on a derivative directly</span>
+<span class="n">deriv_L</span> <span class="o">=</span> <span class="n">sp</span><span class="o">.</span><span class="n">laplace_transform</span><span class="p">(</span><span class="n">f_t</span><span class="o">.</span><span class="n">diff</span><span class="p">(</span><span class="n">t</span><span class="p">),</span> <span class="n">t</span><span class="p">,</span> <span class="n">s</span><span class="p">,</span> <span class="n">noconds</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="n">deriv_L</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<img alt="_images/539f8f6a1652d7506ab15ab43af6084e454f9ba09bcaaa98c826b1388122c476.png" src="_images/539f8f6a1652d7506ab15ab43af6084e454f9ba09bcaaa98c826b1388122c476.png" />
+</div>
+</div>
+<p>SymPy returns this in terms of the transform of <span class="math notranslate nohighlight">\(f(t)\)</span> itself
+(written <code class="docutils literal notranslate"><span class="pre">LaplaceTransform(f(t),</span> <span class="pre">t,</span> <span class="pre">s)</span></code>), plus the initial-condition term
+— exactly the differentiation property stated above.</p>
+</section>
+<section id="time-shift-and-convolution">
+<h3>Time-Shift and Convolution<a class="headerlink" href="#time-shift-and-convolution" title="Link to this heading">#</a></h3>
+<div class="math notranslate nohighlight">
+\[
+\mathcal{L}\{f(t-\tau)u(t-\tau)\} = e^{-s\tau}F(s)
+\]</div>
+<div class="math notranslate nohighlight">
+\[
+\mathcal{L}\{f(t) * g(t)\} = F(s)\,G(s)
+\]</div>
+<p>Convolution in time becomes ordinary multiplication in the Laplace
+domain — this is <em>why</em> cascading blocks in a block diagram corresponds to
+multiplying their transfer functions.</p>
+</section>
+</section>
+<section id="solving-an-ode-via-the-laplace-transform">
+<h2>4. Solving an ODE via the Laplace Transform<a class="headerlink" href="#solving-an-ode-via-the-laplace-transform" title="Link to this heading">#</a></h2>
+<p>Now solve the same ODE from Section 1
+(<span class="math notranslate nohighlight">\(\ddot{x} + 3\dot{x} + 2x = 0,\ x(0)=1,\ \dot{x}(0)=0\)</span>), but this time by
+hand-transforming it into an algebraic equation in <span class="math notranslate nohighlight">\(s\)</span>, solving for <span class="math notranslate nohighlight">\(X(s)\)</span>,
+then inverse-transforming.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">X</span> <span class="o">=</span> <span class="n">sp</span><span class="o">.</span><span class="n">symbols</span><span class="p">(</span><span class="s1">'X'</span><span class="p">)</span>  <span class="c1"># stand-in for X(s)</span>
+
+<span class="n">x0_val</span><span class="p">,</span> <span class="n">xdot0_val</span> <span class="o">=</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">0</span>
+
+<span class="c1"># Apply the differentiation property term by term:</span>
+<span class="c1"># L{x''} = s^2 X(s) - s*x(0) - x'(0)</span>
+<span class="c1"># L{x'}  = s X(s) - x(0)</span>
+<span class="c1"># L{x}   = X(s)</span>
+<span class="n">algebraic_eq</span> <span class="o">=</span> <span class="n">sp</span><span class="o">.</span><span class="n">Eq</span><span class="p">(</span>
+    <span class="p">(</span><span class="n">s</span><span class="o">**</span><span class="mi">2</span> <span class="o">*</span> <span class="n">X</span> <span class="o">-</span> <span class="n">s</span> <span class="o">*</span> <span class="n">x0_val</span> <span class="o">-</span> <span class="n">xdot0_val</span><span class="p">)</span> <span class="o">+</span> <span class="mi">3</span> <span class="o">*</span> <span class="p">(</span><span class="n">s</span> <span class="o">*</span> <span class="n">X</span> <span class="o">-</span> <span class="n">x0_val</span><span class="p">)</span> <span class="o">+</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">X</span><span class="p">,</span>
+    <span class="mi">0</span>
+<span class="p">)</span>
+<span class="n">algebraic_eq</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<img alt="_images/9f39f666dbf5906e4a4bde52cff57fb8848ee9d185b6ec5e1937e520aca14935.png" src="_images/9f39f666dbf5906e4a4bde52cff57fb8848ee9d185b6ec5e1937e520aca14935.png" />
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">X_s</span> <span class="o">=</span> <span class="n">sp</span><span class="o">.</span><span class="n">solve</span><span class="p">(</span><span class="n">algebraic_eq</span><span class="p">,</span> <span class="n">X</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
+<span class="n">X_s</span> <span class="o">=</span> <span class="n">sp</span><span class="o">.</span><span class="n">apart</span><span class="p">(</span><span class="n">X_s</span><span class="p">,</span> <span class="n">s</span><span class="p">)</span>  <span class="c1"># partial fractions, ready for term-by-term inversion</span>
+<span class="n">X_s</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<img alt="_images/1366f136f9c5d42c608ac525a96621de6cf36b57a1e2b24732daafcbdd345a0b.png" src="_images/1366f136f9c5d42c608ac525a96621de6cf36b57a1e2b24732daafcbdd345a0b.png" />
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">x_t</span> <span class="o">=</span> <span class="n">sp</span><span class="o">.</span><span class="n">inverse_laplace_transform</span><span class="p">(</span><span class="n">X_s</span><span class="p">,</span> <span class="n">s</span><span class="p">,</span> <span class="n">t</span><span class="p">)</span>
+<span class="n">sp</span><span class="o">.</span><span class="n">simplify</span><span class="p">(</span><span class="n">x_t</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<img alt="_images/8e0ccc59738985faf0d9c551a149c2a2baa5a9b2b7090ab4c62f17f1a2839c40.png" src="_images/8e0ccc59738985faf0d9c551a149c2a2baa5a9b2b7090ab4c62f17f1a2839c40.png" />
+</div>
+</div>
+<p>Compare this against <code class="docutils literal notranslate"><span class="pre">sol_dsolve</span></code> from Section 1 — same answer,
+reached by transforming the problem into algebra, solving it there, and
+transforming back. This detour through <span class="math notranslate nohighlight">\(s\)</span> is exactly what every transfer
+function in this book is implicitly doing.</p>
+</section>
+<section id="transfer-functions-from-laplace">
+<h2>5. Transfer Functions from Laplace<a class="headerlink" href="#transfer-functions-from-laplace" title="Link to this heading">#</a></h2>
+<p>For a general linear ODE relating input <span class="math notranslate nohighlight">\(u(t)\)</span> to output <span class="math notranslate nohighlight">\(y(t)\)</span>, Laplace-
+transforming <strong>under zero initial conditions</strong> turns every derivative into
+a power of <span class="math notranslate nohighlight">\(s\)</span>, leaving a purely algebraic relationship:</p>
+<div class="math notranslate nohighlight">
+\[
+a_n y^{(n)} + \cdots + a_0 y = b_m u^{(m)} + \cdots + b_0 u
+\quad\xrightarrow{\mathcal{L},\ \text{zero I.C.}}\quad
+(a_n s^n + \cdots + a_0)\,Y(s) = (b_m s^m + \cdots + b_0)\,U(s)
+\]</div>
+<div class="math notranslate nohighlight">
+\[
+G(s) = \frac{Y(s)}{U(s)} = \frac{b_m s^m + \cdots + b_0}{a_n s^n + \cdots + a_0}
+\]</div>
+<p>This is precisely the transfer function used from <em>Block Diagram</em> onward.
+The zero-initial-condition assumption is what lets <span class="math notranslate nohighlight">\(G(s)\)</span> depend only on
+the system, not on how it happened to start — any nonzero initial
+conditions just add extra terms (as seen explicitly in Section 4) on top
+of this same <span class="math notranslate nohighlight">\(G(s)\)</span>.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">m1</span><span class="p">,</span> <span class="n">c1</span><span class="p">,</span> <span class="n">k1</span> <span class="o">=</span> <span class="n">sp</span><span class="o">.</span><span class="n">symbols</span><span class="p">(</span><span class="s1">'m c k'</span><span class="p">,</span> <span class="n">positive</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="n">Y</span><span class="p">,</span> <span class="n">U</span> <span class="o">=</span> <span class="n">sp</span><span class="o">.</span><span class="n">symbols</span><span class="p">(</span><span class="s1">'Y U'</span><span class="p">)</span>
+
+<span class="c1"># m*y'' + c*y' + k*y = u,  zero initial conditions</span>
+<span class="n">G</span> <span class="o">=</span> <span class="mi">1</span> <span class="o">/</span> <span class="p">(</span><span class="n">m1</span> <span class="o">*</span> <span class="n">s</span><span class="o">**</span><span class="mi">2</span> <span class="o">+</span> <span class="n">c1</span> <span class="o">*</span> <span class="n">s</span> <span class="o">+</span> <span class="n">k1</span><span class="p">)</span>
+<span class="n">G</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<img alt="_images/f4077cc86f167851a32173d859107ce1c70b9cb6c3c1aed4fc609008f6d74ef8.png" src="_images/f4077cc86f167851a32173d859107ce1c70b9cb6c3c1aed4fc609008f6d74ef8.png" />
+</div>
+</div>
+</section>
+<section id="initial-value-and-final-value-theorems">
+<h2>6. Initial Value and Final Value Theorems<a class="headerlink" href="#initial-value-and-final-value-theorems" title="Link to this heading">#</a></h2>
+<p>Two shortcuts avoid inverse-transforming altogether when only the
+endpoints of <span class="math notranslate nohighlight">\(f(t)\)</span> are needed:</p>
+<div class="math notranslate nohighlight">
+\[
+f(0^+) = \lim_{s\to\infty} sF(s) \qquad \text{(Initial Value Theorem)}
+\]</div>
+<div class="math notranslate nohighlight">
+\[
+f(\infty) = \lim_{s\to 0} sF(s) \qquad \text{(Final Value Theorem, valid only if } f(\infty) \text{ exists)}
+\]</div>
+<p>The Final Value Theorem is exactly the tool used on the <em>Tracking Accuracy
+of a Feedback System</em> page to compute steady-state error directly from
+<span class="math notranslate nohighlight">\(E(s)\)</span>, without ever inverse-transforming the error signal.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">F_s</span> <span class="o">=</span> <span class="n">X_s</span>  <span class="c1"># reuse X(s) from Section 4</span>
+
+<span class="n">initial_value</span> <span class="o">=</span> <span class="n">sp</span><span class="o">.</span><span class="n">limit</span><span class="p">(</span><span class="n">s</span> <span class="o">*</span> <span class="n">F_s</span><span class="p">,</span> <span class="n">s</span><span class="p">,</span> <span class="n">sp</span><span class="o">.</span><span class="n">oo</span><span class="p">)</span>
+<span class="n">final_value</span> <span class="o">=</span> <span class="n">sp</span><span class="o">.</span><span class="n">limit</span><span class="p">(</span><span class="n">s</span> <span class="o">*</span> <span class="n">F_s</span><span class="p">,</span> <span class="n">s</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
+
+<span class="n">initial_value</span><span class="p">,</span> <span class="n">final_value</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<img alt="_images/e6665ee0144deefa9c6e5882882db0b8a6664a56762a06a0288360010b7ba518.png" src="_images/e6665ee0144deefa9c6e5882882db0b8a6664a56762a06a0288360010b7ba518.png" />
+</div>
+</div>
+<p>Check against the time-domain solution: <span class="math notranslate nohighlight">\(x(0) = 1\)</span> (matches the
+initial value theorem) and <span class="math notranslate nohighlight">\(x(t) \to 0\)</span> as <span class="math notranslate nohighlight">\(t\to\infty\)</span> since both poles
+(<span class="math notranslate nohighlight">\(-1, -2\)</span>) are stable (matches the final value theorem).</p>
+</section>
+<section id="what-s-next">
+<h2>What’s next<a class="headerlink" href="#what-s-next" title="Link to this heading">#</a></h2>
+<p>With ODEs and the Laplace transform established here, and rank/
+eigenvalues/matrix-exponential established in the <em>Linear Algebra Primer</em>,
+both <em>Block Diagram</em> and <em>State-Space Modeling</em> can now be read as two
+different endpoints of the same starting point: a linear ODE.</p>
+</section>
+</section>
+
+    <script type="text/x-thebe-config">
+    {
+        requestKernel: true,
+        binderOptions: {
+            repo: "binder-examples/jupyter-stacks-datascience",
+            ref: "master",
+        },
+        codeMirrorConfig: {
+            theme: "abcdef",
+            mode: "py.3.12.4"
+        },
+        kernelOptions: {
+            name: "py.3.12.4",
+            path: "./."
+        },
+        predefinedOutput: true
+    }
+    </script>
+    <script>kernelName = 'py.3.12.4'</script>
+
+                </article>
+              
+
+              
+              
+              
+              
+                <footer class="prev-next-footer d-print-none">
+                  
+<div class="prev-next-area">
+</div>
+                </footer>
+              
+            </div>
+            
+            
+              
+                <dialog id="pst-secondary-sidebar-modal"></dialog>
+                <div id="pst-secondary-sidebar" class="bd-sidebar-secondary bd-toc"><div class="sidebar-secondary-items sidebar-secondary__inner">
+
+
+  <div class="sidebar-secondary-item"><div
+    id="pst-page-navigation-heading-2"
+    class="page-toc tocsection onthispage">
+    <i class="fa-solid fa-list"></i> Contents
+  </div>
+  <nav id="pst-page-toc-nav" class="page-toc" aria-labelledby="pst-page-navigation-heading-2">
+    <ul class="pst-show_toc_level nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#linear-odes-with-constant-coefficients">1. Linear ODEs with Constant Coefficients</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#the-laplace-transform">2. The Laplace Transform</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#key-properties">3. Key Properties</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#linearity">Linearity</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#the-differentiation-property">The Differentiation Property</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#time-shift-and-convolution">Time-Shift and Convolution</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#solving-an-ode-via-the-laplace-transform">4. Solving an ODE via the Laplace Transform</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#transfer-functions-from-laplace">5. Transfer Functions from Laplace</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#initial-value-and-final-value-theorems">6. Initial Value and Final Value Theorems</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#what-s-next">What’s next</a></li>
+</ul>
+  </nav></div>
+
+</div></div>
+              
+            
+          </div>
+          <footer class="bd-footer-content">
+            
+<div class="bd-footer-content__inner container">
+  
+  <div class="footer-item">
+    
+<p class="component-author">
+By Auralius Manurung - Universitas Telkom
+</p>
+
+  </div>
+  
+  <div class="footer-item">
+    
+
+  <p class="copyright">
+    
+      © Copyright 2026.
+      <br/>
+    
+  </p>
+
+  </div>
+  
+  <div class="footer-item">
+    
+  </div>
+  
+  <div class="footer-item">
+    
+  </div>
+  
+</div>
+          </footer>
+        
+
+      </main>
+    </div>
+  </div>
+  
+  <!-- Scripts loaded after <body> so the DOM is not blocked -->
+  <script defer src="_static/scripts/bootstrap.js?digest=55c26ed414f5f8a31ebb"></script>
+<script defer src="_static/scripts/pydata-sphinx-theme.js?digest=55c26ed414f5f8a31ebb"></script>
+
+  <footer class="bd-footer">
+  </footer>
+  </body>
+</html>

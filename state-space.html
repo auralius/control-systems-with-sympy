@@ -1,0 +1,1018 @@
+
+<!DOCTYPE html>
+
+
+<html lang="en" data-content_root="./" >
+
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>State-Space Modeling &#8212; Control Systems with Sympy</title>
+  
+  
+  
+  <script data-cfasync="false">
+    document.documentElement.dataset.mode = localStorage.getItem("mode") || "";
+    document.documentElement.dataset.theme = localStorage.getItem("theme") || "";
+  </script>
+  <!--
+    this give us a css class that will be invisible only if js is disabled
+  -->
+  <noscript>
+    <style>
+      .pst-js-only { display: none !important; }
+
+    </style>
+  </noscript>
+  
+  <!-- Loaded before other Sphinx assets -->
+  <link href="_static/styles/theme.css?digest=55c26ed414f5f8a31ebb" rel="stylesheet" />
+<link href="_static/styles/pydata-sphinx-theme.css?digest=55c26ed414f5f8a31ebb" rel="stylesheet" />
+
+    <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=03e43079" />
+    <link rel="stylesheet" type="text/css" href="_static/styles/sphinx-book-theme.css?v=3c74b3bc" />
+    <link rel="stylesheet" type="text/css" href="_static/togglebutton.css?v=9c3e77be" />
+    <link rel="stylesheet" type="text/css" href="_static/copybutton.css?v=76b2166b" />
+    <link rel="stylesheet" type="text/css" href="_static/mystnb.11b39860a7a0cbfd473a3ad8a317855267ff0bd372690045ca344a6b62be495e.css" />
+    <link rel="stylesheet" type="text/css" href="_static/sphinx-thebe.css?v=4fa983c6" />
+    <link rel="stylesheet" type="text/css" href="_static/sphinx-design.min.css?v=95c83b7e" />
+    <link rel="stylesheet" type="text/css" href="_static/custom.css?v=b5bdeb62" />
+  
+  <!-- So that users can add custom icons -->
+  <script defer src="_static/scripts/fontawesome.js?digest=55c26ed414f5f8a31ebb"></script>
+  <!-- Pre-loaded scripts that we'll load fully later -->
+  <link rel="preload" as="script" href="_static/scripts/bootstrap.js?digest=55c26ed414f5f8a31ebb" />
+<link rel="preload" as="script" href="_static/scripts/pydata-sphinx-theme.js?digest=55c26ed414f5f8a31ebb" />
+
+    <script src="_static/documentation_options.js?v=9eb32ce0"></script>
+    <script src="_static/doctools.js?v=fd6eb6e6"></script>
+    <script src="_static/sphinx_highlight.js?v=6ffebe34"></script>
+    <script src="_static/clipboard.min.js?v=a7894cd8"></script>
+    <script src="_static/copybutton.js?v=f281be69"></script>
+    <script src="_static/scripts/sphinx-book-theme.js?v=fab101a9"></script>
+    <script>let toggleHintShow = 'Click to show';</script>
+    <script>let toggleHintHide = 'Click to hide';</script>
+    <script>let toggleOpenOnPrint = 'true';</script>
+    <script src="_static/togglebutton.js?v=b8b12719"></script>
+    <script>var togglebuttonSelector = '.toggle, .admonition.dropdown';</script>
+    <script src="_static/design-tabs.js?v=f930bc37"></script>
+    <script>const THEBE_JS_URL = "https://unpkg.com/thebe@0.8.2/lib/index.js"; const thebe_selector = ".thebe,.cell"; const thebe_selector_input = "pre"; const thebe_selector_output = ".output, .cell_output"</script>
+    <script async="async" src="_static/sphinx-thebe.js?v=c100c467"></script>
+    <script>window.MathJax = {"HTML-CSS": {"matchFontHeight": true, "scale": 50}, "options": {"processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
+    <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@4/tex-mml-chtml.js"></script>
+    <script>DOCUMENTATION_OPTIONS.pagename = 'state-space';</script>
+    <script>DOCUMENTATION_OPTIONS.search_as_you_type = false;</script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <meta name="docsearch:language" content="en"/>
+  <meta name="docsearch:version" content="" />
+  
+    
+    <script src="_static/searchtools.js"></script>
+    <script src="_static/language_data.js"></script>
+    <script src="searchindex.js"></script>
+  
+  </head>
+  <body data-default-mode="">
+  
+  
+  <div id="pst-skip-link" class="skip-link d-print-none"><a href="#main-content">Skip to main content</a></div>
+
+  
+  <div id="pst-scroll-pixel-helper"></div>
+  
+  <button type="button" class="btn rounded-pill" id="pst-back-to-top">
+    <i class="fa-solid fa-arrow-up"></i>Back to top</button>
+  
+  
+  
+  
+  <dialog id="pst-search-dialog">
+    
+<form class="bd-search d-flex align-items-center"
+      action="search.html"
+      method="get">
+  <i class="fa-solid fa-magnifying-glass"></i>
+  <input type="search"
+         class="form-control"
+         name="q"
+         placeholder="Search this book..."
+         aria-label="Search this book..."
+         autocomplete="off"
+         autocorrect="off"
+         autocapitalize="off"
+         spellcheck="false"/>
+  <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd>K</kbd></span>
+</form>
+  </dialog>
+
+  <div class="pst-async-banner-revealer d-none">
+  <aside id="bd-header-version-warning" class="d-none d-print-none" aria-label="Version warning"></aside>
+</div>
+
+  
+    <header id="pst-header" class="bd-header navbar navbar-expand-lg bd-navbar d-print-none">
+<div class="bd-header__inner bd-page-width">
+  <button class="pst-navbar-icon sidebar-toggle primary-toggle" aria-label="Site navigation">
+    <span class="fa-solid fa-bars"></span>
+  </button>
+  
+  
+  <div class="col-lg-9 navbar-header-items">
+    
+    
+    <div class="navbar-header-items__end">
+      
+        <div class="navbar-item navbar-persistent--container">
+          
+
+<button class="btn search-button-field search-button__button pst-js-only" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+ <i class="fa-solid fa-magnifying-glass"></i>
+ <span class="search-button__default-text">Search</span>
+ <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+</button>
+        </div>
+      
+      
+    </div>
+    
+  </div>
+  
+  
+    <div class="navbar-persistent--mobile">
+
+<button class="btn search-button-field search-button__button pst-js-only" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+ <i class="fa-solid fa-magnifying-glass"></i>
+ <span class="search-button__default-text">Search</span>
+ <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+</button>
+    </div>
+  
+
+  
+    <button class="pst-navbar-icon sidebar-toggle secondary-toggle" aria-label="On this page">
+      <span class="fa-solid fa-outdent"></span>
+    </button>
+  
+</div>
+
+    </header>
+  
+
+  <div class="bd-container">
+    <div class="bd-container__inner bd-page-width">
+      
+      
+      
+        
+      
+      <dialog id="pst-primary-sidebar-modal"></dialog>
+      <div id="pst-primary-sidebar" class="bd-sidebar-primary bd-sidebar">
+        
+
+  
+  <div class="sidebar-header-items sidebar-primary__section">
+    
+    
+    
+    
+  </div>
+  
+    <div class="sidebar-primary-items__start sidebar-primary__section">
+        <div class="sidebar-primary-item">
+
+  
+    
+  
+
+<a class="navbar-brand logo" href="intro.html">
+  
+  
+  
+  
+  
+    
+    
+      
+    
+    
+    <img src="_static/logo.png" class="logo__image only-light" alt="Control Systems with Sympy - Home"/>
+    <img src="_static/logo.png" class="logo__image only-dark pst-js-only" alt="Control Systems with Sympy - Home"/>
+  
+  
+</a></div>
+        <div class="sidebar-primary-item">
+
+<button class="btn search-button-field search-button__button pst-js-only" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+ <i class="fa-solid fa-magnifying-glass"></i>
+ <span class="search-button__default-text">Search</span>
+ <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+</button></div>
+        <div class="sidebar-primary-item"><nav class="bd-links bd-docs-nav" aria-label="Main">
+    <div class="bd-toc-item navbar-nav active">
+        
+        <ul class="nav bd-sidenav bd-sidenav__home-link">
+            <li class="toctree-l1">
+                <a class="reference internal" href="intro.html">
+                    WELCOME
+                </a>
+            </li>
+        </ul>
+        <p aria-level="2" class="caption" role="heading"><span class="caption-text">Modeling and Time-Domain Analysis</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="block-diagram.html">Block Diagram</a></li>
+<li class="toctree-l1"><a class="reference internal" href="fly-ball-governor.html">System Modeling: Flyball Governor</a></li>
+<li class="toctree-l1"><a class="reference internal" href="rectilinear.html">System Modeling: Rectilinear System</a></li>
+<li class="toctree-l1"><a class="reference internal" href="first-order.html">First-order systems</a></li>
+<li class="toctree-l1"><a class="reference internal" href="second-order.html">Second-Order System</a></li>
+<li class="toctree-l1"><a class="reference internal" href="steady-state-error.html">Tracking Accuracy of a Feedback system</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Classical Control Analysis</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="routh-hurwitz.html">Routh-Hurwitz Stability Criterion</a></li>
+<li class="toctree-l1"><a class="reference internal" href="root-locus.html">The Root-Locus Method</a></li>
+<li class="toctree-l1"><a class="reference internal" href="bode-plot.html">The Bode Plots</a></li>
+<li class="toctree-l1"><a class="reference internal" href="bode-margins.html">Gain Margin and Phase Margin</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">PID Control</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="pid-fo.html">PID Control of a First Order System</a></li>
+<li class="toctree-l1"><a class="reference internal" href="pid-so.html">PID Control of a Second Order System</a></li>
+<li class="toctree-l1"><a class="reference internal" href="pid-ss.html">PID-Control (with Derivative Filter) in State Space Format</a></li>
+<li class="toctree-l1"><a class="reference internal" href="digital-pid.html">Digital PID Control - Part 1</a></li>
+<li class="toctree-l1"><a class="reference internal" href="digital-pid-2.html">Digital PID Control - Part 2</a></li>
+<li class="toctree-l1"><a class="reference internal" href="digital-filter.html">Digital Low-Pass Filter</a></li>
+<li class="toctree-l1"><a class="reference internal" href="digital-filter-2.html">Digital High-Pass Filter</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Interactive Sessions</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1 has-children"><a class="reference internal" href="interactives.html">Interactive Sessions with HTML/JavaScript</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2"><a class="reference internal" href="pid-fo-interactive.html">[HTML/JavaScript] Interactive PID-Controlled Second-Order Plant</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pid-so-interactive.html">[HTML/JavaScript] Interactive PID-Controlled Second-Order Plant</a></li>
+</ul>
+</details></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Miscellaneous</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="misc-problem-sets.html">Solved Various Problem Sets</a></li>
+</ul>
+
+    </div>
+</nav></div>
+    </div>
+  
+  
+  <div class="sidebar-primary-items__end sidebar-primary__section">
+      <div class="sidebar-primary-item">
+<div id="ethical-ad-placement"
+      class="flat"
+      data-ea-publisher="readthedocs"
+      data-ea-type="readthedocs-sidebar"
+      data-ea-manual="true">
+</div></div>
+  </div>
+
+
+      </div>
+      
+      <main id="main-content" class="bd-main" role="main">
+        
+        
+
+<div class="sbt-scroll-pixel-helper"></div>
+
+          <div class="bd-content">
+            <div class="bd-article-container">
+              
+              <div class="bd-header-article d-print-none">
+<div class="header-article-items header-article__inner">
+  
+    <div class="header-article-items__start">
+      
+        <div class="header-article-item"><button class="sidebar-toggle primary-toggle btn btn-sm" title="Toggle primary sidebar" data-bs-placement="bottom" data-bs-toggle="tooltip">
+  <span class="fa-solid fa-bars"></span>
+</button></div>
+      
+    </div>
+  
+  
+    <div class="header-article-items__end">
+      
+        <div class="header-article-item">
+
+<div class="article-header-buttons">
+
+
+
+
+
+<div class="dropdown dropdown-launch-buttons">
+  <button class="btn dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false" aria-label="Launch interactive content">
+    <i class="fas fa-rocket"></i>
+  </button>
+  <ul class="dropdown-menu">
+      
+      
+      
+      <li><a href="https://mybinder.org/v2/gh/auralius/control-systems-with-sympy/master?urlpath=lab/tree/state-space.ipynb" target="_blank"
+   class="btn btn-sm dropdown-item"
+   title="Launch on Binder"
+   data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  
+    <img alt="Binder logo" src="_static/images/logo_binder.svg">
+  </span>
+<span class="btn__text-container">Binder</span>
+</a>
+</li>
+      
+      
+      
+      
+      <li><a href="https://colab.research.google.com/github/auralius/control-systems-with-sympy/blob/master/state-space.ipynb" target="_blank"
+   class="btn btn-sm dropdown-item"
+   title="Launch on Colab"
+   data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  
+    <img alt="Colab logo" src="_static/images/logo_colab.png">
+  </span>
+<span class="btn__text-container">Colab</span>
+</a>
+</li>
+      
+  </ul>
+</div>
+
+
+
+
+
+
+<div class="dropdown dropdown-source-buttons">
+  <button class="btn dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false" aria-label="Source repositories">
+    <i class="fab fa-github"></i>
+  </button>
+  <ul class="dropdown-menu">
+      
+      
+      
+      <li><a href="https://github.com/auralius/control-systems-with-sympy" target="_blank"
+   class="btn btn-sm btn-source-repository-button dropdown-item"
+   title="Source repository"
+   data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fab fa-github"></i>
+  </span>
+<span class="btn__text-container">Repository</span>
+</a>
+</li>
+      
+      
+      
+      
+      <li><a href="https://github.com/auralius/control-systems-with-sympy/edit/master/state-space.ipynb" target="_blank"
+   class="btn btn-sm btn-source-edit-button dropdown-item"
+   title="Suggest edit"
+   data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-pencil-alt"></i>
+  </span>
+<span class="btn__text-container">Suggest edit</span>
+</a>
+</li>
+      
+      
+      
+      
+      <li><a href="https://github.com/auralius/control-systems-with-sympy/issues/new?title=Issue%20on%20page%20%2Fstate-space.html&body=Your%20issue%20content%20here." target="_blank"
+   class="btn btn-sm btn-source-issues-button dropdown-item"
+   title="Open an issue"
+   data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-lightbulb"></i>
+  </span>
+<span class="btn__text-container">Open issue</span>
+</a>
+</li>
+      
+  </ul>
+</div>
+
+
+
+
+
+
+<div class="dropdown dropdown-download-buttons">
+  <button class="btn dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false" aria-label="Download this page">
+    <i class="fas fa-download"></i>
+  </button>
+  <ul class="dropdown-menu">
+      
+      
+      
+      <li><a href="_sources/state-space.ipynb" target="_blank"
+   class="btn btn-sm btn-download-source-button dropdown-item"
+   title="Download source file"
+   data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-file"></i>
+  </span>
+<span class="btn__text-container">.ipynb</span>
+</a>
+</li>
+      
+      
+      
+      
+      <li>
+<button onclick="window.print()"
+  class="btn btn-sm btn-download-pdf-button dropdown-item"
+  title="Print to PDF"
+  data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-file-pdf"></i>
+  </span>
+<span class="btn__text-container">.pdf</span>
+</button>
+</li>
+      
+  </ul>
+</div>
+
+
+
+
+<button onclick="toggleFullScreen()"
+  class="btn btn-sm btn-fullscreen-button pst-navbar-icon"
+  title="Fullscreen mode"
+  data-bs-placement="bottom" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-expand"></i>
+  </span>
+
+</button>
+
+
+
+<button class="btn btn-sm nav-link pst-navbar-icon theme-switch-button pst-js-only" aria-label="Color mode" data-bs-title="Color mode"  data-bs-placement="bottom" data-bs-toggle="tooltip">
+  <i class="theme-switch fa-solid fa-sun                fa-lg" data-mode="light" title="Light"></i>
+  <i class="theme-switch fa-solid fa-moon               fa-lg" data-mode="dark"  title="Dark"></i>
+  <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg" data-mode="auto"  title="System Settings"></i>
+</button>
+
+
+<button class="btn btn-sm pst-navbar-icon search-button search-button__button pst-js-only" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="fa-solid fa-magnifying-glass fa-lg"></i>
+</button>
+<button class="sidebar-toggle secondary-toggle btn btn-sm pst-navbar-icon" title="Toggle secondary sidebar" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <span class="fa-solid fa-list"></span>
+</button>
+</div></div>
+      
+    </div>
+  
+</div>
+</div>
+              
+              
+
+<div id="jb-print-docs-body" class="onlyprint">
+    <h1>State-Space Modeling</h1>
+    <!-- Table of contents -->
+    <div id="print-main-content">
+        <div id="jb-print-toc">
+            
+            <div>
+                <h2> Contents </h2>
+            </div>
+            <nav aria-label="Page">
+                <ul class="pst-show_toc_level nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#transfer-function-to-state-space">1. Transfer Function to State-Space</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#worked-example">Worked example</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#odes-to-state-space-physical-derivation">2. ODEs to State-Space (Physical Derivation)</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#solving-the-state-equation-symbolically">3. Solving the State Equation Symbolically</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#controllability">4. Controllability</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#observability">5. Observability</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#pole-placement-state-feedback">6. Pole Placement (State Feedback)</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#what-s-next">What’s next</a></li>
+</ul>
+            </nav>
+        </div>
+    </div>
+</div>
+
+              
+                
+<div id="searchbox"></div>
+                <article class="bd-article">
+                  
+  <section class="tex2jax_ignore mathjax_ignore" id="state-space-modeling">
+<h1>State-Space Modeling<a class="headerlink" href="#state-space-modeling" title="Link to this heading">#</a></h1>
+<p><strong>State-space representation</strong> keeps track of every internal variable
+explicitly, through a set of first-order differential equations:</p>
+<div class="math notranslate nohighlight">
+\[
+\dot{\mathbf{x}} = A\mathbf{x} + B u, \qquad y = C\mathbf{x} + Du
+\]</div>
+<p>where <span class="math notranslate nohighlight">\(\mathbf{x}\)</span> is the <em>state vector</em>. This page builds the state-space
+model symbolically with SymPy, two different ways, and then uses it for
+controllability, observability, and pole-placement design.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">IPython.core.display</span><span class="w"> </span><span class="kn">import</span> <span class="n">HTML</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">sympy</span><span class="w"> </span><span class="kn">import</span> <span class="o">*</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">mathprint</span><span class="w"> </span><span class="kn">import</span> <span class="o">*</span>
+</pre></div>
+</div>
+</div>
+</div>
+<section id="transfer-function-to-state-space">
+<h2>1. Transfer Function to State-Space<a class="headerlink" href="#transfer-function-to-state-space" title="Link to this heading">#</a></h2>
+<p>Given a strictly-proper transfer function</p>
+<div class="math notranslate nohighlight">
+\[
+G(s) = \frac{b_2 s^2 + b_1 s + b_0}{s^3 + a_2 s^2 + a_1 s + a_0}
+\]</div>
+<p>the <strong>controllable canonical form</strong> can be read directly off the
+coefficients. Let’s build <span class="math notranslate nohighlight">\(A\)</span>, <span class="math notranslate nohighlight">\(B\)</span>, <span class="math notranslate nohighlight">\(C\)</span>, <span class="math notranslate nohighlight">\(D\)</span> symbolically for a general
+third-order system, then substitute numbers at the end.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">a0</span><span class="p">,</span> <span class="n">a1</span><span class="p">,</span> <span class="n">a2</span> <span class="o">=</span> <span class="n">symbols</span><span class="p">(</span><span class="s1">'a0 a1 a2'</span><span class="p">)</span>
+<span class="n">b0</span><span class="p">,</span> <span class="n">b1</span><span class="p">,</span> <span class="n">b2</span> <span class="o">=</span> <span class="n">symbols</span><span class="p">(</span><span class="s1">'b0 b1 b2'</span><span class="p">)</span>
+
+<span class="n">n</span> <span class="o">=</span> <span class="mi">3</span>  <span class="c1"># system order</span>
+
+<span class="n">A</span> <span class="o">=</span> <span class="n">zeros</span><span class="p">(</span><span class="n">n</span><span class="p">,</span> <span class="n">n</span><span class="p">)</span>
+<span class="n">A</span><span class="p">[:</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">:]</span> <span class="o">=</span> <span class="n">eye</span><span class="p">(</span><span class="n">n</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span>
+<span class="n">A</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="p">:]</span> <span class="o">=</span> <span class="n">Matrix</span><span class="p">([[</span><span class="o">-</span><span class="n">a0</span><span class="p">,</span> <span class="o">-</span><span class="n">a1</span><span class="p">,</span> <span class="o">-</span><span class="n">a2</span><span class="p">]])</span>
+
+<span class="n">B</span> <span class="o">=</span> <span class="n">zeros</span><span class="p">(</span><span class="n">n</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+<span class="n">B</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="mi">1</span>
+
+<span class="n">C</span> <span class="o">=</span> <span class="n">Matrix</span><span class="p">([[</span><span class="n">b0</span><span class="p">,</span> <span class="n">b1</span><span class="p">,</span> <span class="n">b2</span><span class="p">]])</span>
+<span class="n">D</span> <span class="o">=</span> <span class="n">Matrix</span><span class="p">([[</span><span class="mi">0</span><span class="p">]])</span>
+
+<span class="n">mprint</span><span class="p">(</span><span class="s2">"A ="</span><span class="p">,</span> <span class="n">latex</span><span class="p">(</span><span class="n">A</span><span class="p">),</span> <span class="s2">", B ="</span><span class="p">,</span> <span class="n">latex</span><span class="p">(</span><span class="n">B</span><span class="p">))</span>
+<span class="n">mprint</span><span class="p">(</span><span class="s2">"C ="</span><span class="p">,</span> <span class="n">latex</span><span class="p">(</span><span class="n">C</span><span class="p">),</span> <span class="s2">", D ="</span><span class="p">,</span> <span class="n">latex</span><span class="p">(</span><span class="n">D</span><span class="p">))</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_latex math notranslate nohighlight">
+\[\begin{split}\displaystyle A =\left[\begin{matrix}0 &amp; 1 &amp; 0\\0 &amp; 0 &amp; 1\\- a_{0} &amp; - a_{1} &amp; - a_{2}\end{matrix}\right], B =\left[\begin{matrix}0\\0\\1\end{matrix}\right]\end{split}\]</div>
+<div class="output text_latex math notranslate nohighlight">
+\[\displaystyle C =\left[\begin{matrix}b_{0} &amp; b_{1} &amp; b_{2}\end{matrix}\right], D =\left[\begin{matrix}0\end{matrix}\right]\]</div>
+</div>
+</div>
+<p>Sanity check: reconstruct <span class="math notranslate nohighlight">\(\boxed{G(s) = C(sI - A)^{-1}B + D}\)</span> and confirm it
+matches the transfer function we started from.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">s</span> <span class="o">=</span> <span class="n">symbols</span><span class="p">(</span><span class="s1">'s'</span><span class="p">)</span>
+<span class="n">I3</span> <span class="o">=</span> <span class="n">eye</span><span class="p">(</span><span class="n">n</span><span class="p">)</span>
+<span class="n">G_reconstructed</span> <span class="o">=</span> <span class="n">simplify</span><span class="p">((</span><span class="n">C</span> <span class="o">*</span> <span class="p">(</span><span class="n">s</span> <span class="o">*</span> <span class="n">I3</span> <span class="o">-</span> <span class="n">A</span><span class="p">)</span><span class="o">.</span><span class="n">inv</span><span class="p">()</span> <span class="o">*</span> <span class="n">B</span> <span class="o">+</span> <span class="n">D</span><span class="p">)[</span><span class="mi">0</span><span class="p">])</span>
+<span class="n">mprint</span><span class="p">(</span><span class="s2">"G(s)="</span><span class="p">,</span> <span class="n">latex</span><span class="p">(</span><span class="n">G_reconstructed</span><span class="p">))</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_latex math notranslate nohighlight">
+\[\displaystyle G(s)=\frac{b_{0} + b_{1} s + b_{2} s^{2}}{a_{0} + a_{1} s + a_{2} s^{2} + s^{3}}\]</div>
+</div>
+</div>
+<section id="worked-example">
+<h3>Worked example<a class="headerlink" href="#worked-example" title="Link to this heading">#</a></h3>
+<p>Take <span class="math notranslate nohighlight">\(G(s) = \dfrac{3s + 5}{s^3 + 6s^2 + 11s + 6}\)</span> (poles at <span class="math notranslate nohighlight">\(-1, -2, -3\)</span>).</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">subs_numeric</span> <span class="o">=</span> <span class="p">{</span><span class="n">a0</span><span class="p">:</span> <span class="mi">6</span><span class="p">,</span> <span class="n">a1</span><span class="p">:</span> <span class="mi">11</span><span class="p">,</span> <span class="n">a2</span><span class="p">:</span> <span class="mi">6</span><span class="p">,</span> <span class="n">b0</span><span class="p">:</span> <span class="mi">5</span><span class="p">,</span> <span class="n">b1</span><span class="p">:</span> <span class="mi">3</span><span class="p">,</span> <span class="n">b2</span><span class="p">:</span> <span class="mi">0</span><span class="p">}</span>
+
+<span class="n">A_n</span> <span class="o">=</span> <span class="n">A</span><span class="o">.</span><span class="n">subs</span><span class="p">(</span><span class="n">subs_numeric</span><span class="p">)</span>
+<span class="n">B_n</span> <span class="o">=</span> <span class="n">B</span><span class="o">.</span><span class="n">subs</span><span class="p">(</span><span class="n">subs_numeric</span><span class="p">)</span>
+<span class="n">C_n</span> <span class="o">=</span> <span class="n">C</span><span class="o">.</span><span class="n">subs</span><span class="p">(</span><span class="n">subs_numeric</span><span class="p">)</span>
+<span class="n">D_n</span> <span class="o">=</span> <span class="n">D</span><span class="o">.</span><span class="n">subs</span><span class="p">(</span><span class="n">subs_numeric</span><span class="p">)</span>
+
+<span class="n">A_n</span><span class="p">,</span> <span class="n">B_n</span><span class="p">,</span> <span class="n">C_n</span><span class="p">,</span> <span class="n">D_n</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>(Matrix([
+ [ 0,   1,  0],
+ [ 0,   0,  1],
+ [-6, -11, -6]]),
+ Matrix([
+ [0],
+ [0],
+ [1]]),
+ Matrix([[5, 3, 0]]),
+ Matrix([[0]]))
+</pre></div>
+</div>
+</div>
+</div>
+</section>
+</section>
+<section id="odes-to-state-space-physical-derivation">
+<h2>2. ODEs to State-Space (Physical Derivation)<a class="headerlink" href="#odes-to-state-space-physical-derivation" title="Link to this heading">#</a></h2>
+<p>Canonical form is convenient but abstract — the states don’t correspond to
+anything physical. It’s often more natural to derive <span class="math notranslate nohighlight">\(A\)</span>, <span class="math notranslate nohighlight">\(B\)</span>, <span class="math notranslate nohighlight">\(C\)</span>, <span class="math notranslate nohighlight">\(D\)</span>
+directly from the governing ODEs, the way we did in <em>System Modeling:
+Rectilinear System</em>.</p>
+<p>Recall the mass-spring-damper system:</p>
+<div class="math notranslate nohighlight">
+\[
+m\ddot{x} + c\dot{x} + kx = F(t)
+\]</div>
+<p>Choose states <span class="math notranslate nohighlight">\(x_1 = x\)</span> (position) and <span class="math notranslate nohighlight">\(x_2 = \dot{x}\)</span> (velocity). Then:</p>
+<div class="math notranslate nohighlight">
+\[
+\dot{x}_1 = x_2, \qquad \dot{x}_2 = \frac{1}{m}\left(F - c x_2 - k x_1\right)
+\]</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">m</span><span class="p">,</span> <span class="n">c</span><span class="p">,</span> <span class="n">k</span><span class="p">,</span> <span class="n">F</span> <span class="o">=</span> <span class="n">sp</span><span class="o">.</span><span class="n">symbols</span><span class="p">(</span><span class="s1">'m c k F'</span><span class="p">)</span>
+<span class="n">x1</span><span class="p">,</span> <span class="n">x2</span> <span class="o">=</span> <span class="n">sp</span><span class="o">.</span><span class="n">symbols</span><span class="p">(</span><span class="s1">'x1 x2'</span><span class="p">)</span>
+
+<span class="n">x1_dot</span> <span class="o">=</span> <span class="n">x2</span>
+<span class="n">x2_dot</span> <span class="o">=</span> <span class="p">(</span><span class="n">F</span> <span class="o">-</span> <span class="n">c</span> <span class="o">*</span> <span class="n">x2</span> <span class="o">-</span> <span class="n">k</span> <span class="o">*</span> <span class="n">x1</span><span class="p">)</span> <span class="o">/</span> <span class="n">m</span>
+
+<span class="n">A_phys</span> <span class="o">=</span> <span class="n">sp</span><span class="o">.</span><span class="n">Matrix</span><span class="p">([[</span><span class="n">sp</span><span class="o">.</span><span class="n">diff</span><span class="p">(</span><span class="n">x1_dot</span><span class="p">,</span> <span class="n">x1</span><span class="p">),</span> <span class="n">sp</span><span class="o">.</span><span class="n">diff</span><span class="p">(</span><span class="n">x1_dot</span><span class="p">,</span> <span class="n">x2</span><span class="p">)],</span>
+                     <span class="p">[</span><span class="n">sp</span><span class="o">.</span><span class="n">diff</span><span class="p">(</span><span class="n">x2_dot</span><span class="p">,</span> <span class="n">x1</span><span class="p">),</span> <span class="n">sp</span><span class="o">.</span><span class="n">diff</span><span class="p">(</span><span class="n">x2_dot</span><span class="p">,</span> <span class="n">x2</span><span class="p">)]])</span>
+
+<span class="n">B_phys</span> <span class="o">=</span> <span class="n">sp</span><span class="o">.</span><span class="n">Matrix</span><span class="p">([[</span><span class="n">sp</span><span class="o">.</span><span class="n">diff</span><span class="p">(</span><span class="n">x1_dot</span><span class="p">,</span> <span class="n">F</span><span class="p">)],</span>
+                     <span class="p">[</span><span class="n">sp</span><span class="o">.</span><span class="n">diff</span><span class="p">(</span><span class="n">x2_dot</span><span class="p">,</span> <span class="n">F</span><span class="p">)]])</span>
+
+<span class="n">A_phys</span><span class="p">,</span> <span class="n">B_phys</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output traceback highlight-ipythontb notranslate"><div class="highlight"><pre><span></span><span class="gt">---------------------------------------------------------------------------</span>
+<span class="ne">NameError</span><span class="g g-Whitespace">                                 </span>Traceback (most recent call last)
+<span class="n">Cell</span> <span class="n">In</span><span class="p">[</span><span class="mi">5</span><span class="p">],</span> <span class="n">line</span> <span class="mi">1</span>
+<span class="ne">----&gt; </span><span class="mi">1</span> <span class="n">m</span><span class="p">,</span> <span class="n">c</span><span class="p">,</span> <span class="n">k</span><span class="p">,</span> <span class="n">F</span> <span class="o">=</span> <span class="n">sp</span><span class="o">.</span><span class="n">symbols</span><span class="p">(</span><span class="s1">'m c k F'</span><span class="p">)</span>
+<span class="g g-Whitespace">      </span><span class="mi">2</span> <span class="n">x1</span><span class="p">,</span> <span class="n">x2</span> <span class="o">=</span> <span class="n">sp</span><span class="o">.</span><span class="n">symbols</span><span class="p">(</span><span class="s1">'x1 x2'</span><span class="p">)</span>
+<span class="g g-Whitespace">      </span><span class="mi">3</span> 
+<span class="g g-Whitespace">      </span><span class="mi">4</span> <span class="n">x1_dot</span> <span class="o">=</span> <span class="n">x2</span>
+
+<span class="ne">NameError</span>: name 'sp' is not defined
+</pre></div>
+</div>
+</div>
+</div>
+<p>Output is position, so <span class="math notranslate nohighlight">\(C = \begin{bmatrix}1 &amp; 0\end{bmatrix}\)</span>,
+<span class="math notranslate nohighlight">\(D = 0\)</span>. Note <span class="math notranslate nohighlight">\(A_{\text{phys}}\)</span> has exactly the same structure as the
+canonical form above once we set <span class="math notranslate nohighlight">\(a_0 = k/m\)</span>, <span class="math notranslate nohighlight">\(a_1 = c/m\)</span> — same physics,
+different (equally valid) coordinate choice.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">C_phys</span> <span class="o">=</span> <span class="n">sp</span><span class="o">.</span><span class="n">Matrix</span><span class="p">([[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">]])</span>
+<span class="n">D_phys</span> <span class="o">=</span> <span class="n">sp</span><span class="o">.</span><span class="n">Matrix</span><span class="p">([[</span><span class="mi">0</span><span class="p">]])</span>
+<span class="n">C_phys</span><span class="p">,</span> <span class="n">D_phys</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<img alt="_images/91e39dec2da2735314213442df24771ce507ee8dc96abdbef07a94eeca9c9b4e.png" src="_images/91e39dec2da2735314213442df24771ce507ee8dc96abdbef07a94eeca9c9b4e.png" />
+</div>
+</div>
+</section>
+<section id="solving-the-state-equation-symbolically">
+<h2>3. Solving the State Equation Symbolically<a class="headerlink" href="#solving-the-state-equation-symbolically" title="Link to this heading">#</a></h2>
+<p>The free (zero-input) response is <span class="math notranslate nohighlight">\(\mathbf{x}(t) = e^{At}\mathbf{x}(0)\)</span>.
+SymPy computes the matrix exponential directly for small, numeric <span class="math notranslate nohighlight">\(A\)</span>.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">t</span> <span class="o">=</span> <span class="n">sp</span><span class="o">.</span><span class="n">symbols</span><span class="p">(</span><span class="s1">'t'</span><span class="p">,</span> <span class="n">positive</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+<span class="n">A_num</span> <span class="o">=</span> <span class="n">sp</span><span class="o">.</span><span class="n">Matrix</span><span class="p">([[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span> <span class="p">[</span><span class="o">-</span><span class="mi">2</span><span class="p">,</span> <span class="o">-</span><span class="mi">3</span><span class="p">]])</span>   <span class="c1"># poles at -1, -2</span>
+<span class="n">x0</span> <span class="o">=</span> <span class="n">sp</span><span class="o">.</span><span class="n">Matrix</span><span class="p">([[</span><span class="mi">1</span><span class="p">],</span> <span class="p">[</span><span class="mi">0</span><span class="p">]])</span>
+
+<span class="n">x_t</span> <span class="o">=</span> <span class="n">sp</span><span class="o">.</span><span class="n">simplify</span><span class="p">((</span><span class="n">A_num</span> <span class="o">*</span> <span class="n">t</span><span class="p">)</span><span class="o">.</span><span class="n">exp</span><span class="p">()</span> <span class="o">*</span> <span class="n">x0</span><span class="p">)</span>
+<span class="n">x_t</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<img alt="_images/5c558e5049d31e933e0b53304287dff546b139e10c9185c81a6bec0534a2ab1e.png" src="_images/5c558e5049d31e933e0b53304287dff546b139e10c9185c81a6bec0534a2ab1e.png" />
+</div>
+</div>
+<p>Compare this against the step/impulse response obtained from the
+equivalent transfer function on the <em>Second-Order System</em> page — both
+routes must agree, since they describe the same physical system in
+different coordinates.</p>
+</section>
+<section id="controllability">
+<h2>4. Controllability<a class="headerlink" href="#controllability" title="Link to this heading">#</a></h2>
+<p>A system is controllable if the controllability matrix</p>
+<div class="math notranslate nohighlight">
+\[
+\mathcal{C} = \begin{bmatrix} B &amp; AB &amp; A^2B &amp; \cdots &amp; A^{n-1}B \end{bmatrix}
+\]</div>
+<p>has full rank <span class="math notranslate nohighlight">\(n\)</span>. Let’s write a small symbolic helper and test it on a
+controllable system, then on a deliberately uncontrollable one.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="k">def</span><span class="w"> </span><span class="nf">controllability_matrix</span><span class="p">(</span><span class="n">A</span><span class="p">,</span> <span class="n">B</span><span class="p">):</span>
+    <span class="n">n</span> <span class="o">=</span> <span class="n">A</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+    <span class="n">cols</span> <span class="o">=</span> <span class="p">[</span><span class="n">B</span><span class="p">]</span>
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">n</span><span class="p">):</span>
+        <span class="n">cols</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">A</span><span class="o">**</span><span class="n">i</span> <span class="o">*</span> <span class="n">B</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">sp</span><span class="o">.</span><span class="n">Matrix</span><span class="o">.</span><span class="n">hstack</span><span class="p">(</span><span class="o">*</span><span class="n">cols</span><span class="p">)</span>
+
+<span class="c1"># Controllable example</span>
+<span class="n">A_c</span> <span class="o">=</span> <span class="n">sp</span><span class="o">.</span><span class="n">Matrix</span><span class="p">([[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span> <span class="p">[</span><span class="o">-</span><span class="mi">2</span><span class="p">,</span> <span class="o">-</span><span class="mi">3</span><span class="p">]])</span>
+<span class="n">B_c</span> <span class="o">=</span> <span class="n">sp</span><span class="o">.</span><span class="n">Matrix</span><span class="p">([[</span><span class="mi">0</span><span class="p">],</span> <span class="p">[</span><span class="mi">1</span><span class="p">]])</span>
+
+<span class="n">Cc</span> <span class="o">=</span> <span class="n">controllability_matrix</span><span class="p">(</span><span class="n">A_c</span><span class="p">,</span> <span class="n">B_c</span><span class="p">)</span>
+<span class="n">Cc</span><span class="p">,</span> <span class="n">Cc</span><span class="o">.</span><span class="n">rank</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<img alt="_images/248bb469e0a052a83efddd9478b0318351af60a4cfa1b35200922da4a2e150e2.png" src="_images/248bb469e0a052a83efddd9478b0318351af60a4cfa1b35200922da4a2e150e2.png" />
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Deliberately uncontrollable example:</span>
+<span class="c1"># input only drives x1, and x1, x2 are decoupled</span>
+<span class="n">A_uc</span> <span class="o">=</span> <span class="n">sp</span><span class="o">.</span><span class="n">Matrix</span><span class="p">([[</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="o">-</span><span class="mi">2</span><span class="p">]])</span>
+<span class="n">B_uc</span> <span class="o">=</span> <span class="n">sp</span><span class="o">.</span><span class="n">Matrix</span><span class="p">([[</span><span class="mi">1</span><span class="p">],</span> <span class="p">[</span><span class="mi">0</span><span class="p">]])</span>
+
+<span class="n">Cuc</span> <span class="o">=</span> <span class="n">controllability_matrix</span><span class="p">(</span><span class="n">A_uc</span><span class="p">,</span> <span class="n">B_uc</span><span class="p">)</span>
+<span class="n">Cuc</span><span class="p">,</span> <span class="n">Cuc</span><span class="o">.</span><span class="n">rank</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<img alt="_images/ee21aa7b0884c105cac6a3ba94db820b2ad437d1c3e7f921f6ac24e20211c702.png" src="_images/ee21aa7b0884c105cac6a3ba94db820b2ad437d1c3e7f921f6ac24e20211c702.png" />
+</div>
+</div>
+<p>The rank drops to 1 — <span class="math notranslate nohighlight">\(u\)</span> can never influence <span class="math notranslate nohighlight">\(x_2\)</span>, since <span class="math notranslate nohighlight">\(B\)</span> has
+no component in that direction and <span class="math notranslate nohighlight">\(A\)</span> is diagonal (decoupled). This is
+exactly what “uncontrollable” looks like algebraically.</p>
+</section>
+<section id="observability">
+<h2>5. Observability<a class="headerlink" href="#observability" title="Link to this heading">#</a></h2>
+<p>The dual notion: a system is observable if</p>
+<div class="math notranslate nohighlight">
+\[\begin{split}
+\mathcal{O} = \begin{bmatrix} C \\ CA \\ CA^2 \\ \vdots \\ CA^{n-1} \end{bmatrix}
+\end{split}\]</div>
+<p>has full rank <span class="math notranslate nohighlight">\(n\)</span>.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="k">def</span><span class="w"> </span><span class="nf">observability_matrix</span><span class="p">(</span><span class="n">A</span><span class="p">,</span> <span class="n">C</span><span class="p">):</span>
+    <span class="n">n</span> <span class="o">=</span> <span class="n">A</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+    <span class="n">rows</span> <span class="o">=</span> <span class="p">[</span><span class="n">C</span><span class="p">]</span>
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">n</span><span class="p">):</span>
+        <span class="n">rows</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">C</span> <span class="o">*</span> <span class="n">A</span><span class="o">**</span><span class="n">i</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">sp</span><span class="o">.</span><span class="n">Matrix</span><span class="o">.</span><span class="n">vstack</span><span class="p">(</span><span class="o">*</span><span class="n">rows</span><span class="p">)</span> 
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Deliberately unobservable example: output only sees x1,</span>
+<span class="c1"># and x2 doesn't affect x1's dynamics</span>
+<span class="n">A_uo</span> <span class="o">=</span> <span class="n">sp</span><span class="o">.</span><span class="n">Matrix</span><span class="p">([[</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="o">-</span><span class="mi">2</span><span class="p">]])</span>
+<span class="n">C_uo</span> <span class="o">=</span> <span class="n">sp</span><span class="o">.</span><span class="n">Matrix</span><span class="p">([[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">]])</span>
+
+<span class="n">Ouo</span> <span class="o">=</span> <span class="n">observability_matrix</span><span class="p">(</span><span class="n">A_uo</span><span class="p">,</span> <span class="n">C_uo</span><span class="p">)</span>
+<span class="n">Ouo</span><span class="p">,</span> <span class="n">Ouo</span><span class="o">.</span><span class="n">rank</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<img alt="_images/98bb8c3963c6aee7ffca41ca8978089726240ec916c425a44e6fa7dce048e8e9.png" src="_images/98bb8c3963c6aee7ffca41ca8978089726240ec916c425a44e6fa7dce048e8e9.png" />
+</div>
+</div>
+<p>Same story as before, mirrored: <span class="math notranslate nohighlight">\(x_2\)</span> never shows up in <span class="math notranslate nohighlight">\(y\)</span>, and
+since the system is decoupled, its motion is invisible from the output.</p>
+</section>
+<section id="pole-placement-state-feedback">
+<h2>6. Pole Placement (State Feedback)<a class="headerlink" href="#pole-placement-state-feedback" title="Link to this heading">#</a></h2>
+<p>With full-state feedback <span class="math notranslate nohighlight">\(u = -K\mathbf{x}\)</span>, the closed-loop dynamics
+become <span class="math notranslate nohighlight">\(\dot{\mathbf{x}} = (A - BK)\mathbf{x}\)</span>. We choose <span class="math notranslate nohighlight">\(K\)</span> so that
+<span class="math notranslate nohighlight">\(A - BK\)</span> has a desired characteristic polynomial — i.e. desired closed-loop
+poles.</p>
+<p><strong>Ackermann’s formula</strong> gives <span class="math notranslate nohighlight">\(K\)</span> directly, purely symbolically:</p>
+<div class="math notranslate nohighlight">
+\[
+K = \begin{bmatrix}0 &amp; \cdots &amp; 0 &amp; 1\end{bmatrix} \mathcal{C}^{-1} \; \phi_d(A)
+\]</div>
+<p>where <span class="math notranslate nohighlight">\(\phi_d(A)\)</span> is the desired characteristic polynomial evaluated at the
+matrix <span class="math notranslate nohighlight">\(A\)</span>, and <span class="math notranslate nohighlight">\(\mathcal{C}\)</span> is the controllability matrix (which must be
+invertible — i.e. the system must be controllable, tying directly back to
+Section 4).</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="k">def</span><span class="w"> </span><span class="nf">ackermann</span><span class="p">(</span><span class="n">A</span><span class="p">,</span> <span class="n">B</span><span class="p">,</span> <span class="n">desired_poles</span><span class="p">):</span>
+    <span class="n">n</span> <span class="o">=</span> <span class="n">A</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+    <span class="n">s</span> <span class="o">=</span> <span class="n">sp</span><span class="o">.</span><span class="n">symbols</span><span class="p">(</span><span class="s1">'s'</span><span class="p">)</span>
+
+    <span class="c1"># Desired characteristic polynomial phi_d(s)</span>
+    <span class="n">phi_d</span> <span class="o">=</span> <span class="n">sp</span><span class="o">.</span><span class="n">prod</span><span class="p">([(</span><span class="n">s</span> <span class="o">-</span> <span class="n">p</span><span class="p">)</span> <span class="k">for</span> <span class="n">p</span> <span class="ow">in</span> <span class="n">desired_poles</span><span class="p">])</span>
+    <span class="n">phi_d</span> <span class="o">=</span> <span class="n">sp</span><span class="o">.</span><span class="n">expand</span><span class="p">(</span><span class="n">phi_d</span><span class="p">)</span>
+    <span class="n">phi_d_poly</span> <span class="o">=</span> <span class="n">sp</span><span class="o">.</span><span class="n">Poly</span><span class="p">(</span><span class="n">phi_d</span><span class="p">,</span> <span class="n">s</span><span class="p">)</span>
+
+    <span class="c1"># phi_d(A) via Cayley-Hamilton-style substitution</span>
+    <span class="n">coeffs</span> <span class="o">=</span> <span class="n">phi_d_poly</span><span class="o">.</span><span class="n">all_coeffs</span><span class="p">()</span>  <span class="c1"># highest degree first</span>
+    <span class="n">phi_d_A</span> <span class="o">=</span> <span class="n">sp</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">n</span><span class="p">,</span> <span class="n">n</span><span class="p">)</span>
+    <span class="n">deg</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">coeffs</span><span class="p">)</span> <span class="o">-</span> <span class="mi">1</span>
+    <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">c</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">coeffs</span><span class="p">):</span>
+        <span class="n">power</span> <span class="o">=</span> <span class="n">deg</span> <span class="o">-</span> <span class="n">i</span>
+        <span class="n">phi_d_A</span> <span class="o">+=</span> <span class="n">c</span> <span class="o">*</span> <span class="n">A</span><span class="o">**</span><span class="n">power</span>
+
+    <span class="n">Cmat</span> <span class="o">=</span> <span class="n">controllability_matrix</span><span class="p">(</span><span class="n">A</span><span class="p">,</span> <span class="n">B</span><span class="p">)</span>
+    <span class="n">e_n</span> <span class="o">=</span> <span class="n">sp</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">n</span><span class="p">)</span>
+    <span class="n">e_n</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="mi">1</span>
+
+    <span class="n">K</span> <span class="o">=</span> <span class="n">e_n</span> <span class="o">*</span> <span class="n">Cmat</span><span class="o">.</span><span class="n">inv</span><span class="p">()</span> <span class="o">*</span> <span class="n">phi_d_A</span>
+    <span class="k">return</span> <span class="n">sp</span><span class="o">.</span><span class="n">simplify</span><span class="p">(</span><span class="n">K</span><span class="p">)</span>
+
+<span class="c1"># Plant: A_c, B_c from Section 4 (poles currently at -1, -2)</span>
+<span class="n">desired_poles</span> <span class="o">=</span> <span class="p">[</span><span class="o">-</span><span class="mi">4</span><span class="p">,</span> <span class="o">-</span><span class="mi">6</span><span class="p">]</span>
+<span class="n">K</span> <span class="o">=</span> <span class="n">ackermann</span><span class="p">(</span><span class="n">A_c</span><span class="p">,</span> <span class="n">B_c</span><span class="p">,</span> <span class="n">desired_poles</span><span class="p">)</span>
+<span class="n">K</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<img alt="_images/82ec436f52d69783c2e4475df27dce8f39bce4c720ba10a863fc67c55c138761.png" src="_images/82ec436f52d69783c2e4475df27dce8f39bce4c720ba10a863fc67c55c138761.png" />
+</div>
+</div>
+<p>Verify: the eigenvalues of <span class="math notranslate nohighlight">\(A - BK\)</span> should now match the desired
+poles exactly.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">A_cl</span> <span class="o">=</span> <span class="n">A_c</span> <span class="o">-</span> <span class="n">B_c</span> <span class="o">*</span> <span class="n">K</span>
+<span class="n">sp</span><span class="o">.</span><span class="n">simplify</span><span class="p">(</span><span class="n">A_cl</span><span class="o">.</span><span class="n">eigenvals</span><span class="p">())</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<img alt="_images/e3010d2e0f7e46872927e885696868f63eef02fe48126188fa439ad6c40a3ae0.png" src="_images/e3010d2e0f7e46872927e885696868f63eef02fe48126188fa439ad6c40a3ae0.png" />
+</div>
+</div>
+<p>This closed-loop design step is exactly what <em>PID-Control (with
+Derivative Filter) in State-Space Format</em> uses when it selects PID gains
+for a desired transient response — Ackermann’s formula is the general
+version of that gain-selection problem.</p>
+</section>
+<section id="what-s-next">
+<h2>What’s next<a class="headerlink" href="#what-s-next" title="Link to this heading">#</a></h2>
+<p>A Luenberger observer is the exact dual of Section 6 — placing the
+eigenvalues of <span class="math notranslate nohighlight">\(A - LC\)</span> using the same <code class="docutils literal notranslate"><span class="pre">ackermann()</span></code> routine applied to
+<span class="math notranslate nohighlight">\((A^T, C^T)\)</span> instead of <span class="math notranslate nohighlight">\((A, B)\)</span>. That’s a natural follow-up page once this
+one is in the book.</p>
+</section>
+</section>
+
+    <script type="text/x-thebe-config">
+    {
+        requestKernel: true,
+        binderOptions: {
+            repo: "binder-examples/jupyter-stacks-datascience",
+            ref: "master",
+        },
+        codeMirrorConfig: {
+            theme: "abcdef",
+            mode: "python"
+        },
+        kernelOptions: {
+            name: "python3",
+            path: "./."
+        },
+        predefinedOutput: true
+    }
+    </script>
+    <script>kernelName = 'python3'</script>
+
+                </article>
+              
+
+              
+              
+              
+              
+                <footer class="prev-next-footer d-print-none">
+                  
+<div class="prev-next-area">
+</div>
+                </footer>
+              
+            </div>
+            
+            
+              
+                <dialog id="pst-secondary-sidebar-modal"></dialog>
+                <div id="pst-secondary-sidebar" class="bd-sidebar-secondary bd-toc"><div class="sidebar-secondary-items sidebar-secondary__inner">
+
+
+  <div class="sidebar-secondary-item"><div
+    id="pst-page-navigation-heading-2"
+    class="page-toc tocsection onthispage">
+    <i class="fa-solid fa-list"></i> Contents
+  </div>
+  <nav id="pst-page-toc-nav" class="page-toc" aria-labelledby="pst-page-navigation-heading-2">
+    <ul class="pst-show_toc_level nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#transfer-function-to-state-space">1. Transfer Function to State-Space</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#worked-example">Worked example</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#odes-to-state-space-physical-derivation">2. ODEs to State-Space (Physical Derivation)</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#solving-the-state-equation-symbolically">3. Solving the State Equation Symbolically</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#controllability">4. Controllability</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#observability">5. Observability</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#pole-placement-state-feedback">6. Pole Placement (State Feedback)</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#what-s-next">What’s next</a></li>
+</ul>
+  </nav></div>
+
+</div></div>
+              
+            
+          </div>
+          <footer class="bd-footer-content">
+            
+<div class="bd-footer-content__inner container">
+  
+  <div class="footer-item">
+    
+<p class="component-author">
+By Auralius Manurung - Universitas Telkom
+</p>
+
+  </div>
+  
+  <div class="footer-item">
+    
+
+  <p class="copyright">
+    
+      © Copyright 2026.
+      <br/>
+    
+  </p>
+
+  </div>
+  
+  <div class="footer-item">
+    
+  </div>
+  
+  <div class="footer-item">
+    
+  </div>
+  
+</div>
+          </footer>
+        
+
+      </main>
+    </div>
+  </div>
+  
+  <!-- Scripts loaded after <body> so the DOM is not blocked -->
+  <script defer src="_static/scripts/bootstrap.js?digest=55c26ed414f5f8a31ebb"></script>
+<script defer src="_static/scripts/pydata-sphinx-theme.js?digest=55c26ed414f5f8a31ebb"></script>
+
+  <footer class="bd-footer">
+  </footer>
+  </body>
+</html>

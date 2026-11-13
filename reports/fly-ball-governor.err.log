@@ -1,0 +1,244 @@
+Traceback (most recent call last):
+  File "/home/auralius/miniconda3/envs/py.3.12.4/lib/python3.12/site-packages/jupyter_cache/executors/utils.py", line 58, in single_nb_execution
+    executenb(
+  File "/home/auralius/miniconda3/envs/py.3.12.4/lib/python3.12/site-packages/nbclient/client.py", line 1323, in execute
+    return NotebookClient(nb=nb, resources=resources, km=km, **kwargs).execute()
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/auralius/miniconda3/envs/py.3.12.4/lib/python3.12/site-packages/jupyter_core/utils/__init__.py", line 165, in wrapped
+    return loop.run_until_complete(inner)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/auralius/miniconda3/envs/py.3.12.4/lib/python3.12/asyncio/base_events.py", line 691, in run_until_complete
+    return future.result()
+           ^^^^^^^^^^^^^^^
+  File "/home/auralius/miniconda3/envs/py.3.12.4/lib/python3.12/site-packages/nbclient/client.py", line 709, in async_execute
+    await self.async_execute_cell(
+  File "/home/auralius/miniconda3/envs/py.3.12.4/lib/python3.12/site-packages/nbclient/client.py", line 1062, in async_execute_cell
+    await self._check_raise_for_error(cell, cell_index, exec_reply)
+  File "/home/auralius/miniconda3/envs/py.3.12.4/lib/python3.12/site-packages/nbclient/client.py", line 918, in _check_raise_for_error
+    raise CellExecutionError.from_cell_and_msg(cell, exec_reply_content)
+nbclient.exceptions.CellExecutionError: An error occurred while executing the following cell:
+------------------
+%matplotlib notebook
+
+import matplotlib.pyplot as plt
+import numpy as np
+
+import matplotlib.animation as animation
+
+# Collect the points 
+N = len(sol.t)
+th1_array = sol.y[0,:]
+th2_array = RPM_ * sol.t
+
+# Plotting starts here
+fig = plt.figure()
+ax = fig.add_subplot(projection="3d")
+
+# Create lines initially
+E = np.array([0., 0., 0.])  
+F = np.array([0., 0., -2*l_])
+rod  = ax.plot([E[0], F[0]], [E[1], F[1]], [E[2], F[2]], '-r', linewidth=3.0 )[0]
+arms = ax.plot([], [], [], '.-b')[0] # without data
+
+# Setting the Axes properties
+ax.set(xlim3d=(-0.2, 0.2), xlabel='X')
+ax.set(ylim3d=(-0.2, 0.2), ylabel='Y')
+ax.set(zlim3d=(-0.2, 0.2), zlabel='Z')
+
+# --- Animation update callback function ---
+def update_lines(num):
+    A1 = np.array([-d_*cos(th2_array[num]),-d_*sin(th2_array[num]),0], dtype=np.float32)
+    A2 = np.array([ d_*cos(th2_array[num]), d_*sin(th2_array[num]),0], dtype=np.float32)
+    B  = np.array([-(l_*sin(th1_array[num])+d_)*cos(th2_array[num]), -(l_*sin(th1_array[num])+d_)*sin(th2_array[num]), -l_*cos(th1_array[num])])
+    C  = np.array([(l_*sin(th1_array[num])+d_)*cos(th2_array[num]),  (l_*sin(th1_array[num])+d_)*sin(th2_array[num]), -l_*cos(th1_array[num])])
+    D  = np.array([ 0,0, -l_*cos(th1_array[num])*2])
+    arms.set_data_3d(np.vstack([D, B, A1, A2, C, D]).T)
+
+    return [arms]
+# ---
+
+ani = animation.FuncAnimation(fig, update_lines, N,  interval=1000);
+ani.save("./images/flyball.gif",  writer='imagemagick', fps=15);
+display_gif("./images/flyball.gif")
+------------------
+
+----- stderr -----
+MovieWriter stderr:
+convert: unexpected end-of-file '-': No such file or directory @ error/rgb.c/ReadRGBImage/250.
+convert: no images defined `./images/flyball.gif' @ error/deprecate.c/ConvertImageCommand/3366.
+------------------
+
+[31m---------------------------------------------------------------------------[39m
+[31mTypeError[39m                                 Traceback (most recent call last)
+[36mFile [39m[32m~/miniconda3/envs/py.3.12.4/lib/python3.12/site-packages/matplotlib/animation.py:228[39m, in [36mAbstractMovieWriter.saving[39m[34m(self, fig, outfile, dpi, *args, **kwargs)[39m
+[32m    227[39m [38;5;28;01mtry[39;00m:
+[32m--> [39m[32m228[39m     [38;5;28;01myield[39;00m [38;5;28mself[39m
+[32m    229[39m [38;5;28;01mfinally[39;00m:
+
+[36mFile [39m[32m~/miniconda3/envs/py.3.12.4/lib/python3.12/site-packages/matplotlib/animation.py:1146[39m, in [36mAnimation.save[39m[34m(self, filename, writer, fps, dpi, codec, bitrate, extra_args, metadata, extra_anim, savefig_kwargs, progress_callback)[39m
+[32m   1145[39m         frame_number += [32m1[39m
+[32m-> [39m[32m1146[39m [30;43mwriter[39;49m[30;43m.[39;49m[30;43mgrab_frame[39;49m[30;43m([39;49m[30;43m*[39;49m[30;43m*[39;49m[30;43msavefig_kwargs[39;49m[30;43m)[39;49m
+
+[36mFile [39m[32m~/miniconda3/envs/py.3.12.4/lib/python3.12/site-packages/matplotlib/animation.py:358[39m, in [36mMovieWriter.grab_frame[39m[34m(self, **savefig_kwargs)[39m
+[32m    357[39m [38;5;66;03m# Save the figure data to the sink, using the frame format and dpi.[39;00m
+[32m--> [39m[32m358[39m [30;43mself[39;49m[30;43m.[39;49m[30;43mfig[39;49m[30;43m.[39;49m[30;43msavefig[39;49m[30;43m([39;49m[30;43mself[39;49m[30;43m.[39;49m[30;43m_proc[39;49m[30;43m.[39;49m[30;43mstdin[39;49m[30;43m,[39;49m[30;43m [39;49m[30;43mformat[39;49m[30;43m=[39;49m[30;43mself[39;49m[30;43m.[39;49m[30;43mframe_format[39;49m[30;43m,[39;49m
+[32m    359[39m [30;43m                 [39;49m[30;43mdpi[39;49m[30;43m=[39;49m[30;43mself[39;49m[30;43m.[39;49m[30;43mdpi[39;49m[30;43m,[39;49m[30;43m [39;49m[30;43m*[39;49m[30;43m*[39;49m[30;43msavefig_kwargs[39;49m[30;43m)[39;49m
+
+[36mFile [39m[32m~/miniconda3/envs/py.3.12.4/lib/python3.12/site-packages/matplotlib/figure.py:3515[39m, in [36mFigure.savefig[39m[34m(self, fname, transparent, **kwargs)[39m
+[32m   3514[39m         _recursively_make_axes_transparent(stack, ax)
+[32m-> [39m[32m3515[39m [30;43mself[39;49m[30;43m.[39;49m[30;43mcanvas[39;49m[30;43m.[39;49m[30;43mprint_figure[39;49m[30;43m([39;49m[30;43mfname[39;49m[30;43m,[39;49m[30;43m [39;49m[30;43m*[39;49m[30;43m*[39;49m[30;43mkwargs[39;49m[30;43m)[39;49m
+
+[36mFile [39m[32m~/miniconda3/envs/py.3.12.4/lib/python3.12/site-packages/matplotlib/backend_bases.py:2289[39m, in [36mFigureCanvasBase.print_figure[39m[34m(self, filename, dpi, facecolor, edgecolor, orientation, format, bbox_inches, pad_inches, bbox_extra_artists, backend, **kwargs)[39m
+[32m   2288[39m     [38;5;28;01mwith[39;00m cbook._setattr_cm([38;5;28mself[39m.figure, dpi=dpi):
+[32m-> [39m[32m2289[39m         result = [30;43mprint_method[39;49m[30;43m([39;49m
+[32m   2290[39m [30;43m            [39;49m[30;43mfilename[39;49m[30;43m,[39;49m
+[32m   2291[39m [30;43m            [39;49m[30;43mfacecolor[39;49m[30;43m=[39;49m[30;43mfacecolor[39;49m[30;43m,[39;49m
+[32m   2292[39m [30;43m            [39;49m[30;43medgecolor[39;49m[30;43m=[39;49m[30;43medgecolor[39;49m[30;43m,[39;49m
+[32m   2293[39m [30;43m            [39;49m[30;43morientation[39;49m[30;43m=[39;49m[30;43morientation[39;49m[30;43m,[39;49m
+[32m   2294[39m [30;43m            [39;49m[30;43mbbox_inches_restore[39;49m[30;43m=[39;49m[30;43m_bbox_inches_restore[39;49m[30;43m,[39;49m
+[32m   2295[39m [30;43m            [39;49m[30;43m*[39;49m[30;43m*[39;49m[30;43mkwargs[39;49m[30;43m)[39;49m
+[32m   2296[39m [38;5;28;01mfinally[39;00m:
+
+[36mFile [39m[32m~/miniconda3/envs/py.3.12.4/lib/python3.12/site-packages/matplotlib/backend_bases.py:2146[39m, in [36mFigureCanvasBase._switch_canvas_and_return_print_method.<locals>.<lambda>[39m[34m(*args, **kwargs)[39m
+[32m   2145[39m     skip = optional_kws - {*inspect.signature(meth).parameters}
+[32m-> [39m[32m2146[39m     print_method = functools.wraps(meth)([38;5;28;01mlambda[39;00m *args, **kwargs: [30;43mmeth[39;49m[30;43m([39;49m
+[32m   2147[39m [30;43m        [39;49m[30;43m*[39;49m[30;43margs[39;49m[30;43m,[39;49m[30;43m [39;49m[30;43m*[39;49m[30;43m*[39;49m[30;43m{[39;49m[30;43mk[39;49m[30;43m:[39;49m[30;43m [39;49m[30;43mv[39;49m[30;43m [39;49m[30;43;01mfor[39;49;00m[30;43m [39;49m[30;43mk[39;49m[30;43m,[39;49m[30;43m [39;49m[30;43mv[39;49m[30;43m [39;49m[30;43;01min[39;49;00m[30;43m [39;49m[30;43mkwargs[39;49m[30;43m.[39;49m[30;43mitems[39;49m[30;43m([39;49m[30;43m)[39;49m[30;43m [39;49m[30;43;01mif[39;49;00m[30;43m [39;49m[30;43mk[39;49m[30;43m [39;49m[30;43;01mnot[39;49;00m[30;43m [39;49m[30;43;01min[39;49;00m[30;43m [39;49m[30;43mskip[39;49m[30;43m}[39;49m[30;43m)[39;49m)
+[32m   2148[39m [38;5;28;01melse[39;00m:  [38;5;66;03m# Let third-parties do as they see fit.[39;00m
+
+[36mFile [39m[32m~/miniconda3/envs/py.3.12.4/lib/python3.12/site-packages/matplotlib/backends/backend_agg.py:473[39m, in [36mFigureCanvasAgg.print_raw[39m[34m(self, filename_or_obj, metadata)[39m
+[32m    472[39m     [38;5;28;01mraise[39;00m [38;5;167;01mValueError[39;00m([33m"[39m[33mmetadata not supported for raw/rgba[39m[33m"[39m)
+[32m--> [39m[32m473[39m [30;43mFigureCanvasAgg[39;49m[30;43m.[39;49m[30;43mdraw[39;49m[30;43m([39;49m[30;43mself[39;49m[30;43m)[39;49m
+[32m    474[39m renderer = [38;5;28mself[39m.get_renderer()
+
+[36mFile [39m[32m~/miniconda3/envs/py.3.12.4/lib/python3.12/site-packages/matplotlib/backends/backend_agg.py:438[39m, in [36mFigureCanvasAgg.draw[39m[34m(self)[39m
+[32m    436[39m [38;5;28;01mwith[39;00m ([38;5;28mself[39m.toolbar._wait_cursor_for_draw_cm() [38;5;28;01mif[39;00m [38;5;28mself[39m.toolbar
+[32m    437[39m       [38;5;28;01melse[39;00m nullcontext()):
+[32m--> [39m[32m438[39m     [30;43mself[39;49m[30;43m.[39;49m[30;43mfigure[39;49m[30;43m.[39;49m[30;43mdraw[39;49m[30;43m([39;49m[30;43mself[39;49m[30;43m.[39;49m[30;43mrenderer[39;49m[30;43m)[39;49m
+[32m    439[39m     [38;5;66;03m# A GUI class may be need to update a window using this draw, so[39;00m
+[32m    440[39m     [38;5;66;03m# don't forget to call the superclass.[39;00m
+
+[36mFile [39m[32m~/miniconda3/envs/py.3.12.4/lib/python3.12/site-packages/matplotlib/artist.py:94[39m, in [36m_finalize_rasterization.<locals>.draw_wrapper[39m[34m(artist, renderer, *args, **kwargs)[39m
+[32m     92[39m [38;5;129m@wraps[39m(draw)
+[32m     93[39m [38;5;28;01mdef[39;00m[38;5;250m [39m[34mdraw_wrapper[39m(artist, renderer, *args, **kwargs):
+[32m---> [39m[32m94[39m     result = [30;43mdraw[39;49m[30;43m([39;49m[30;43martist[39;49m[30;43m,[39;49m[30;43m [39;49m[30;43mrenderer[39;49m[30;43m,[39;49m[30;43m [39;49m[30;43m*[39;49m[30;43margs[39;49m[30;43m,[39;49m[30;43m [39;49m[30;43m*[39;49m[30;43m*[39;49m[30;43mkwargs[39;49m[30;43m)[39;49m
+[32m     95[39m     [38;5;28;01mif[39;00m renderer._rasterizing:
+
+[36mFile [39m[32m~/miniconda3/envs/py.3.12.4/lib/python3.12/site-packages/matplotlib/artist.py:71[39m, in [36mallow_rasterization.<locals>.draw_wrapper[39m[34m(artist, renderer)[39m
+[32m     69[39m         renderer.start_filter()
+[32m---> [39m[32m71[39m     [38;5;28;01mreturn[39;00m [30;43mdraw[39;49m[30;43m([39;49m[30;43martist[39;49m[30;43m,[39;49m[30;43m [39;49m[30;43mrenderer[39;49m[30;43m)[39;49m
+[32m     72[39m [38;5;28;01mfinally[39;00m:
+
+[36mFile [39m[32m~/miniconda3/envs/py.3.12.4/lib/python3.12/site-packages/matplotlib/figure.py:3282[39m, in [36mFigure.draw[39m[34m(self, renderer)[39m
+[32m   3281[39m [38;5;28mself[39m.patch.draw(renderer)
+[32m-> [39m[32m3282[39m [30;43mmimage[39;49m[30;43m.[39;49m[30;43m_draw_list_compositing_images[39;49m[30;43m([39;49m
+[32m   3283[39m [30;43m    [39;49m[30;43mrenderer[39;49m[30;43m,[39;49m[30;43m [39;49m[30;43mself[39;49m[30;43m,[39;49m[30;43m [39;49m[30;43martists[39;49m[30;43m,[39;49m[30;43m [39;49m[30;43mself[39;49m[30;43m.[39;49m[30;43msuppressComposite[39;49m[30;43m)[39;49m
+[32m   3285[39m renderer.close_group([33m'[39m[33mfigure[39m[33m'[39m)
+
+[36mFile [39m[32m~/miniconda3/envs/py.3.12.4/lib/python3.12/site-packages/matplotlib/image.py:133[39m, in [36m_draw_list_compositing_images[39m[34m(renderer, parent, artists, suppress_composite)[39m
+[32m    132[39m     [38;5;28;01mfor[39;00m a [38;5;129;01min[39;00m artists:
+[32m--> [39m[32m133[39m         [30;43ma[39;49m[30;43m.[39;49m[30;43mdraw[39;49m[30;43m([39;49m[30;43mrenderer[39;49m[30;43m)[39;49m
+[32m    134[39m [38;5;28;01melse[39;00m:
+[32m    135[39m     [38;5;66;03m# Composite any adjacent images together[39;00m
+
+[36mFile [39m[32m~/miniconda3/envs/py.3.12.4/lib/python3.12/site-packages/matplotlib/artist.py:71[39m, in [36mallow_rasterization.<locals>.draw_wrapper[39m[34m(artist, renderer)[39m
+[32m     69[39m         renderer.start_filter()
+[32m---> [39m[32m71[39m     [38;5;28;01mreturn[39;00m [30;43mdraw[39;49m[30;43m([39;49m[30;43martist[39;49m[30;43m,[39;49m[30;43m [39;49m[30;43mrenderer[39;49m[30;43m)[39;49m
+[32m     72[39m [38;5;28;01mfinally[39;00m:
+
+[36mFile [39m[32m~/miniconda3/envs/py.3.12.4/lib/python3.12/site-packages/mpl_toolkits/mplot3d/axes3d.py:532[39m, in [36mAxes3D.draw[39m[34m(self, renderer)[39m
+[32m    531[39m [38;5;66;03m# Then rest[39;00m
+[32m--> [39m[32m532[39m [30;43msuper[39;49m[30;43m([39;49m[30;43m)[39;49m[30;43m.[39;49m[30;43mdraw[39;49m[30;43m([39;49m[30;43mrenderer[39;49m[30;43m)[39;49m
+
+[36mFile [39m[32m~/miniconda3/envs/py.3.12.4/lib/python3.12/site-packages/matplotlib/artist.py:71[39m, in [36mallow_rasterization.<locals>.draw_wrapper[39m[34m(artist, renderer)[39m
+[32m     69[39m         renderer.start_filter()
+[32m---> [39m[32m71[39m     [38;5;28;01mreturn[39;00m [30;43mdraw[39;49m[30;43m([39;49m[30;43martist[39;49m[30;43m,[39;49m[30;43m [39;49m[30;43mrenderer[39;49m[30;43m)[39;49m
+[32m     72[39m [38;5;28;01mfinally[39;00m:
+
+[36mFile [39m[32m~/miniconda3/envs/py.3.12.4/lib/python3.12/site-packages/matplotlib/axes/_base.py:3372[39m, in [36m_AxesBase.draw[39m[34m(self, renderer)[39m
+[32m   3370[39m     _draw_rasterized([38;5;28mself[39m.get_figure(root=[38;5;28;01mTrue[39;00m), artists_rasterized, renderer)
+[32m-> [39m[32m3372[39m [30;43mmimage[39;49m[30;43m.[39;49m[30;43m_draw_list_compositing_images[39;49m[30;43m([39;49m
+[32m   3373[39m [30;43m    [39;49m[30;43mrenderer[39;49m[30;43m,[39;49m[30;43m [39;49m[30;43mself[39;49m[30;43m,[39;49m[30;43m [39;49m[30;43martists[39;49m[30;43m,[39;49m[30;43m [39;49m[30;43mself[39;49m[30;43m.[39;49m[30;43mget_figure[39;49m[30;43m([39;49m[30;43mroot[39;49m[30;43m=[39;49m[30;43;01mTrue[39;49;00m[30;43m)[39;49m[30;43m.[39;49m[30;43msuppressComposite[39;49m[30;43m)[39;49m
+[32m   3375[39m renderer.close_group([33m'[39m[33maxes[39m[33m'[39m)
+
+[36mFile [39m[32m~/miniconda3/envs/py.3.12.4/lib/python3.12/site-packages/matplotlib/image.py:133[39m, in [36m_draw_list_compositing_images[39m[34m(renderer, parent, artists, suppress_composite)[39m
+[32m    132[39m     [38;5;28;01mfor[39;00m a [38;5;129;01min[39;00m artists:
+[32m--> [39m[32m133[39m         [30;43ma[39;49m[30;43m.[39;49m[30;43mdraw[39;49m[30;43m([39;49m[30;43mrenderer[39;49m[30;43m)[39;49m
+[32m    134[39m [38;5;28;01melse[39;00m:
+[32m    135[39m     [38;5;66;03m# Composite any adjacent images together[39;00m
+
+[36mFile [39m[32m~/miniconda3/envs/py.3.12.4/lib/python3.12/site-packages/matplotlib/artist.py:71[39m, in [36mallow_rasterization.<locals>.draw_wrapper[39m[34m(artist, renderer)[39m
+[32m     69[39m         renderer.start_filter()
+[32m---> [39m[32m71[39m     [38;5;28;01mreturn[39;00m [30;43mdraw[39;49m[30;43m([39;49m[30;43martist[39;49m[30;43m,[39;49m[30;43m [39;49m[30;43mrenderer[39;49m[30;43m)[39;49m
+[32m     72[39m [38;5;28;01mfinally[39;00m:
+
+[36mFile [39m[32m~/miniconda3/envs/py.3.12.4/lib/python3.12/site-packages/mpl_toolkits/mplot3d/art3d.py:357[39m, in [36mLine3D.draw[39m[34m(self, renderer)[39m
+[32m    355[39m [38;5;129m@artist[39m.allow_rasterization
+[32m    356[39m [38;5;28;01mdef[39;00m[38;5;250m [39m[34mdraw[39m([38;5;28mself[39m, renderer):
+[32m--> [39m[32m357[39m     scale_mask = [30;43m_scale_invalid_mask[39;49m[30;43m([39;49m[30;43m*[39;49m[30;43mself[39;49m[30;43m.[39;49m[30;43m_verts3d[39;49m[30;43m,[39;49m[30;43m [39;49m[30;43mself[39;49m[30;43m.[39;49m[30;43maxes[39;49m[30;43m)[39;49m
+[32m    358[39m     [38;5;28;01mif[39;00m [38;5;28mself[39m._axlim_clip:
+
+[36mFile [39m[32m~/miniconda3/envs/py.3.12.4/lib/python3.12/site-packages/mpl_toolkits/mplot3d/art3d.py:119[39m, in [36m_scale_invalid_mask[39m[34m(xs, ys, zs, axes)[39m
+[32m    101[39m [38;5;250m[39m[33;03m"""[39;00m
+[32m    102[39m [33;03mReturn the mask of points whose coordinates are invalid for the axis[39;00m
+[32m    103[39m [33;03mscale they live on (e.g. <=0 on a log axis).[39;00m
+[32m   (...)[39m[32m    116[39m [33;03m    valid domain.[39;00m
+[32m    117[39m [33;03m"""[39;00m
+[32m    118[39m [38;5;28;01mreturn[39;00m np.logical_or.reduce((
+[32m--> [39m[32m119[39m     np.logical_not([30;43maxes[39;49m[30;43m.[39;49m[30;43mxaxis[39;49m[30;43m.[39;49m[30;43m_scale[39;49m[30;43m.[39;49m[30;43mval_in_range[39;49m[30;43m([39;49m[30;43mxs[39;49m[30;43m)[39;49m),
+[32m    120[39m     np.logical_not(axes.yaxis._scale.val_in_range(ys)),
+[32m    121[39m     np.logical_not(axes.zaxis._scale.val_in_range(zs))))
+
+[36mFile [39m[32m~/miniconda3/envs/py.3.12.4/lib/python3.12/site-packages/matplotlib/scale.py:229[39m, in [36mLinearScale.val_in_range[39m[34m(self, val)[39m
+[32m    228[39m arr = np.asarray(val)
+[32m--> [39m[32m229[39m result = [30;43mnp[39;49m[30;43m.[39;49m[30;43misfinite[39;49m[30;43m([39;49m[30;43marr[39;49m[30;43m)[39;49m
+[32m    230[39m [38;5;28;01mreturn[39;00m [38;5;28mbool[39m(result) [38;5;28;01mif[39;00m arr.ndim == [32m0[39m [38;5;28;01melse[39;00m result
+
+[31mTypeError[39m: ufunc 'isfinite' not supported for the input types, and the inputs could not be safely coerced to any supported types according to the casting rule ''safe''
+
+During handling of the above exception, another exception occurred:
+
+[31mCalledProcessError[39m                        Traceback (most recent call last)
+[36mCell[39m[36m [39m[32mIn[28][39m[32m, line 41[39m
+[32m     37[39m     [38;5;28;01mreturn[39;00m [arms]
+[32m     38[39m [38;5;66;03m# ---[39;00m
+[32m     39[39m 
+[32m     40[39m ani = animation.FuncAnimation(fig, update_lines, N,  interval=[32m1000[39m);
+[32m---> [39m[32m41[39m ani.save([33m"./images/flyball.gif"[39m,  writer=[33m'imagemagick'[39m, fps=[32m15[39m);
+[32m     42[39m display_gif([33m"./images/flyball.gif"[39m)
+
+[36mFile [39m[32m~/miniconda3/envs/py.3.12.4/lib/python3.12/site-packages/matplotlib/animation.py:1118[39m, in [36mAnimation.save[39m[34m(self, filename, writer, fps, dpi, codec, bitrate, extra_args, metadata, extra_anim, savefig_kwargs, progress_callback)[39m
+[32m   1113[39m     [38;5;28;01mreturn[39;00m a * np.array([r, g, b]) + [32m1[39m - a
+[32m   1115[39m [38;5;66;03m# canvas._is_saving = True makes the draw_event animation-starting[39;00m
+[32m   1116[39m [38;5;66;03m# callback a no-op; canvas.manager = None prevents resizing the GUI[39;00m
+[32m   1117[39m [38;5;66;03m# widget (both are likewise done in savefig()).[39;00m
+[32m-> [39m[32m1118[39m [38;5;28;01mwith[39;00m (writer.saving([38;5;28mself[39m._fig, filename, dpi),
+[32m   1119[39m       cbook._setattr_cm([38;5;28mself[39m._fig.canvas, _is_saving=[38;5;28;01mTrue[39;00m, manager=[38;5;28;01mNone[39;00m)):
+[32m   1120[39m     [38;5;28;01mif[39;00m [38;5;129;01mnot[39;00m writer._supports_transparency():
+[32m   1121[39m         facecolor = savefig_kwargs.get([33m'[39m[33mfacecolor[39m[33m'[39m,
+[32m   1122[39m                                        mpl.rcParams[[33m'[39m[33msavefig.facecolor[39m[33m'[39m])
+
+[36mFile [39m[32m~/miniconda3/envs/py.3.12.4/lib/python3.12/contextlib.py:158[39m, in [36m_GeneratorContextManager.__exit__[39m[34m(self, typ, value, traceback)[39m
+[32m    156[39m     value = typ()
+[32m    157[39m [38;5;28;01mtry[39;00m:
+[32m--> [39m[32m158[39m     [30;43mself[39;49m[30;43m.[39;49m[30;43mgen[39;49m[30;43m.[39;49m[30;43mthrow[39;49m[30;43m([39;49m[30;43mvalue[39;49m[30;43m)[39;49m
+[32m    159[39m [38;5;28;01mexcept[39;00m [38;5;167;01mStopIteration[39;00m [38;5;28;01mas[39;00m exc:
+[32m    160[39m     [38;5;66;03m# Suppress StopIteration *unless* it's the same exception that[39;00m
+[32m    161[39m     [38;5;66;03m# was passed to throw().  This prevents a StopIteration[39;00m
+[32m    162[39m     [38;5;66;03m# raised inside the "with" statement from being suppressed.[39;00m
+[32m    163[39m     [38;5;28;01mreturn[39;00m exc [38;5;129;01mis[39;00m [38;5;129;01mnot[39;00m value
+
+[36mFile [39m[32m~/miniconda3/envs/py.3.12.4/lib/python3.12/site-packages/matplotlib/animation.py:230[39m, in [36mAbstractMovieWriter.saving[39m[34m(self, fig, outfile, dpi, *args, **kwargs)[39m
+[32m    228[39m     [38;5;28;01myield[39;00m [38;5;28mself[39m
+[32m    229[39m [38;5;28;01mfinally[39;00m:
+[32m--> [39m[32m230[39m     [30;43mself[39;49m[30;43m.[39;49m[30;43mfinish[39;49m[30;43m([39;49m[30;43m)[39;49m
+
+[36mFile [39m[32m~/miniconda3/envs/py.3.12.4/lib/python3.12/site-packages/matplotlib/animation.py:347[39m, in [36mMovieWriter.finish[39m[34m(self)[39m
+[32m    343[39m     _log.log(
+[32m    344[39m         logging.WARNING [38;5;28;01mif[39;00m [38;5;28mself[39m._proc.returncode [38;5;28;01melse[39;00m logging.DEBUG,
+[32m    345[39m         [33m"[39m[33mMovieWriter stderr:[39m[38;5;130;01m\n[39;00m[38;5;132;01m%s[39;00m[33m"[39m, err)
+[32m    346[39m [38;5;28;01mif[39;00m [38;5;28mself[39m._proc.returncode:
+[32m--> [39m[32m347[39m     [38;5;28;01mraise[39;00m subprocess.CalledProcessError(
+[32m    348[39m         [38;5;28mself[39m._proc.returncode, [38;5;28mself[39m._proc.args, out, err)
+
+[31mCalledProcessError[39m: Command '['convert', '-size', '640x480', '-depth', '8', '-delay', '6.666666666666667', '-loop', '0', 'rgba:-', '-layers', 'OptimizePlus', './images/flyball.gif']' returned non-zero exit status 1.
+
