@@ -252,6 +252,7 @@
 <li class="toctree-l1"><a class="reference internal" href="digital-pid-2.html">Digital PID Control - Part 2</a></li>
 <li class="toctree-l1"><a class="reference internal" href="digital-filter.html">Digital Low-Pass Filter</a></li>
 <li class="toctree-l1"><a class="reference internal" href="digital-filter-2.html">Digital High-Pass Filter</a></li>
+<li class="toctree-l1"><a class="reference internal" href="butterworth-coefficients.html">Butterworth Coefficient Table</a></li>
 </ul>
 <p aria-level="2" class="caption" role="heading"><span class="caption-text">Interactive Sessions</span></p>
 <ul class="nav bd-sidenav">
@@ -557,8 +558,19 @@ F(s)=\mathcal{L}\{f(t)\}=\int_0^\infty f(t)e^{-st}\,dt.
     <span class="n">exp</span><span class="p">,</span> <span class="n">sin</span><span class="p">,</span> <span class="n">cos</span><span class="p">,</span> <span class="n">sinh</span><span class="p">,</span> <span class="n">cosh</span><span class="p">,</span> <span class="n">gamma</span><span class="p">,</span> <span class="n">factorial</span><span class="p">,</span>
     <span class="n">Heaviside</span><span class="p">,</span> <span class="n">DiracDelta</span><span class="p">,</span> <span class="n">laplace_transform</span><span class="p">,</span> <span class="n">latex</span><span class="p">,</span> <span class="n">simplify</span><span class="p">,</span>
 <span class="p">)</span>
-
-<span class="c1"># Symbols and generic functions</span>
+</pre></div>
+</div>
+</div>
+</details>
+</div>
+<div class="cell tag_hide-input docutils container">
+<details class="admonition hide above-input">
+<summary aria-label="Toggle hidden content">
+<p class="collapsed admonition-title">Show code cell source</p>
+<p class="expanded admonition-title">Hide code cell source</p>
+</summary>
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Symbols and generic functions</span>
 <span class="n">t</span><span class="p">,</span> <span class="n">s</span> <span class="o">=</span> <span class="n">symbols</span><span class="p">(</span><span class="s1">'t s'</span><span class="p">,</span> <span class="n">positive</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 <span class="n">a</span><span class="p">,</span> <span class="n">b</span> <span class="o">=</span> <span class="n">symbols</span><span class="p">(</span><span class="s1">'a b'</span><span class="p">,</span> <span class="n">real</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 <span class="n">c</span> <span class="o">=</span> <span class="n">symbols</span><span class="p">(</span><span class="s1">'c'</span><span class="p">,</span> <span class="n">positive</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
@@ -566,12 +578,28 @@ F(s)=\mathcal{L}\{f(t)\}=\int_0^\infty f(t)e^{-st}\,dt.
 <span class="n">k</span> <span class="o">=</span> <span class="n">symbols</span><span class="p">(</span><span class="s1">'k'</span><span class="p">,</span> <span class="n">integer</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">nonnegative</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 <span class="n">tau</span> <span class="o">=</span> <span class="n">symbols</span><span class="p">(</span><span class="s1">'tau'</span><span class="p">,</span> <span class="n">positive</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 <span class="n">f</span><span class="p">,</span> <span class="n">g</span><span class="p">,</span> <span class="n">F</span><span class="p">,</span> <span class="n">G</span> <span class="o">=</span> <span class="p">(</span><span class="n">Function</span><span class="p">(</span><span class="n">name</span><span class="p">)</span> <span class="k">for</span> <span class="n">name</span> <span class="ow">in</span> <span class="p">(</span><span class="s1">'f'</span><span class="p">,</span> <span class="s1">'g'</span><span class="p">,</span> <span class="s1">'F'</span><span class="p">,</span> <span class="s1">'G'</span><span class="p">))</span>
-
-<span class="c1"># SymPy's standard one-sided Laplace transform (without convergence data)</span>
+</pre></div>
+</div>
+</div>
+</details>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># SymPy's standard one-sided Laplace transform (without convergence data)</span>
 <span class="k">def</span><span class="w"> </span><span class="nf">LT</span><span class="p">(</span><span class="n">expr</span><span class="p">):</span>
     <span class="k">return</span> <span class="n">laplace_transform</span><span class="p">(</span><span class="n">expr</span><span class="p">,</span> <span class="n">t</span><span class="p">,</span> <span class="n">s</span><span class="p">,</span> <span class="n">noconds</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-
-<span class="c1"># Present symbolic functions in the compact notation used in the source table.</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell tag_hide-input docutils container">
+<details class="admonition hide above-input">
+<summary aria-label="Toggle hidden content">
+<p class="collapsed admonition-title">Show code cell source</p>
+<p class="expanded admonition-title">Hide code cell source</p>
+</summary>
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Present symbolic functions in the compact notation used in the source table.</span>
 <span class="k">def</span><span class="w"> </span><span class="nf">fmt</span><span class="p">(</span><span class="n">expr</span><span class="p">):</span>
     <span class="k">return</span> <span class="p">(</span><span class="n">latex</span><span class="p">(</span><span class="n">expr</span><span class="p">)</span>
         <span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="sa">r</span><span class="s1">'f{\left(t \right)}'</span><span class="p">,</span> <span class="sa">r</span><span class="s1">'f(t)'</span><span class="p">)</span>
@@ -634,8 +662,10 @@ F(s)=\mathcal{L}\{f(t)\}=\int_0^\infty f(t)e^{-st}\,dt.
 <span class="c1"># Render a Markdown table with MathJax math expressions.</span>
 <span class="n">header</span> <span class="o">=</span> <span class="p">[</span><span class="sa">r</span><span class="s1">'| No. | $f(t)=\mathcal</span><span class="si">{L}</span><span class="s1">^{-1}\{F(s)\}$ | $F(s)=\mathcal</span><span class="si">{L}</span><span class="s1">\{f(t)\}$ |'</span><span class="p">,</span>
           <span class="s1">'|:---:|:---:|:---:|'</span><span class="p">]</span>
+
 <span class="n">lines</span> <span class="o">=</span> <span class="p">[</span><span class="sa">f</span><span class="s2">"| </span><span class="si">{</span><span class="n">row</span><span class="p">[</span><span class="s1">'number'</span><span class="p">]</span><span class="si">}</span><span class="s2"> | $</span><span class="si">{</span><span class="n">row</span><span class="p">[</span><span class="s1">'t_tex'</span><span class="p">]</span><span class="si">}</span><span class="s2">$ | $</span><span class="si">{</span><span class="n">row</span><span class="p">[</span><span class="s1">'s_tex'</span><span class="p">]</span><span class="si">}</span><span class="s2">$ |"</span> <span class="k">for</span> <span class="n">row</span> <span class="ow">in</span> <span class="n">rows</span><span class="p">]</span>
 <span class="n">laplace_table_markdown</span> <span class="o">=</span> <span class="s1">'</span><span class="se">\n</span><span class="s1">'</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">header</span> <span class="o">+</span> <span class="n">lines</span><span class="p">)</span>
+
 <span class="n">display</span><span class="p">(</span><span class="n">Markdown</span><span class="p">(</span><span class="n">laplace_table_markdown</span><span class="p">))</span>
 </pre></div>
 </div>
@@ -801,10 +831,10 @@ F(s)=\mathcal{L}\{f(t)\}=\int_0^\infty f(t)e^{-st}\,dt.
 <div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>time shift: PASS
 frequency shift: PASS
 time scaling: PASS
+convolution: PASS
 </pre></div>
 </div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>convolution: PASS
-second derivative: PASS
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>second derivative: PASS
 multiplication by t^2: PASS
 </pre></div>
 </div>

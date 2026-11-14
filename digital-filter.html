@@ -249,10 +249,10 @@
 <li class="toctree-l1"><a class="reference internal" href="pid-so.html">PID Control of a Second Order System</a></li>
 <li class="toctree-l1"><a class="reference internal" href="pid-ss.html">PID-Control (with Derivative Filter) in State Space Format</a></li>
 <li class="toctree-l1"><a class="reference internal" href="digital-pid.html">Digital PID Control - Part 1</a></li>
-<li class="toctree-l1"><a class="reference internal" href="butterworth-coefficients.html">Butterworth Coefficient Table</a></li>
 <li class="toctree-l1"><a class="reference internal" href="digital-pid-2.html">Digital PID Control - Part 2</a></li>
 <li class="toctree-l1 current active"><a class="current reference internal" href="#">Digital Low-Pass Filter</a></li>
 <li class="toctree-l1"><a class="reference internal" href="digital-filter-2.html">Digital High-Pass Filter</a></li>
+<li class="toctree-l1"><a class="reference internal" href="butterworth-coefficients.html">Butterworth Coefficient Table</a></li>
 </ul>
 <p aria-level="2" class="caption" role="heading"><span class="caption-text">Interactive Sessions</span></p>
 <ul class="nav bd-sidenav">
@@ -530,6 +530,7 @@
 </li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#second-order-low-pass-butterworth-filter">Second Order Low-Pass Butterworth Filter</a><ul class="nav section-nav flex-column">
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id1">Discretization with Bilinear Transformation</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#automatic-c-code-generation">Automatic C-Code Generation</a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#implementation-in-simulink">Implementation in Simulink</a></li>
 </ul>
 </li>
@@ -766,6 +767,90 @@
 </div>
 </div>
 </section>
+<section id="automatic-c-code-generation">
+<h3>Automatic C-Code Generation<a class="headerlink" href="#automatic-c-code-generation" title="Link to this heading">#</a></h3>
+<ol class="arabic simple">
+<li><p>Substitute <span class="math notranslate nohighlight">\(q=T_s\omega_c\)</span>
+The difference equation becomes</p></li>
+</ol>
+<div class="math notranslate nohighlight">
+\[
+\boxed{
+y_k=\frac{
+q^2(x_k+2x_{k-1}+x_{k-2})
++(8-2q^2)y_{k-1}
+-(q^2-2\sqrt{2}q+4)y_{k-2}
+}{
+q^2+2\sqrt{2}q+4
+}}
+\]</div>
+<ol class="arabic simple" start="2">
+<li><p>Generate the C++ expression directly
+Immediately after your existing eq cell, we only need:</p></li>
+</ol>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">q</span><span class="p">,</span> <span class="n">q2</span> <span class="o">=</span> <span class="n">symbols</span><span class="p">(</span><span class="s1">'q q2'</span><span class="p">,</span> <span class="n">positive</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+<span class="c1"># Solve our original difference equation</span>
+<span class="n">yk</span> <span class="o">=</span> <span class="n">solve</span><span class="p">(</span><span class="n">eq</span><span class="p">,</span> <span class="n">y0</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
+
+<span class="c1"># Substitute q = Ts*wc</span>
+<span class="n">yk</span> <span class="o">=</span> <span class="n">cancel</span><span class="p">(</span><span class="n">yk</span><span class="o">.</span><span class="n">subs</span><span class="p">(</span><span class="n">Ts</span><span class="p">,</span> <span class="n">q</span><span class="o">/</span><span class="n">wc</span><span class="p">))</span>
+
+<span class="c1"># Replace q**2 with q2</span>
+<span class="n">yk</span> <span class="o">=</span> <span class="n">yk</span><span class="o">.</span><span class="n">subs</span><span class="p">(</span><span class="n">q</span><span class="o">**</span><span class="mi">2</span><span class="p">,</span> <span class="n">q2</span><span class="p">)</span>
+
+<span class="c1"># Rename variables for C++</span>
+<span class="n">names</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="n">x0</span><span class="p">:</span> <span class="n">Symbol</span><span class="p">(</span><span class="s1">'x0'</span><span class="p">),</span>
+    <span class="n">x1</span><span class="p">:</span> <span class="n">Symbol</span><span class="p">(</span><span class="s1">'x1'</span><span class="p">),</span>
+    <span class="n">x2</span><span class="p">:</span> <span class="n">Symbol</span><span class="p">(</span><span class="s1">'x2'</span><span class="p">),</span>
+    <span class="n">y1</span><span class="p">:</span> <span class="n">Symbol</span><span class="p">(</span><span class="s1">'y1'</span><span class="p">),</span>
+    <span class="n">y2</span><span class="p">:</span> <span class="n">Symbol</span><span class="p">(</span><span class="s1">'y2'</span><span class="p">)</span>
+<span class="p">}</span>
+
+<span class="n">sample</span> <span class="o">=</span> <span class="n">ccode</span><span class="p">(</span><span class="n">yk</span><span class="o">.</span><span class="n">xreplace</span><span class="p">(</span><span class="n">names</span><span class="p">))</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="s2">"y0 ="</span><span class="p">,</span> <span class="n">sample</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>y0 = (2*M_SQRT2*sqrt(q2)*y2 + q2*x0 + 2*q2*x1 + q2*x2 - 2*q2*y1 - q2*y2 + 8*y1 - 4*y2)/(2*M_SQRT2*sqrt(q2) + q2 + 4)
+</pre></div>
+</div>
+</div>
+</div>
+<p>After that, we can create a class:</p>
+<div class="highlight-c notranslate"><div class="highlight"><pre><span></span><span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;math.h&gt;</span>
+
+<span class="n">class</span><span class="w"> </span><span class="n">ButterworthLPF2</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="kt">float</span><span class="w"> </span><span class="n">q</span><span class="p">,</span><span class="w"> </span><span class="n">q2</span><span class="p">;</span>
+<span class="w">    </span><span class="kt">float</span><span class="w"> </span><span class="n">x1</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="p">,</span><span class="w"> </span><span class="n">x2</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span>
+<span class="w">    </span><span class="kt">float</span><span class="w"> </span><span class="n">y1</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="p">,</span><span class="w"> </span><span class="n">y2</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span>
+
+<span class="n">public</span><span class="o">:</span>
+<span class="w">    </span><span class="kt">void</span><span class="w"> </span><span class="n">configure</span><span class="p">(</span><span class="kt">float</span><span class="w"> </span><span class="n">Ts</span><span class="p">,</span><span class="w"> </span><span class="kt">float</span><span class="w"> </span><span class="n">wc</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="n">q</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">Ts</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">wc</span><span class="p">;</span>
+<span class="w">        </span><span class="n">q2</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">q</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">q</span><span class="p">;</span>
+<span class="w">    </span><span class="p">}</span>
+
+<span class="w">    </span><span class="kt">float</span><span class="w"> </span><span class="n">step</span><span class="p">(</span><span class="kt">float</span><span class="w"> </span><span class="n">x0</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="k">const</span><span class="w"> </span><span class="kt">float</span><span class="w"> </span><span class="n">y0</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">(</span><span class="mi">2</span><span class="o">*</span><span class="n">M_SQRT2</span><span class="o">*</span><span class="n">sqrt</span><span class="p">(</span><span class="n">q2</span><span class="p">)</span><span class="o">*</span><span class="n">y2</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">q2</span><span class="o">*</span><span class="n">x0</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="mi">2</span><span class="o">*</span><span class="n">q2</span><span class="o">*</span><span class="n">x1</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">q2</span><span class="o">*</span><span class="n">x2</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="mi">2</span><span class="o">*</span><span class="n">q2</span><span class="o">*</span><span class="n">y1</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="n">q2</span><span class="o">*</span><span class="n">y2</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="mi">8</span><span class="o">*</span><span class="n">y1</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="mi">4</span><span class="o">*</span><span class="n">y2</span><span class="p">)</span><span class="o">/</span><span class="p">(</span><span class="mi">2</span><span class="o">*</span><span class="n">M_SQRT2</span><span class="o">*</span><span class="n">sqrt</span><span class="p">(</span><span class="n">q2</span><span class="p">)</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">q2</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="mi">4</span><span class="p">)</span>
+
+<span class="w">        </span><span class="c1">// Memorize necessary past values</span>
+<span class="w">        </span><span class="n">x2</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">x1</span><span class="p">;</span>
+<span class="w">        </span><span class="n">x1</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">x0</span><span class="p">;</span>
+<span class="w">        </span><span class="n">y2</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">y1</span><span class="p">;</span>
+<span class="w">        </span><span class="n">y1</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">y0</span><span class="p">;</span>
+
+<span class="w">        </span><span class="k">return</span><span class="w"> </span><span class="n">y0</span><span class="p">;</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="p">};</span>
+</pre></div>
+</div>
+</section>
 <section id="implementation-in-simulink">
 <h3>Implementation in Simulink<a class="headerlink" href="#implementation-in-simulink" title="Link to this heading">#</a></h3>
 <p><a class="reference download internal" download="" href="_downloads/77329c6b8f20cca30d0f73df4d89e864/lpfbuttter2nd.slx"><span class="xref download myst">Download the Simulink file here (R2024b).</span></a></p>
@@ -872,6 +957,7 @@
 </li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#second-order-low-pass-butterworth-filter">Second Order Low-Pass Butterworth Filter</a><ul class="nav section-nav flex-column">
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id1">Discretization with Bilinear Transformation</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#automatic-c-code-generation">Automatic C-Code Generation</a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#implementation-in-simulink">Implementation in Simulink</a></li>
 </ul>
 </li>

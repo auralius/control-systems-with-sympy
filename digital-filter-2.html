@@ -65,7 +65,7 @@
     <script>DOCUMENTATION_OPTIONS.search_as_you_type = false;</script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
-    <link rel="next" title="Interactive Sessions with HTML/JavaScript" href="interactives.html" />
+    <link rel="next" title="Butterworth Coefficient Table" href="butterworth-coefficients.html" />
     <link rel="prev" title="Digital Low-Pass Filter" href="digital-filter.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
@@ -249,10 +249,10 @@
 <li class="toctree-l1"><a class="reference internal" href="pid-so.html">PID Control of a Second Order System</a></li>
 <li class="toctree-l1"><a class="reference internal" href="pid-ss.html">PID-Control (with Derivative Filter) in State Space Format</a></li>
 <li class="toctree-l1"><a class="reference internal" href="digital-pid.html">Digital PID Control - Part 1</a></li>
-<li class="toctree-l1"><a class="reference internal" href="butterworth-coefficients.html">Butterworth Coefficient Table</a></li>
 <li class="toctree-l1"><a class="reference internal" href="digital-pid-2.html">Digital PID Control - Part 2</a></li>
 <li class="toctree-l1"><a class="reference internal" href="digital-filter.html">Digital Low-Pass Filter</a></li>
 <li class="toctree-l1 current active"><a class="current reference internal" href="#">Digital High-Pass Filter</a></li>
+<li class="toctree-l1"><a class="reference internal" href="butterworth-coefficients.html">Butterworth Coefficient Table</a></li>
 </ul>
 <p aria-level="2" class="caption" role="heading"><span class="caption-text">Interactive Sessions</span></p>
 <ul class="nav bd-sidenav">
@@ -531,6 +531,10 @@
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#second-order-high-pass-butterworth-filter">Second Order High-Pass Butterworth Filter</a><ul class="nav section-nav flex-column">
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id1">The Complementary Form</a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#standard-form">Standard Form</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#automatic-c-code-generation">Automatic C-Code Generation</a><ul class="nav section-nav flex-column">
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#verification-with-scipy">Verification with SciPy</a></li>
+</ul>
+</li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#implementation-in-simulink">Implementation in Simulink</a></li>
 </ul>
 </li>
@@ -974,6 +978,169 @@ To obtain <code class="docutils literal notranslate"><span class="pre">dB/decade
 </div>
 </div>
 </section>
+<section id="automatic-c-code-generation">
+<h3>Automatic C-Code Generation<a class="headerlink" href="#automatic-c-code-generation" title="Link to this heading">#</a></h3>
+<p>We can generate the C++ implementation <strong>directly from our final difference equation</strong>. There is no need to rewrite the equation or enter the filter coefficients manually.</p>
+<p>Let <span class="math notranslate nohighlight">\(q=T_s\omega_c\)</span>. Solving the equation for the current output gives</p>
+<div class="math notranslate nohighlight">
+\[
+\boxed{y_k=\frac{
+4(x_k-2x_{k-1}+x_{k-2})
++(8-2q^2)y_{k-1}
+-(q^2-2\sqrt{2}q+4)y_{k-2}
+}{q^2+2\sqrt{2}q+4}}
+\]</div>
+<p>This time the input term is <span class="math notranslate nohighlight">\(4(x_k-2x_{k-1}+x_{k-2})\)</span>, rather than the low-pass expression <span class="math notranslate nohighlight">\(q^2(x_k+2x_{k-1}+x_{k-2})\)</span>. The denominator is the same as in the second-order low-pass filter.</p>
+<p>First, let SymPy solve <strong>our original</strong> <code class="docutils literal notranslate"><span class="pre">eq</span></code> for <span class="math notranslate nohighlight">\(y_k\)</span>, substitute <span class="math notranslate nohighlight">\(q\)</span>, and generate its C expression.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">q</span><span class="p">,</span> <span class="n">q2</span> <span class="o">=</span> <span class="n">symbols</span><span class="p">(</span><span class="s1">'q q2'</span><span class="p">,</span> <span class="n">positive</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+<span class="c1"># Solve the difference equation derived above (not a manually entered formula).</span>
+<span class="n">yk</span> <span class="o">=</span> <span class="n">solve</span><span class="p">(</span><span class="n">eq</span><span class="p">,</span> <span class="n">y0</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
+
+<span class="c1"># Substitute q = Ts*wc, then precompute q**2 in configure().</span>
+<span class="n">yk</span> <span class="o">=</span> <span class="n">cancel</span><span class="p">(</span><span class="n">yk</span><span class="o">.</span><span class="n">subs</span><span class="p">(</span><span class="n">Ts</span><span class="p">,</span> <span class="n">q</span><span class="o">/</span><span class="n">wc</span><span class="p">))</span>
+<span class="n">yk</span> <span class="o">=</span> <span class="n">yk</span><span class="o">.</span><span class="n">xreplace</span><span class="p">({</span><span class="n">q</span><span class="o">**</span><span class="mi">2</span><span class="p">:</span> <span class="n">q2</span><span class="p">})</span>
+<span class="n">mprintb</span><span class="p">(</span><span class="n">latex</span><span class="p">(</span><span class="n">Eq</span><span class="p">(</span><span class="n">y0</span><span class="p">,</span> <span class="n">yk</span><span class="p">)))</span>
+
+<span class="c1"># Rename mathematical subscripts to ordinary C/C++ variable names.</span>
+<span class="n">names</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="n">x0</span><span class="p">:</span> <span class="n">Symbol</span><span class="p">(</span><span class="s1">'x0'</span><span class="p">),</span> <span class="n">x1</span><span class="p">:</span> <span class="n">Symbol</span><span class="p">(</span><span class="s1">'x1'</span><span class="p">),</span> <span class="n">x2</span><span class="p">:</span> <span class="n">Symbol</span><span class="p">(</span><span class="s1">'x2'</span><span class="p">),</span>
+    <span class="n">y1</span><span class="p">:</span> <span class="n">Symbol</span><span class="p">(</span><span class="s1">'y1'</span><span class="p">),</span> <span class="n">y2</span><span class="p">:</span> <span class="n">Symbol</span><span class="p">(</span><span class="s1">'y2'</span><span class="p">)</span>
+<span class="p">}</span>
+
+<span class="n">sample</span> <span class="o">=</span> <span class="n">ccode</span><span class="p">(</span><span class="n">yk</span><span class="o">.</span><span class="n">xreplace</span><span class="p">(</span><span class="n">names</span><span class="p">))</span>
+<span class="nb">print</span><span class="p">(</span><span class="s1">'const float y0 = '</span> <span class="o">+</span> <span class="n">sample</span> <span class="o">+</span> <span class="s1">';'</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_latex math notranslate nohighlight">
+\[\displaystyle \boxed{y_{k} = \frac{2 \sqrt{2} q y_{k-2} - 2 q_{2} y_{k-1} - q_{2} y_{k-2} + 4 x_{k} - 8 x_{k-1} + 4 x_{k-2} + 8 y_{k-1} - 4 y_{k-2}}{2 \sqrt{2} q + q_{2} + 4}}\]</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>const float y0 = (2*M_SQRT2*q*y2 - 2*q2*y1 - q2*y2 + 4*x0 - 8*x1 + 4*x2 + 8*y1 - 4*y2)/(2*M_SQRT2*q + q2 + 4);
+</pre></div>
+</div>
+</div>
+</div>
+<p>We can now insert the generated <code class="docutils literal notranslate"><span class="pre">sample</span></code> expression into an Arduino-compatible class. The class only handles the previous input/output samples; <strong>the filter mathematics comes from SymPy</strong>.</p>
+<p>The header is generated automatically as <code class="docutils literal notranslate"><span class="pre">butterworth_hpf2.h</span></code>. As in the low-pass example, <code class="docutils literal notranslate"><span class="pre">configure(Ts,</span> <span class="pre">wc)</span></code> expects the sampling period in seconds and the <strong>analog</strong> cutoff angular frequency in rad/s.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">pathlib</span><span class="w"> </span><span class="kn">import</span> <span class="n">Path</span>
+
+<span class="n">header</span> <span class="o">=</span> <span class="sa">r</span><span class="s1">'''#pragma once</span>
+
+<span class="s1">class ButterworthHPF2 {</span>
+<span class="s1">    float q = 0.0f, q2 = 0.0f;</span>
+<span class="s1">    float x1 = 0.0f, x2 = 0.0f;</span>
+<span class="s1">    float y1 = 0.0f, y2 = 0.0f;</span>
+
+<span class="s1">public:</span>
+<span class="s1">    void configure(float Ts, float wc) {</span>
+<span class="s1">        q = Ts * wc;</span>
+<span class="s1">        q2 = q * q;</span>
+<span class="s1">        reset();</span>
+<span class="s1">    }</span>
+
+<span class="s1">    void reset() {</span>
+<span class="s1">        x1 = x2 = 0.0f;</span>
+<span class="s1">        y1 = y2 = 0.0f;</span>
+<span class="s1">    }</span>
+
+<span class="s1">    float step(float x0) {</span>
+<span class="s1">        const float y0 = __SAMPLE__;</span>
+<span class="s1">        x2 = x1; x1 = x0;</span>
+<span class="s1">        y2 = y1; y1 = y0;</span>
+<span class="s1">        return y0;</span>
+<span class="s1">    }</span>
+<span class="s1">};</span>
+<span class="s1">'''</span>
+
+<span class="c1"># SymPy may emit M_SQRT2; use a float literal for portable Arduino C++.</span>
+<span class="n">header</span> <span class="o">=</span> <span class="n">header</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">'__SAMPLE__'</span><span class="p">,</span> <span class="n">sample</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">'M_SQRT2'</span><span class="p">,</span> <span class="s1">'1.4142135623730951f'</span><span class="p">))</span>
+<span class="n">Path</span><span class="p">(</span><span class="s1">'butterworth_hpf2.h'</span><span class="p">)</span><span class="o">.</span><span class="n">write_text</span><span class="p">(</span><span class="n">header</span><span class="p">,</span> <span class="n">encoding</span><span class="o">=</span><span class="s1">'utf-8'</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">header</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>#pragma once
+
+class ButterworthHPF2 {
+    float q = 0.0f, q2 = 0.0f;
+    float x1 = 0.0f, x2 = 0.0f;
+    float y1 = 0.0f, y2 = 0.0f;
+
+public:
+    void configure(float Ts, float wc) {
+        q = Ts * wc;
+        q2 = q * q;
+        reset();
+    }
+
+    void reset() {
+        x1 = x2 = 0.0f;
+        y1 = y2 = 0.0f;
+    }
+
+    float step(float x0) {
+        const float y0 = (2*1.4142135623730951f*q*y2 - 2*q2*y1 - q2*y2 + 4*x0 - 8*x1 + 4*x2 + 8*y1 - 4*y2)/(2*1.4142135623730951f*q + q2 + 4);
+        x2 = x1; x1 = x0;
+        y2 = y1; y1 = y0;
+        return y0;
+    }
+};
+</pre></div>
+</div>
+</div>
+</div>
+<section id="verification-with-scipy">
+<h4>Verification with SciPy<a class="headerlink" href="#verification-with-scipy" title="Link to this heading">#</a></h4>
+<p>As a final check, we compare the coefficients obtained <strong>from our SymPy output equation</strong> against SciPy’s standard digital second-order Butterworth HPF. SciPy specifies the <strong>digital</strong> cutoff frequency in Hz, so the analog cutoff supplied to our Tustin equation must first be prewarped:</p>
+<div class="math notranslate nohighlight">
+\[\omega_c=2f_s\tan\!\left(\frac{\pi f_c}{f_s}\right).\]</div>
+<p>For example, choose <span class="math notranslate nohighlight">\(f_s=1000\)</span> Hz and <span class="math notranslate nohighlight">\(f_c=40\)</span> Hz. The five coefficients should agree to floating-point precision.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">scipy.signal</span><span class="w"> </span><span class="kn">import</span> <span class="n">butter</span>
+
+<span class="n">fs</span><span class="p">,</span> <span class="n">fc</span> <span class="o">=</span> <span class="mf">1000.0</span><span class="p">,</span> <span class="mf">40.0</span>
+<span class="n">q_value</span> <span class="o">=</span> <span class="mi">2</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">tan</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">pi</span><span class="o">*</span><span class="n">fc</span><span class="o">/</span><span class="n">fs</span><span class="p">)</span>
+<span class="n">expr</span> <span class="o">=</span> <span class="n">yk</span><span class="o">.</span><span class="n">subs</span><span class="p">({</span><span class="n">q</span><span class="p">:</span> <span class="n">q_value</span><span class="p">,</span> <span class="n">q2</span><span class="p">:</span> <span class="n">q_value</span><span class="o">**</span><span class="mi">2</span><span class="p">})</span>
+
+<span class="c1"># A linear difference equation: differentiate to read off the coefficients.</span>
+<span class="n">b_sym</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="nb">float</span><span class="p">(</span><span class="n">diff</span><span class="p">(</span><span class="n">expr</span><span class="p">,</span> <span class="n">xk</span><span class="p">))</span> <span class="k">for</span> <span class="n">xk</span> <span class="ow">in</span> <span class="p">(</span><span class="n">x0</span><span class="p">,</span> <span class="n">x1</span><span class="p">,</span> <span class="n">x2</span><span class="p">)])</span>
+<span class="n">a_sym</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mf">1.0</span><span class="p">]</span> <span class="o">+</span> <span class="p">[</span><span class="o">-</span><span class="nb">float</span><span class="p">(</span><span class="n">diff</span><span class="p">(</span><span class="n">expr</span><span class="p">,</span> <span class="n">yk_old</span><span class="p">))</span> <span class="k">for</span> <span class="n">yk_old</span> <span class="ow">in</span> <span class="p">(</span><span class="n">y1</span><span class="p">,</span> <span class="n">y2</span><span class="p">)])</span>
+<span class="n">b_ref</span><span class="p">,</span> <span class="n">a_ref</span> <span class="o">=</span> <span class="n">butter</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="n">fc</span><span class="p">,</span> <span class="n">fs</span><span class="o">=</span><span class="n">fs</span><span class="p">,</span> <span class="n">btype</span><span class="o">=</span><span class="s1">'highpass'</span><span class="p">,</span> <span class="n">output</span><span class="o">=</span><span class="s1">'ba'</span><span class="p">)</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="s1">'           SymPy/Tustin      SciPy/butter'</span><span class="p">)</span>
+<span class="k">for</span> <span class="n">label</span><span class="p">,</span> <span class="n">ours</span><span class="p">,</span> <span class="n">reference</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">((</span><span class="s1">'b0'</span><span class="p">,</span><span class="s1">'b1'</span><span class="p">,</span><span class="s1">'b2'</span><span class="p">,</span><span class="s1">'a0'</span><span class="p">,</span><span class="s1">'a1'</span><span class="p">,</span><span class="s1">'a2'</span><span class="p">),</span>
+                                  <span class="n">np</span><span class="o">.</span><span class="n">r_</span><span class="p">[</span><span class="n">b_sym</span><span class="p">,</span><span class="n">a_sym</span><span class="p">],</span> <span class="n">np</span><span class="o">.</span><span class="n">r_</span><span class="p">[</span><span class="n">b_ref</span><span class="p">,</span><span class="n">a_ref</span><span class="p">]):</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">'</span><span class="si">{</span><span class="n">label</span><span class="si">:</span><span class="s1">&gt;2</span><span class="si">}</span><span class="s1">: </span><span class="si">{</span><span class="n">ours</span><span class="si">:</span><span class="s1"> .12f</span><span class="si">}</span><span class="s1">   </span><span class="si">{</span><span class="n">reference</span><span class="si">:</span><span class="s1"> .12f</span><span class="si">}</span><span class="s1">'</span><span class="p">)</span>
+
+<span class="k">assert</span> <span class="n">np</span><span class="o">.</span><span class="n">allclose</span><span class="p">(</span><span class="n">b_sym</span><span class="p">,</span> <span class="n">b_ref</span><span class="p">,</span> <span class="n">atol</span><span class="o">=</span><span class="mf">1e-12</span><span class="p">,</span> <span class="n">rtol</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+<span class="k">assert</span> <span class="n">np</span><span class="o">.</span><span class="n">allclose</span><span class="p">(</span><span class="n">a_sym</span><span class="p">,</span> <span class="n">a_ref</span><span class="p">,</span> <span class="n">atol</span><span class="o">=</span><span class="mf">1e-12</span><span class="p">,</span> <span class="n">rtol</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s1">'PASS: the HPF coefficients agree with SciPy.'</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>           SymPy/Tustin      SciPy/butter
+b0:  0.837089190566    0.837089190566
+b1: -1.674178381133   -1.674178381133
+b2:  0.837089190566    0.837089190566
+a0:  1.000000000000    1.000000000000
+a1: -1.647459981077   -1.647459981077
+a2:  0.700896781188    0.700896781188
+PASS: the HPF coefficients agree with SciPy.
+</pre></div>
+</div>
+</div>
+</div>
+</section>
+</section>
 <section id="implementation-in-simulink">
 <h3>Implementation in Simulink<a class="headerlink" href="#implementation-in-simulink" title="Link to this heading">#</a></h3>
 <div class="highlight-octave notranslate"><div class="highlight"><pre><span></span><span class="k">function</span><span class="w"> </span>y<span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="nf">HPF</span><span class="p">(</span>y1, y2, x0, x1, x2, wc, Ts<span class="p">)</span>
@@ -1046,11 +1213,11 @@ To obtain <code class="docutils literal notranslate"><span class="pre">dB/decade
       </div>
     </a>
     <a class="right-next"
-       href="interactives.html"
+       href="butterworth-coefficients.html"
        title="next page">
       <div class="prev-next-info">
         <p class="prev-next-subtitle">next</p>
-        <p class="prev-next-title">Interactive Sessions with HTML/JavaScript</p>
+        <p class="prev-next-title">Butterworth Coefficient Table</p>
       </div>
       <i class="fa-solid fa-angle-right"></i>
     </a>
@@ -1080,6 +1247,10 @@ To obtain <code class="docutils literal notranslate"><span class="pre">dB/decade
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#second-order-high-pass-butterworth-filter">Second Order High-Pass Butterworth Filter</a><ul class="nav section-nav flex-column">
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id1">The Complementary Form</a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#standard-form">Standard Form</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#automatic-c-code-generation">Automatic C-Code Generation</a><ul class="nav section-nav flex-column">
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#verification-with-scipy">Verification with SciPy</a></li>
+</ul>
+</li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#implementation-in-simulink">Implementation in Simulink</a></li>
 </ul>
 </li>

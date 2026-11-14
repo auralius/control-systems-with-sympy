@@ -1,0 +1,111 @@
+Traceback (most recent call last):
+  File "/home/auralius/miniconda3/envs/py.3.12.4/lib/python3.12/site-packages/jupyter_cache/executors/utils.py", line 58, in single_nb_execution
+    executenb(
+  File "/home/auralius/miniconda3/envs/py.3.12.4/lib/python3.12/site-packages/nbclient/client.py", line 1323, in execute
+    return NotebookClient(nb=nb, resources=resources, km=km, **kwargs).execute()
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/auralius/miniconda3/envs/py.3.12.4/lib/python3.12/site-packages/jupyter_core/utils/__init__.py", line 165, in wrapped
+    return loop.run_until_complete(inner)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/auralius/miniconda3/envs/py.3.12.4/lib/python3.12/asyncio/base_events.py", line 691, in run_until_complete
+    return future.result()
+           ^^^^^^^^^^^^^^^
+  File "/home/auralius/miniconda3/envs/py.3.12.4/lib/python3.12/site-packages/nbclient/client.py", line 709, in async_execute
+    await self.async_execute_cell(
+  File "/home/auralius/miniconda3/envs/py.3.12.4/lib/python3.12/site-packages/nbclient/client.py", line 1062, in async_execute_cell
+    await self._check_raise_for_error(cell, cell_index, exec_reply)
+  File "/home/auralius/miniconda3/envs/py.3.12.4/lib/python3.12/site-packages/nbclient/client.py", line 918, in _check_raise_for_error
+    raise CellExecutionError.from_cell_and_msg(cell, exec_reply_content)
+nbclient.exceptions.CellExecutionError: An error occurred while executing the following cell:
+------------------
+# Present symbolic functions in the compact notation used in the source table.
+def fmt(expr):
+    return (latex(expr)
+        .replace(r'f{\left(t \right)}', r'f(t)')
+        .replace(r'g{\left(\tau \right)}', r'g(\tau)')
+        .replace(r'F{\left(s \right)}', r'F(s)')
+        .replace(r'G{\left(s \right)}', r'G(s)')
+        .replace(r'- a + s', r's - a')
+        .replace(r'- c + s', r's - c')
+        .replace(r'- c + t', r't - c')
+        .replace(r'- a^{2} + s^{2}', r's^{2} - a^{2}'))
+
+# A compact format for the n-dependent fractions.
+def frac(a, b):
+    return r'\frac{' + fmt(a) + '}{' + fmt(b) + '}'
+
+# Rows marked 'computed' come directly from laplace_transform().
+# The remaining rows are general transform identities constructed with SymPy.
+
+def add(no, time_expr, s_expr, *, time_latex=None, s_latex=None, mode='computed'):
+    rows.append(dict(number=no, time_expr=time_expr, s_expr=s_expr,
+                     t_tex=time_latex or fmt(time_expr),
+                     s_tex=s_latex or fmt(s_expr), mode=mode))
+
+add(1, Integer(1), LT(Integer(1)))
+add(2, exp(a*t), LT(exp(a*t)))
+add(3, t**n, LT(t**n), s_latex=frac(factorial(n), s**(n+1)))
+add(4, t**symbols('p', real=True), LT(t**symbols('p', real=True)),
+    time_latex=r't^p\quad(p>-1)',
+    s_latex=frac(gamma(symbols('p', real=True)+1), s**(symbols('p', real=True)+1)))
+add(5, sin(a*t), LT(sin(a*t)))
+add(6, cos(a*t), LT(cos(a*t)))
+add(7, sinh(a*t), LT(sinh(a*t)))
+add(8, cosh(a*t), LT(cosh(a*t)))
+add(9, exp(a*t)*sin(b*t), LT(exp(a*t)*sin(b*t)))
+add(10, exp(a*t)*cos(b*t), LT(exp(a*t)*cos(b*t)))
+add(11, t**n*exp(a*t), LT(t**n*exp(a*t)),
+    s_latex=frac(factorial(n), (s-a)**(n+1)))
+add(12, Heaviside(t-c), LT(Heaviside(t-c)), time_latex=r'u_c(t)')
+add(13, Heaviside(t-c)*f(t-c), exp(-c*s)*F(s),
+    time_latex=r'u_c(t)\,f(t-c)', s_latex=r'e^{-cs}F(s)', mode='property')
+add(14, exp(c*t)*f(t), F(s-c), mode='property',
+    time_latex=r'e^{ct}f(t)', s_latex=r'F(s-c)')
+add(15, f(c*t), F(s/c)/c, mode='property',
+    time_latex=r'f(ct)',
+    s_latex=r'\frac{1}{c}F\!\left(\frac{s}{c}\right)\quad(c>0)')
+add(16, Integral(f(t-tau)*g(tau), (tau, 0, t)), F(s)*G(s), mode='property',
+    time_latex=r'\int_0^t f(t-\tau)\,g(\tau)\,d\tau')
+add(17, DiracDelta(t-c), LT(DiracDelta(t-c)), time_latex=r'\delta(t-c)')
+
+# General derivative rule: n must be >= 1 in this row; k indexes derivatives.
+d_n = Derivative(f(t), (t, n))
+initial_sum = Sum(s**(n-1-k) * Subs(Derivative(f(t), (t, k)), t, 0),
+                  (k, 0, n-1))
+add(18, d_n, s**n*F(s) - initial_sum, mode='property',
+    time_latex=r'f^{(n)}(t)',
+    s_latex=r's^nF(s)-\sum_{k=0}^{n-1}s^{n-1-k}f^{(k)}(0)')
+add(19, (-t)**n*f(t), Derivative(F(s), (s, n)), mode='property',
+    time_latex=r'(-t)^n f(t)', s_latex=r'F^{(n)}(s)')
+
+# Render a Markdown table with MathJax math expressions.
+header = [r'| No. | $f(t)=\mathcal{L}^{-1}\{F(s)\}$ | $F(s)=\mathcal{L}\{f(t)\}$ |',
+          '|:---:|:---:|:---:|']
+
+lines = [f"| {row['number']} | ${row['t_tex']}$ | ${row['s_tex']}$ |" for row in rows]
+laplace_table_markdown = '\n'.join(header + lines)
+
+display(Markdown(laplace_table_markdown))
+------------------
+
+
+[31m---------------------------------------------------------------------------[39m
+[31mNameError[39m                                 Traceback (most recent call last)
+[36mCell[39m[36m [39m[32mIn[4][39m[32m, line 25[39m
+[32m     21[39m     rows.append(dict(number=no, time_expr=time_expr, s_expr=s_expr,
+[32m     22[39m                      t_tex=time_latex [38;5;28;01mor[39;00m fmt(time_expr),
+[32m     23[39m                      s_tex=s_latex [38;5;28;01mor[39;00m fmt(s_expr), mode=mode))
+[32m     24[39m 
+[32m---> [39m[32m25[39m add([32m1[39m, Integer([32m1[39m), LT(Integer([32m1[39m)))
+[32m     26[39m add([32m2[39m, exp(a*t), LT(exp(a*t)))
+[32m     27[39m add([32m3[39m, t**n, LT(t**n), s_latex=frac(factorial(n), s**(n+[32m1[39m)))
+[32m     28[39m add(4, t**symbols('p', real=True), LT(t**symbols('p', real=True)),
+
+[36mCell[39m[36m [39m[32mIn[4][39m[32m, line 21[39m, in [36madd[39m[34m(no, time_expr, s_expr, time_latex, s_latex, mode)[39m
+[32m     20[39m [38;5;28;01mdef[39;00m add(no, time_expr, s_expr, *, time_latex=[38;5;28;01mNone[39;00m, s_latex=[38;5;28;01mNone[39;00m, mode=[33m'computed'[39m):
+[32m---> [39m[32m21[39m     rows.append(dict(number=no, time_expr=time_expr, s_expr=s_expr,
+[32m     22[39m                      t_tex=time_latex [38;5;28;01mor[39;00m fmt(time_expr),
+[32m     23[39m                      s_tex=s_latex [38;5;28;01mor[39;00m fmt(s_expr), mode=mode))
+
+[31mNameError[39m: name 'rows' is not defined
+
