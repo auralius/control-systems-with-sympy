@@ -1,0 +1,1060 @@
+
+<!DOCTYPE html>
+
+
+<html lang="en" data-content_root="./" >
+
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>Butterworth Coefficient Table &#8212; Control Systems with Sympy</title>
+  
+  
+  
+  <script data-cfasync="false">
+    document.documentElement.dataset.mode = localStorage.getItem("mode") || "";
+    document.documentElement.dataset.theme = localStorage.getItem("theme") || "";
+  </script>
+  <!--
+    this give us a css class that will be invisible only if js is disabled
+  -->
+  <noscript>
+    <style>
+      .pst-js-only { display: none !important; }
+
+    </style>
+  </noscript>
+  
+  <!-- Loaded before other Sphinx assets -->
+  <link href="_static/styles/theme.css?digest=55c26ed414f5f8a31ebb" rel="stylesheet" />
+<link href="_static/styles/pydata-sphinx-theme.css?digest=55c26ed414f5f8a31ebb" rel="stylesheet" />
+
+    <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=03e43079" />
+    <link rel="stylesheet" type="text/css" href="_static/styles/sphinx-book-theme.css?v=3c74b3bc" />
+    <link rel="stylesheet" type="text/css" href="_static/togglebutton.css?v=9c3e77be" />
+    <link rel="stylesheet" type="text/css" href="_static/copybutton.css?v=76b2166b" />
+    <link rel="stylesheet" type="text/css" href="_static/mystnb.11b39860a7a0cbfd473a3ad8a317855267ff0bd372690045ca344a6b62be495e.css?v=8cd3d715" />
+    <link rel="stylesheet" type="text/css" href="_static/sphinx-thebe.css?v=4fa983c6" />
+    <link rel="stylesheet" type="text/css" href="_static/sphinx-design.min.css?v=95c83b7e" />
+    <link rel="stylesheet" type="text/css" href="_static/custom.css?v=b5bdeb62" />
+  
+  <!-- So that users can add custom icons -->
+  <script defer src="_static/scripts/fontawesome.js?digest=55c26ed414f5f8a31ebb"></script>
+  <!-- Pre-loaded scripts that we'll load fully later -->
+  <link rel="preload" as="script" href="_static/scripts/bootstrap.js?digest=55c26ed414f5f8a31ebb" />
+<link rel="preload" as="script" href="_static/scripts/pydata-sphinx-theme.js?digest=55c26ed414f5f8a31ebb" />
+
+    <script src="_static/documentation_options.js?v=9eb32ce0"></script>
+    <script src="_static/doctools.js?v=fd6eb6e6"></script>
+    <script src="_static/sphinx_highlight.js?v=6ffebe34"></script>
+    <script src="_static/clipboard.min.js?v=a7894cd8"></script>
+    <script src="_static/copybutton.js?v=f281be69"></script>
+    <script src="_static/scripts/sphinx-book-theme.js?v=fab101a9"></script>
+    <script>let toggleHintShow = 'Click to show';</script>
+    <script>let toggleHintHide = 'Click to hide';</script>
+    <script>let toggleOpenOnPrint = 'true';</script>
+    <script src="_static/togglebutton.js?v=b8b12719"></script>
+    <script>var togglebuttonSelector = '.toggle, .admonition.dropdown';</script>
+    <script src="_static/design-tabs.js?v=f930bc37"></script>
+    <script>const THEBE_JS_URL = "https://unpkg.com/thebe@0.8.2/lib/index.js"; const thebe_selector = ".thebe,.cell"; const thebe_selector_input = "pre"; const thebe_selector_output = ".output, .cell_output"</script>
+    <script async="async" src="_static/sphinx-thebe.js?v=c100c467"></script>
+    <script>window.MathJax = {"HTML-CSS": {"matchFontHeight": true, "scale": 50}, "options": {"processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
+    <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@4/tex-mml-chtml.js"></script>
+    <script>DOCUMENTATION_OPTIONS.pagename = 'butterworth-coefficients';</script>
+    <script>DOCUMENTATION_OPTIONS.search_as_you_type = false;</script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Digital PID Control - Part 2" href="digital-pid-2.html" />
+    <link rel="prev" title="Digital PID Control - Part 1" href="digital-pid.html" />
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <meta name="docsearch:language" content="en"/>
+  <meta name="docsearch:version" content="" />
+  
+    
+    <script src="_static/searchtools.js"></script>
+    <script src="_static/language_data.js"></script>
+    <script src="searchindex.js"></script>
+  
+  </head>
+  <body data-default-mode="">
+  
+  
+  <div id="pst-skip-link" class="skip-link d-print-none"><a href="#main-content">Skip to main content</a></div>
+
+  
+  <div id="pst-scroll-pixel-helper"></div>
+  
+  <button type="button" class="btn rounded-pill" id="pst-back-to-top">
+    <i class="fa-solid fa-arrow-up"></i>Back to top</button>
+  
+  
+  
+  
+  <dialog id="pst-search-dialog">
+    
+<form class="bd-search d-flex align-items-center"
+      action="search.html"
+      method="get">
+  <i class="fa-solid fa-magnifying-glass"></i>
+  <input type="search"
+         class="form-control"
+         name="q"
+         placeholder="Search this book..."
+         aria-label="Search this book..."
+         autocomplete="off"
+         autocorrect="off"
+         autocapitalize="off"
+         spellcheck="false"/>
+  <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd>K</kbd></span>
+</form>
+  </dialog>
+
+  <div class="pst-async-banner-revealer d-none">
+  <aside id="bd-header-version-warning" class="d-none d-print-none" aria-label="Version warning"></aside>
+</div>
+
+  
+    <header id="pst-header" class="bd-header navbar navbar-expand-lg bd-navbar d-print-none">
+<div class="bd-header__inner bd-page-width">
+  <button class="pst-navbar-icon sidebar-toggle primary-toggle" aria-label="Site navigation">
+    <span class="fa-solid fa-bars"></span>
+  </button>
+  
+  
+  <div class="col-lg-9 navbar-header-items">
+    
+    
+    <div class="navbar-header-items__end">
+      
+        <div class="navbar-item navbar-persistent--container">
+          
+
+<button class="btn search-button-field search-button__button pst-js-only" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+ <i class="fa-solid fa-magnifying-glass"></i>
+ <span class="search-button__default-text">Search</span>
+ <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+</button>
+        </div>
+      
+      
+    </div>
+    
+  </div>
+  
+  
+    <div class="navbar-persistent--mobile">
+
+<button class="btn search-button-field search-button__button pst-js-only" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+ <i class="fa-solid fa-magnifying-glass"></i>
+ <span class="search-button__default-text">Search</span>
+ <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+</button>
+    </div>
+  
+
+  
+    <button class="pst-navbar-icon sidebar-toggle secondary-toggle" aria-label="On this page">
+      <span class="fa-solid fa-outdent"></span>
+    </button>
+  
+</div>
+
+    </header>
+  
+
+  <div class="bd-container">
+    <div class="bd-container__inner bd-page-width">
+      
+      
+      
+      <dialog id="pst-primary-sidebar-modal"></dialog>
+      <div id="pst-primary-sidebar" class="bd-sidebar-primary bd-sidebar">
+        
+
+  
+  <div class="sidebar-header-items sidebar-primary__section">
+    
+    
+    
+    
+  </div>
+  
+    <div class="sidebar-primary-items__start sidebar-primary__section">
+        <div class="sidebar-primary-item">
+
+  
+    
+  
+
+<a class="navbar-brand logo" href="intro.html">
+  
+  
+  
+  
+  
+    
+    
+      
+    
+    
+    <img src="_static/logo.png" class="logo__image only-light" alt="Control Systems with Sympy - Home"/>
+    <img src="_static/logo.png" class="logo__image only-dark pst-js-only" alt="Control Systems with Sympy - Home"/>
+  
+  
+</a></div>
+        <div class="sidebar-primary-item">
+
+<button class="btn search-button-field search-button__button pst-js-only" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+ <i class="fa-solid fa-magnifying-glass"></i>
+ <span class="search-button__default-text">Search</span>
+ <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+</button></div>
+        <div class="sidebar-primary-item"><nav class="bd-links bd-docs-nav" aria-label="Main">
+    <div class="bd-toc-item navbar-nav active">
+        
+        <ul class="nav bd-sidenav bd-sidenav__home-link">
+            <li class="toctree-l1">
+                <a class="reference internal" href="intro.html">
+                    WELCOME
+                </a>
+            </li>
+        </ul>
+        <p aria-level="2" class="caption" role="heading"><span class="caption-text">Reviews</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="linear-algebra-primer.html">Linear Algebra Primer</a></li>
+<li class="toctree-l1"><a class="reference internal" href="ode-laplace.html">Ordinary Differential Equations and the Laplace Transform</a></li>
+<li class="toctree-l1"><a class="reference internal" href="laplace-table.html">Laplace Transform Table</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Modeling and Time-Domain Analysis</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="block-diagram.html">Block Diagram</a></li>
+<li class="toctree-l1"><a class="reference internal" href="fly-ball-governor.html">System Modeling: Flyball Governor</a></li>
+<li class="toctree-l1"><a class="reference internal" href="rectilinear.html">System Modeling: Rectilinear System</a></li>
+<li class="toctree-l1"><a class="reference internal" href="first-order.html">First-order systems</a></li>
+<li class="toctree-l1"><a class="reference internal" href="second-order.html">Second-Order System</a></li>
+<li class="toctree-l1"><a class="reference internal" href="steady-state-error.html">Tracking Accuracy of a Feedback system</a></li>
+<li class="toctree-l1"><a class="reference internal" href="state-space.html">State-Space Modeling</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Classical Control Analysis</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="routh-hurwitz.html">Routh-Hurwitz Stability Criterion</a></li>
+<li class="toctree-l1"><a class="reference internal" href="root-locus.html">The Root-Locus Method</a></li>
+<li class="toctree-l1"><a class="reference internal" href="bode-plot.html">The Bode Plots</a></li>
+<li class="toctree-l1"><a class="reference internal" href="bode-margins.html">Gain Margin and Phase Margin</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">PID Control</span></p>
+<ul class="current nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="pid-fo.html">PID Control of a First Order System</a></li>
+<li class="toctree-l1"><a class="reference internal" href="pid-so.html">PID Control of a Second Order System</a></li>
+<li class="toctree-l1"><a class="reference internal" href="pid-ss.html">PID-Control (with Derivative Filter) in State Space Format</a></li>
+<li class="toctree-l1"><a class="reference internal" href="digital-pid.html">Digital PID Control - Part 1</a></li>
+<li class="toctree-l1 current active"><a class="current reference internal" href="#">Butterworth Coefficient Table</a></li>
+<li class="toctree-l1"><a class="reference internal" href="digital-pid-2.html">Digital PID Control - Part 2</a></li>
+<li class="toctree-l1"><a class="reference internal" href="digital-filter.html">Digital Low-Pass Filter</a></li>
+<li class="toctree-l1"><a class="reference internal" href="digital-filter-2.html">Digital High-Pass Filter</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Interactive Sessions</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1 has-children"><a class="reference internal" href="interactives.html">Interactive Sessions with HTML/JavaScript</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2"><a class="reference internal" href="pid-fo-interactive.html">[HTML/JavaScript] Interactive PID-Controlled Second-Order Plant</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pid-so-interactive.html">[HTML/JavaScript] Interactive PID-Controlled Second-Order Plant</a></li>
+</ul>
+</details></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Miscellaneous</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="misc-problem-sets.html">Solved Various Problem Sets</a></li>
+</ul>
+
+    </div>
+</nav></div>
+    </div>
+  
+  
+  <div class="sidebar-primary-items__end sidebar-primary__section">
+      <div class="sidebar-primary-item">
+<div id="ethical-ad-placement"
+      class="flat"
+      data-ea-publisher="readthedocs"
+      data-ea-type="readthedocs-sidebar"
+      data-ea-manual="true">
+</div></div>
+  </div>
+
+
+      </div>
+      
+      <main id="main-content" class="bd-main" role="main">
+        
+        
+
+<div class="sbt-scroll-pixel-helper"></div>
+
+          <div class="bd-content">
+            <div class="bd-article-container">
+              
+              <div class="bd-header-article d-print-none">
+<div class="header-article-items header-article__inner">
+  
+    <div class="header-article-items__start">
+      
+        <div class="header-article-item"><button class="sidebar-toggle primary-toggle btn btn-sm" title="Toggle primary sidebar" data-bs-placement="bottom" data-bs-toggle="tooltip">
+  <span class="fa-solid fa-bars"></span>
+</button></div>
+      
+    </div>
+  
+  
+    <div class="header-article-items__end">
+      
+        <div class="header-article-item">
+
+<div class="article-header-buttons">
+
+
+
+
+
+<div class="dropdown dropdown-launch-buttons">
+  <button class="btn dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false" aria-label="Launch interactive content">
+    <i class="fas fa-rocket"></i>
+  </button>
+  <ul class="dropdown-menu">
+      
+      
+      
+      <li><a href="https://mybinder.org/v2/gh/auralius/control-systems-with-sympy/master?urlpath=lab/tree/butterworth-coefficients.ipynb" target="_blank"
+   class="btn btn-sm dropdown-item"
+   title="Launch on Binder"
+   data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  
+    <img alt="Binder logo" src="_static/images/logo_binder.svg">
+  </span>
+<span class="btn__text-container">Binder</span>
+</a>
+</li>
+      
+      
+      
+      
+      <li><a href="https://colab.research.google.com/github/auralius/control-systems-with-sympy/blob/master/butterworth-coefficients.ipynb" target="_blank"
+   class="btn btn-sm dropdown-item"
+   title="Launch on Colab"
+   data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  
+    <img alt="Colab logo" src="_static/images/logo_colab.png">
+  </span>
+<span class="btn__text-container">Colab</span>
+</a>
+</li>
+      
+  </ul>
+</div>
+
+
+
+
+
+
+<div class="dropdown dropdown-source-buttons">
+  <button class="btn dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false" aria-label="Source repositories">
+    <i class="fab fa-github"></i>
+  </button>
+  <ul class="dropdown-menu">
+      
+      
+      
+      <li><a href="https://github.com/auralius/control-systems-with-sympy" target="_blank"
+   class="btn btn-sm btn-source-repository-button dropdown-item"
+   title="Source repository"
+   data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fab fa-github"></i>
+  </span>
+<span class="btn__text-container">Repository</span>
+</a>
+</li>
+      
+      
+      
+      
+      <li><a href="https://github.com/auralius/control-systems-with-sympy/edit/master/butterworth-coefficients.ipynb" target="_blank"
+   class="btn btn-sm btn-source-edit-button dropdown-item"
+   title="Suggest edit"
+   data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-pencil-alt"></i>
+  </span>
+<span class="btn__text-container">Suggest edit</span>
+</a>
+</li>
+      
+      
+      
+      
+      <li><a href="https://github.com/auralius/control-systems-with-sympy/issues/new?title=Issue%20on%20page%20%2Fbutterworth-coefficients.html&body=Your%20issue%20content%20here." target="_blank"
+   class="btn btn-sm btn-source-issues-button dropdown-item"
+   title="Open an issue"
+   data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-lightbulb"></i>
+  </span>
+<span class="btn__text-container">Open issue</span>
+</a>
+</li>
+      
+  </ul>
+</div>
+
+
+
+
+
+
+<div class="dropdown dropdown-download-buttons">
+  <button class="btn dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false" aria-label="Download this page">
+    <i class="fas fa-download"></i>
+  </button>
+  <ul class="dropdown-menu">
+      
+      
+      
+      <li><a href="_sources/butterworth-coefficients.ipynb" target="_blank"
+   class="btn btn-sm btn-download-source-button dropdown-item"
+   title="Download source file"
+   data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-file"></i>
+  </span>
+<span class="btn__text-container">.ipynb</span>
+</a>
+</li>
+      
+      
+      
+      
+      <li>
+<button onclick="window.print()"
+  class="btn btn-sm btn-download-pdf-button dropdown-item"
+  title="Print to PDF"
+  data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-file-pdf"></i>
+  </span>
+<span class="btn__text-container">.pdf</span>
+</button>
+</li>
+      
+  </ul>
+</div>
+
+
+
+
+<button onclick="toggleFullScreen()"
+  class="btn btn-sm btn-fullscreen-button pst-navbar-icon"
+  title="Fullscreen mode"
+  data-bs-placement="bottom" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-expand"></i>
+  </span>
+
+</button>
+
+
+
+<button class="btn btn-sm nav-link pst-navbar-icon theme-switch-button pst-js-only" aria-label="Color mode" data-bs-title="Color mode"  data-bs-placement="bottom" data-bs-toggle="tooltip">
+  <i class="theme-switch fa-solid fa-sun                fa-lg" data-mode="light" title="Light"></i>
+  <i class="theme-switch fa-solid fa-moon               fa-lg" data-mode="dark"  title="Dark"></i>
+  <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg" data-mode="auto"  title="System Settings"></i>
+</button>
+
+
+<button class="btn btn-sm pst-navbar-icon search-button search-button__button pst-js-only" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="fa-solid fa-magnifying-glass fa-lg"></i>
+</button>
+<button class="sidebar-toggle secondary-toggle btn btn-sm pst-navbar-icon" title="Toggle secondary sidebar" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <span class="fa-solid fa-list"></span>
+</button>
+</div></div>
+      
+    </div>
+  
+</div>
+</div>
+              
+              
+
+<div id="jb-print-docs-body" class="onlyprint">
+    <h1>Butterworth Coefficient Table</h1>
+    <!-- Table of contents -->
+    <div id="print-main-content">
+        <div id="jb-print-toc">
+            
+            <div>
+                <h2> Contents </h2>
+            </div>
+            <nav aria-label="Page">
+                <ul class="pst-show_toc_level nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#required-imports">Required Imports</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#normalized-butterworth-polynomial">Normalized Butterworth Polynomial</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id1">Butterworth Coefficient Table</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#from-the-table-to-a-transfer-function">From the table to a transfer function</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#discretization-with-bilinear-transformation">Discretization with Bilinear Transformation</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#the-difference-equation">The Difference Equation</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#numerical-example">Numerical Example</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#frequency-response">Frequency Response</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#higher-order-digital-butterworth-filters">Higher-Order Digital Butterworth Filters</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#summary">Summary</a></li>
+</ul>
+            </nav>
+        </div>
+    </div>
+</div>
+
+              
+                
+<div id="searchbox"></div>
+                <article class="bd-article">
+                  
+  <section class="tex2jax_ignore mathjax_ignore" id="butterworth-coefficient-table">
+<h1>Butterworth Coefficient Table<a class="headerlink" href="#butterworth-coefficient-table" title="Link to this heading">#</a></h1>
+<p>In this section, we are going to do the following activities:</p>
+<ul class="simple">
+<li><p>generate the normalized Butterworth coefficients by using SymPy</p></li>
+<li><p>obtain the continuous-time low-pass and high-pass transfer functions</p></li>
+<li><p>apply the bilinear transform to obtain the digital filter coefficients</p></li>
+<li><p>check our digital coefficients against SciPy</p></li>
+</ul>
+<p>This table extends the second-order Butterworth examples in the <strong>Digital Low-Pass Filter</strong> and <strong>Digital High-Pass Filter</strong> chapters.</p>
+<p>This chapter provides the continuous-time Butterworth prototype used in the <a class="reference internal" href="digital-filter.html"><span class="doc">Digital Low-Pass Filter</span></a> and <a class="reference internal" href="digital-filter-2.html"><span class="doc">Digital High-Pass Filter</span></a> chapters. The normalized prototype has a cutoff of <span class="math notranslate nohighlight">\(1\;\mathrm{rad/s}\)</span>; we scale it to <span class="math notranslate nohighlight">\(\omega_c\)</span> before applying the bilinear transformation.</p>
+<section id="required-imports">
+<h2>Required Imports<a class="headerlink" href="#required-imports" title="Link to this heading">#</a></h2>
+<div class="cell tag_hide-input docutils container">
+<details class="admonition hide above-input">
+<summary aria-label="Toggle hidden content">
+<p class="collapsed admonition-title">Show code cell source</p>
+<p class="expanded admonition-title">Hide code cell source</p>
+</summary>
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">sympy</span><span class="w"> </span><span class="kn">import</span> <span class="o">*</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">IPython.display</span><span class="w"> </span><span class="kn">import</span> <span class="n">display</span><span class="p">,</span> <span class="n">Markdown</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">mathprint</span><span class="w"> </span><span class="kn">import</span> <span class="n">mprint</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">scipy</span><span class="w"> </span><span class="kn">import</span> <span class="n">signal</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">matplotlib.pyplot</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">plt</span>
+
+<span class="n">s</span><span class="p">,</span> <span class="n">p</span><span class="p">,</span> <span class="n">q</span> <span class="o">=</span> <span class="n">symbols</span><span class="p">(</span><span class="s1">'s p q'</span><span class="p">)</span>
+<span class="n">wc</span><span class="p">,</span> <span class="n">Ts</span> <span class="o">=</span> <span class="n">symbols</span><span class="p">(</span><span class="s1">'omega_c T_s'</span><span class="p">,</span> <span class="n">positive</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</details>
+</div>
+</section>
+<section id="normalized-butterworth-polynomial">
+<h2>Normalized Butterworth Polynomial<a class="headerlink" href="#normalized-butterworth-polynomial" title="Link to this heading">#</a></h2>
+<p>The Butterworth filter has a maximally flat magnitude response in the passband. For a normalized <strong>analog low-pass</strong> filter, the cutoff angular frequency is <span class="math notranslate nohighlight">\(1\;\mathrm{rad/s}\)</span>.</p>
+<p>We write its denominator as</p>
+<div class="math notranslate nohighlight">
+\[
+B_n(p)=p^n+a_1p^{n-1}+\cdots+a_n, \qquad p=\frac{s}{\omega_c}.
+\]</div>
+<p>For the stable Butterworth prototype, the polynomial can be constructed from first- and second-order factors:</p>
+<div class="math notranslate nohighlight">
+\[
+B_n(p)=(p+1)^{n\bmod 2}
+\prod_{k=1}^{\lfloor n/2\rfloor}
+\left[p^2+2\sin\left(\frac{(2k-1)\pi}{2n}\right)p+1\right].
+\]</div>
+<p>The factors select only the <strong>left-half-plane poles</strong>. We can generate the polynomial with SymPy rather than looking up its coefficients in a printed table.</p>
+<div class="cell tag_full-width docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="k">def</span><span class="w"> </span><span class="nf">butterworth_polynomial</span><span class="p">(</span><span class="n">n</span><span class="p">,</span> <span class="n">variable</span><span class="o">=</span><span class="n">p</span><span class="p">):</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">n</span><span class="p">,</span> <span class="nb">int</span><span class="p">)</span> <span class="ow">or</span> <span class="n">n</span> <span class="o">&lt;</span> <span class="mi">1</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">'Filter order must be a positive integer.'</span><span class="p">)</span>
+
+    <span class="n">B</span> <span class="o">=</span> <span class="n">variable</span> <span class="o">+</span> <span class="mi">1</span> <span class="k">if</span> <span class="n">n</span> <span class="o">%</span> <span class="mi">2</span> <span class="k">else</span> <span class="n">S</span><span class="o">.</span><span class="n">One</span>
+    <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">n</span> <span class="o">//</span> <span class="mi">2</span> <span class="o">+</span> <span class="mi">1</span><span class="p">):</span>
+        <span class="n">angle</span> <span class="o">=</span> <span class="n">pi</span> <span class="o">*</span> <span class="p">(</span><span class="mi">2</span><span class="o">*</span><span class="n">k</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span> <span class="o">/</span> <span class="p">(</span><span class="mi">2</span><span class="o">*</span><span class="n">n</span><span class="p">)</span>
+        <span class="n">B</span> <span class="o">*=</span> <span class="n">variable</span><span class="o">**</span><span class="mi">2</span> <span class="o">+</span> <span class="mi">2</span><span class="o">*</span><span class="n">sin</span><span class="p">(</span><span class="n">angle</span><span class="p">)</span><span class="o">*</span><span class="n">variable</span> <span class="o">+</span> <span class="mi">1</span>
+
+    <span class="k">return</span> <span class="n">expand</span><span class="p">(</span><span class="n">B</span><span class="p">)</span>
+
+<span class="k">for</span> <span class="n">n</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">5</span><span class="p">):</span>
+    <span class="n">mprint</span><span class="p">(</span><span class="sa">r</span><span class="s1">'B_{'</span><span class="p">,</span> <span class="nb">str</span><span class="p">(</span><span class="n">n</span><span class="p">),</span> <span class="s1">'}(p)='</span><span class="p">,</span> <span class="n">latex</span><span class="p">(</span><span class="n">butterworth_polynomial</span><span class="p">(</span><span class="n">n</span><span class="p">)))</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_latex math notranslate nohighlight">
+\[\displaystyle B_{1}(p)=p + 1\]</div>
+<div class="output text_latex math notranslate nohighlight">
+\[\displaystyle B_{2}(p)=p^{2} + \sqrt{2} p + 1\]</div>
+<div class="output text_latex math notranslate nohighlight">
+\[\displaystyle B_{3}(p)=p^{3} + 2 p^{2} + 2 p + 1\]</div>
+<div class="output text_latex math notranslate nohighlight">
+\[\displaystyle B_{4}(p)=p^{4} + 2 p^{3} \sqrt{\frac{1}{2} - \frac{\sqrt{2}}{4}} + 2 p^{3} \sqrt{\frac{\sqrt{2}}{4} + \frac{1}{2}} + 4 p^{2} \sqrt{\frac{1}{2} - \frac{\sqrt{2}}{4}} \sqrt{\frac{\sqrt{2}}{4} + \frac{1}{2}} + 2 p^{2} + 2 p \sqrt{\frac{1}{2} - \frac{\sqrt{2}}{4}} + 2 p \sqrt{\frac{\sqrt{2}}{4} + \frac{1}{2}} + 1\]</div>
+</div>
+</div>
+</section>
+<section id="id1">
+<h2>Butterworth Coefficient Table<a class="headerlink" href="#id1" title="Link to this heading">#</a></h2>
+<p>The coefficients below are ordered from the highest power to the constant term:</p>
+<div class="math notranslate nohighlight">
+\[B_n(p)=a_0p^n+a_1p^{n-1}+\cdots+a_n,\qquad a_0=a_n=1.\]</div>
+<p>We can generate the table for any order. Here, we use <span class="math notranslate nohighlight">\(n=1,\ldots,8\)</span> and display the coefficients to five decimal places.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">table_rows</span> <span class="o">=</span> <span class="p">[</span><span class="sa">r</span><span class="s2">"| Order $n$ | Coefficients $[a_0,a_1,\ldots,a_n]$ |"</span><span class="p">,</span>
+              <span class="s2">"|:---:|:---|"</span><span class="p">]</span>
+
+<span class="k">for</span> <span class="n">n</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">9</span><span class="p">):</span>
+    <span class="n">B</span> <span class="o">=</span> <span class="n">Poly</span><span class="p">(</span><span class="n">butterworth_polynomial</span><span class="p">(</span><span class="n">n</span><span class="p">),</span> <span class="n">p</span><span class="p">)</span>
+    <span class="n">coefficients</span> <span class="o">=</span> <span class="p">[</span><span class="nb">float</span><span class="p">(</span><span class="n">value</span><span class="o">.</span><span class="n">evalf</span><span class="p">())</span> <span class="k">for</span> <span class="n">value</span> <span class="ow">in</span> <span class="n">B</span><span class="o">.</span><span class="n">all_coeffs</span><span class="p">()]</span>
+    <span class="n">table_rows</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
+        <span class="sa">f</span><span class="s2">"| </span><span class="si">{</span><span class="n">n</span><span class="si">}</span><span class="s2"> | "</span> <span class="o">+</span> <span class="s2">", "</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="n">value</span><span class="si">:</span><span class="s2">.5f</span><span class="si">}</span><span class="s2">"</span> <span class="k">for</span> <span class="n">value</span> <span class="ow">in</span> <span class="n">coefficients</span><span class="p">)</span> <span class="o">+</span> <span class="s2">" |"</span>
+    <span class="p">)</span>
+
+<span class="n">display</span><span class="p">(</span><span class="n">Markdown</span><span class="p">(</span><span class="s2">"</span><span class="se">\n</span><span class="s2">"</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">table_rows</span><span class="p">)))</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="pst-scrollable-table-container"><table class="table">
+<thead>
+<tr class="row-odd"><th class="head text-center"><p>Order <span class="math notranslate nohighlight">\(n\)</span></p></th>
+<th class="head text-left"><p>Coefficients <span class="math notranslate nohighlight">\([a_0,a_1,\ldots,a_n]\)</span></p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td class="text-center"><p>1</p></td>
+<td class="text-left"><p>1.00000, 1.00000</p></td>
+</tr>
+<tr class="row-odd"><td class="text-center"><p>2</p></td>
+<td class="text-left"><p>1.00000, 1.41421, 1.00000</p></td>
+</tr>
+<tr class="row-even"><td class="text-center"><p>3</p></td>
+<td class="text-left"><p>1.00000, 2.00000, 2.00000, 1.00000</p></td>
+</tr>
+<tr class="row-odd"><td class="text-center"><p>4</p></td>
+<td class="text-left"><p>1.00000, 2.61313, 3.41421, 2.61313, 1.00000</p></td>
+</tr>
+<tr class="row-even"><td class="text-center"><p>5</p></td>
+<td class="text-left"><p>1.00000, 3.23607, 5.23607, 5.23607, 3.23607, 1.00000</p></td>
+</tr>
+<tr class="row-odd"><td class="text-center"><p>6</p></td>
+<td class="text-left"><p>1.00000, 3.86370, 7.46410, 9.14162, 7.46410, 3.86370, 1.00000</p></td>
+</tr>
+<tr class="row-even"><td class="text-center"><p>7</p></td>
+<td class="text-left"><p>1.00000, 4.49396, 10.09783, 14.59179, 14.59179, 10.09783, 4.49396, 1.00000</p></td>
+</tr>
+<tr class="row-odd"><td class="text-center"><p>8</p></td>
+<td class="text-left"><p>1.00000, 5.12583, 13.13707, 21.84615, 25.68836, 21.84615, 13.13707, 5.12583, 1.00000</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</div>
+<section id="from-the-table-to-a-transfer-function">
+<h3>From the table to a transfer function<a class="headerlink" href="#from-the-table-to-a-transfer-function" title="Link to this heading">#</a></h3>
+<p>To use the normalized polynomial at an arbitrary cutoff frequency <span class="math notranslate nohighlight">\(\omega_c\)</span>, replace <span class="math notranslate nohighlight">\(p\)</span> with <span class="math notranslate nohighlight">\(s/\omega_c\)</span>:</p>
+<div class="math notranslate nohighlight">
+\[\begin{split}
+\begin{aligned}
+D_n(s)&amp;=\omega_c^n B_n(s/\omega_c),\\
+H_{LP}(s)&amp;=\frac{\omega_c^n}{D_n(s)},\\
+H_{HP}(s)&amp;=\frac{s^n}{D_n(s)}.
+\end{aligned}
+\end{split}\]</div>
+<p><strong>Note:</strong> <span class="math notranslate nohighlight">\(\omega_c\)</span> is an <em>angular</em> frequency in <span class="math notranslate nohighlight">\(\mathrm{rad/s}\)</span>, not Hz. For a continuous-time cutoff frequency <span class="math notranslate nohighlight">\(f_c\)</span> in Hz, <span class="math notranslate nohighlight">\(\omega_c=2\pi f_c\)</span>.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="k">def</span><span class="w"> </span><span class="nf">butterworth_analog</span><span class="p">(</span><span class="n">n</span><span class="p">,</span> <span class="n">cutoff</span><span class="o">=</span><span class="n">wc</span><span class="p">,</span> <span class="n">kind</span><span class="o">=</span><span class="s1">'lowpass'</span><span class="p">):</span>
+    <span class="k">if</span> <span class="n">kind</span> <span class="ow">not</span> <span class="ow">in</span> <span class="p">(</span><span class="s1">'lowpass'</span><span class="p">,</span> <span class="s1">'highpass'</span><span class="p">):</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">"kind must be 'lowpass' or 'highpass'"</span><span class="p">)</span>
+
+    <span class="n">D</span> <span class="o">=</span> <span class="n">expand</span><span class="p">(</span><span class="n">cutoff</span><span class="o">**</span><span class="n">n</span> <span class="o">*</span> <span class="n">butterworth_polynomial</span><span class="p">(</span><span class="n">n</span><span class="p">,</span> <span class="n">s</span><span class="o">/</span><span class="n">cutoff</span><span class="p">))</span>
+    <span class="n">N</span> <span class="o">=</span> <span class="n">cutoff</span><span class="o">**</span><span class="n">n</span> <span class="k">if</span> <span class="n">kind</span> <span class="o">==</span> <span class="s1">'lowpass'</span> <span class="k">else</span> <span class="n">s</span><span class="o">**</span><span class="n">n</span>
+    <span class="k">return</span> <span class="n">factor</span><span class="p">(</span><span class="n">N</span><span class="o">/</span><span class="n">D</span><span class="p">)</span>
+
+<span class="n">H_LP</span> <span class="o">=</span> <span class="n">butterworth_analog</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="n">wc</span><span class="p">,</span> <span class="s1">'lowpass'</span><span class="p">)</span>
+<span class="n">H_HP</span> <span class="o">=</span> <span class="n">butterworth_analog</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="n">wc</span><span class="p">,</span> <span class="s1">'highpass'</span><span class="p">)</span>
+<span class="n">mprint</span><span class="p">(</span><span class="sa">r</span><span class="s1">'H_{\mathrm</span><span class="si">{LP}</span><span class="s1">}(s)='</span><span class="p">,</span> <span class="n">latex</span><span class="p">(</span><span class="n">H_LP</span><span class="p">))</span>
+<span class="n">mprint</span><span class="p">(</span><span class="sa">r</span><span class="s1">'H_{\mathrm</span><span class="si">{HP}</span><span class="s1">}(s)='</span><span class="p">,</span> <span class="n">latex</span><span class="p">(</span><span class="n">H_HP</span><span class="p">))</span>
+
+<span class="k">assert</span> <span class="n">simplify</span><span class="p">(</span><span class="n">H_LP</span> <span class="o">-</span> <span class="n">wc</span><span class="o">**</span><span class="mi">2</span><span class="o">/</span><span class="p">(</span><span class="n">s</span><span class="o">**</span><span class="mi">2</span><span class="o">+</span><span class="n">sqrt</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span><span class="o">*</span><span class="n">wc</span><span class="o">*</span><span class="n">s</span><span class="o">+</span><span class="n">wc</span><span class="o">**</span><span class="mi">2</span><span class="p">))</span> <span class="o">==</span> <span class="mi">0</span>
+<span class="k">assert</span> <span class="n">simplify</span><span class="p">(</span><span class="n">H_HP</span> <span class="o">-</span> <span class="n">s</span><span class="o">**</span><span class="mi">2</span><span class="o">/</span><span class="p">(</span><span class="n">s</span><span class="o">**</span><span class="mi">2</span><span class="o">+</span><span class="n">sqrt</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span><span class="o">*</span><span class="n">wc</span><span class="o">*</span><span class="n">s</span><span class="o">+</span><span class="n">wc</span><span class="o">**</span><span class="mi">2</span><span class="p">))</span> <span class="o">==</span> <span class="mi">0</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_latex math notranslate nohighlight">
+\[\displaystyle H_{\mathrm{LP}}(s)=\frac{\omega_{c}^{2}}{\omega_{c}^{2} + \sqrt{2} \omega_{c} s + s^{2}}\]</div>
+<div class="output text_latex math notranslate nohighlight">
+\[\displaystyle H_{\mathrm{HP}}(s)=\frac{s^{2}}{\omega_{c}^{2} + \sqrt{2} \omega_{c} s + s^{2}}\]</div>
+</div>
+</div>
+<p>These are precisely the <strong>second-order low-pass and standard high-pass Butterworth</strong> transfer functions used in our two digital-filter chapters.</p>
+<p>Notice that <span class="math notranslate nohighlight">\(1-H_{LP}(s)\)</span> is <strong>not</strong> the standard second-order Butterworth high-pass filter: its numerator is <span class="math notranslate nohighlight">\(s^2+\sqrt{2}\omega_cs\)</span>, rather than <span class="math notranslate nohighlight">\(s^2\)</span>. This is why the complementary high-pass example in the other notebook has a different low-frequency slope.</p>
+</section>
+</section>
+<section id="discretization-with-bilinear-transformation">
+<h2>Discretization with Bilinear Transformation<a class="headerlink" href="#discretization-with-bilinear-transformation" title="Link to this heading">#</a></h2>
+<p>As in the existing notebooks, we use the Tustin substitution:</p>
+<div class="math notranslate nohighlight">
+\[
+s=\frac{2}{T_s}\frac{1-z^{-1}}{1+z^{-1}}.
+\]</div>
+<p>Let <span class="math notranslate nohighlight">\(q=z^{-1}\)</span> and define the dimensionless quantity</p>
+<div class="math notranslate nohighlight">
+\[r=\frac{\omega_cT_s}{2}.\]</div>
+<p>For a second-order Butterworth filter, multiplying both numerator and denominator by <span class="math notranslate nohighlight">\((1+q)^2\)</span> gives</p>
+<div class="math notranslate nohighlight">
+\[\begin{split}
+\begin{aligned}
+D(q)&amp;=(1-q)^2+\sqrt{2}r(1-q)(1+q)+r^2(1+q)^2,\\
+N_{LP}(q)&amp;=r^2(1+q)^2,\\
+N_{HP}(q)&amp;=(1-q)^2.
+\end{aligned}
+\end{split}\]</div>
+<p>Thus both filters share the same denominator coefficients.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">r</span> <span class="o">=</span> <span class="n">symbols</span><span class="p">(</span><span class="s1">'r'</span><span class="p">,</span> <span class="n">positive</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="n">D</span> <span class="o">=</span> <span class="n">expand</span><span class="p">((</span><span class="mi">1</span><span class="o">-</span><span class="n">q</span><span class="p">)</span><span class="o">**</span><span class="mi">2</span> <span class="o">+</span> <span class="n">sqrt</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span><span class="o">*</span><span class="n">r</span><span class="o">*</span><span class="p">(</span><span class="mi">1</span><span class="o">-</span><span class="n">q</span><span class="p">)</span><span class="o">*</span><span class="p">(</span><span class="mi">1</span><span class="o">+</span><span class="n">q</span><span class="p">)</span> <span class="o">+</span> <span class="n">r</span><span class="o">**</span><span class="mi">2</span><span class="o">*</span><span class="p">(</span><span class="mi">1</span><span class="o">+</span><span class="n">q</span><span class="p">)</span><span class="o">**</span><span class="mi">2</span><span class="p">)</span>
+<span class="n">N_LP</span> <span class="o">=</span> <span class="n">expand</span><span class="p">(</span><span class="n">r</span><span class="o">**</span><span class="mi">2</span><span class="o">*</span><span class="p">(</span><span class="mi">1</span><span class="o">+</span><span class="n">q</span><span class="p">)</span><span class="o">**</span><span class="mi">2</span><span class="p">)</span>
+<span class="n">N_HP</span> <span class="o">=</span> <span class="n">expand</span><span class="p">((</span><span class="mi">1</span><span class="o">-</span><span class="n">q</span><span class="p">)</span><span class="o">**</span><span class="mi">2</span><span class="p">)</span>
+
+<span class="n">a0</span> <span class="o">=</span> <span class="n">Poly</span><span class="p">(</span><span class="n">D</span><span class="p">,</span> <span class="n">q</span><span class="p">)</span><span class="o">.</span><span class="n">nth</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+<span class="n">a</span> <span class="o">=</span> <span class="p">[</span><span class="n">factor</span><span class="p">(</span><span class="n">Poly</span><span class="p">(</span><span class="n">D</span><span class="p">,</span> <span class="n">q</span><span class="p">)</span><span class="o">.</span><span class="n">nth</span><span class="p">(</span><span class="n">i</span><span class="p">)</span><span class="o">/</span><span class="n">a0</span><span class="p">)</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">3</span><span class="p">)]</span>
+<span class="n">b_lp</span> <span class="o">=</span> <span class="p">[</span><span class="n">factor</span><span class="p">(</span><span class="n">Poly</span><span class="p">(</span><span class="n">N_LP</span><span class="p">,</span> <span class="n">q</span><span class="p">)</span><span class="o">.</span><span class="n">nth</span><span class="p">(</span><span class="n">i</span><span class="p">)</span><span class="o">/</span><span class="n">a0</span><span class="p">)</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">3</span><span class="p">)]</span>
+<span class="n">b_hp</span> <span class="o">=</span> <span class="p">[</span><span class="n">factor</span><span class="p">(</span><span class="n">Poly</span><span class="p">(</span><span class="n">N_HP</span><span class="p">,</span> <span class="n">q</span><span class="p">)</span><span class="o">.</span><span class="n">nth</span><span class="p">(</span><span class="n">i</span><span class="p">)</span><span class="o">/</span><span class="n">a0</span><span class="p">)</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">3</span><span class="p">)]</span>
+
+<span class="c1"># One complete subscript: b_{LP,0}, not b_{LP}_{0}.</span>
+<span class="k">for</span> <span class="n">name</span><span class="p">,</span> <span class="n">values</span> <span class="ow">in</span> <span class="p">[(</span><span class="s1">'a'</span><span class="p">,</span> <span class="n">a</span><span class="p">),</span> <span class="p">(</span><span class="s1">'LP'</span><span class="p">,</span> <span class="n">b_lp</span><span class="p">),</span> <span class="p">(</span><span class="s1">'HP'</span><span class="p">,</span> <span class="n">b_hp</span><span class="p">)]:</span>
+    <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">value</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">values</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">name</span> <span class="o">==</span> <span class="s1">'a'</span><span class="p">:</span>
+            <span class="n">lhs</span> <span class="o">=</span> <span class="sa">rf</span><span class="s1">'a_</span><span class="se">{{</span><span class="si">{</span><span class="n">i</span><span class="si">}</span><span class="se">}}</span><span class="s1">'</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">lhs</span> <span class="o">=</span> <span class="sa">rf</span><span class="s1">'b_</span><span class="se">{{</span><span class="s1">\mathrm</span><span class="se">{{</span><span class="si">{</span><span class="n">name</span><span class="si">}</span><span class="se">}}</span><span class="s1">,</span><span class="si">{</span><span class="n">i</span><span class="si">}</span><span class="se">}}</span><span class="s1">'</span>
+        <span class="n">mprint</span><span class="p">(</span><span class="n">lhs</span><span class="p">,</span> <span class="s1">' = '</span><span class="p">,</span> <span class="n">latex</span><span class="p">(</span><span class="n">value</span><span class="p">))</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_latex math notranslate nohighlight">
+\[\displaystyle a_{0} = 1\]</div>
+<div class="output text_latex math notranslate nohighlight">
+\[\displaystyle a_{1} = \frac{2 \left(r - 1\right) \left(r + 1\right)}{r^{2} + \sqrt{2} r + 1}\]</div>
+<div class="output text_latex math notranslate nohighlight">
+\[\displaystyle a_{2} = \frac{r^{2} - \sqrt{2} r + 1}{r^{2} + \sqrt{2} r + 1}\]</div>
+<div class="output text_latex math notranslate nohighlight">
+\[\displaystyle b_{\mathrm{LP},0} = \frac{r^{2}}{r^{2} + \sqrt{2} r + 1}\]</div>
+<div class="output text_latex math notranslate nohighlight">
+\[\displaystyle b_{\mathrm{LP},1} = \frac{2 r^{2}}{r^{2} + \sqrt{2} r + 1}\]</div>
+<div class="output text_latex math notranslate nohighlight">
+\[\displaystyle b_{\mathrm{LP},2} = \frac{r^{2}}{r^{2} + \sqrt{2} r + 1}\]</div>
+<div class="output text_latex math notranslate nohighlight">
+\[\displaystyle b_{\mathrm{HP},0} = \frac{1}{r^{2} + \sqrt{2} r + 1}\]</div>
+<div class="output text_latex math notranslate nohighlight">
+\[\displaystyle b_{\mathrm{HP},1} = - \frac{2}{r^{2} + \sqrt{2} r + 1}\]</div>
+<div class="output text_latex math notranslate nohighlight">
+\[\displaystyle b_{\mathrm{HP},2} = \frac{1}{r^{2} + \sqrt{2} r + 1}\]</div>
+</div>
+</div>
+<section id="the-difference-equation">
+<h3>The Difference Equation<a class="headerlink" href="#the-difference-equation" title="Link to this heading">#</a></h3>
+<p>With the digital transfer function written as</p>
+<div class="math notranslate nohighlight">
+\[H(z)=\frac{b_0+b_1z^{-1}+b_2z^{-2}}{1+a_1z^{-1}+a_2z^{-2}},\]</div>
+<p>we get</p>
+<div class="math notranslate nohighlight">
+\[
+\boxed{y[k]=b_0x[k]+b_1x[k-1]+b_2x[k-2]-a_1y[k-1]-a_2y[k-2].}
+\]</div>
+<p>This is the same second-order difference equation already implemented in the low-pass and high-pass notebooks. Only the numerator coefficients change between the two filters.</p>
+</section>
+</section>
+<section id="numerical-example">
+<h2>Numerical Example<a class="headerlink" href="#numerical-example" title="Link to this heading">#</a></h2>
+<p>Let the sampling frequency be <span class="math notranslate nohighlight">\(f_s=100\;\mathrm{Hz}\)</span>, and the required digital cutoff frequency be <span class="math notranslate nohighlight">\(f_c=10\;\mathrm{Hz}\)</span>.</p>
+<p>The bilinear transform warps the frequency axis. If the digital filter must have its <span class="math notranslate nohighlight">\(-3\;\mathrm{dB}\)</span> cutoff at exactly <span class="math notranslate nohighlight">\(f_c\)</span>, we use the <strong>prewarped</strong> analog cutoff frequency:</p>
+<div class="math notranslate nohighlight">
+\[
+\omega_{c,\mathrm{prewarp}}=2f_s\tan\left(\pi\frac{f_c}{f_s}\right),
+\qquad r=\tan\left(\pi\frac{f_c}{f_s}\right).
+\]</div>
+<p>The original notebooks use the bilinear substitution without prewarping. That is also valid, but then the digital cutoff frequency is shifted slightly.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">fs</span><span class="p">,</span> <span class="n">fc</span> <span class="o">=</span> <span class="mf">100.0</span><span class="p">,</span> <span class="mf">10.0</span>
+<span class="n">r_value</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">tan</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">pi</span> <span class="o">*</span> <span class="n">fc</span> <span class="o">/</span> <span class="n">fs</span><span class="p">)</span>
+
+<span class="n">coef</span> <span class="o">=</span> <span class="k">lambda</span> <span class="n">exprs</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="nb">float</span><span class="p">(</span><span class="n">v</span><span class="o">.</span><span class="n">subs</span><span class="p">(</span><span class="n">r</span><span class="p">,</span> <span class="n">r_value</span><span class="p">))</span> <span class="k">for</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">exprs</span><span class="p">])</span>
+<span class="n">a_num</span> <span class="o">=</span> <span class="n">coef</span><span class="p">(</span><span class="n">a</span><span class="p">)</span>
+<span class="n">b_lp_num</span> <span class="o">=</span> <span class="n">coef</span><span class="p">(</span><span class="n">b_lp</span><span class="p">)</span>
+<span class="n">b_hp_num</span> <span class="o">=</span> <span class="n">coef</span><span class="p">(</span><span class="n">b_hp</span><span class="p">)</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="s1">'Denominator a:'</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">round</span><span class="p">(</span><span class="n">a_num</span><span class="p">,</span> <span class="mi">8</span><span class="p">))</span>
+<span class="nb">print</span><span class="p">(</span><span class="s1">'Low-pass b:  '</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">round</span><span class="p">(</span><span class="n">b_lp_num</span><span class="p">,</span> <span class="mi">8</span><span class="p">))</span>
+<span class="nb">print</span><span class="p">(</span><span class="s1">'High-pass b: '</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">round</span><span class="p">(</span><span class="n">b_hp_num</span><span class="p">,</span> <span class="mi">8</span><span class="p">))</span>
+
+<span class="k">for</span> <span class="n">kind</span><span class="p">,</span> <span class="n">b</span> <span class="ow">in</span> <span class="p">[(</span><span class="s1">'lowpass'</span><span class="p">,</span> <span class="n">b_lp_num</span><span class="p">),</span> <span class="p">(</span><span class="s1">'highpass'</span><span class="p">,</span> <span class="n">b_hp_num</span><span class="p">)]:</span>
+    <span class="n">expected_b</span><span class="p">,</span> <span class="n">expected_a</span> <span class="o">=</span> <span class="n">signal</span><span class="o">.</span><span class="n">butter</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="n">fc</span><span class="p">,</span> <span class="n">btype</span><span class="o">=</span><span class="n">kind</span><span class="p">,</span> <span class="n">fs</span><span class="o">=</span><span class="n">fs</span><span class="p">)</span>
+    <span class="n">np</span><span class="o">.</span><span class="n">testing</span><span class="o">.</span><span class="n">assert_allclose</span><span class="p">(</span><span class="n">b</span><span class="p">,</span> <span class="n">expected_b</span><span class="p">,</span> <span class="n">atol</span><span class="o">=</span><span class="mf">1e-12</span><span class="p">)</span>
+    <span class="n">np</span><span class="o">.</span><span class="n">testing</span><span class="o">.</span><span class="n">assert_allclose</span><span class="p">(</span><span class="n">a_num</span><span class="p">,</span> <span class="n">expected_a</span><span class="p">,</span> <span class="n">atol</span><span class="o">=</span><span class="mf">1e-12</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="n">kind</span><span class="p">,</span> <span class="s1">': coefficients match scipy.signal.butter()'</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Denominator a: [ 1.        -1.1429805  0.4128016]
+Low-pass b:   [0.06745527 0.13491055 0.06745527]
+High-pass b:  [ 0.63894553 -1.27789105  0.63894553]
+lowpass : coefficients match scipy.signal.butter()
+highpass : coefficients match scipy.signal.butter()
+</pre></div>
+</div>
+</div>
+</div>
+<section id="frequency-response">
+<h3>Frequency Response<a class="headerlink" href="#frequency-response" title="Link to this heading">#</a></h3>
+<p>We can also check the cutoff frequency directly. The second-order low-pass filter and the standard second-order high-pass filter must both have magnitude <span class="math notranslate nohighlight">\(1/\sqrt{2}\)</span> (approximately <span class="math notranslate nohighlight">\(-3.01\;\mathrm{dB}\)</span>) at the cutoff.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">fig</span><span class="p">,</span> <span class="n">ax</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">7</span><span class="p">,</span> <span class="mf">3.6</span><span class="p">))</span>
+<span class="k">for</span> <span class="n">label</span><span class="p">,</span> <span class="n">b</span> <span class="ow">in</span> <span class="p">[(</span><span class="s1">'Low-pass'</span><span class="p">,</span> <span class="n">b_lp_num</span><span class="p">),</span> <span class="p">(</span><span class="s1">'High-pass'</span><span class="p">,</span> <span class="n">b_hp_num</span><span class="p">)]:</span>
+    <span class="n">freq</span><span class="p">,</span> <span class="n">h</span> <span class="o">=</span> <span class="n">signal</span><span class="o">.</span><span class="n">freqz</span><span class="p">(</span><span class="n">b</span><span class="p">,</span> <span class="n">a_num</span><span class="p">,</span> <span class="n">worN</span><span class="o">=</span><span class="mi">2048</span><span class="p">,</span> <span class="n">fs</span><span class="o">=</span><span class="n">fs</span><span class="p">)</span>
+    <span class="n">ax</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">freq</span><span class="p">,</span> <span class="mi">20</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">log10</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">maximum</span><span class="p">(</span><span class="nb">abs</span><span class="p">(</span><span class="n">h</span><span class="p">),</span> <span class="mf">1e-12</span><span class="p">)),</span> <span class="n">label</span><span class="o">=</span><span class="n">label</span><span class="p">)</span>
+    <span class="n">idx</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">argmin</span><span class="p">(</span><span class="nb">abs</span><span class="p">(</span><span class="n">freq</span><span class="o">-</span><span class="n">fc</span><span class="p">))</span>
+    <span class="k">assert</span> <span class="nb">abs</span><span class="p">(</span><span class="mi">20</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">log10</span><span class="p">(</span><span class="nb">abs</span><span class="p">(</span><span class="n">h</span><span class="p">[</span><span class="n">idx</span><span class="p">]))</span> <span class="o">+</span> <span class="mf">3.0103</span><span class="p">)</span> <span class="o">&lt;</span> <span class="mf">0.06</span>
+
+<span class="n">ax</span><span class="o">.</span><span class="n">axvline</span><span class="p">(</span><span class="n">fc</span><span class="p">,</span> <span class="n">linestyle</span><span class="o">=</span><span class="s1">'--'</span><span class="p">,</span> <span class="n">linewidth</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s1">'gray'</span><span class="p">)</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">axhline</span><span class="p">(</span><span class="o">-</span><span class="mf">3.0103</span><span class="p">,</span> <span class="n">linestyle</span><span class="o">=</span><span class="s1">':'</span><span class="p">,</span> <span class="n">linewidth</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s1">'gray'</span><span class="p">)</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="n">xlabel</span><span class="o">=</span><span class="s1">'Frequency (Hz)'</span><span class="p">,</span> <span class="n">ylabel</span><span class="o">=</span><span class="s1">'Magnitude (dB)'</span><span class="p">,</span>
+       <span class="n">title</span><span class="o">=</span><span class="s1">'Second-order Butterworth filters (sampling: 100 Hz)'</span><span class="p">)</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">set_xlim</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">fs</span><span class="o">/</span><span class="mi">2</span><span class="p">)</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">set_ylim</span><span class="p">(</span><span class="o">-</span><span class="mi">80</span><span class="p">,</span> <span class="mi">3</span><span class="p">)</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">grid</span><span class="p">(</span><span class="kc">True</span><span class="p">,</span> <span class="n">alpha</span><span class="o">=</span><span class="mf">0.3</span><span class="p">)</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">legend</span><span class="p">()</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<img alt="_images/f5814efc1f81e8547cbd73564a9a1bf7db2aafcf06b644fcabf3be5d1a6a9a69.png" src="_images/f5814efc1f81e8547cbd73564a9a1bf7db2aafcf06b644fcabf3be5d1a6a9a69.png" />
+</div>
+</div>
+</section>
+</section>
+<section id="higher-order-digital-butterworth-filters">
+<h2>Higher-Order Digital Butterworth Filters<a class="headerlink" href="#higher-order-digital-butterworth-filters" title="Link to this heading">#</a></h2>
+<p>The coefficient table gives us the analog prototypes for any order. To obtain a digital filter of order <span class="math notranslate nohighlight">\(n\)</span>, we use the same bilinear transform and normalize the resulting coefficients.</p>
+<p>For higher orders, directly implementing one large difference equation can introduce numerical errors. In practice, digital filters of higher order are often implemented as cascaded <strong>second-order sections (SOS)</strong>.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">sos</span> <span class="o">=</span> <span class="n">signal</span><span class="o">.</span><span class="n">butter</span><span class="p">(</span><span class="mi">6</span><span class="p">,</span> <span class="n">fc</span><span class="p">,</span> <span class="n">btype</span><span class="o">=</span><span class="s1">'lowpass'</span><span class="p">,</span> <span class="n">fs</span><span class="o">=</span><span class="n">fs</span><span class="p">,</span> <span class="n">output</span><span class="o">=</span><span class="s1">'sos'</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s1">'Sixth-order low-pass Butterworth: cascaded second-order sections'</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s1">'Each row: [b0, b1, b2, a0, a1, a2]'</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">round</span><span class="p">(</span><span class="n">sos</span><span class="p">,</span> <span class="mi">7</span><span class="p">))</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Sixth-order low-pass Butterworth: cascaded second-order sections
+Each row: [b0, b1, b2, a0, a1, a2]
+[[ 3.4050000e-04  6.8110000e-04  3.4050000e-04  1.0000000e+00
+  -1.0320694e+00  2.7570790e-01]
+ [ 1.0000000e+00  2.0000000e+00  1.0000000e+00  1.0000000e+00
+  -1.1429805e+00  4.1280160e-01]
+ [ 1.0000000e+00  2.0000000e+00  1.0000000e+00  1.0000000e+00
+  -1.4043849e+00  7.3591520e-01]]
+</pre></div>
+</div>
+</div>
+</div>
+</section>
+<section id="summary">
+<h2>Summary<a class="headerlink" href="#summary" title="Link to this heading">#</a></h2>
+<ul class="simple">
+<li><p><strong>Butterworth coefficient table:</strong> fixed for each normalized analog order <span class="math notranslate nohighlight">\(n\)</span>.</p></li>
+<li><p><strong>Analog low-pass and high-pass:</strong> obtained from the same polynomial <span class="math notranslate nohighlight">\(B_n\)</span> by changing the numerator and scaling with <span class="math notranslate nohighlight">\(\omega_c\)</span>.</p></li>
+<li><p><strong>Digital filter coefficients:</strong> depend on the order, cutoff frequency, and sampling period.</p></li>
+<li><p><strong>Prewarping:</strong> allows the digital cutoff to match the requested frequency after the bilinear transform.</p></li>
+<li><p><strong>Higher-order implementations:</strong> prefer SOS for numerical robustness.</p></li>
+</ul>
+</section>
+</section>
+
+    <script type="text/x-thebe-config">
+    {
+        requestKernel: true,
+        binderOptions: {
+            repo: "binder-examples/jupyter-stacks-datascience",
+            ref: "master",
+        },
+        codeMirrorConfig: {
+            theme: "abcdef",
+            mode: "python"
+        },
+        kernelOptions: {
+            name: "python3",
+            path: "./."
+        },
+        predefinedOutput: true
+    }
+    </script>
+    <script>kernelName = 'python3'</script>
+
+                </article>
+              
+
+              
+              
+              
+              
+                <footer class="prev-next-footer d-print-none">
+                  
+<div class="prev-next-area">
+    <a class="left-prev"
+       href="digital-pid.html"
+       title="previous page">
+      <i class="fa-solid fa-angle-left"></i>
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">previous</p>
+        <p class="prev-next-title">Digital PID Control - Part 1</p>
+      </div>
+    </a>
+    <a class="right-next"
+       href="digital-pid-2.html"
+       title="next page">
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">next</p>
+        <p class="prev-next-title">Digital PID Control - Part 2</p>
+      </div>
+      <i class="fa-solid fa-angle-right"></i>
+    </a>
+</div>
+                </footer>
+              
+            </div>
+            
+            
+              
+                <dialog id="pst-secondary-sidebar-modal"></dialog>
+                <div id="pst-secondary-sidebar" class="bd-sidebar-secondary bd-toc"><div class="sidebar-secondary-items sidebar-secondary__inner">
+
+
+  <div class="sidebar-secondary-item"><div
+    id="pst-page-navigation-heading-2"
+    class="page-toc tocsection onthispage">
+    <i class="fa-solid fa-list"></i> Contents
+  </div>
+  <nav id="pst-page-toc-nav" class="page-toc" aria-labelledby="pst-page-navigation-heading-2">
+    <ul class="pst-show_toc_level nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#required-imports">Required Imports</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#normalized-butterworth-polynomial">Normalized Butterworth Polynomial</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id1">Butterworth Coefficient Table</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#from-the-table-to-a-transfer-function">From the table to a transfer function</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#discretization-with-bilinear-transformation">Discretization with Bilinear Transformation</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#the-difference-equation">The Difference Equation</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#numerical-example">Numerical Example</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#frequency-response">Frequency Response</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#higher-order-digital-butterworth-filters">Higher-Order Digital Butterworth Filters</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#summary">Summary</a></li>
+</ul>
+  </nav></div>
+
+</div></div>
+              
+            
+          </div>
+          <footer class="bd-footer-content">
+            
+<div class="bd-footer-content__inner container">
+  
+  <div class="footer-item">
+    
+<p class="component-author">
+By Auralius Manurung - Universitas Telkom
+</p>
+
+  </div>
+  
+  <div class="footer-item">
+    
+
+  <p class="copyright">
+    
+      © Copyright 2026.
+      <br/>
+    
+  </p>
+
+  </div>
+  
+  <div class="footer-item">
+    
+  </div>
+  
+  <div class="footer-item">
+    
+  </div>
+  
+</div>
+          </footer>
+        
+
+      </main>
+    </div>
+  </div>
+  
+  <!-- Scripts loaded after <body> so the DOM is not blocked -->
+  <script defer src="_static/scripts/bootstrap.js?digest=55c26ed414f5f8a31ebb"></script>
+<script defer src="_static/scripts/pydata-sphinx-theme.js?digest=55c26ed414f5f8a31ebb"></script>
+
+  <footer class="bd-footer">
+  </footer>
+  </body>
+</html>

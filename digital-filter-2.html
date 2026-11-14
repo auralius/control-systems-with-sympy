@@ -34,7 +34,7 @@
     <link rel="stylesheet" type="text/css" href="_static/styles/sphinx-book-theme.css?v=3c74b3bc" />
     <link rel="stylesheet" type="text/css" href="_static/togglebutton.css?v=9c3e77be" />
     <link rel="stylesheet" type="text/css" href="_static/copybutton.css?v=76b2166b" />
-    <link rel="stylesheet" type="text/css" href="_static/mystnb.11b39860a7a0cbfd473a3ad8a317855267ff0bd372690045ca344a6b62be495e.css" />
+    <link rel="stylesheet" type="text/css" href="_static/mystnb.11b39860a7a0cbfd473a3ad8a317855267ff0bd372690045ca344a6b62be495e.css?v=8cd3d715" />
     <link rel="stylesheet" type="text/css" href="_static/sphinx-thebe.css?v=4fa983c6" />
     <link rel="stylesheet" type="text/css" href="_static/sphinx-design.min.css?v=95c83b7e" />
     <link rel="stylesheet" type="text/css" href="_static/custom.css?v=b5bdeb62" />
@@ -220,7 +220,13 @@
                 </a>
             </li>
         </ul>
-        <p aria-level="2" class="caption" role="heading"><span class="caption-text">Modeling and Time-Domain Analysis</span></p>
+        <p aria-level="2" class="caption" role="heading"><span class="caption-text">Reviews</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="linear-algebra-primer.html">Linear Algebra Primer</a></li>
+<li class="toctree-l1"><a class="reference internal" href="ode-laplace.html">Ordinary Differential Equations and the Laplace Transform</a></li>
+<li class="toctree-l1"><a class="reference internal" href="laplace-table.html">Laplace Transform Table</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Modeling and Time-Domain Analysis</span></p>
 <ul class="nav bd-sidenav">
 <li class="toctree-l1"><a class="reference internal" href="block-diagram.html">Block Diagram</a></li>
 <li class="toctree-l1"><a class="reference internal" href="fly-ball-governor.html">System Modeling: Flyball Governor</a></li>
@@ -228,6 +234,7 @@
 <li class="toctree-l1"><a class="reference internal" href="first-order.html">First-order systems</a></li>
 <li class="toctree-l1"><a class="reference internal" href="second-order.html">Second-Order System</a></li>
 <li class="toctree-l1"><a class="reference internal" href="steady-state-error.html">Tracking Accuracy of a Feedback system</a></li>
+<li class="toctree-l1"><a class="reference internal" href="state-space.html">State-Space Modeling</a></li>
 </ul>
 <p aria-level="2" class="caption" role="heading"><span class="caption-text">Classical Control Analysis</span></p>
 <ul class="nav bd-sidenav">
@@ -242,6 +249,7 @@
 <li class="toctree-l1"><a class="reference internal" href="pid-so.html">PID Control of a Second Order System</a></li>
 <li class="toctree-l1"><a class="reference internal" href="pid-ss.html">PID-Control (with Derivative Filter) in State Space Format</a></li>
 <li class="toctree-l1"><a class="reference internal" href="digital-pid.html">Digital PID Control - Part 1</a></li>
+<li class="toctree-l1"><a class="reference internal" href="butterworth-coefficients.html">Butterworth Coefficient Table</a></li>
 <li class="toctree-l1"><a class="reference internal" href="digital-pid-2.html">Digital PID Control - Part 2</a></li>
 <li class="toctree-l1"><a class="reference internal" href="digital-filter.html">Digital Low-Pass Filter</a></li>
 <li class="toctree-l1 current active"><a class="current reference internal" href="#">Digital High-Pass Filter</a></li>
@@ -676,7 +684,12 @@
 \[ H_{HP}(s) = 1 - H_{LP}\]</div>
 <div class="math notranslate nohighlight">
 \[ H(s) = 1 - \frac{\omega_{c}^{2}}{\omega_{c}^{2} + \sqrt{2} \omega_{c} s + s^{2}} \]</div>
-<p>where <span class="math notranslate nohighlight">\(\omega_c\)</span> is the filter cut-off frequency (in Hz).</p>
+<p>where <span class="math notranslate nohighlight">\(\omega_c\)</span> is the analog cutoff angular frequency (in rad/s).</p>
+<p>The denominator below is obtained by scaling the normalized Butterworth prototype <span class="math notranslate nohighlight">\(B_2(p)=p^2+\sqrt{2}p+1\)</span>. See <a class="reference internal" href="butterworth-coefficients.html"><span class="doc">Butterworth Coefficient Table</span></a> for this derivation.</p>
+<p><strong>Important distinction:</strong> The complementary filter developed here, <span class="math notranslate nohighlight">\(H_{HP}(s)=1-H_{LP}(s)\)</span>, is <strong>not</strong> the standard second-order Butterworth high-pass filter. The standard Butterworth high-pass response is</p>
+<div class="math notranslate nohighlight">
+\[H_{HP,\mathrm{Butterworth}}(s)=\frac{s^2}{s^2+\sqrt{2}\omega_c s+\omega_c^2}.\]</div>
+<p>Both designs reject DC, but their frequency responses differ. We retain the complementary derivation below as a separate useful construction.</p>
 <p><strong>Discretization with Bilinear Transformation</strong></p>
 <p>Similiar to the previous section, here we also transform <span class="math notranslate nohighlight">\(s\)</span> into <span class="math notranslate nohighlight">\(z\)</span> by applying the following substitution.</p>
 <div class="math notranslate nohighlight">

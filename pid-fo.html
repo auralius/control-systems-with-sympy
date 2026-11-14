@@ -34,7 +34,7 @@
     <link rel="stylesheet" type="text/css" href="_static/styles/sphinx-book-theme.css?v=3c74b3bc" />
     <link rel="stylesheet" type="text/css" href="_static/togglebutton.css?v=9c3e77be" />
     <link rel="stylesheet" type="text/css" href="_static/copybutton.css?v=76b2166b" />
-    <link rel="stylesheet" type="text/css" href="_static/mystnb.11b39860a7a0cbfd473a3ad8a317855267ff0bd372690045ca344a6b62be495e.css" />
+    <link rel="stylesheet" type="text/css" href="_static/mystnb.11b39860a7a0cbfd473a3ad8a317855267ff0bd372690045ca344a6b62be495e.css?v=8cd3d715" />
     <link rel="stylesheet" type="text/css" href="_static/sphinx-thebe.css?v=4fa983c6" />
     <link rel="stylesheet" type="text/css" href="_static/sphinx-design.min.css?v=95c83b7e" />
     <link rel="stylesheet" type="text/css" href="_static/custom.css?v=b5bdeb62" />
@@ -1047,7 +1047,7 @@ New pole location:</p>
 <div class="cell tag_full-width docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">cpid</span>   <span class="o">=</span> <span class="n">logcombine</span><span class="p">(</span><span class="n">ilaplace</span><span class="p">(</span><span class="n">Q</span> <span class="o">*</span> <span class="mi">1</span><span class="o">/</span><span class="n">s</span><span class="p">))</span>
-<span class="n">csspid</span> <span class="o">=</span> <span class="n">limit</span><span class="p">(</span><span class="n">cpid</span><span class="p">,</span> <span class="n">t</span><span class="p">,</span> <span class="s1">'oo'</span><span class="p">)</span>
+<span class="n">csspid</span> <span class="o">=</span> <span class="n">simplify</span><span class="p">(</span><span class="n">limit</span><span class="p">(</span><span class="n">cpid</span><span class="p">,</span> <span class="n">t</span><span class="p">,</span> <span class="s1">'oo'</span><span class="p">))</span>
 <span class="n">c0pid</span>  <span class="o">=</span> <span class="n">limit</span><span class="p">(</span><span class="n">cpid</span><span class="p">,</span> <span class="n">t</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
 
 <span class="n">mprintb</span><span class="p">(</span><span class="s2">"c(t) = "</span><span class="p">,</span> <span class="n">latex</span><span class="p">(</span><span class="n">cpid</span><span class="p">))</span>
@@ -1060,7 +1060,7 @@ New pole location:</p>
 <div class="output text_latex math notranslate nohighlight">
 \[\displaystyle \boxed{c(t) = - \frac{\tau e^{- \frac{t \left(K_{p} + 1\right)}{2 \left(K_{d} + \tau\right)}} \cos{\left(\frac{t \sqrt{K_{d} K_{i} + K_{i} \tau - \frac{K_{p}^{2}}{4} - \frac{K_{p}}{2} - \frac{1}{4}}}{K_{d} + \tau} \right)}}{K_{d} + \tau} + \frac{2 \left(K_{d} + \tau\right) \left(\frac{\tau \left(K_{p} + 1\right)}{2 \left(K_{d} + \tau\right)^{2}} - \frac{1}{K_{d} + \tau}\right) e^{- \frac{t \left(K_{p} + 1\right)}{2 \left(K_{d} + \tau\right)}} \sin{\left(\frac{t \sqrt{4 K_{d} K_{i} + 4 K_{i} \tau - K_{p}^{2} - 2 K_{p} - 1}}{2 \left(K_{d} + \tau\right)} \right)}}{\sqrt{4 K_{d} K_{i} + 4 K_{i} \tau - K_{p}^{2} - 2 K_{p} - 1}} + 1}\]</div>
 <div class="output text_latex math notranslate nohighlight">
-\[\displaystyle \boxed{c_{ss} = \frac{K_{d}^{3} \sqrt{4 K_{d} K_{i} + 4 K_{i} \tau - K_{p}^{2} - 2 K_{p} - 1} + 3 K_{d}^{2} \tau \sqrt{4 K_{d} K_{i} + 4 K_{i} \tau - K_{p}^{2} - 2 K_{p} - 1} + 3 K_{d} \tau^{2} \sqrt{4 K_{d} K_{i} + 4 K_{i} \tau - K_{p}^{2} - 2 K_{p} - 1} + \tau^{3} \sqrt{4 K_{d} K_{i} + 4 K_{i} \tau - K_{p}^{2} - 2 K_{p} - 1}}{\left(K_{d} + \tau\right)^{3} \sqrt{4 K_{d} K_{i} + 4 K_{i} \tau - K_{p}^{2} - 2 K_{p} - 1}}}\]</div>
+\[\displaystyle \boxed{c_{ss} = 1}\]</div>
 <div class="output text_latex math notranslate nohighlight">
 \[\displaystyle \boxed{c(0) = \frac{K_{d}}{K_{d} + \tau}}\]</div>
 </div>
@@ -1163,7 +1163,7 @@ Q(s)=\frac{K_d s^2+K_p s+K_i}
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">mprint</span><span class="p">(</span><span class="s2">"Q(s)="</span><span class="p">,</span><span class="n">latex</span><span class="p">(</span><span class="n">Q</span><span class="p">))</span>
 
 <span class="n">num</span><span class="p">,</span> <span class="n">denom</span> <span class="o">=</span> <span class="n">Q</span><span class="o">.</span><span class="n">as_numer_denom</span><span class="p">()</span>
-<span class="nb">print</span><span class="p">(</span><span class="s2">"--- characteristic equation ---"</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">"</span><span class="se">\n</span><span class="s2">--- characteristic equation ---"</span><span class="p">)</span>
 <span class="n">mprint</span><span class="p">(</span><span class="n">latex</span><span class="p">(</span><span class="n">Eq</span><span class="p">(</span><span class="n">denom</span><span class="p">,</span> <span class="mi">0</span><span class="p">)))</span>
 
 <span class="n">char_pid</span> <span class="o">=</span> <span class="n">collect</span><span class="p">(</span><span class="n">denom</span><span class="p">,</span> <span class="p">[</span><span class="n">s</span><span class="p">,</span> <span class="n">s</span><span class="o">**</span><span class="mi">2</span><span class="p">])</span>
@@ -1190,19 +1190,28 @@ Q(s)=\frac{K_d s^2+K_p s+K_i}
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Characteristic equation of the closed-loop system</span>
 <span class="n">char_desired</span> <span class="o">=</span> <span class="n">s</span><span class="o">**</span><span class="mi">2</span> <span class="o">+</span> <span class="mi">2</span><span class="o">*</span><span class="n">zeta</span><span class="o">*</span><span class="n">omega_n</span><span class="o">*</span><span class="n">s</span> <span class="o">+</span> <span class="n">omega_n</span><span class="o">**</span><span class="mi">2</span>
 
-<span class="n">mprint</span><span class="p">(</span><span class="s2">"PID: "</span><span class="p">,</span> <span class="n">latex</span><span class="p">(</span><span class="n">char_pid</span><span class="p">))</span>
-<span class="n">mprint</span><span class="p">(</span><span class="s2">"Desired: "</span><span class="p">,</span> <span class="n">latex</span><span class="p">(</span><span class="n">char_desired</span><span class="p">))</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">"--- PID-contolled characteristic equation ---"</span><span class="p">)</span>
+<span class="n">mprint</span><span class="p">(</span><span class="n">latex</span><span class="p">(</span><span class="n">char_pid</span><span class="p">))</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="s2">"</span><span class="se">\n</span><span class="s2">--- Desired characteristic equation ---"</span><span class="p">)</span>
+<span class="n">mprint</span><span class="p">(</span><span class="n">latex</span><span class="p">(</span><span class="n">char_desired</span><span class="p">))</span>
 </pre></div>
 </div>
 </div>
 <div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>--- PID-contolled characteristic equation ---
+</pre></div>
+</div>
 <div class="output text_latex math notranslate nohighlight">
-\[\displaystyle PID: \frac{K_{i}}{K_{d} + \tau} + s^{2} + \frac{s \left(K_{p} + 1\right)}{K_{d} + \tau}\]</div>
+\[\displaystyle \frac{K_{i}}{K_{d} + \tau} + s^{2} + \frac{s \left(K_{p} + 1\right)}{K_{d} + \tau}\]</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>--- Desired characteristic equation ---
+</pre></div>
+</div>
 <div class="output text_latex math notranslate nohighlight">
-\[\displaystyle Desired: \omega_{n}^{2} + 2 \omega_{n} s \zeta + s^{2}\]</div>
+\[\displaystyle \omega_{n}^{2} + 2 \omega_{n} s \zeta + s^{2}\]</div>
 </div>
 </div>
-<p>By comparing the coefficients, we find:</p>
+<p>Comparing and matching the coefficients, we obtain:</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">eq1</span> <span class="o">=</span> <span class="n">Eq</span><span class="p">(</span><span class="n">char_pid</span><span class="o">.</span><span class="n">coeff</span><span class="p">(</span><span class="n">s</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span> <span class="n">char_desired</span><span class="o">.</span><span class="n">coeff</span><span class="p">(</span><span class="n">s</span><span class="p">,</span> <span class="mi">0</span><span class="p">))</span>
@@ -1495,7 +1504,7 @@ Q(s)=\frac{K_d s^2+K_p s+K_i}
 <td class="text-left"><p><span class="math notranslate nohighlight">\(0\)</span></p></td>
 </tr>
 <tr class="row-odd"><td class="text-left"><p><span class="math notranslate nohighlight">\(\mathtt{\text{PID}}\)</span></p></td>
-<td class="text-left"><p><span class="math notranslate nohighlight">\(\frac{K_{d}^{3} \sqrt{4 K_{d} K_{i} + 4 K_{i} \tau - K_{p}^{2} - 2 K_{p} - 1} + 3 K_{d}^{2} \tau \sqrt{4 K_{d} K_{i} + 4 K_{i} \tau - K_{p}^{2} - 2 K_{p} - 1} + 3 K_{d} \tau^{2} \sqrt{4 K_{d} K_{i} + 4 K_{i} \tau - K_{p}^{2} - 2 K_{p} - 1} + \tau^{3} \sqrt{4 K_{d} K_{i} + 4 K_{i} \tau - K_{p}^{2} - 2 K_{p} - 1}}{\left(K_{d} + \tau\right)^{3} \sqrt{4 K_{d} K_{i} + 4 K_{i} \tau - K_{p}^{2} - 2 K_{p} - 1}}\)</span></p></td>
+<td class="text-left"><p><span class="math notranslate nohighlight">\(1\)</span></p></td>
 <td class="text-left"><p><span class="math notranslate nohighlight">\(\frac{K_{d}}{K_{d} + \tau}\)</span></p></td>
 </tr>
 </tbody>

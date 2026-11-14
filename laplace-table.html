@@ -1,0 +1,943 @@
+
+<!DOCTYPE html>
+
+
+<html lang="en" data-content_root="./" >
+
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>Laplace Transform Table &#8212; Control Systems with Sympy</title>
+  
+  
+  
+  <script data-cfasync="false">
+    document.documentElement.dataset.mode = localStorage.getItem("mode") || "";
+    document.documentElement.dataset.theme = localStorage.getItem("theme") || "";
+  </script>
+  <!--
+    this give us a css class that will be invisible only if js is disabled
+  -->
+  <noscript>
+    <style>
+      .pst-js-only { display: none !important; }
+
+    </style>
+  </noscript>
+  
+  <!-- Loaded before other Sphinx assets -->
+  <link href="_static/styles/theme.css?digest=55c26ed414f5f8a31ebb" rel="stylesheet" />
+<link href="_static/styles/pydata-sphinx-theme.css?digest=55c26ed414f5f8a31ebb" rel="stylesheet" />
+
+    <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=03e43079" />
+    <link rel="stylesheet" type="text/css" href="_static/styles/sphinx-book-theme.css?v=3c74b3bc" />
+    <link rel="stylesheet" type="text/css" href="_static/togglebutton.css?v=9c3e77be" />
+    <link rel="stylesheet" type="text/css" href="_static/copybutton.css?v=76b2166b" />
+    <link rel="stylesheet" type="text/css" href="_static/mystnb.11b39860a7a0cbfd473a3ad8a317855267ff0bd372690045ca344a6b62be495e.css?v=8cd3d715" />
+    <link rel="stylesheet" type="text/css" href="_static/sphinx-thebe.css?v=4fa983c6" />
+    <link rel="stylesheet" type="text/css" href="_static/sphinx-design.min.css?v=95c83b7e" />
+    <link rel="stylesheet" type="text/css" href="_static/custom.css?v=b5bdeb62" />
+  
+  <!-- So that users can add custom icons -->
+  <script defer src="_static/scripts/fontawesome.js?digest=55c26ed414f5f8a31ebb"></script>
+  <!-- Pre-loaded scripts that we'll load fully later -->
+  <link rel="preload" as="script" href="_static/scripts/bootstrap.js?digest=55c26ed414f5f8a31ebb" />
+<link rel="preload" as="script" href="_static/scripts/pydata-sphinx-theme.js?digest=55c26ed414f5f8a31ebb" />
+
+    <script src="_static/documentation_options.js?v=9eb32ce0"></script>
+    <script src="_static/doctools.js?v=fd6eb6e6"></script>
+    <script src="_static/sphinx_highlight.js?v=6ffebe34"></script>
+    <script src="_static/clipboard.min.js?v=a7894cd8"></script>
+    <script src="_static/copybutton.js?v=f281be69"></script>
+    <script src="_static/scripts/sphinx-book-theme.js?v=fab101a9"></script>
+    <script>let toggleHintShow = 'Click to show';</script>
+    <script>let toggleHintHide = 'Click to hide';</script>
+    <script>let toggleOpenOnPrint = 'true';</script>
+    <script src="_static/togglebutton.js?v=b8b12719"></script>
+    <script>var togglebuttonSelector = '.toggle, .admonition.dropdown';</script>
+    <script src="_static/design-tabs.js?v=f930bc37"></script>
+    <script>const THEBE_JS_URL = "https://unpkg.com/thebe@0.8.2/lib/index.js"; const thebe_selector = ".thebe,.cell"; const thebe_selector_input = "pre"; const thebe_selector_output = ".output, .cell_output"</script>
+    <script async="async" src="_static/sphinx-thebe.js?v=c100c467"></script>
+    <script>window.MathJax = {"HTML-CSS": {"matchFontHeight": true, "scale": 50}, "options": {"processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
+    <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@4/tex-mml-chtml.js"></script>
+    <script>DOCUMENTATION_OPTIONS.pagename = 'laplace-table';</script>
+    <script>DOCUMENTATION_OPTIONS.search_as_you_type = false;</script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Block Diagram" href="block-diagram.html" />
+    <link rel="prev" title="Ordinary Differential Equations and the Laplace Transform" href="ode-laplace.html" />
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <meta name="docsearch:language" content="en"/>
+  <meta name="docsearch:version" content="" />
+  
+    
+    <script src="_static/searchtools.js"></script>
+    <script src="_static/language_data.js"></script>
+    <script src="searchindex.js"></script>
+  
+  </head>
+  <body data-default-mode="">
+  
+  
+  <div id="pst-skip-link" class="skip-link d-print-none"><a href="#main-content">Skip to main content</a></div>
+
+  
+  <div id="pst-scroll-pixel-helper"></div>
+  
+  <button type="button" class="btn rounded-pill" id="pst-back-to-top">
+    <i class="fa-solid fa-arrow-up"></i>Back to top</button>
+  
+  
+  
+  
+  <dialog id="pst-search-dialog">
+    
+<form class="bd-search d-flex align-items-center"
+      action="search.html"
+      method="get">
+  <i class="fa-solid fa-magnifying-glass"></i>
+  <input type="search"
+         class="form-control"
+         name="q"
+         placeholder="Search this book..."
+         aria-label="Search this book..."
+         autocomplete="off"
+         autocorrect="off"
+         autocapitalize="off"
+         spellcheck="false"/>
+  <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd>K</kbd></span>
+</form>
+  </dialog>
+
+  <div class="pst-async-banner-revealer d-none">
+  <aside id="bd-header-version-warning" class="d-none d-print-none" aria-label="Version warning"></aside>
+</div>
+
+  
+    <header id="pst-header" class="bd-header navbar navbar-expand-lg bd-navbar d-print-none">
+<div class="bd-header__inner bd-page-width">
+  <button class="pst-navbar-icon sidebar-toggle primary-toggle" aria-label="Site navigation">
+    <span class="fa-solid fa-bars"></span>
+  </button>
+  
+  
+  <div class="col-lg-9 navbar-header-items">
+    
+    
+    <div class="navbar-header-items__end">
+      
+        <div class="navbar-item navbar-persistent--container">
+          
+
+<button class="btn search-button-field search-button__button pst-js-only" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+ <i class="fa-solid fa-magnifying-glass"></i>
+ <span class="search-button__default-text">Search</span>
+ <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+</button>
+        </div>
+      
+      
+    </div>
+    
+  </div>
+  
+  
+    <div class="navbar-persistent--mobile">
+
+<button class="btn search-button-field search-button__button pst-js-only" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+ <i class="fa-solid fa-magnifying-glass"></i>
+ <span class="search-button__default-text">Search</span>
+ <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+</button>
+    </div>
+  
+
+  
+    <button class="pst-navbar-icon sidebar-toggle secondary-toggle" aria-label="On this page">
+      <span class="fa-solid fa-outdent"></span>
+    </button>
+  
+</div>
+
+    </header>
+  
+
+  <div class="bd-container">
+    <div class="bd-container__inner bd-page-width">
+      
+      
+      
+      <dialog id="pst-primary-sidebar-modal"></dialog>
+      <div id="pst-primary-sidebar" class="bd-sidebar-primary bd-sidebar">
+        
+
+  
+  <div class="sidebar-header-items sidebar-primary__section">
+    
+    
+    
+    
+  </div>
+  
+    <div class="sidebar-primary-items__start sidebar-primary__section">
+        <div class="sidebar-primary-item">
+
+  
+    
+  
+
+<a class="navbar-brand logo" href="intro.html">
+  
+  
+  
+  
+  
+    
+    
+      
+    
+    
+    <img src="_static/logo.png" class="logo__image only-light" alt="Control Systems with Sympy - Home"/>
+    <img src="_static/logo.png" class="logo__image only-dark pst-js-only" alt="Control Systems with Sympy - Home"/>
+  
+  
+</a></div>
+        <div class="sidebar-primary-item">
+
+<button class="btn search-button-field search-button__button pst-js-only" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+ <i class="fa-solid fa-magnifying-glass"></i>
+ <span class="search-button__default-text">Search</span>
+ <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+</button></div>
+        <div class="sidebar-primary-item"><nav class="bd-links bd-docs-nav" aria-label="Main">
+    <div class="bd-toc-item navbar-nav active">
+        
+        <ul class="nav bd-sidenav bd-sidenav__home-link">
+            <li class="toctree-l1">
+                <a class="reference internal" href="intro.html">
+                    WELCOME
+                </a>
+            </li>
+        </ul>
+        <p aria-level="2" class="caption" role="heading"><span class="caption-text">Reviews</span></p>
+<ul class="current nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="linear-algebra-primer.html">Linear Algebra Primer</a></li>
+<li class="toctree-l1"><a class="reference internal" href="ode-laplace.html">Ordinary Differential Equations and the Laplace Transform</a></li>
+<li class="toctree-l1 current active"><a class="current reference internal" href="#">Laplace Transform Table</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Modeling and Time-Domain Analysis</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="block-diagram.html">Block Diagram</a></li>
+<li class="toctree-l1"><a class="reference internal" href="fly-ball-governor.html">System Modeling: Flyball Governor</a></li>
+<li class="toctree-l1"><a class="reference internal" href="rectilinear.html">System Modeling: Rectilinear System</a></li>
+<li class="toctree-l1"><a class="reference internal" href="first-order.html">First-order systems</a></li>
+<li class="toctree-l1"><a class="reference internal" href="second-order.html">Second-Order System</a></li>
+<li class="toctree-l1"><a class="reference internal" href="steady-state-error.html">Tracking Accuracy of a Feedback system</a></li>
+<li class="toctree-l1"><a class="reference internal" href="state-space.html">State-Space Modeling</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Classical Control Analysis</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="routh-hurwitz.html">Routh-Hurwitz Stability Criterion</a></li>
+<li class="toctree-l1"><a class="reference internal" href="root-locus.html">The Root-Locus Method</a></li>
+<li class="toctree-l1"><a class="reference internal" href="bode-plot.html">The Bode Plots</a></li>
+<li class="toctree-l1"><a class="reference internal" href="bode-margins.html">Gain Margin and Phase Margin</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">PID Control</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="pid-fo.html">PID Control of a First Order System</a></li>
+<li class="toctree-l1"><a class="reference internal" href="pid-so.html">PID Control of a Second Order System</a></li>
+<li class="toctree-l1"><a class="reference internal" href="pid-ss.html">PID-Control (with Derivative Filter) in State Space Format</a></li>
+<li class="toctree-l1"><a class="reference internal" href="digital-pid.html">Digital PID Control - Part 1</a></li>
+<li class="toctree-l1"><a class="reference internal" href="digital-pid-2.html">Digital PID Control - Part 2</a></li>
+<li class="toctree-l1"><a class="reference internal" href="digital-filter.html">Digital Low-Pass Filter</a></li>
+<li class="toctree-l1"><a class="reference internal" href="digital-filter-2.html">Digital High-Pass Filter</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Interactive Sessions</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1 has-children"><a class="reference internal" href="interactives.html">Interactive Sessions with HTML/JavaScript</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2"><a class="reference internal" href="pid-fo-interactive.html">[HTML/JavaScript] Interactive PID-Controlled Second-Order Plant</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pid-so-interactive.html">[HTML/JavaScript] Interactive PID-Controlled Second-Order Plant</a></li>
+</ul>
+</details></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Miscellaneous</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="misc-problem-sets.html">Solved Various Problem Sets</a></li>
+</ul>
+
+    </div>
+</nav></div>
+    </div>
+  
+  
+  <div class="sidebar-primary-items__end sidebar-primary__section">
+      <div class="sidebar-primary-item">
+<div id="ethical-ad-placement"
+      class="flat"
+      data-ea-publisher="readthedocs"
+      data-ea-type="readthedocs-sidebar"
+      data-ea-manual="true">
+</div></div>
+  </div>
+
+
+      </div>
+      
+      <main id="main-content" class="bd-main" role="main">
+        
+        
+
+<div class="sbt-scroll-pixel-helper"></div>
+
+          <div class="bd-content">
+            <div class="bd-article-container">
+              
+              <div class="bd-header-article d-print-none">
+<div class="header-article-items header-article__inner">
+  
+    <div class="header-article-items__start">
+      
+        <div class="header-article-item"><button class="sidebar-toggle primary-toggle btn btn-sm" title="Toggle primary sidebar" data-bs-placement="bottom" data-bs-toggle="tooltip">
+  <span class="fa-solid fa-bars"></span>
+</button></div>
+      
+    </div>
+  
+  
+    <div class="header-article-items__end">
+      
+        <div class="header-article-item">
+
+<div class="article-header-buttons">
+
+
+
+
+
+<div class="dropdown dropdown-launch-buttons">
+  <button class="btn dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false" aria-label="Launch interactive content">
+    <i class="fas fa-rocket"></i>
+  </button>
+  <ul class="dropdown-menu">
+      
+      
+      
+      <li><a href="https://mybinder.org/v2/gh/auralius/control-systems-with-sympy/master?urlpath=lab/tree/laplace-table.ipynb" target="_blank"
+   class="btn btn-sm dropdown-item"
+   title="Launch on Binder"
+   data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  
+    <img alt="Binder logo" src="_static/images/logo_binder.svg">
+  </span>
+<span class="btn__text-container">Binder</span>
+</a>
+</li>
+      
+      
+      
+      
+      <li><a href="https://colab.research.google.com/github/auralius/control-systems-with-sympy/blob/master/laplace-table.ipynb" target="_blank"
+   class="btn btn-sm dropdown-item"
+   title="Launch on Colab"
+   data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  
+    <img alt="Colab logo" src="_static/images/logo_colab.png">
+  </span>
+<span class="btn__text-container">Colab</span>
+</a>
+</li>
+      
+  </ul>
+</div>
+
+
+
+
+
+
+<div class="dropdown dropdown-source-buttons">
+  <button class="btn dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false" aria-label="Source repositories">
+    <i class="fab fa-github"></i>
+  </button>
+  <ul class="dropdown-menu">
+      
+      
+      
+      <li><a href="https://github.com/auralius/control-systems-with-sympy" target="_blank"
+   class="btn btn-sm btn-source-repository-button dropdown-item"
+   title="Source repository"
+   data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fab fa-github"></i>
+  </span>
+<span class="btn__text-container">Repository</span>
+</a>
+</li>
+      
+      
+      
+      
+      <li><a href="https://github.com/auralius/control-systems-with-sympy/edit/master/laplace-table.ipynb" target="_blank"
+   class="btn btn-sm btn-source-edit-button dropdown-item"
+   title="Suggest edit"
+   data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-pencil-alt"></i>
+  </span>
+<span class="btn__text-container">Suggest edit</span>
+</a>
+</li>
+      
+      
+      
+      
+      <li><a href="https://github.com/auralius/control-systems-with-sympy/issues/new?title=Issue%20on%20page%20%2Flaplace-table.html&body=Your%20issue%20content%20here." target="_blank"
+   class="btn btn-sm btn-source-issues-button dropdown-item"
+   title="Open an issue"
+   data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-lightbulb"></i>
+  </span>
+<span class="btn__text-container">Open issue</span>
+</a>
+</li>
+      
+  </ul>
+</div>
+
+
+
+
+
+
+<div class="dropdown dropdown-download-buttons">
+  <button class="btn dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false" aria-label="Download this page">
+    <i class="fas fa-download"></i>
+  </button>
+  <ul class="dropdown-menu">
+      
+      
+      
+      <li><a href="_sources/laplace-table.ipynb" target="_blank"
+   class="btn btn-sm btn-download-source-button dropdown-item"
+   title="Download source file"
+   data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-file"></i>
+  </span>
+<span class="btn__text-container">.ipynb</span>
+</a>
+</li>
+      
+      
+      
+      
+      <li>
+<button onclick="window.print()"
+  class="btn btn-sm btn-download-pdf-button dropdown-item"
+  title="Print to PDF"
+  data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-file-pdf"></i>
+  </span>
+<span class="btn__text-container">.pdf</span>
+</button>
+</li>
+      
+  </ul>
+</div>
+
+
+
+
+<button onclick="toggleFullScreen()"
+  class="btn btn-sm btn-fullscreen-button pst-navbar-icon"
+  title="Fullscreen mode"
+  data-bs-placement="bottom" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-expand"></i>
+  </span>
+
+</button>
+
+
+
+<button class="btn btn-sm nav-link pst-navbar-icon theme-switch-button pst-js-only" aria-label="Color mode" data-bs-title="Color mode"  data-bs-placement="bottom" data-bs-toggle="tooltip">
+  <i class="theme-switch fa-solid fa-sun                fa-lg" data-mode="light" title="Light"></i>
+  <i class="theme-switch fa-solid fa-moon               fa-lg" data-mode="dark"  title="Dark"></i>
+  <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg" data-mode="auto"  title="System Settings"></i>
+</button>
+
+
+<button class="btn btn-sm pst-navbar-icon search-button search-button__button pst-js-only" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="fa-solid fa-magnifying-glass fa-lg"></i>
+</button>
+<button class="sidebar-toggle secondary-toggle btn btn-sm pst-navbar-icon" title="Toggle secondary sidebar" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <span class="fa-solid fa-list"></span>
+</button>
+</div></div>
+      
+    </div>
+  
+</div>
+</div>
+              
+              
+
+<div id="jb-print-docs-body" class="onlyprint">
+    <h1>Laplace Transform Table</h1>
+    <!-- Table of contents -->
+    <div id="print-main-content">
+        <div id="jb-print-toc">
+            
+            <div>
+                <h2> Contents </h2>
+            </div>
+            <nav aria-label="Page">
+                <ul class="pst-show_toc_level nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#notes">Notes</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#checking-some-transform-properties">Checking some transform properties</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#references">References</a></li>
+</ul>
+            </nav>
+        </div>
+    </div>
+</div>
+
+              
+                
+<div id="searchbox"></div>
+                <article class="bd-article">
+                  
+  <section class="tex2jax_ignore mathjax_ignore" id="laplace-transform-table">
+<h1>Laplace Transform Table<a class="headerlink" href="#laplace-transform-table" title="Link to this heading">#</a></h1>
+<p>The following table contains the basic Laplace transforms and the most frequently used properties of the unilateral Laplace transform,</p>
+<div class="math notranslate nohighlight">
+\[
+F(s)=\mathcal{L}\{f(t)\}=\int_0^\infty f(t)e^{-st}\,dt.
+\]</div>
+<p>We use <strong>SymPy</strong> to generate the standard transforms and to construct the symbolic identities. The notation follows the original table: <span class="math notranslate nohighlight">\(u_c(t)\)</span> denotes a unit step at <span class="math notranslate nohighlight">\(t=c\)</span>, and <span class="math notranslate nohighlight">\(\delta(t-c)\)</span> denotes a Dirac impulse.</p>
+<div class="cell tag_hide-input docutils container">
+<details class="admonition hide above-input">
+<summary aria-label="Toggle hidden content">
+<p class="collapsed admonition-title">Show code cell source</p>
+<p class="expanded admonition-title">Hide code cell source</p>
+</summary>
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">IPython.display</span><span class="w"> </span><span class="kn">import</span> <span class="n">Markdown</span><span class="p">,</span> <span class="n">display</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">sympy</span><span class="w"> </span><span class="kn">import</span> <span class="p">(</span>
+    <span class="n">Integer</span><span class="p">,</span> <span class="n">symbols</span><span class="p">,</span> <span class="n">Function</span><span class="p">,</span> <span class="n">Integral</span><span class="p">,</span> <span class="n">Derivative</span><span class="p">,</span> <span class="n">Subs</span><span class="p">,</span> <span class="n">Sum</span><span class="p">,</span>
+    <span class="n">exp</span><span class="p">,</span> <span class="n">sin</span><span class="p">,</span> <span class="n">cos</span><span class="p">,</span> <span class="n">sinh</span><span class="p">,</span> <span class="n">cosh</span><span class="p">,</span> <span class="n">gamma</span><span class="p">,</span> <span class="n">factorial</span><span class="p">,</span>
+    <span class="n">Heaviside</span><span class="p">,</span> <span class="n">DiracDelta</span><span class="p">,</span> <span class="n">laplace_transform</span><span class="p">,</span> <span class="n">latex</span><span class="p">,</span> <span class="n">simplify</span><span class="p">,</span>
+<span class="p">)</span>
+
+<span class="c1"># Symbols and generic functions</span>
+<span class="n">t</span><span class="p">,</span> <span class="n">s</span> <span class="o">=</span> <span class="n">symbols</span><span class="p">(</span><span class="s1">'t s'</span><span class="p">,</span> <span class="n">positive</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="n">a</span><span class="p">,</span> <span class="n">b</span> <span class="o">=</span> <span class="n">symbols</span><span class="p">(</span><span class="s1">'a b'</span><span class="p">,</span> <span class="n">real</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="n">c</span> <span class="o">=</span> <span class="n">symbols</span><span class="p">(</span><span class="s1">'c'</span><span class="p">,</span> <span class="n">positive</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="n">n</span> <span class="o">=</span> <span class="n">symbols</span><span class="p">(</span><span class="s1">'n'</span><span class="p">,</span> <span class="n">integer</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">nonnegative</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="n">k</span> <span class="o">=</span> <span class="n">symbols</span><span class="p">(</span><span class="s1">'k'</span><span class="p">,</span> <span class="n">integer</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">nonnegative</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="n">tau</span> <span class="o">=</span> <span class="n">symbols</span><span class="p">(</span><span class="s1">'tau'</span><span class="p">,</span> <span class="n">positive</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="n">f</span><span class="p">,</span> <span class="n">g</span><span class="p">,</span> <span class="n">F</span><span class="p">,</span> <span class="n">G</span> <span class="o">=</span> <span class="p">(</span><span class="n">Function</span><span class="p">(</span><span class="n">name</span><span class="p">)</span> <span class="k">for</span> <span class="n">name</span> <span class="ow">in</span> <span class="p">(</span><span class="s1">'f'</span><span class="p">,</span> <span class="s1">'g'</span><span class="p">,</span> <span class="s1">'F'</span><span class="p">,</span> <span class="s1">'G'</span><span class="p">))</span>
+
+<span class="c1"># SymPy's standard one-sided Laplace transform (without convergence data)</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">LT</span><span class="p">(</span><span class="n">expr</span><span class="p">):</span>
+    <span class="k">return</span> <span class="n">laplace_transform</span><span class="p">(</span><span class="n">expr</span><span class="p">,</span> <span class="n">t</span><span class="p">,</span> <span class="n">s</span><span class="p">,</span> <span class="n">noconds</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+<span class="c1"># Present symbolic functions in the compact notation used in the source table.</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">fmt</span><span class="p">(</span><span class="n">expr</span><span class="p">):</span>
+    <span class="k">return</span> <span class="p">(</span><span class="n">latex</span><span class="p">(</span><span class="n">expr</span><span class="p">)</span>
+        <span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="sa">r</span><span class="s1">'f{\left(t \right)}'</span><span class="p">,</span> <span class="sa">r</span><span class="s1">'f(t)'</span><span class="p">)</span>
+        <span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="sa">r</span><span class="s1">'g{\left(\tau \right)}'</span><span class="p">,</span> <span class="sa">r</span><span class="s1">'g(\tau)'</span><span class="p">)</span>
+        <span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="sa">r</span><span class="s1">'F{\left(s \right)}'</span><span class="p">,</span> <span class="sa">r</span><span class="s1">'F(s)'</span><span class="p">)</span>
+        <span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="sa">r</span><span class="s1">'G{\left(s \right)}'</span><span class="p">,</span> <span class="sa">r</span><span class="s1">'G(s)'</span><span class="p">)</span>
+        <span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="sa">r</span><span class="s1">'- a + s'</span><span class="p">,</span> <span class="sa">r</span><span class="s1">'s - a'</span><span class="p">)</span>
+        <span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="sa">r</span><span class="s1">'- c + s'</span><span class="p">,</span> <span class="sa">r</span><span class="s1">'s - c'</span><span class="p">)</span>
+        <span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="sa">r</span><span class="s1">'- c + t'</span><span class="p">,</span> <span class="sa">r</span><span class="s1">'t - c'</span><span class="p">)</span>
+        <span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="sa">r</span><span class="s1">'- a^</span><span class="si">{2}</span><span class="s1"> + s^</span><span class="si">{2}</span><span class="s1">'</span><span class="p">,</span> <span class="sa">r</span><span class="s1">'s^</span><span class="si">{2}</span><span class="s1"> - a^</span><span class="si">{2}</span><span class="s1">'</span><span class="p">))</span>
+
+<span class="c1"># A compact format for the n-dependent fractions.</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">frac</span><span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">):</span>
+    <span class="k">return</span> <span class="sa">r</span><span class="s1">'\frac{'</span> <span class="o">+</span> <span class="n">fmt</span><span class="p">(</span><span class="n">a</span><span class="p">)</span> <span class="o">+</span> <span class="s1">'}{'</span> <span class="o">+</span> <span class="n">fmt</span><span class="p">(</span><span class="n">b</span><span class="p">)</span> <span class="o">+</span> <span class="s1">'}'</span>
+
+<span class="c1"># Rows marked 'computed' come directly from laplace_transform().</span>
+<span class="c1"># The remaining rows are general transform identities constructed with SymPy.</span>
+<span class="n">rows</span> <span class="o">=</span> <span class="p">[]</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">add</span><span class="p">(</span><span class="n">no</span><span class="p">,</span> <span class="n">time_expr</span><span class="p">,</span> <span class="n">s_expr</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">time_latex</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">s_latex</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="s1">'computed'</span><span class="p">):</span>
+    <span class="n">rows</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="nb">dict</span><span class="p">(</span><span class="n">number</span><span class="o">=</span><span class="n">no</span><span class="p">,</span> <span class="n">time_expr</span><span class="o">=</span><span class="n">time_expr</span><span class="p">,</span> <span class="n">s_expr</span><span class="o">=</span><span class="n">s_expr</span><span class="p">,</span>
+                     <span class="n">t_tex</span><span class="o">=</span><span class="n">time_latex</span> <span class="ow">or</span> <span class="n">fmt</span><span class="p">(</span><span class="n">time_expr</span><span class="p">),</span>
+                     <span class="n">s_tex</span><span class="o">=</span><span class="n">s_latex</span> <span class="ow">or</span> <span class="n">fmt</span><span class="p">(</span><span class="n">s_expr</span><span class="p">),</span> <span class="n">mode</span><span class="o">=</span><span class="n">mode</span><span class="p">))</span>
+
+<span class="n">add</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">Integer</span><span class="p">(</span><span class="mi">1</span><span class="p">),</span> <span class="n">LT</span><span class="p">(</span><span class="n">Integer</span><span class="p">(</span><span class="mi">1</span><span class="p">)))</span>
+<span class="n">add</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="n">exp</span><span class="p">(</span><span class="n">a</span><span class="o">*</span><span class="n">t</span><span class="p">),</span> <span class="n">LT</span><span class="p">(</span><span class="n">exp</span><span class="p">(</span><span class="n">a</span><span class="o">*</span><span class="n">t</span><span class="p">)))</span>
+<span class="n">add</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="n">t</span><span class="o">**</span><span class="n">n</span><span class="p">,</span> <span class="n">LT</span><span class="p">(</span><span class="n">t</span><span class="o">**</span><span class="n">n</span><span class="p">),</span> <span class="n">s_latex</span><span class="o">=</span><span class="n">frac</span><span class="p">(</span><span class="n">factorial</span><span class="p">(</span><span class="n">n</span><span class="p">),</span> <span class="n">s</span><span class="o">**</span><span class="p">(</span><span class="n">n</span><span class="o">+</span><span class="mi">1</span><span class="p">)))</span>
+<span class="n">add</span><span class="p">(</span><span class="mi">4</span><span class="p">,</span> <span class="n">t</span><span class="o">**</span><span class="n">symbols</span><span class="p">(</span><span class="s1">'p'</span><span class="p">,</span> <span class="n">real</span><span class="o">=</span><span class="kc">True</span><span class="p">),</span> <span class="n">LT</span><span class="p">(</span><span class="n">t</span><span class="o">**</span><span class="n">symbols</span><span class="p">(</span><span class="s1">'p'</span><span class="p">,</span> <span class="n">real</span><span class="o">=</span><span class="kc">True</span><span class="p">)),</span>
+    <span class="n">time_latex</span><span class="o">=</span><span class="sa">r</span><span class="s1">'t^p\quad(p&gt;-1)'</span><span class="p">,</span>
+    <span class="n">s_latex</span><span class="o">=</span><span class="n">frac</span><span class="p">(</span><span class="n">gamma</span><span class="p">(</span><span class="n">symbols</span><span class="p">(</span><span class="s1">'p'</span><span class="p">,</span> <span class="n">real</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span><span class="o">+</span><span class="mi">1</span><span class="p">),</span> <span class="n">s</span><span class="o">**</span><span class="p">(</span><span class="n">symbols</span><span class="p">(</span><span class="s1">'p'</span><span class="p">,</span> <span class="n">real</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span><span class="o">+</span><span class="mi">1</span><span class="p">)))</span>
+<span class="n">add</span><span class="p">(</span><span class="mi">5</span><span class="p">,</span> <span class="n">sin</span><span class="p">(</span><span class="n">a</span><span class="o">*</span><span class="n">t</span><span class="p">),</span> <span class="n">LT</span><span class="p">(</span><span class="n">sin</span><span class="p">(</span><span class="n">a</span><span class="o">*</span><span class="n">t</span><span class="p">)))</span>
+<span class="n">add</span><span class="p">(</span><span class="mi">6</span><span class="p">,</span> <span class="n">cos</span><span class="p">(</span><span class="n">a</span><span class="o">*</span><span class="n">t</span><span class="p">),</span> <span class="n">LT</span><span class="p">(</span><span class="n">cos</span><span class="p">(</span><span class="n">a</span><span class="o">*</span><span class="n">t</span><span class="p">)))</span>
+<span class="n">add</span><span class="p">(</span><span class="mi">7</span><span class="p">,</span> <span class="n">sinh</span><span class="p">(</span><span class="n">a</span><span class="o">*</span><span class="n">t</span><span class="p">),</span> <span class="n">LT</span><span class="p">(</span><span class="n">sinh</span><span class="p">(</span><span class="n">a</span><span class="o">*</span><span class="n">t</span><span class="p">)))</span>
+<span class="n">add</span><span class="p">(</span><span class="mi">8</span><span class="p">,</span> <span class="n">cosh</span><span class="p">(</span><span class="n">a</span><span class="o">*</span><span class="n">t</span><span class="p">),</span> <span class="n">LT</span><span class="p">(</span><span class="n">cosh</span><span class="p">(</span><span class="n">a</span><span class="o">*</span><span class="n">t</span><span class="p">)))</span>
+<span class="n">add</span><span class="p">(</span><span class="mi">9</span><span class="p">,</span> <span class="n">exp</span><span class="p">(</span><span class="n">a</span><span class="o">*</span><span class="n">t</span><span class="p">)</span><span class="o">*</span><span class="n">sin</span><span class="p">(</span><span class="n">b</span><span class="o">*</span><span class="n">t</span><span class="p">),</span> <span class="n">LT</span><span class="p">(</span><span class="n">exp</span><span class="p">(</span><span class="n">a</span><span class="o">*</span><span class="n">t</span><span class="p">)</span><span class="o">*</span><span class="n">sin</span><span class="p">(</span><span class="n">b</span><span class="o">*</span><span class="n">t</span><span class="p">)))</span>
+<span class="n">add</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span> <span class="n">exp</span><span class="p">(</span><span class="n">a</span><span class="o">*</span><span class="n">t</span><span class="p">)</span><span class="o">*</span><span class="n">cos</span><span class="p">(</span><span class="n">b</span><span class="o">*</span><span class="n">t</span><span class="p">),</span> <span class="n">LT</span><span class="p">(</span><span class="n">exp</span><span class="p">(</span><span class="n">a</span><span class="o">*</span><span class="n">t</span><span class="p">)</span><span class="o">*</span><span class="n">cos</span><span class="p">(</span><span class="n">b</span><span class="o">*</span><span class="n">t</span><span class="p">)))</span>
+<span class="n">add</span><span class="p">(</span><span class="mi">11</span><span class="p">,</span> <span class="n">t</span><span class="o">**</span><span class="n">n</span><span class="o">*</span><span class="n">exp</span><span class="p">(</span><span class="n">a</span><span class="o">*</span><span class="n">t</span><span class="p">),</span> <span class="n">LT</span><span class="p">(</span><span class="n">t</span><span class="o">**</span><span class="n">n</span><span class="o">*</span><span class="n">exp</span><span class="p">(</span><span class="n">a</span><span class="o">*</span><span class="n">t</span><span class="p">)),</span>
+    <span class="n">s_latex</span><span class="o">=</span><span class="n">frac</span><span class="p">(</span><span class="n">factorial</span><span class="p">(</span><span class="n">n</span><span class="p">),</span> <span class="p">(</span><span class="n">s</span><span class="o">-</span><span class="n">a</span><span class="p">)</span><span class="o">**</span><span class="p">(</span><span class="n">n</span><span class="o">+</span><span class="mi">1</span><span class="p">)))</span>
+<span class="n">add</span><span class="p">(</span><span class="mi">12</span><span class="p">,</span> <span class="n">Heaviside</span><span class="p">(</span><span class="n">t</span><span class="o">-</span><span class="n">c</span><span class="p">),</span> <span class="n">LT</span><span class="p">(</span><span class="n">Heaviside</span><span class="p">(</span><span class="n">t</span><span class="o">-</span><span class="n">c</span><span class="p">)),</span> <span class="n">time_latex</span><span class="o">=</span><span class="sa">r</span><span class="s1">'u_c(t)'</span><span class="p">)</span>
+<span class="n">add</span><span class="p">(</span><span class="mi">13</span><span class="p">,</span> <span class="n">Heaviside</span><span class="p">(</span><span class="n">t</span><span class="o">-</span><span class="n">c</span><span class="p">)</span><span class="o">*</span><span class="n">f</span><span class="p">(</span><span class="n">t</span><span class="o">-</span><span class="n">c</span><span class="p">),</span> <span class="n">exp</span><span class="p">(</span><span class="o">-</span><span class="n">c</span><span class="o">*</span><span class="n">s</span><span class="p">)</span><span class="o">*</span><span class="n">F</span><span class="p">(</span><span class="n">s</span><span class="p">),</span>
+    <span class="n">time_latex</span><span class="o">=</span><span class="sa">r</span><span class="s1">'u_c(t)\,f(t-c)'</span><span class="p">,</span> <span class="n">s_latex</span><span class="o">=</span><span class="sa">r</span><span class="s1">'e^{-cs}F(s)'</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="s1">'property'</span><span class="p">)</span>
+<span class="n">add</span><span class="p">(</span><span class="mi">14</span><span class="p">,</span> <span class="n">exp</span><span class="p">(</span><span class="n">c</span><span class="o">*</span><span class="n">t</span><span class="p">)</span><span class="o">*</span><span class="n">f</span><span class="p">(</span><span class="n">t</span><span class="p">),</span> <span class="n">F</span><span class="p">(</span><span class="n">s</span><span class="o">-</span><span class="n">c</span><span class="p">),</span> <span class="n">mode</span><span class="o">=</span><span class="s1">'property'</span><span class="p">,</span>
+    <span class="n">time_latex</span><span class="o">=</span><span class="sa">r</span><span class="s1">'e^</span><span class="si">{ct}</span><span class="s1">f(t)'</span><span class="p">,</span> <span class="n">s_latex</span><span class="o">=</span><span class="sa">r</span><span class="s1">'F(s-c)'</span><span class="p">)</span>
+<span class="n">add</span><span class="p">(</span><span class="mi">15</span><span class="p">,</span> <span class="n">f</span><span class="p">(</span><span class="n">c</span><span class="o">*</span><span class="n">t</span><span class="p">),</span> <span class="n">F</span><span class="p">(</span><span class="n">s</span><span class="o">/</span><span class="n">c</span><span class="p">)</span><span class="o">/</span><span class="n">c</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="s1">'property'</span><span class="p">,</span>
+    <span class="n">time_latex</span><span class="o">=</span><span class="sa">r</span><span class="s1">'f(ct)'</span><span class="p">,</span>
+    <span class="n">s_latex</span><span class="o">=</span><span class="sa">r</span><span class="s1">'\frac</span><span class="si">{1}{c}</span><span class="s1">F\!\left(\frac</span><span class="si">{s}{c}</span><span class="s1">\right)\quad(c&gt;0)'</span><span class="p">)</span>
+<span class="n">add</span><span class="p">(</span><span class="mi">16</span><span class="p">,</span> <span class="n">Integral</span><span class="p">(</span><span class="n">f</span><span class="p">(</span><span class="n">t</span><span class="o">-</span><span class="n">tau</span><span class="p">)</span><span class="o">*</span><span class="n">g</span><span class="p">(</span><span class="n">tau</span><span class="p">),</span> <span class="p">(</span><span class="n">tau</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="n">t</span><span class="p">)),</span> <span class="n">F</span><span class="p">(</span><span class="n">s</span><span class="p">)</span><span class="o">*</span><span class="n">G</span><span class="p">(</span><span class="n">s</span><span class="p">),</span> <span class="n">mode</span><span class="o">=</span><span class="s1">'property'</span><span class="p">,</span>
+    <span class="n">time_latex</span><span class="o">=</span><span class="sa">r</span><span class="s1">'\int_0^t f(t-\tau)\,g(\tau)\,d\tau'</span><span class="p">)</span>
+<span class="n">add</span><span class="p">(</span><span class="mi">17</span><span class="p">,</span> <span class="n">DiracDelta</span><span class="p">(</span><span class="n">t</span><span class="o">-</span><span class="n">c</span><span class="p">),</span> <span class="n">LT</span><span class="p">(</span><span class="n">DiracDelta</span><span class="p">(</span><span class="n">t</span><span class="o">-</span><span class="n">c</span><span class="p">)),</span> <span class="n">time_latex</span><span class="o">=</span><span class="sa">r</span><span class="s1">'\delta(t-c)'</span><span class="p">)</span>
+
+<span class="c1"># General derivative rule: n must be &gt;= 1 in this row; k indexes derivatives.</span>
+<span class="n">d_n</span> <span class="o">=</span> <span class="n">Derivative</span><span class="p">(</span><span class="n">f</span><span class="p">(</span><span class="n">t</span><span class="p">),</span> <span class="p">(</span><span class="n">t</span><span class="p">,</span> <span class="n">n</span><span class="p">))</span>
+<span class="n">initial_sum</span> <span class="o">=</span> <span class="n">Sum</span><span class="p">(</span><span class="n">s</span><span class="o">**</span><span class="p">(</span><span class="n">n</span><span class="o">-</span><span class="mi">1</span><span class="o">-</span><span class="n">k</span><span class="p">)</span> <span class="o">*</span> <span class="n">Subs</span><span class="p">(</span><span class="n">Derivative</span><span class="p">(</span><span class="n">f</span><span class="p">(</span><span class="n">t</span><span class="p">),</span> <span class="p">(</span><span class="n">t</span><span class="p">,</span> <span class="n">k</span><span class="p">)),</span> <span class="n">t</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span>
+                  <span class="p">(</span><span class="n">k</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="n">n</span><span class="o">-</span><span class="mi">1</span><span class="p">))</span>
+<span class="n">add</span><span class="p">(</span><span class="mi">18</span><span class="p">,</span> <span class="n">d_n</span><span class="p">,</span> <span class="n">s</span><span class="o">**</span><span class="n">n</span><span class="o">*</span><span class="n">F</span><span class="p">(</span><span class="n">s</span><span class="p">)</span> <span class="o">-</span> <span class="n">initial_sum</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="s1">'property'</span><span class="p">,</span>
+    <span class="n">time_latex</span><span class="o">=</span><span class="sa">r</span><span class="s1">'f^{(n)}(t)'</span><span class="p">,</span>
+    <span class="n">s_latex</span><span class="o">=</span><span class="sa">r</span><span class="s1">'s^nF(s)-\sum_{k=0}^{n-1}s^{n-1-k}f^{(k)}(0)'</span><span class="p">)</span>
+<span class="n">add</span><span class="p">(</span><span class="mi">19</span><span class="p">,</span> <span class="p">(</span><span class="o">-</span><span class="n">t</span><span class="p">)</span><span class="o">**</span><span class="n">n</span><span class="o">*</span><span class="n">f</span><span class="p">(</span><span class="n">t</span><span class="p">),</span> <span class="n">Derivative</span><span class="p">(</span><span class="n">F</span><span class="p">(</span><span class="n">s</span><span class="p">),</span> <span class="p">(</span><span class="n">s</span><span class="p">,</span> <span class="n">n</span><span class="p">)),</span> <span class="n">mode</span><span class="o">=</span><span class="s1">'property'</span><span class="p">,</span>
+    <span class="n">time_latex</span><span class="o">=</span><span class="sa">r</span><span class="s1">'(-t)^n f(t)'</span><span class="p">,</span> <span class="n">s_latex</span><span class="o">=</span><span class="sa">r</span><span class="s1">'F^{(n)}(s)'</span><span class="p">)</span>
+
+<span class="c1"># Render a Markdown table with MathJax math expressions.</span>
+<span class="n">header</span> <span class="o">=</span> <span class="p">[</span><span class="sa">r</span><span class="s1">'| No. | $f(t)=\mathcal</span><span class="si">{L}</span><span class="s1">^{-1}\{F(s)\}$ | $F(s)=\mathcal</span><span class="si">{L}</span><span class="s1">\{f(t)\}$ |'</span><span class="p">,</span>
+          <span class="s1">'|:---:|:---:|:---:|'</span><span class="p">]</span>
+<span class="n">lines</span> <span class="o">=</span> <span class="p">[</span><span class="sa">f</span><span class="s2">"| </span><span class="si">{</span><span class="n">row</span><span class="p">[</span><span class="s1">'number'</span><span class="p">]</span><span class="si">}</span><span class="s2"> | $</span><span class="si">{</span><span class="n">row</span><span class="p">[</span><span class="s1">'t_tex'</span><span class="p">]</span><span class="si">}</span><span class="s2">$ | $</span><span class="si">{</span><span class="n">row</span><span class="p">[</span><span class="s1">'s_tex'</span><span class="p">]</span><span class="si">}</span><span class="s2">$ |"</span> <span class="k">for</span> <span class="n">row</span> <span class="ow">in</span> <span class="n">rows</span><span class="p">]</span>
+<span class="n">laplace_table_markdown</span> <span class="o">=</span> <span class="s1">'</span><span class="se">\n</span><span class="s1">'</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">header</span> <span class="o">+</span> <span class="n">lines</span><span class="p">)</span>
+<span class="n">display</span><span class="p">(</span><span class="n">Markdown</span><span class="p">(</span><span class="n">laplace_table_markdown</span><span class="p">))</span>
+</pre></div>
+</div>
+</div>
+</details>
+<div class="cell_output docutils container">
+<div class="pst-scrollable-table-container"><table class="table">
+<thead>
+<tr class="row-odd"><th class="head text-center"><p>No.</p></th>
+<th class="head text-center"><p><span class="math notranslate nohighlight">\(f(t)=\mathcal{L}^{-1}\{F(s)\}\)</span></p></th>
+<th class="head text-center"><p><span class="math notranslate nohighlight">\(F(s)=\mathcal{L}\{f(t)\}\)</span></p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td class="text-center"><p>1</p></td>
+<td class="text-center"><p><span class="math notranslate nohighlight">\(1\)</span></p></td>
+<td class="text-center"><p><span class="math notranslate nohighlight">\(\frac{1}{s}\)</span></p></td>
+</tr>
+<tr class="row-odd"><td class="text-center"><p>2</p></td>
+<td class="text-center"><p><span class="math notranslate nohighlight">\(e^{a t}\)</span></p></td>
+<td class="text-center"><p><span class="math notranslate nohighlight">\(\frac{1}{s - a}\)</span></p></td>
+</tr>
+<tr class="row-even"><td class="text-center"><p>3</p></td>
+<td class="text-center"><p><span class="math notranslate nohighlight">\(t^{n}\)</span></p></td>
+<td class="text-center"><p><span class="math notranslate nohighlight">\(\frac{n!}{s^{n + 1}}\)</span></p></td>
+</tr>
+<tr class="row-odd"><td class="text-center"><p>4</p></td>
+<td class="text-center"><p><span class="math notranslate nohighlight">\(t^p\quad(p&gt;-1)\)</span></p></td>
+<td class="text-center"><p><span class="math notranslate nohighlight">\(\frac{\Gamma\left(p + 1\right)}{s^{p + 1}}\)</span></p></td>
+</tr>
+<tr class="row-even"><td class="text-center"><p>5</p></td>
+<td class="text-center"><p><span class="math notranslate nohighlight">\(\sin{\left(a t \right)}\)</span></p></td>
+<td class="text-center"><p><span class="math notranslate nohighlight">\(\frac{a}{a^{2} + s^{2}}\)</span></p></td>
+</tr>
+<tr class="row-odd"><td class="text-center"><p>6</p></td>
+<td class="text-center"><p><span class="math notranslate nohighlight">\(\cos{\left(a t \right)}\)</span></p></td>
+<td class="text-center"><p><span class="math notranslate nohighlight">\(\frac{s}{a^{2} + s^{2}}\)</span></p></td>
+</tr>
+<tr class="row-even"><td class="text-center"><p>7</p></td>
+<td class="text-center"><p><span class="math notranslate nohighlight">\(\sinh{\left(a t \right)}\)</span></p></td>
+<td class="text-center"><p><span class="math notranslate nohighlight">\(\frac{a}{s^{2} - a^{2}}\)</span></p></td>
+</tr>
+<tr class="row-odd"><td class="text-center"><p>8</p></td>
+<td class="text-center"><p><span class="math notranslate nohighlight">\(\cosh{\left(a t \right)}\)</span></p></td>
+<td class="text-center"><p><span class="math notranslate nohighlight">\(\frac{s}{s^{2} - a^{2}}\)</span></p></td>
+</tr>
+<tr class="row-even"><td class="text-center"><p>9</p></td>
+<td class="text-center"><p><span class="math notranslate nohighlight">\(e^{a t} \sin{\left(b t \right)}\)</span></p></td>
+<td class="text-center"><p><span class="math notranslate nohighlight">\(\frac{b}{b^{2} + \left(s - a\right)^{2}}\)</span></p></td>
+</tr>
+<tr class="row-odd"><td class="text-center"><p>10</p></td>
+<td class="text-center"><p><span class="math notranslate nohighlight">\(e^{a t} \cos{\left(b t \right)}\)</span></p></td>
+<td class="text-center"><p><span class="math notranslate nohighlight">\(\frac{s - a}{b^{2} + \left(s - a\right)^{2}}\)</span></p></td>
+</tr>
+<tr class="row-even"><td class="text-center"><p>11</p></td>
+<td class="text-center"><p><span class="math notranslate nohighlight">\(t^{n} e^{a t}\)</span></p></td>
+<td class="text-center"><p><span class="math notranslate nohighlight">\(\frac{n!}{\left(s - a\right)^{n + 1}}\)</span></p></td>
+</tr>
+<tr class="row-odd"><td class="text-center"><p>12</p></td>
+<td class="text-center"><p><span class="math notranslate nohighlight">\(u_c(t)\)</span></p></td>
+<td class="text-center"><p><span class="math notranslate nohighlight">\(\frac{e^{- c s}}{s}\)</span></p></td>
+</tr>
+<tr class="row-even"><td class="text-center"><p>13</p></td>
+<td class="text-center"><p><span class="math notranslate nohighlight">\(u_c(t)\,f(t-c)\)</span></p></td>
+<td class="text-center"><p><span class="math notranslate nohighlight">\(e^{-cs}F(s)\)</span></p></td>
+</tr>
+<tr class="row-odd"><td class="text-center"><p>14</p></td>
+<td class="text-center"><p><span class="math notranslate nohighlight">\(e^{ct}f(t)\)</span></p></td>
+<td class="text-center"><p><span class="math notranslate nohighlight">\(F(s-c)\)</span></p></td>
+</tr>
+<tr class="row-even"><td class="text-center"><p>15</p></td>
+<td class="text-center"><p><span class="math notranslate nohighlight">\(f(ct)\)</span></p></td>
+<td class="text-center"><p><span class="math notranslate nohighlight">\(\frac{1}{c}F\!\left(\frac{s}{c}\right)\quad(c&gt;0)\)</span></p></td>
+</tr>
+<tr class="row-odd"><td class="text-center"><p>16</p></td>
+<td class="text-center"><p><span class="math notranslate nohighlight">\(\int_0^t f(t-\tau)\,g(\tau)\,d\tau\)</span></p></td>
+<td class="text-center"><p><span class="math notranslate nohighlight">\(F(s) G(s)\)</span></p></td>
+</tr>
+<tr class="row-even"><td class="text-center"><p>17</p></td>
+<td class="text-center"><p><span class="math notranslate nohighlight">\(\delta(t-c)\)</span></p></td>
+<td class="text-center"><p><span class="math notranslate nohighlight">\(e^{- c s}\)</span></p></td>
+</tr>
+<tr class="row-odd"><td class="text-center"><p>18</p></td>
+<td class="text-center"><p><span class="math notranslate nohighlight">\(f^{(n)}(t)\)</span></p></td>
+<td class="text-center"><p><span class="math notranslate nohighlight">\(s^nF(s)-\sum_{k=0}^{n-1}s^{n-1-k}f^{(k)}(0)\)</span></p></td>
+</tr>
+<tr class="row-even"><td class="text-center"><p>19</p></td>
+<td class="text-center"><p><span class="math notranslate nohighlight">\((-t)^n f(t)\)</span></p></td>
+<td class="text-center"><p><span class="math notranslate nohighlight">\(F^{(n)}(s)\)</span></p></td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</div>
+<section id="notes">
+<h2>Notes<a class="headerlink" href="#notes" title="Link to this heading">#</a></h2>
+<ul class="simple">
+<li><p><span class="math notranslate nohighlight">\(n=0,1,2,\ldots\)</span> in the power and multiplication rules; <span class="math notranslate nohighlight">\(n\ge 1\)</span> in the differentiation rule.</p></li>
+<li><p><span class="math notranslate nohighlight">\(p&gt;-1\)</span> and <span class="math notranslate nohighlight">\(c&gt;0\)</span> where indicated. The region of convergence of <span class="math notranslate nohighlight">\(F(s)\)</span> must also be respected; the table omits those details for brevity.</p></li>
+<li><p>Rows <strong>1–12 and 17</strong> are calculated directly with SymPy’s <code class="docutils literal notranslate"><span class="pre">laplace_transform</span></code>.</p></li>
+<li><p>Rows <strong>13–16 and 18–19</strong> are general properties for an arbitrary <span class="math notranslate nohighlight">\(f(t)\)</span> (and <span class="math notranslate nohighlight">\(g(t)\)</span>). SymPy represents these using symbolic functions, products, integrals, derivatives, and sums, rather than automatically evaluating every generic transform.</p></li>
+</ul>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Check that the entries computed directly from SymPy agree with the table.</span>
+<span class="k">for</span> <span class="n">row</span> <span class="ow">in</span> <span class="n">rows</span><span class="p">:</span>
+    <span class="k">if</span> <span class="n">row</span><span class="p">[</span><span class="s1">'mode'</span><span class="p">]</span> <span class="o">==</span> <span class="s1">'computed'</span><span class="p">:</span>
+        <span class="k">assert</span> <span class="n">simplify</span><span class="p">(</span><span class="n">LT</span><span class="p">(</span><span class="n">row</span><span class="p">[</span><span class="s1">'time_expr'</span><span class="p">])</span> <span class="o">-</span> <span class="n">row</span><span class="p">[</span><span class="s1">'s_expr'</span><span class="p">])</span> <span class="o">==</span> <span class="mi">0</span><span class="p">,</span> <span class="n">row</span><span class="p">[</span><span class="s1">'number'</span><span class="p">]</span>
+<span class="nb">print</span><span class="p">(</span><span class="s1">'Verified'</span><span class="p">,</span> <span class="nb">sum</span><span class="p">(</span><span class="n">row</span><span class="p">[</span><span class="s1">'mode'</span><span class="p">]</span> <span class="o">==</span> <span class="s1">'computed'</span> <span class="k">for</span> <span class="n">row</span> <span class="ow">in</span> <span class="n">rows</span><span class="p">),</span>
+      <span class="s1">'direct Laplace transforms with SymPy.'</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Verified 13 direct Laplace transforms with SymPy.
+</pre></div>
+</div>
+</div>
+</div>
+</section>
+<section id="checking-some-transform-properties">
+<h2>Checking some transform properties<a class="headerlink" href="#checking-some-transform-properties" title="Link to this heading">#</a></h2>
+<p>We can test the general properties by choosing a simple example,</p>
+<div class="math notranslate nohighlight">
+\[f(t)=e^{-2t},\qquad F(s)=\frac{1}{s+2}.\]</div>
+<p>For example, the time-delay property states that</p>
+<div class="math notranslate nohighlight">
+\[\mathcal{L}\{u_c(t)f(t-c)\}=e^{-cs}F(s).\]</div>
+<p>The following calculations verify the time-delay, frequency-shift, time-scaling, and convolution rules for this example.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">sympy</span><span class="w"> </span><span class="kn">import</span> <span class="n">integrate</span>
+
+<span class="n">F_example</span> <span class="o">=</span> <span class="mi">1</span><span class="o">/</span><span class="p">(</span><span class="n">s</span><span class="o">+</span><span class="mi">2</span><span class="p">)</span>
+<span class="n">G_example</span> <span class="o">=</span> <span class="mi">1</span><span class="o">/</span><span class="p">(</span><span class="n">s</span><span class="o">+</span><span class="mi">3</span><span class="p">)</span>
+<span class="n">f_example</span> <span class="o">=</span> <span class="n">exp</span><span class="p">(</span><span class="o">-</span><span class="mi">2</span><span class="o">*</span><span class="n">t</span><span class="p">)</span>
+<span class="n">g_example</span> <span class="o">=</span> <span class="n">exp</span><span class="p">(</span><span class="o">-</span><span class="mi">3</span><span class="o">*</span><span class="n">t</span><span class="p">)</span>
+
+<span class="n">checks</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="s1">'time shift'</span><span class="p">:</span> <span class="p">(</span><span class="n">LT</span><span class="p">(</span><span class="n">Heaviside</span><span class="p">(</span><span class="n">t</span><span class="o">-</span><span class="n">c</span><span class="p">)</span><span class="o">*</span><span class="n">exp</span><span class="p">(</span><span class="o">-</span><span class="mi">2</span><span class="o">*</span><span class="p">(</span><span class="n">t</span><span class="o">-</span><span class="n">c</span><span class="p">))),</span> <span class="n">exp</span><span class="p">(</span><span class="o">-</span><span class="n">c</span><span class="o">*</span><span class="n">s</span><span class="p">)</span><span class="o">*</span><span class="n">F_example</span><span class="p">),</span>
+    <span class="s1">'frequency shift'</span><span class="p">:</span> <span class="p">(</span><span class="n">LT</span><span class="p">(</span><span class="n">exp</span><span class="p">(</span><span class="n">c</span><span class="o">*</span><span class="n">t</span><span class="p">)</span><span class="o">*</span><span class="n">f_example</span><span class="p">),</span> <span class="n">F_example</span><span class="o">.</span><span class="n">subs</span><span class="p">(</span><span class="n">s</span><span class="p">,</span> <span class="n">s</span><span class="o">-</span><span class="n">c</span><span class="p">)),</span>
+    <span class="s1">'time scaling'</span><span class="p">:</span> <span class="p">(</span><span class="n">LT</span><span class="p">(</span><span class="n">exp</span><span class="p">(</span><span class="o">-</span><span class="mi">2</span><span class="o">*</span><span class="n">c</span><span class="o">*</span><span class="n">t</span><span class="p">)),</span> <span class="n">F_example</span><span class="o">.</span><span class="n">subs</span><span class="p">(</span><span class="n">s</span><span class="p">,</span> <span class="n">s</span><span class="o">/</span><span class="n">c</span><span class="p">)</span><span class="o">/</span><span class="n">c</span><span class="p">),</span>
+    <span class="s1">'convolution'</span><span class="p">:</span> <span class="p">(</span>
+        <span class="n">LT</span><span class="p">(</span><span class="n">integrate</span><span class="p">(</span><span class="n">exp</span><span class="p">(</span><span class="o">-</span><span class="mi">2</span><span class="o">*</span><span class="p">(</span><span class="n">t</span><span class="o">-</span><span class="n">tau</span><span class="p">))</span><span class="o">*</span><span class="n">exp</span><span class="p">(</span><span class="o">-</span><span class="mi">3</span><span class="o">*</span><span class="n">tau</span><span class="p">),</span> <span class="p">(</span><span class="n">tau</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="n">t</span><span class="p">))),</span>
+        <span class="n">F_example</span><span class="o">*</span><span class="n">G_example</span><span class="p">,</span>
+    <span class="p">),</span>
+<span class="p">}</span>
+<span class="k">for</span> <span class="n">label</span><span class="p">,</span> <span class="p">(</span><span class="n">actual</span><span class="p">,</span> <span class="n">expected</span><span class="p">)</span> <span class="ow">in</span> <span class="n">checks</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+    <span class="k">assert</span> <span class="n">simplify</span><span class="p">(</span><span class="n">actual</span> <span class="o">-</span> <span class="n">expected</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">,</span> <span class="n">label</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">'</span><span class="si">{</span><span class="n">label</span><span class="si">}</span><span class="s1">: PASS'</span><span class="p">)</span>
+
+<span class="c1"># Check the differentiation and multiplication rules at order 2.</span>
+<span class="n">d2</span> <span class="o">=</span> <span class="n">LT</span><span class="p">(</span><span class="n">f_example</span><span class="o">.</span><span class="n">diff</span><span class="p">(</span><span class="n">t</span><span class="p">,</span> <span class="mi">2</span><span class="p">))</span>
+<span class="k">assert</span> <span class="n">simplify</span><span class="p">(</span><span class="n">d2</span> <span class="o">-</span> <span class="p">(</span><span class="n">s</span><span class="o">**</span><span class="mi">2</span><span class="o">*</span><span class="n">F_example</span> <span class="o">-</span> <span class="n">s</span><span class="o">*</span><span class="n">Integer</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span> <span class="o">+</span> <span class="n">Integer</span><span class="p">(</span><span class="mi">2</span><span class="p">)))</span> <span class="o">==</span> <span class="mi">0</span>
+<span class="k">assert</span> <span class="n">simplify</span><span class="p">(</span><span class="n">LT</span><span class="p">(</span><span class="n">t</span><span class="o">**</span><span class="mi">2</span><span class="o">*</span><span class="n">f_example</span><span class="p">)</span> <span class="o">-</span> <span class="n">F_example</span><span class="o">.</span><span class="n">diff</span><span class="p">(</span><span class="n">s</span><span class="p">,</span> <span class="mi">2</span><span class="p">))</span> <span class="o">==</span> <span class="mi">0</span>
+<span class="nb">print</span><span class="p">(</span><span class="s1">'second derivative: PASS'</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s1">'multiplication by t^2: PASS'</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>time shift: PASS
+frequency shift: PASS
+time scaling: PASS
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>convolution: PASS
+second derivative: PASS
+multiplication by t^2: PASS
+</pre></div>
+</div>
+</div>
+</div>
+</section>
+<section id="references">
+<h2>References<a class="headerlink" href="#references" title="Link to this heading">#</a></h2>
+<p>https://www.math.purdue.edu/~liu2053/Formula_sheets_for_final_exam.pdf</p>
+</section>
+</section>
+
+    <script type="text/x-thebe-config">
+    {
+        requestKernel: true,
+        binderOptions: {
+            repo: "binder-examples/jupyter-stacks-datascience",
+            ref: "master",
+        },
+        codeMirrorConfig: {
+            theme: "abcdef",
+            mode: "python"
+        },
+        kernelOptions: {
+            name: "python3",
+            path: "./."
+        },
+        predefinedOutput: true
+    }
+    </script>
+    <script>kernelName = 'python3'</script>
+
+                </article>
+              
+
+              
+              
+              
+              
+                <footer class="prev-next-footer d-print-none">
+                  
+<div class="prev-next-area">
+    <a class="left-prev"
+       href="ode-laplace.html"
+       title="previous page">
+      <i class="fa-solid fa-angle-left"></i>
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">previous</p>
+        <p class="prev-next-title">Ordinary Differential Equations and the Laplace Transform</p>
+      </div>
+    </a>
+    <a class="right-next"
+       href="block-diagram.html"
+       title="next page">
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">next</p>
+        <p class="prev-next-title">Block Diagram</p>
+      </div>
+      <i class="fa-solid fa-angle-right"></i>
+    </a>
+</div>
+                </footer>
+              
+            </div>
+            
+            
+              
+                <dialog id="pst-secondary-sidebar-modal"></dialog>
+                <div id="pst-secondary-sidebar" class="bd-sidebar-secondary bd-toc"><div class="sidebar-secondary-items sidebar-secondary__inner">
+
+
+  <div class="sidebar-secondary-item"><div
+    id="pst-page-navigation-heading-2"
+    class="page-toc tocsection onthispage">
+    <i class="fa-solid fa-list"></i> Contents
+  </div>
+  <nav id="pst-page-toc-nav" class="page-toc" aria-labelledby="pst-page-navigation-heading-2">
+    <ul class="pst-show_toc_level nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#notes">Notes</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#checking-some-transform-properties">Checking some transform properties</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#references">References</a></li>
+</ul>
+  </nav></div>
+
+</div></div>
+              
+            
+          </div>
+          <footer class="bd-footer-content">
+            
+<div class="bd-footer-content__inner container">
+  
+  <div class="footer-item">
+    
+<p class="component-author">
+By Auralius Manurung - Universitas Telkom
+</p>
+
+  </div>
+  
+  <div class="footer-item">
+    
+
+  <p class="copyright">
+    
+      © Copyright 2026.
+      <br/>
+    
+  </p>
+
+  </div>
+  
+  <div class="footer-item">
+    
+  </div>
+  
+  <div class="footer-item">
+    
+  </div>
+  
+</div>
+          </footer>
+        
+
+      </main>
+    </div>
+  </div>
+  
+  <!-- Scripts loaded after <body> so the DOM is not blocked -->
+  <script defer src="_static/scripts/bootstrap.js?digest=55c26ed414f5f8a31ebb"></script>
+<script defer src="_static/scripts/pydata-sphinx-theme.js?digest=55c26ed414f5f8a31ebb"></script>
+
+  <footer class="bd-footer">
+  </footer>
+  </body>
+</html>

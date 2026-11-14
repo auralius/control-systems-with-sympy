@@ -34,7 +34,7 @@
     <link rel="stylesheet" type="text/css" href="_static/styles/sphinx-book-theme.css?v=3c74b3bc" />
     <link rel="stylesheet" type="text/css" href="_static/togglebutton.css?v=9c3e77be" />
     <link rel="stylesheet" type="text/css" href="_static/copybutton.css?v=76b2166b" />
-    <link rel="stylesheet" type="text/css" href="_static/mystnb.11b39860a7a0cbfd473a3ad8a317855267ff0bd372690045ca344a6b62be495e.css" />
+    <link rel="stylesheet" type="text/css" href="_static/mystnb.11b39860a7a0cbfd473a3ad8a317855267ff0bd372690045ca344a6b62be495e.css?v=8cd3d715" />
     <link rel="stylesheet" type="text/css" href="_static/sphinx-thebe.css?v=4fa983c6" />
     <link rel="stylesheet" type="text/css" href="_static/sphinx-design.min.css?v=95c83b7e" />
     <link rel="stylesheet" type="text/css" href="_static/custom.css?v=b5bdeb62" />
@@ -65,6 +65,8 @@
     <script>DOCUMENTATION_OPTIONS.search_as_you_type = false;</script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Routh-Hurwitz Stability Criterion" href="routh-hurwitz.html" />
+    <link rel="prev" title="Tracking Accuracy of a Feedback system" href="steady-state-error.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
   <meta name="docsearch:version" content="" />
@@ -166,8 +168,6 @@
       
       
       
-        
-      
       <dialog id="pst-primary-sidebar-modal"></dialog>
       <div id="pst-primary-sidebar" class="bd-sidebar-primary bd-sidebar">
         
@@ -220,14 +220,21 @@
                 </a>
             </li>
         </ul>
-        <p aria-level="2" class="caption" role="heading"><span class="caption-text">Modeling and Time-Domain Analysis</span></p>
+        <p aria-level="2" class="caption" role="heading"><span class="caption-text">Reviews</span></p>
 <ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="linear-algebra-primer.html">Linear Algebra Primer</a></li>
+<li class="toctree-l1"><a class="reference internal" href="ode-laplace.html">Ordinary Differential Equations and the Laplace Transform</a></li>
+<li class="toctree-l1"><a class="reference internal" href="laplace-table.html">Laplace Transform Table</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Modeling and Time-Domain Analysis</span></p>
+<ul class="current nav bd-sidenav">
 <li class="toctree-l1"><a class="reference internal" href="block-diagram.html">Block Diagram</a></li>
 <li class="toctree-l1"><a class="reference internal" href="fly-ball-governor.html">System Modeling: Flyball Governor</a></li>
 <li class="toctree-l1"><a class="reference internal" href="rectilinear.html">System Modeling: Rectilinear System</a></li>
 <li class="toctree-l1"><a class="reference internal" href="first-order.html">First-order systems</a></li>
 <li class="toctree-l1"><a class="reference internal" href="second-order.html">Second-Order System</a></li>
 <li class="toctree-l1"><a class="reference internal" href="steady-state-error.html">Tracking Accuracy of a Feedback system</a></li>
+<li class="toctree-l1 current active"><a class="current reference internal" href="#">State-Space Modeling</a></li>
 </ul>
 <p aria-level="2" class="caption" role="heading"><span class="caption-text">Classical Control Analysis</span></p>
 <ul class="nav bd-sidenav">
@@ -523,8 +530,7 @@
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#solving-the-state-equation-symbolically">3. Solving the State Equation Symbolically</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#controllability">4. Controllability</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#observability">5. Observability</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#pole-placement-state-feedback">6. Pole Placement (State Feedback)</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#what-s-next">What’s next</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#pole-placement-state-feedback-with-ackerman">6. Pole Placement (State Feedback) with  Ackerman</a></li>
 </ul>
             </nav>
         </div>
@@ -611,35 +617,67 @@ matches the transfer function we started from.</p>
 \[\displaystyle G(s)=\frac{b_{0} + b_{1} s + b_{2} s^{2}}{a_{0} + a_{1} s + a_{2} s^{2} + s^{3}}\]</div>
 </div>
 </div>
+<p>Now, let us put the whole process of converting a transfer function into a state space in a reusable function:</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="k">def</span><span class="w"> </span><span class="nf">tf_to_ss</span><span class="p">(</span><span class="n">tf</span><span class="p">):</span>
+    <span class="n">num</span><span class="p">,</span> <span class="n">denom</span> <span class="o">=</span> <span class="n">tf</span><span class="o">.</span><span class="n">as_numer_denom</span><span class="p">()</span>
+    <span class="n">coeffs</span> <span class="o">=</span> <span class="n">denom</span><span class="o">.</span><span class="n">as_poly</span><span class="p">(</span><span class="n">s</span><span class="p">)</span><span class="o">.</span><span class="n">all_coeffs</span><span class="p">()[::</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+    <span class="n">n</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">coeffs</span><span class="p">)</span> <span class="o">-</span> <span class="mi">1</span> <span class="c1"># system order</span>
+
+    <span class="n">coeffs</span> <span class="o">=</span> <span class="p">[</span><span class="o">-</span><span class="mi">1</span> <span class="o">*</span> <span class="n">coeffs</span><span class="p">[</span><span class="n">a</span><span class="p">]</span> <span class="k">for</span> <span class="n">a</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">n</span><span class="p">)]</span> <span class="c1"># negate the coefficients for the state-space representation</span>
+
+    <span class="n">A</span> <span class="o">=</span> <span class="n">zeros</span><span class="p">(</span><span class="n">n</span><span class="p">,</span> <span class="n">n</span><span class="p">)</span>
+    <span class="n">A</span><span class="p">[:</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">:]</span> <span class="o">=</span> <span class="n">eye</span><span class="p">(</span><span class="n">n</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span>
+    <span class="n">A</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="p">:]</span> <span class="o">=</span> <span class="n">Matrix</span><span class="p">([</span><span class="n">coeffs</span><span class="p">])</span>
+
+    <span class="n">B</span> <span class="o">=</span> <span class="n">zeros</span><span class="p">(</span><span class="n">n</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+    <span class="n">B</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="mi">1</span>
+
+    <span class="n">coeffs</span> <span class="o">=</span> <span class="n">num</span><span class="o">.</span><span class="n">as_poly</span><span class="p">(</span><span class="n">s</span><span class="p">)</span><span class="o">.</span><span class="n">all_coeffs</span><span class="p">()[::</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+    <span class="n">C</span> <span class="o">=</span> <span class="n">Matrix</span><span class="p">([</span><span class="n">coeffs</span><span class="p">])</span>
+    <span class="n">D</span> <span class="o">=</span> <span class="n">Matrix</span><span class="p">([[</span><span class="mi">0</span><span class="p">]])</span>
+    
+    <span class="k">return</span> <span class="n">A</span><span class="p">,</span> <span class="n">B</span><span class="p">,</span> <span class="n">C</span><span class="p">,</span> <span class="n">D</span>
+</pre></div>
+</div>
+</div>
+</div>
+<p>Let’s test the <code class="docutils literal notranslate"><span class="pre">tf_to_ss(...)</span></code> function:</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">A</span><span class="p">,</span> <span class="n">B</span><span class="p">,</span> <span class="n">C</span><span class="p">,</span> <span class="n">D</span> <span class="o">=</span> <span class="n">tf_to_ss</span><span class="p">(</span><span class="n">G_reconstructed</span><span class="p">)</span>
+
+<span class="n">mprint</span><span class="p">(</span><span class="s2">"A ="</span><span class="p">,</span> <span class="n">latex</span><span class="p">(</span><span class="n">A</span><span class="p">),</span> <span class="s2">", B ="</span><span class="p">,</span> <span class="n">latex</span><span class="p">(</span><span class="n">B</span><span class="p">))</span>
+<span class="n">mprint</span><span class="p">(</span><span class="s2">"C ="</span><span class="p">,</span> <span class="n">latex</span><span class="p">(</span><span class="n">C</span><span class="p">),</span> <span class="s2">", D ="</span><span class="p">,</span> <span class="n">latex</span><span class="p">(</span><span class="n">D</span><span class="p">))</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_latex math notranslate nohighlight">
+\[\begin{split}\displaystyle A =\left[\begin{matrix}0 &amp; 1 &amp; 0\\0 &amp; 0 &amp; 1\\- a_{0} &amp; - a_{1} &amp; - a_{2}\end{matrix}\right], B =\left[\begin{matrix}0\\0\\1\end{matrix}\right]\end{split}\]</div>
+<div class="output text_latex math notranslate nohighlight">
+\[\displaystyle C =\left[\begin{matrix}b_{0} &amp; b_{1} &amp; b_{2}\end{matrix}\right], D =\left[\begin{matrix}0\end{matrix}\right]\]</div>
+</div>
+</div>
 <section id="worked-example">
 <h3>Worked example<a class="headerlink" href="#worked-example" title="Link to this heading">#</a></h3>
 <p>Take <span class="math notranslate nohighlight">\(G(s) = \dfrac{3s + 5}{s^3 + 6s^2 + 11s + 6}\)</span> (poles at <span class="math notranslate nohighlight">\(-1, -2, -3\)</span>).</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">subs_numeric</span> <span class="o">=</span> <span class="p">{</span><span class="n">a0</span><span class="p">:</span> <span class="mi">6</span><span class="p">,</span> <span class="n">a1</span><span class="p">:</span> <span class="mi">11</span><span class="p">,</span> <span class="n">a2</span><span class="p">:</span> <span class="mi">6</span><span class="p">,</span> <span class="n">b0</span><span class="p">:</span> <span class="mi">5</span><span class="p">,</span> <span class="n">b1</span><span class="p">:</span> <span class="mi">3</span><span class="p">,</span> <span class="n">b2</span><span class="p">:</span> <span class="mi">0</span><span class="p">}</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">G</span>  <span class="o">=</span> <span class="p">(</span><span class="mi">3</span><span class="o">*</span><span class="n">s</span><span class="o">+</span><span class="mi">5</span><span class="p">)</span> <span class="o">/</span> <span class="p">(</span><span class="n">s</span><span class="o">**</span><span class="mi">3</span> <span class="o">+</span> <span class="mi">6</span><span class="o">*</span><span class="n">s</span><span class="o">**</span><span class="mi">2</span> <span class="o">+</span> <span class="mi">11</span><span class="o">*</span><span class="n">s</span> <span class="o">+</span> <span class="mi">6</span><span class="p">)</span>
 
-<span class="n">A_n</span> <span class="o">=</span> <span class="n">A</span><span class="o">.</span><span class="n">subs</span><span class="p">(</span><span class="n">subs_numeric</span><span class="p">)</span>
-<span class="n">B_n</span> <span class="o">=</span> <span class="n">B</span><span class="o">.</span><span class="n">subs</span><span class="p">(</span><span class="n">subs_numeric</span><span class="p">)</span>
-<span class="n">C_n</span> <span class="o">=</span> <span class="n">C</span><span class="o">.</span><span class="n">subs</span><span class="p">(</span><span class="n">subs_numeric</span><span class="p">)</span>
-<span class="n">D_n</span> <span class="o">=</span> <span class="n">D</span><span class="o">.</span><span class="n">subs</span><span class="p">(</span><span class="n">subs_numeric</span><span class="p">)</span>
-
-<span class="n">A_n</span><span class="p">,</span> <span class="n">B_n</span><span class="p">,</span> <span class="n">C_n</span><span class="p">,</span> <span class="n">D_n</span>
+<span class="n">A</span><span class="p">,</span> <span class="n">B</span><span class="p">,</span> <span class="n">C</span><span class="p">,</span> <span class="n">D</span> <span class="o">=</span> <span class="n">tf_to_ss</span><span class="p">(</span><span class="n">G</span><span class="p">)</span>
+<span class="n">mprint</span><span class="p">(</span><span class="s2">"A ="</span><span class="p">,</span> <span class="n">latex</span><span class="p">(</span><span class="n">A</span><span class="p">),</span> <span class="s2">", B ="</span><span class="p">,</span> <span class="n">latex</span><span class="p">(</span><span class="n">B</span><span class="p">))</span>
+<span class="n">mprint</span><span class="p">(</span><span class="s2">"C ="</span><span class="p">,</span> <span class="n">latex</span><span class="p">(</span><span class="n">C</span><span class="p">),</span> <span class="s2">", D ="</span><span class="p">,</span> <span class="n">latex</span><span class="p">(</span><span class="n">D</span><span class="p">))</span>
 </pre></div>
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>(Matrix([
- [ 0,   1,  0],
- [ 0,   0,  1],
- [-6, -11, -6]]),
- Matrix([
- [0],
- [0],
- [1]]),
- Matrix([[5, 3, 0]]),
- Matrix([[0]]))
-</pre></div>
-</div>
+<div class="output text_latex math notranslate nohighlight">
+\[\begin{split}\displaystyle A =\left[\begin{matrix}0 &amp; 1 &amp; 0\\0 &amp; 0 &amp; 1\\-6 &amp; -11 &amp; -6\end{matrix}\right], B =\left[\begin{matrix}0\\0\\1\end{matrix}\right]\end{split}\]</div>
+<div class="output text_latex math notranslate nohighlight">
+\[\displaystyle C =\left[\begin{matrix}5 &amp; 3\end{matrix}\right], D =\left[\begin{matrix}0\end{matrix}\right]\]</div>
 </div>
 </div>
 </section>
@@ -662,34 +700,25 @@ m\ddot{x} + c\dot{x} + kx = F(t)
 \]</div>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">m</span><span class="p">,</span> <span class="n">c</span><span class="p">,</span> <span class="n">k</span><span class="p">,</span> <span class="n">F</span> <span class="o">=</span> <span class="n">sp</span><span class="o">.</span><span class="n">symbols</span><span class="p">(</span><span class="s1">'m c k F'</span><span class="p">)</span>
-<span class="n">x1</span><span class="p">,</span> <span class="n">x2</span> <span class="o">=</span> <span class="n">sp</span><span class="o">.</span><span class="n">symbols</span><span class="p">(</span><span class="s1">'x1 x2'</span><span class="p">)</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">m</span><span class="p">,</span> <span class="n">c</span><span class="p">,</span> <span class="n">k</span><span class="p">,</span> <span class="n">F</span> <span class="o">=</span> <span class="n">symbols</span><span class="p">(</span><span class="s1">'m c k F'</span><span class="p">)</span>
+<span class="n">x1</span><span class="p">,</span> <span class="n">x2</span> <span class="o">=</span> <span class="n">symbols</span><span class="p">(</span><span class="s1">'x1 x2'</span><span class="p">)</span>
 
 <span class="n">x1_dot</span> <span class="o">=</span> <span class="n">x2</span>
 <span class="n">x2_dot</span> <span class="o">=</span> <span class="p">(</span><span class="n">F</span> <span class="o">-</span> <span class="n">c</span> <span class="o">*</span> <span class="n">x2</span> <span class="o">-</span> <span class="n">k</span> <span class="o">*</span> <span class="n">x1</span><span class="p">)</span> <span class="o">/</span> <span class="n">m</span>
 
-<span class="n">A_phys</span> <span class="o">=</span> <span class="n">sp</span><span class="o">.</span><span class="n">Matrix</span><span class="p">([[</span><span class="n">sp</span><span class="o">.</span><span class="n">diff</span><span class="p">(</span><span class="n">x1_dot</span><span class="p">,</span> <span class="n">x1</span><span class="p">),</span> <span class="n">sp</span><span class="o">.</span><span class="n">diff</span><span class="p">(</span><span class="n">x1_dot</span><span class="p">,</span> <span class="n">x2</span><span class="p">)],</span>
-                     <span class="p">[</span><span class="n">sp</span><span class="o">.</span><span class="n">diff</span><span class="p">(</span><span class="n">x2_dot</span><span class="p">,</span> <span class="n">x1</span><span class="p">),</span> <span class="n">sp</span><span class="o">.</span><span class="n">diff</span><span class="p">(</span><span class="n">x2_dot</span><span class="p">,</span> <span class="n">x2</span><span class="p">)]])</span>
+<span class="n">A_phys</span> <span class="o">=</span> <span class="n">Matrix</span><span class="p">([[</span><span class="n">diff</span><span class="p">(</span><span class="n">x1_dot</span><span class="p">,</span> <span class="n">x1</span><span class="p">),</span> <span class="n">diff</span><span class="p">(</span><span class="n">x1_dot</span><span class="p">,</span> <span class="n">x2</span><span class="p">)],</span>
+                 <span class="p">[</span><span class="n">diff</span><span class="p">(</span><span class="n">x2_dot</span><span class="p">,</span> <span class="n">x1</span><span class="p">),</span> <span class="n">diff</span><span class="p">(</span><span class="n">x2_dot</span><span class="p">,</span> <span class="n">x2</span><span class="p">)]])</span>
 
-<span class="n">B_phys</span> <span class="o">=</span> <span class="n">sp</span><span class="o">.</span><span class="n">Matrix</span><span class="p">([[</span><span class="n">sp</span><span class="o">.</span><span class="n">diff</span><span class="p">(</span><span class="n">x1_dot</span><span class="p">,</span> <span class="n">F</span><span class="p">)],</span>
-                     <span class="p">[</span><span class="n">sp</span><span class="o">.</span><span class="n">diff</span><span class="p">(</span><span class="n">x2_dot</span><span class="p">,</span> <span class="n">F</span><span class="p">)]])</span>
+<span class="n">B_phys</span> <span class="o">=</span> <span class="n">Matrix</span><span class="p">([[</span><span class="n">diff</span><span class="p">(</span><span class="n">x1_dot</span><span class="p">,</span> <span class="n">F</span><span class="p">)],</span>
+                 <span class="p">[</span><span class="n">diff</span><span class="p">(</span><span class="n">x2_dot</span><span class="p">,</span> <span class="n">F</span><span class="p">)]])</span>
 
-<span class="n">A_phys</span><span class="p">,</span> <span class="n">B_phys</span>
+<span class="n">mprint</span><span class="p">(</span><span class="s2">"A ="</span><span class="p">,</span> <span class="n">latex</span><span class="p">(</span><span class="n">A_phys</span><span class="p">),</span> <span class="s2">", B ="</span><span class="p">,</span> <span class="n">latex</span><span class="p">(</span><span class="n">B_phys</span><span class="p">))</span>
 </pre></div>
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output traceback highlight-ipythontb notranslate"><div class="highlight"><pre><span></span><span class="gt">---------------------------------------------------------------------------</span>
-<span class="ne">NameError</span><span class="g g-Whitespace">                                 </span>Traceback (most recent call last)
-<span class="n">Cell</span> <span class="n">In</span><span class="p">[</span><span class="mi">5</span><span class="p">],</span> <span class="n">line</span> <span class="mi">1</span>
-<span class="ne">----&gt; </span><span class="mi">1</span> <span class="n">m</span><span class="p">,</span> <span class="n">c</span><span class="p">,</span> <span class="n">k</span><span class="p">,</span> <span class="n">F</span> <span class="o">=</span> <span class="n">sp</span><span class="o">.</span><span class="n">symbols</span><span class="p">(</span><span class="s1">'m c k F'</span><span class="p">)</span>
-<span class="g g-Whitespace">      </span><span class="mi">2</span> <span class="n">x1</span><span class="p">,</span> <span class="n">x2</span> <span class="o">=</span> <span class="n">sp</span><span class="o">.</span><span class="n">symbols</span><span class="p">(</span><span class="s1">'x1 x2'</span><span class="p">)</span>
-<span class="g g-Whitespace">      </span><span class="mi">3</span> 
-<span class="g g-Whitespace">      </span><span class="mi">4</span> <span class="n">x1_dot</span> <span class="o">=</span> <span class="n">x2</span>
-
-<span class="ne">NameError</span>: name 'sp' is not defined
-</pre></div>
-</div>
+<div class="output text_latex math notranslate nohighlight">
+\[\begin{split}\displaystyle A =\left[\begin{matrix}0 &amp; 1\\- \frac{k}{m} &amp; - \frac{c}{m}\end{matrix}\right], B =\left[\begin{matrix}0\\\frac{1}{m}\end{matrix}\right]\end{split}\]</div>
 </div>
 </div>
 <p>Output is position, so <span class="math notranslate nohighlight">\(C = \begin{bmatrix}1 &amp; 0\end{bmatrix}\)</span>,
@@ -698,14 +727,15 @@ canonical form above once we set <span class="math notranslate nohighlight">\(a_
 different (equally valid) coordinate choice.</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">C_phys</span> <span class="o">=</span> <span class="n">sp</span><span class="o">.</span><span class="n">Matrix</span><span class="p">([[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">]])</span>
-<span class="n">D_phys</span> <span class="o">=</span> <span class="n">sp</span><span class="o">.</span><span class="n">Matrix</span><span class="p">([[</span><span class="mi">0</span><span class="p">]])</span>
-<span class="n">C_phys</span><span class="p">,</span> <span class="n">D_phys</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">C_phys</span> <span class="o">=</span> <span class="n">Matrix</span><span class="p">([[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">]])</span>
+<span class="n">D_phys</span> <span class="o">=</span> <span class="n">Matrix</span><span class="p">([[</span><span class="mi">0</span><span class="p">]])</span>
+<span class="n">mprint</span><span class="p">(</span><span class="s2">"C ="</span><span class="p">,</span> <span class="n">latex</span><span class="p">(</span><span class="n">C_phys</span><span class="p">),</span> <span class="s2">", D ="</span><span class="p">,</span> <span class="n">latex</span><span class="p">(</span><span class="n">D_phys</span><span class="p">))</span>
 </pre></div>
 </div>
 </div>
 <div class="cell_output docutils container">
-<img alt="_images/91e39dec2da2735314213442df24771ce507ee8dc96abdbef07a94eeca9c9b4e.png" src="_images/91e39dec2da2735314213442df24771ce507ee8dc96abdbef07a94eeca9c9b4e.png" />
+<div class="output text_latex math notranslate nohighlight">
+\[\displaystyle C =\left[\begin{matrix}1 &amp; 0\end{matrix}\right], D =\left[\begin{matrix}0\end{matrix}\right]\]</div>
 </div>
 </div>
 </section>
@@ -715,18 +745,19 @@ different (equally valid) coordinate choice.</p>
 SymPy computes the matrix exponential directly for small, numeric <span class="math notranslate nohighlight">\(A\)</span>.</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">t</span> <span class="o">=</span> <span class="n">sp</span><span class="o">.</span><span class="n">symbols</span><span class="p">(</span><span class="s1">'t'</span><span class="p">,</span> <span class="n">positive</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">t</span> <span class="o">=</span> <span class="n">symbols</span><span class="p">(</span><span class="s1">'t'</span><span class="p">,</span> <span class="n">positive</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 
-<span class="n">A_num</span> <span class="o">=</span> <span class="n">sp</span><span class="o">.</span><span class="n">Matrix</span><span class="p">([[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span> <span class="p">[</span><span class="o">-</span><span class="mi">2</span><span class="p">,</span> <span class="o">-</span><span class="mi">3</span><span class="p">]])</span>   <span class="c1"># poles at -1, -2</span>
-<span class="n">x0</span> <span class="o">=</span> <span class="n">sp</span><span class="o">.</span><span class="n">Matrix</span><span class="p">([[</span><span class="mi">1</span><span class="p">],</span> <span class="p">[</span><span class="mi">0</span><span class="p">]])</span>
+<span class="n">A_num</span> <span class="o">=</span> <span class="n">Matrix</span><span class="p">([[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span> <span class="p">[</span><span class="o">-</span><span class="mi">2</span><span class="p">,</span> <span class="o">-</span><span class="mi">3</span><span class="p">]])</span>   <span class="c1"># poles at -1, -2</span>
+<span class="n">x0</span> <span class="o">=</span> <span class="n">Matrix</span><span class="p">([[</span><span class="mi">1</span><span class="p">],</span> <span class="p">[</span><span class="mi">0</span><span class="p">]])</span>
 
-<span class="n">x_t</span> <span class="o">=</span> <span class="n">sp</span><span class="o">.</span><span class="n">simplify</span><span class="p">((</span><span class="n">A_num</span> <span class="o">*</span> <span class="n">t</span><span class="p">)</span><span class="o">.</span><span class="n">exp</span><span class="p">()</span> <span class="o">*</span> <span class="n">x0</span><span class="p">)</span>
+<span class="n">x_t</span> <span class="o">=</span> <span class="n">simplify</span><span class="p">((</span><span class="n">A_num</span> <span class="o">*</span> <span class="n">t</span><span class="p">)</span><span class="o">.</span><span class="n">exp</span><span class="p">()</span> <span class="o">*</span> <span class="n">x0</span><span class="p">)</span>
 <span class="n">x_t</span>
 </pre></div>
 </div>
 </div>
 <div class="cell_output docutils container">
-<img alt="_images/5c558e5049d31e933e0b53304287dff546b139e10c9185c81a6bec0534a2ab1e.png" src="_images/5c558e5049d31e933e0b53304287dff546b139e10c9185c81a6bec0534a2ab1e.png" />
+<div class="output text_latex math notranslate nohighlight">
+\[\begin{split}\displaystyle \left[\begin{matrix}\left(2 e^{t} - 1\right) e^{- 2 t}\\2 \left(1 - e^{t}\right) e^{- 2 t}\end{matrix}\right]\end{split}\]</div>
 </div>
 </div>
 <p>Compare this against the step/impulse response obtained from the
@@ -750,35 +781,76 @@ controllable system, then on a deliberately uncontrollable one.</p>
     <span class="n">cols</span> <span class="o">=</span> <span class="p">[</span><span class="n">B</span><span class="p">]</span>
     <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">n</span><span class="p">):</span>
         <span class="n">cols</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">A</span><span class="o">**</span><span class="n">i</span> <span class="o">*</span> <span class="n">B</span><span class="p">)</span>
-    <span class="k">return</span> <span class="n">sp</span><span class="o">.</span><span class="n">Matrix</span><span class="o">.</span><span class="n">hstack</span><span class="p">(</span><span class="o">*</span><span class="n">cols</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">Matrix</span><span class="o">.</span><span class="n">hstack</span><span class="p">(</span><span class="o">*</span><span class="n">cols</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+<p>Worked example:</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Controllable example</span>
+<span class="n">A_c</span> <span class="o">=</span> <span class="n">Matrix</span><span class="p">([[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span> <span class="p">[</span><span class="o">-</span><span class="mi">2</span><span class="p">,</span> <span class="o">-</span><span class="mi">3</span><span class="p">]])</span>
+<span class="n">B_c</span> <span class="o">=</span> <span class="n">Matrix</span><span class="p">([[</span><span class="mi">0</span><span class="p">],</span> <span class="p">[</span><span class="mi">1</span><span class="p">]])</span>
 
-<span class="c1"># Controllable example</span>
-<span class="n">A_c</span> <span class="o">=</span> <span class="n">sp</span><span class="o">.</span><span class="n">Matrix</span><span class="p">([[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span> <span class="p">[</span><span class="o">-</span><span class="mi">2</span><span class="p">,</span> <span class="o">-</span><span class="mi">3</span><span class="p">]])</span>
-<span class="n">B_c</span> <span class="o">=</span> <span class="n">sp</span><span class="o">.</span><span class="n">Matrix</span><span class="p">([[</span><span class="mi">0</span><span class="p">],</span> <span class="p">[</span><span class="mi">1</span><span class="p">]])</span>
+<span class="n">mprint</span><span class="p">(</span><span class="s2">"A_c ="</span><span class="p">,</span> <span class="n">latex</span><span class="p">(</span><span class="n">A_c</span><span class="p">))</span>
+<span class="n">mprint</span><span class="p">(</span><span class="s2">"B_c ="</span><span class="p">,</span> <span class="n">latex</span><span class="p">(</span><span class="n">B_c</span><span class="p">))</span>
 
+<span class="nb">print</span><span class="p">(</span><span class="s2">"</span><span class="se">\n</span><span class="s2">--- Controllability Matrix ---"</span><span class="p">)</span>
 <span class="n">Cc</span> <span class="o">=</span> <span class="n">controllability_matrix</span><span class="p">(</span><span class="n">A_c</span><span class="p">,</span> <span class="n">B_c</span><span class="p">)</span>
-<span class="n">Cc</span><span class="p">,</span> <span class="n">Cc</span><span class="o">.</span><span class="n">rank</span><span class="p">()</span>
+
+<span class="n">mprint</span><span class="p">(</span><span class="sa">r</span><span class="s2">"\mathcal</span><span class="si">{C}</span><span class="s2"> ="</span><span class="p">,</span> <span class="n">latex</span><span class="p">(</span><span class="n">Cc</span><span class="p">))</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">"Rank:"</span><span class="p">,</span> <span class="n">Cc</span><span class="o">.</span><span class="n">rank</span><span class="p">())</span>
 </pre></div>
 </div>
 </div>
 <div class="cell_output docutils container">
-<img alt="_images/248bb469e0a052a83efddd9478b0318351af60a4cfa1b35200922da4a2e150e2.png" src="_images/248bb469e0a052a83efddd9478b0318351af60a4cfa1b35200922da4a2e150e2.png" />
+<div class="output text_latex math notranslate nohighlight">
+\[\begin{split}\displaystyle A_c =\left[\begin{matrix}0 &amp; 1\\-2 &amp; -3\end{matrix}\right]\end{split}\]</div>
+<div class="output text_latex math notranslate nohighlight">
+\[\begin{split}\displaystyle B_c =\left[\begin{matrix}0\\1\end{matrix}\right]\end{split}\]</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>--- Controllability Matrix ---
+</pre></div>
+</div>
+<div class="output text_latex math notranslate nohighlight">
+\[\begin{split}\displaystyle \mathcal{C} =\left[\begin{matrix}0 &amp; 1\\1 &amp; -3\end{matrix}\right]\end{split}\]</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Rank: 2
+</pre></div>
 </div>
 </div>
+</div>
+<p>Another worked example for a deliberately uncontrollable system:</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Deliberately uncontrollable example:</span>
 <span class="c1"># input only drives x1, and x1, x2 are decoupled</span>
-<span class="n">A_uc</span> <span class="o">=</span> <span class="n">sp</span><span class="o">.</span><span class="n">Matrix</span><span class="p">([[</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="o">-</span><span class="mi">2</span><span class="p">]])</span>
-<span class="n">B_uc</span> <span class="o">=</span> <span class="n">sp</span><span class="o">.</span><span class="n">Matrix</span><span class="p">([[</span><span class="mi">1</span><span class="p">],</span> <span class="p">[</span><span class="mi">0</span><span class="p">]])</span>
+<span class="n">A_uc</span> <span class="o">=</span> <span class="n">Matrix</span><span class="p">([[</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="o">-</span><span class="mi">2</span><span class="p">]])</span>
+<span class="n">B_uc</span> <span class="o">=</span> <span class="n">Matrix</span><span class="p">([[</span><span class="mi">1</span><span class="p">],</span> <span class="p">[</span><span class="mi">0</span><span class="p">]])</span>
 
+<span class="n">mprint</span><span class="p">(</span><span class="s2">"A_uc ="</span><span class="p">,</span> <span class="n">latex</span><span class="p">(</span><span class="n">A_uc</span><span class="p">))</span>
+<span class="n">mprint</span><span class="p">(</span><span class="s2">"B_uc ="</span><span class="p">,</span> <span class="n">latex</span><span class="p">(</span><span class="n">B_uc</span><span class="p">))</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="s2">"</span><span class="se">\n</span><span class="s2">--- Controllability Matrix ---"</span><span class="p">)</span>
 <span class="n">Cuc</span> <span class="o">=</span> <span class="n">controllability_matrix</span><span class="p">(</span><span class="n">A_uc</span><span class="p">,</span> <span class="n">B_uc</span><span class="p">)</span>
-<span class="n">Cuc</span><span class="p">,</span> <span class="n">Cuc</span><span class="o">.</span><span class="n">rank</span><span class="p">()</span>
+
+<span class="n">mprint</span><span class="p">(</span><span class="sa">r</span><span class="s2">"\mathcal</span><span class="si">{C}</span><span class="s2"> ="</span><span class="p">,</span> <span class="n">latex</span><span class="p">(</span><span class="n">Cuc</span><span class="p">))</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">"Rank:"</span><span class="p">,</span> <span class="n">Cuc</span><span class="o">.</span><span class="n">rank</span><span class="p">())</span>
 </pre></div>
 </div>
 </div>
 <div class="cell_output docutils container">
-<img alt="_images/ee21aa7b0884c105cac6a3ba94db820b2ad437d1c3e7f921f6ac24e20211c702.png" src="_images/ee21aa7b0884c105cac6a3ba94db820b2ad437d1c3e7f921f6ac24e20211c702.png" />
+<div class="output text_latex math notranslate nohighlight">
+\[\begin{split}\displaystyle A_uc =\left[\begin{matrix}-1 &amp; 0\\0 &amp; -2\end{matrix}\right]\end{split}\]</div>
+<div class="output text_latex math notranslate nohighlight">
+\[\begin{split}\displaystyle B_uc =\left[\begin{matrix}1\\0\end{matrix}\right]\end{split}\]</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>--- Controllability Matrix ---
+</pre></div>
+</div>
+<div class="output text_latex math notranslate nohighlight">
+\[\begin{split}\displaystyle \mathcal{C} =\left[\begin{matrix}1 &amp; -1\\0 &amp; 0\end{matrix}\right]\end{split}\]</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Rank: 1
+</pre></div>
+</div>
 </div>
 </div>
 <p>The rank drops to 1 — <span class="math notranslate nohighlight">\(u\)</span> can never influence <span class="math notranslate nohighlight">\(x_2\)</span>, since <span class="math notranslate nohighlight">\(B\)</span> has
@@ -800,35 +872,53 @@ exactly what “uncontrollable” looks like algebraically.</p>
     <span class="n">rows</span> <span class="o">=</span> <span class="p">[</span><span class="n">C</span><span class="p">]</span>
     <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">n</span><span class="p">):</span>
         <span class="n">rows</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">C</span> <span class="o">*</span> <span class="n">A</span><span class="o">**</span><span class="n">i</span><span class="p">)</span>
-    <span class="k">return</span> <span class="n">sp</span><span class="o">.</span><span class="n">Matrix</span><span class="o">.</span><span class="n">vstack</span><span class="p">(</span><span class="o">*</span><span class="n">rows</span><span class="p">)</span> 
+    <span class="k">return</span> <span class="n">Matrix</span><span class="o">.</span><span class="n">vstack</span><span class="p">(</span><span class="o">*</span><span class="n">rows</span><span class="p">)</span> 
 </pre></div>
 </div>
 </div>
 </div>
+<p>Worked example for a delibirately unobservable system:</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Deliberately unobservable example: output only sees x1,</span>
 <span class="c1"># and x2 doesn't affect x1's dynamics</span>
-<span class="n">A_uo</span> <span class="o">=</span> <span class="n">sp</span><span class="o">.</span><span class="n">Matrix</span><span class="p">([[</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="o">-</span><span class="mi">2</span><span class="p">]])</span>
-<span class="n">C_uo</span> <span class="o">=</span> <span class="n">sp</span><span class="o">.</span><span class="n">Matrix</span><span class="p">([[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">]])</span>
+<span class="n">A_uo</span> <span class="o">=</span> <span class="n">Matrix</span><span class="p">([[</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="o">-</span><span class="mi">2</span><span class="p">]])</span>
+<span class="n">C_uo</span> <span class="o">=</span> <span class="n">Matrix</span><span class="p">([[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">]])</span>
 
+<span class="n">mprint</span><span class="p">(</span><span class="s2">"A_uo ="</span><span class="p">,</span> <span class="n">latex</span><span class="p">(</span><span class="n">A_uo</span><span class="p">))</span>
+<span class="n">mprint</span><span class="p">(</span><span class="s2">"C_uo ="</span><span class="p">,</span> <span class="n">latex</span><span class="p">(</span><span class="n">C_uo</span><span class="p">))</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="s2">"</span><span class="se">\n</span><span class="s2">--- Observability Matrix ---"</span><span class="p">)</span>
 <span class="n">Ouo</span> <span class="o">=</span> <span class="n">observability_matrix</span><span class="p">(</span><span class="n">A_uo</span><span class="p">,</span> <span class="n">C_uo</span><span class="p">)</span>
-<span class="n">Ouo</span><span class="p">,</span> <span class="n">Ouo</span><span class="o">.</span><span class="n">rank</span><span class="p">()</span>
+
+<span class="n">mprint</span><span class="p">(</span><span class="sa">r</span><span class="s2">"\mathcal</span><span class="si">{O}</span><span class="s2"> ="</span><span class="p">,</span> <span class="n">latex</span><span class="p">(</span><span class="n">Ouo</span><span class="p">))</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">"Rank:"</span><span class="p">,</span> <span class="n">Ouo</span><span class="o">.</span><span class="n">rank</span><span class="p">())</span>
 </pre></div>
 </div>
 </div>
 <div class="cell_output docutils container">
-<img alt="_images/98bb8c3963c6aee7ffca41ca8978089726240ec916c425a44e6fa7dce048e8e9.png" src="_images/98bb8c3963c6aee7ffca41ca8978089726240ec916c425a44e6fa7dce048e8e9.png" />
+<div class="output text_latex math notranslate nohighlight">
+\[\begin{split}\displaystyle A_uo =\left[\begin{matrix}-1 &amp; 0\\0 &amp; -2\end{matrix}\right]\end{split}\]</div>
+<div class="output text_latex math notranslate nohighlight">
+\[\displaystyle C_uo =\left[\begin{matrix}1 &amp; 0\end{matrix}\right]\]</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>--- Observability Matrix ---
+</pre></div>
+</div>
+<div class="output text_latex math notranslate nohighlight">
+\[\begin{split}\displaystyle \mathcal{O} =\left[\begin{matrix}1 &amp; 0\\-1 &amp; 0\end{matrix}\right]\end{split}\]</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Rank: 1
+</pre></div>
+</div>
 </div>
 </div>
 <p>Same story as before, mirrored: <span class="math notranslate nohighlight">\(x_2\)</span> never shows up in <span class="math notranslate nohighlight">\(y\)</span>, and
 since the system is decoupled, its motion is invisible from the output.</p>
 </section>
-<section id="pole-placement-state-feedback">
-<h2>6. Pole Placement (State Feedback)<a class="headerlink" href="#pole-placement-state-feedback" title="Link to this heading">#</a></h2>
+<section id="pole-placement-state-feedback-with-ackerman">
+<h2>6. Pole Placement (State Feedback) with  Ackerman<a class="headerlink" href="#pole-placement-state-feedback-with-ackerman" title="Link to this heading">#</a></h2>
 <p>With full-state feedback <span class="math notranslate nohighlight">\(u = -K\mathbf{x}\)</span>, the closed-loop dynamics
 become <span class="math notranslate nohighlight">\(\dot{\mathbf{x}} = (A - BK)\mathbf{x}\)</span>. We choose <span class="math notranslate nohighlight">\(K\)</span> so that
-<span class="math notranslate nohighlight">\(A - BK\)</span> has a desired characteristic polynomial — i.e. desired closed-loop
+<span class="math notranslate nohighlight">\(A - BK\)</span> has a desired characteristic polynomial (desired closed-loop)
 poles.</p>
 <p><strong>Ackermann’s formula</strong> gives <span class="math notranslate nohighlight">\(K\)</span> directly, purely symbolically:</p>
 <div class="math notranslate nohighlight">
@@ -837,35 +927,44 @@ K = \begin{bmatrix}0 &amp; \cdots &amp; 0 &amp; 1\end{bmatrix} \mathcal{C}^{-1} 
 \]</div>
 <p>where <span class="math notranslate nohighlight">\(\phi_d(A)\)</span> is the desired characteristic polynomial evaluated at the
 matrix <span class="math notranslate nohighlight">\(A\)</span>, and <span class="math notranslate nohighlight">\(\mathcal{C}\)</span> is the controllability matrix (which must be
-invertible — i.e. the system must be controllable, tying directly back to
-Section 4).</p>
+invertible <span class="math notranslate nohighlight">\(\rightarrow\)</span> the system must be controllable!).</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="k">def</span><span class="w"> </span><span class="nf">ackermann</span><span class="p">(</span><span class="n">A</span><span class="p">,</span> <span class="n">B</span><span class="p">,</span> <span class="n">desired_poles</span><span class="p">):</span>
     <span class="n">n</span> <span class="o">=</span> <span class="n">A</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
-    <span class="n">s</span> <span class="o">=</span> <span class="n">sp</span><span class="o">.</span><span class="n">symbols</span><span class="p">(</span><span class="s1">'s'</span><span class="p">)</span>
+    <span class="n">s</span> <span class="o">=</span> <span class="n">symbols</span><span class="p">(</span><span class="s1">'s'</span><span class="p">)</span>
 
     <span class="c1"># Desired characteristic polynomial phi_d(s)</span>
-    <span class="n">phi_d</span> <span class="o">=</span> <span class="n">sp</span><span class="o">.</span><span class="n">prod</span><span class="p">([(</span><span class="n">s</span> <span class="o">-</span> <span class="n">p</span><span class="p">)</span> <span class="k">for</span> <span class="n">p</span> <span class="ow">in</span> <span class="n">desired_poles</span><span class="p">])</span>
-    <span class="n">phi_d</span> <span class="o">=</span> <span class="n">sp</span><span class="o">.</span><span class="n">expand</span><span class="p">(</span><span class="n">phi_d</span><span class="p">)</span>
-    <span class="n">phi_d_poly</span> <span class="o">=</span> <span class="n">sp</span><span class="o">.</span><span class="n">Poly</span><span class="p">(</span><span class="n">phi_d</span><span class="p">,</span> <span class="n">s</span><span class="p">)</span>
+    <span class="n">phi_d</span> <span class="o">=</span> <span class="n">prod</span><span class="p">([(</span><span class="n">s</span> <span class="o">-</span> <span class="n">p</span><span class="p">)</span> <span class="k">for</span> <span class="n">p</span> <span class="ow">in</span> <span class="n">desired_poles</span><span class="p">])</span>
+    <span class="n">phi_d</span> <span class="o">=</span> <span class="n">expand</span><span class="p">(</span><span class="n">phi_d</span><span class="p">)</span>
+    <span class="n">phi_d_poly</span> <span class="o">=</span> <span class="n">Poly</span><span class="p">(</span><span class="n">phi_d</span><span class="p">,</span> <span class="n">s</span><span class="p">)</span>
 
     <span class="c1"># phi_d(A) via Cayley-Hamilton-style substitution</span>
     <span class="n">coeffs</span> <span class="o">=</span> <span class="n">phi_d_poly</span><span class="o">.</span><span class="n">all_coeffs</span><span class="p">()</span>  <span class="c1"># highest degree first</span>
-    <span class="n">phi_d_A</span> <span class="o">=</span> <span class="n">sp</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">n</span><span class="p">,</span> <span class="n">n</span><span class="p">)</span>
+    <span class="n">phi_d_A</span> <span class="o">=</span> <span class="n">zeros</span><span class="p">(</span><span class="n">n</span><span class="p">,</span> <span class="n">n</span><span class="p">)</span>
     <span class="n">deg</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">coeffs</span><span class="p">)</span> <span class="o">-</span> <span class="mi">1</span>
     <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">c</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">coeffs</span><span class="p">):</span>
         <span class="n">power</span> <span class="o">=</span> <span class="n">deg</span> <span class="o">-</span> <span class="n">i</span>
         <span class="n">phi_d_A</span> <span class="o">+=</span> <span class="n">c</span> <span class="o">*</span> <span class="n">A</span><span class="o">**</span><span class="n">power</span>
 
     <span class="n">Cmat</span> <span class="o">=</span> <span class="n">controllability_matrix</span><span class="p">(</span><span class="n">A</span><span class="p">,</span> <span class="n">B</span><span class="p">)</span>
-    <span class="n">e_n</span> <span class="o">=</span> <span class="n">sp</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">n</span><span class="p">)</span>
+    <span class="n">e_n</span> <span class="o">=</span> <span class="n">zeros</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">n</span><span class="p">)</span>
     <span class="n">e_n</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="mi">1</span>
 
     <span class="n">K</span> <span class="o">=</span> <span class="n">e_n</span> <span class="o">*</span> <span class="n">Cmat</span><span class="o">.</span><span class="n">inv</span><span class="p">()</span> <span class="o">*</span> <span class="n">phi_d_A</span>
-    <span class="k">return</span> <span class="n">sp</span><span class="o">.</span><span class="n">simplify</span><span class="p">(</span><span class="n">K</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">simplify</span><span class="p">(</span><span class="n">K</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+<p>Worked example:</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Plant: A_c, B_c from Section 4 (poles currently at -1, -2)</span>
+<span class="c1"># Controllable example</span>
+<span class="n">A_c</span> <span class="o">=</span> <span class="n">Matrix</span><span class="p">([[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span> <span class="p">[</span><span class="o">-</span><span class="mi">2</span><span class="p">,</span> <span class="o">-</span><span class="mi">3</span><span class="p">]])</span>
+<span class="n">B_c</span> <span class="o">=</span> <span class="n">Matrix</span><span class="p">([[</span><span class="mi">0</span><span class="p">],</span> <span class="p">[</span><span class="mi">1</span><span class="p">]])</span>
 
-<span class="c1"># Plant: A_c, B_c from Section 4 (poles currently at -1, -2)</span>
 <span class="n">desired_poles</span> <span class="o">=</span> <span class="p">[</span><span class="o">-</span><span class="mi">4</span><span class="p">,</span> <span class="o">-</span><span class="mi">6</span><span class="p">]</span>
 <span class="n">K</span> <span class="o">=</span> <span class="n">ackermann</span><span class="p">(</span><span class="n">A_c</span><span class="p">,</span> <span class="n">B_c</span><span class="p">,</span> <span class="n">desired_poles</span><span class="p">)</span>
 <span class="n">K</span>
@@ -873,7 +972,8 @@ Section 4).</p>
 </div>
 </div>
 <div class="cell_output docutils container">
-<img alt="_images/82ec436f52d69783c2e4475df27dce8f39bce4c720ba10a863fc67c55c138761.png" src="_images/82ec436f52d69783c2e4475df27dce8f39bce4c720ba10a863fc67c55c138761.png" />
+<div class="output text_latex math notranslate nohighlight">
+\[\displaystyle \left[\begin{matrix}22 &amp; 7\end{matrix}\right]\]</div>
 </div>
 </div>
 <p>Verify: the eigenvalues of <span class="math notranslate nohighlight">\(A - BK\)</span> should now match the desired
@@ -881,25 +981,17 @@ poles exactly.</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">A_cl</span> <span class="o">=</span> <span class="n">A_c</span> <span class="o">-</span> <span class="n">B_c</span> <span class="o">*</span> <span class="n">K</span>
-<span class="n">sp</span><span class="o">.</span><span class="n">simplify</span><span class="p">(</span><span class="n">A_cl</span><span class="o">.</span><span class="n">eigenvals</span><span class="p">())</span>
+<span class="n">eigs</span> <span class="o">=</span> <span class="n">simplify</span><span class="p">(</span><span class="n">A_cl</span><span class="o">.</span><span class="n">eigenvals</span><span class="p">())</span>
+<span class="nb">list</span><span class="p">(</span><span class="n">eigs</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span>
 </pre></div>
 </div>
 </div>
 <div class="cell_output docutils container">
-<img alt="_images/e3010d2e0f7e46872927e885696868f63eef02fe48126188fa439ad6c40a3ae0.png" src="_images/e3010d2e0f7e46872927e885696868f63eef02fe48126188fa439ad6c40a3ae0.png" />
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>[-6, -4]
+</pre></div>
 </div>
 </div>
-<p>This closed-loop design step is exactly what <em>PID-Control (with
-Derivative Filter) in State-Space Format</em> uses when it selects PID gains
-for a desired transient response — Ackermann’s formula is the general
-version of that gain-selection problem.</p>
-</section>
-<section id="what-s-next">
-<h2>What’s next<a class="headerlink" href="#what-s-next" title="Link to this heading">#</a></h2>
-<p>A Luenberger observer is the exact dual of Section 6 — placing the
-eigenvalues of <span class="math notranslate nohighlight">\(A - LC\)</span> using the same <code class="docutils literal notranslate"><span class="pre">ackermann()</span></code> routine applied to
-<span class="math notranslate nohighlight">\((A^T, C^T)\)</span> instead of <span class="math notranslate nohighlight">\((A, B)\)</span>. That’s a natural follow-up page once this
-one is in the book.</p>
+</div>
 </section>
 </section>
 
@@ -912,16 +1004,16 @@ one is in the book.</p>
         },
         codeMirrorConfig: {
             theme: "abcdef",
-            mode: "python"
+            mode: "py.3.12.4"
         },
         kernelOptions: {
-            name: "python3",
+            name: "py.3.12.4",
             path: "./."
         },
         predefinedOutput: true
     }
     </script>
-    <script>kernelName = 'python3'</script>
+    <script>kernelName = 'py.3.12.4'</script>
 
                 </article>
               
@@ -933,6 +1025,24 @@ one is in the book.</p>
                 <footer class="prev-next-footer d-print-none">
                   
 <div class="prev-next-area">
+    <a class="left-prev"
+       href="steady-state-error.html"
+       title="previous page">
+      <i class="fa-solid fa-angle-left"></i>
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">previous</p>
+        <p class="prev-next-title">Tracking Accuracy of a Feedback system</p>
+      </div>
+    </a>
+    <a class="right-next"
+       href="routh-hurwitz.html"
+       title="next page">
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">next</p>
+        <p class="prev-next-title">Routh-Hurwitz Stability Criterion</p>
+      </div>
+      <i class="fa-solid fa-angle-right"></i>
+    </a>
 </div>
                 </footer>
               
@@ -959,8 +1069,7 @@ one is in the book.</p>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#solving-the-state-equation-symbolically">3. Solving the State Equation Symbolically</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#controllability">4. Controllability</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#observability">5. Observability</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#pole-placement-state-feedback">6. Pole Placement (State Feedback)</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#what-s-next">What’s next</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#pole-placement-state-feedback-with-ackerman">6. Pole Placement (State Feedback) with  Ackerman</a></li>
 </ul>
   </nav></div>
 
