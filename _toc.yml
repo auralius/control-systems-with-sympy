@@ -5,6 +5,12 @@ format: jb-book
 root: intro
 
 parts:
+  - caption: Reviews
+    chapters:
+      - file: linear-algebra-primer
+      - file: ode-laplace
+      - file: laplace-table
+      
   - caption: Modeling and Time-Domain Analysis
     chapters:
       - file: block-diagram
@@ -13,6 +19,7 @@ parts:
       - file: first-order
       - file: second-order
       - file: steady-state-error
+      - file: state-space
 
   - caption: Classical Control Analysis
     chapters:
@@ -27,6 +34,7 @@ parts:
       - file: pid-so
       - file: pid-ss
       - file: digital-pid
+      - file: butterworth-coefficients
       - file: digital-pid-2
       - file: digital-filter
       - file: digital-filter-2
