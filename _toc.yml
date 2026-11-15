@@ -34,11 +34,11 @@ parts:
       - file: pid-so
       - file: pid-ss
       - file: digital-pid
-      - file: butterworth-coefficients
       - file: digital-pid-2
       - file: digital-filter
       - file: digital-filter-2
-
+      - file: butterworth-coefficients
+      
   - caption: Interactive Sessions
     chapters:
       - file: interactives
