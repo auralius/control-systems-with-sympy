@@ -5,12 +5,12 @@
     white-space: nowrap;
 }
 
-/* Make the first column tighter */
+/* First column: fit content, no fixed width */
 .bd-content table th:first-child,
 .bd-content table td:first-child {
-    width: 70px;
-    min-width: 70px;
-    max-width: 70px;
-    text-align: center;
+    width: auto;
+    min-width: max-content;
+    text-align: left;
     font-weight: bold;
+    padding-right: 1.5em;
 }
